@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260" role="img" aria-label="空心圆轴扭转">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.soft{fill:rgba(138,75,42,.08);stroke:#8A4B2A;stroke-width:1.2}
+    .dim{stroke:#6B6357;fill:none;stroke-width:.9}.cur{stroke:#A8342A;fill:none;stroke-width:1.6}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+  </style>
+  <text class="sub" x="24" y="24">空心圆轴受扭：外径 D、内径 d，许用切应力 [τ]</text>
+  <ellipse cx="200" cy="140" rx="70" ry="92" class="soft"/>
+  <ellipse cx="200" cy="140" rx="36" ry="48" fill="#F5F0E6" stroke="#8A4B2A" stroke-width="1.2"/>
+  <line class="thin" x1="130" y1="140" x2="270" y2="140" stroke-dasharray="4 3"/>
+  <line class="thin" x1="200" y1="48" x2="200" y2="232" stroke-dasharray="4 3"/>
+  <text class="sub" x="236" y="136">D</text><text class="sub" x="206" y="128">d</text>
+  <path class="cur" d="M300 90 a70 40 0 0 1 0 100"/><path class="cur" d="M300 190 l-8 -8 l10 -4"/>
+  <text class="lbl" x="314" y="144">T</text>
+  <text class="sub" x="24" y="250">I_p=π(D⁴−d⁴)/32；W_p=π(D⁴−d⁴)/(16D)；τ_max=T/W_p≤[τ] → 求许用扭矩。</text>
+</svg>

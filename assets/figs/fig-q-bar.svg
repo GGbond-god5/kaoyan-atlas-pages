@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260" role="img" aria-label="阶梯杆受力图">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#A8342A;fill:none;stroke-width:1.8}.dim{stroke:#6B6357;fill:none;stroke-width:.9}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+  </style>
+  <text class="sub" x="24" y="24">阶梯圆杆：三段截面、三个轴向集中力（拉力为正）</text>
+  <path class="thin" d="M100 90 v8 M100 102 v8 M100 114 v8 M100 126 v8 M100 138 v8 M100 150 v8 M100 162 v8" stroke="#6B6357"/>
+  <rect class="ink" x="105" y="106" width="160" height="44"/>
+  <rect class="ink" x="265" y="98" width="160" height="60"/>
+  <rect class="ink" x="425" y="106" width="160" height="44"/>
+  <line class="acc" x1="265" y1="128" x2="205" y2="128"/><path class="acc" d="M213 122 l-10 6 l10 6"/>
+  <line class="acc" x1="345" y1="128" x2="405" y2="128"/><path class="acc" d="M397 122 l10 6 l-10 6"/>
+  <line class="acc" x1="585" y1="128" x2="645" y2="128"/><path class="acc" d="M637 122 l10 6 l-10 6"/>
+  <text class="lbl" x="190" y="116">F₁</text><text class="lbl" x="370" y="116">F₂</text><text class="lbl" x="610" y="116">F₃</text>
+  <text class="sub" x="105" y="172">A</text><text class="sub" x="262" y="180">B</text><text class="sub" x="422" y="172">C</text><text class="sub" x="582" y="172">D</text>
+  <line class="dim" x1="105" y1="198" x2="265" y2="198"/><text class="sub" x="176" y="214">l₁, d₁</text>
+  <line class="dim" x1="265" y1="198" x2="425" y2="198"/><text class="sub" x="336" y="214">l₂, d₂</text>
+  <line class="dim" x1="425" y1="198" x2="585" y2="198"/><text class="sub" x="496" y="214">l₃, d₂</text>
+  <text class="sub" x="24" y="238">求解：约束反力 → 分段轴力 → 各段应力 F_N/A → 危险截面 → 位移 ΣF_N l/(EA)。</text>
+</svg>

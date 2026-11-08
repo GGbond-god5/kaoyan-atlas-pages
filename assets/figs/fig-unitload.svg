@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="单位载荷法">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.acc2{stroke:#5B3A6B;fill:none;stroke-width:1.5}
+    .fill{fill:rgba(138,75,42,.10);stroke:#8A4B2A;stroke-width:1.2}
+    .fill2{fill:rgba(91,58,107,.10);stroke:#5B3A6B;stroke-width:1.2}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:11.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:10.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="20" y="22">单位载荷法（莫尔积分）：先加单位力，再图乘</text>
+  <text class="sub" x="20" y="40">求哪一点、哪个方向的位移，就在那里加一个同方向的单位力。</text>
+
+  <text class="sub" x="40" y="72">实际载荷</text>
+  <line class="ink" x1="60" y1="96" x2="340" y2="96"/>
+  <path class="thin" d="M60 96 l-9 14 h18 z"/><path class="thin" d="M340 96 l-9 14 h18 z"/>
+  <line class="acc" x1="200" y1="64" x2="200" y2="96"/><path class="acc" d="M193 72 l7 -9 l7 9"/>
+  <text class="sub" x="206" y="72">P</text>
+  <path class="fill" d="M60 170 L200 112 L340 170 Z"/>
+  <text class="sub" x="70" y="188">M 图</text>
+
+  <text class="sub" x="400" y="72">单位载荷（求跨中挠度）</text>
+  <line class="ink" x1="420" y1="96" x2="700" y2="96"/>
+  <path class="thin" d="M420 96 l-9 14 h18 z"/><path class="thin" d="M700 96 l-9 14 h18 z"/>
+  <line class="acc2" x1="560" y1="66" x2="560" y2="96"/><path class="acc2" d="M553 74 l7 -9 l7 9"/>
+  <text class="sub" x="566" y="74">1</text>
+  <path class="fill2" d="M420 170 L560 112 L700 170 Z"/>
+  <text class="sub" x="430" y="188">M̄ 图</text>
+
+  <text class="fml" x="60" y="228">Δ = ∫ M M̄ / EI dx  = Σ ω·ȳ_C / EI</text>
+  <text class="sub" x="60" y="250">图乘：ω 取 M 图面积，ȳ_C 取 M̄ 图在形心处的纵标；同侧为正、异侧为负。</text>
+  <text class="sub" x="60" y="272">单位力法适用于任意点、任意方向；卡氏第二定理是它的“求导版”。</text>
+</svg>

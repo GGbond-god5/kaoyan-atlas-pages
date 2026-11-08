@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="莫尔圆">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="sub" x="24" y="24">应力状态与莫尔圆：主应力、最大切应力一图读出</text>
+  <line class="ink" x1="80" y1="150" x2="430" y2="150"/><path class="ink" d="M424 146 l10 4 l-10 4"/>
+  <line class="ink" x1="110" y1="240" x2="110" y2="50"/><path class="ink" d="M106 56 l4 -10 l4 10"/>
+  <text class="sub" x="436" y="154">σ</text><text class="sub" x="102" y="48">τ</text>
+  <circle class="acc" cx="255" cy="150" r="95"/>
+  <circle cx="255" cy="150" r="2.5" fill="#2A2723"/>
+  <line class="dash" x1="255" y1="150" x2="290" y2="88"/>
+  <circle cx="290" cy="88" r="2.5" fill="#A8342A"/><text class="sub" x="296" y="84">D(σ_x, τ_xy)</text>
+  <line class="dash" x1="255" y1="150" x2="220" y2="212"/>
+  <circle cx="220" cy="212" r="2.5" fill="#A8342A"/><text class="sub" x="180" y="228">D′(σ_y, −τ_xy)</text>
+  <line class="thin" x1="160" y1="150" x2="160" y2="156"/><text class="sub" x="146" y="172">σ₂</text>
+  <line class="thin" x1="350" y1="150" x2="350" y2="156"/><text class="sub" x="344" y="172">σ₁</text>
+  <line class="dash" x1="255" y1="150" x2="255" y2="55"/><text class="sub" x="260" y="72">τ_max</text>
+  <text class="fml" x="470" y="90">σ₁,₂=(σ_x+σ_y)/2 ± R</text>
+  <text class="fml" x="470" y="118">R=√[((σ_x−σ_y)/2)²+τ_xy²]</text>
+  <text class="fml" x="470" y="146">τ_max=R</text>
+  <text class="sub" x="470" y="176">主平面：τ=0，角度 2α 从 D 转到 σ 轴</text>
+  <text class="sub" x="470" y="200">主应力排序 σ₁≥σ₂≥σ₃；第三/第四强度理论用 σ₁、σ₃。</text>
+</svg>

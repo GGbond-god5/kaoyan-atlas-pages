@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-label="动荷系数示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1.1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:13px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">铅垂冲击：动荷系数把静载结果放大</text>
+  <text class="sub" x="24" y="44">自由落体是特例；遇到弹簧、变截面、非自由落体，回到能量守恒。</text>
+
+  <!-- beam -->
+  <line class="ink" x1="100" y1="170" x2="620" y2="170"/>
+  <path class="thin" d="M100 170 l-10 16 h20 z"/>
+  <path class="thin" d="M620 170 l-10 16 h20 z"/>
+  <line class="thin" x1="100" y1="186" x2="620" y2="186" stroke="#DAD2C3"/>
+
+  <!-- weight -->
+  <rect class="acc" x="318" y="60" width="64" height="44"/>
+  <text class="lbl" x="336" y="88">Q</text>
+  <line class="acc" x1="350" y1="112" x2="350" y2="156"/>
+  <path class="acc" d="M343 148 l7 9 l7 -9"/>
+
+  <!-- height h -->
+  <line class="thin" x1="410" y1="104" x2="410" y2="170" stroke-dasharray="4 3"/>
+  <line class="thin" x1="402" y1="104" x2="418" y2="104"/>
+  <line class="thin" x1="402" y1="170" x2="418" y2="170"/>
+  <text class="sub" x="418" y="142">h</text>
+
+  <!-- deflections -->
+  <path class="dash" d="M100 170 Q350 206 620 170"/>
+  <text class="sub" x="332" y="208">Δ_st</text>
+  <path class="dash" d="M100 170 Q350 244 620 170" stroke="#8A4B2A"/>
+  <text class="sub" x="332" y="250">Δ_d</text>
+
+  <text class="fml" x="120" y="290">K_d = 1 + √(1 + 2h / Δ_st)</text>
+  <text class="fml" x="420" y="290">σ_d = K_d · σ_st</text>
+  <text class="sub" x="120" y="312">突然加载 h=0：K_d=2；自由落体 h≫Δ_st：K_d≈√(2h/Δ_st)。</text>
+</svg>

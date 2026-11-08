@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="格林公式">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.fill{fill:rgba(138,75,42,.10);stroke:#8A4B2A;stroke-width:1.4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">格林公式：边界曲线积分 ↔ 区域二重积分</text>
+  <text class="sub" x="24" y="44">L 取正向（区域在左侧）；有洞时内边界取负向。</text>
+  <path class="fill" d="M120 200 C120 90 300 60 420 100 C520 132 540 220 420 240 C300 260 120 250 120 200 Z"/>
+  <path class="acc" d="M360 238 C440 234 512 210 512 172"/>
+  <path class="acc" d="M512 172 l-4 10 l10 -3"/>
+  <path class="acc" d="M190 96 C140 120 128 170 160 200"/>
+  <path class="acc" d="M160 200 l-9 -6 l1 11"/>
+  <text class="sub" x="356" y="256">L（正向）</text>
+  <text class="sub" x="300" y="156">D</text>
+  <text class="fml" x="560" y="120">∮_L P dx + Q dy</text>
+  <text class="fml" x="560" y="152">= ∬_D (∂Q/∂x − ∂P/∂y) dxdy</text>
+  <text class="sub" x="560" y="184">条件：P、Q 在 D 上有一阶连续偏导</text>
+  <text class="sub" x="560" y="208">用途：把难算的线积分转成二重积分</text>
+  <text class="sub" x="560" y="232">路径无关 ⇔ ∂Q/∂x = ∂P/∂y（单连通）</text>
+</svg>

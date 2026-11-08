@@ -1,0 +1,3463 @@
+{
+ "topics": [
+  {
+   "id": "attitude",
+   "title": "阅读态度词：正负、强弱与保留",
+   "intro": "态度题先判断方向（支持/反对/中立），再判断强度（强烈/温和）与是否有保留。作者极少真正“漠不关心”，indifferent、unconcerned 往往是干扰项；detached 是“客观超然”，不等于不关心。",
+   "groups": [
+    {
+     "name": "明确支持与赞扬",
+     "note": "语气最强的一组，常出现在作者明确认可某做法、某研究的段落。",
+     "words": [
+      {
+       "w": "approval",
+       "m": "赞同；认可",
+       "note": "常与 of 连用，比 support 更书面。"
+      },
+      {
+       "w": "supportive",
+       "m": "支持的",
+       "note": "be supportive of；态度题里常是正确项。"
+      },
+      {
+       "w": "favorable",
+       "m": "赞同的；有利的",
+       "note": "favorable attitude/view；也可指条件有利。"
+      },
+      {
+       "w": "positive",
+       "m": "积极的；肯定的",
+       "note": "最笼统的正面词，需结合上下文判断强度。"
+      },
+      {
+       "w": "optimistic",
+       "m": "乐观的",
+       "note": "be optimistic about；常与前景、趋势搭配。"
+      },
+      {
+       "w": "enthusiastic",
+       "m": "热情的；热衷的",
+       "note": "be enthusiastic about；强度高于 supportive。"
+      },
+      {
+       "w": "endorse",
+       "m": "公开支持；背书",
+       "note": "endorse a proposal/candidate，正式支持。"
+      },
+      {
+       "w": "commend",
+       "m": "称赞；表扬",
+       "note": "commend sb for sth；比 praise 正式。"
+      },
+      {
+       "w": "applaud",
+       "m": "称赞；鼓掌",
+       "note": "applaud sb's decision；比喻义常考。"
+      },
+      {
+       "w": "advocate",
+       "m": "提倡；主张",
+       "note": "advocate doing sth；作者主张某做法时高频。"
+      },
+      {
+       "w": "appreciative",
+       "m": "欣赏的；感激的",
+       "note": "be appreciative of；语气温和。"
+      }
+     ]
+    },
+    {
+     "name": "温和或有条件支持",
+     "note": "支持但留有余地，注意 qualified、cautious 这类“打折”词。",
+     "words": [
+      {
+       "w": "sympathetic",
+       "m": "同情的；赞同的",
+       "note": "be sympathetic to a cause；态度题中可指支持。"
+      },
+      {
+       "w": "cautiously optimistic",
+       "m": "谨慎乐观的",
+       "note": "典型的“支持但有保留”，常是正确项。"
+      },
+      {
+       "w": "qualified",
+       "m": "有保留的；有限度的",
+       "note": "qualified support 不是“合格的支持”，而是“有保留的支持”。"
+      }
+     ]
+    },
+    {
+     "name": "客观与中立",
+     "note": "作者只陈述、不站队时的态度；注意 detached 与 indifferent 的区别。",
+     "words": [
+      {
+       "w": "objective",
+       "m": "客观的",
+       "note": "基于事实，不掺个人情绪；学术文章常见。"
+      },
+      {
+       "w": "neutral",
+       "m": "中立的",
+       "note": "不偏向任何一方，但未必冷漠。"
+      },
+      {
+       "w": "impartial",
+       "m": "公正的；不偏不倚的",
+       "note": "多用于裁判、报道、评价。"
+      },
+      {
+       "w": "detached",
+       "m": "超然的；客观的",
+       "note": "强调与对象保持距离，不是不关心。"
+      }
+     ]
+    },
+    {
+     "name": "怀疑与保留",
+     "note": "不是明确反对，而是“不信、存疑、留一手”；常与证据不足有关。",
+     "words": [
+      {
+       "w": "skeptical",
+       "m": "怀疑的",
+       "note": "be skeptical of/about；对论断持怀疑。"
+      },
+      {
+       "w": "doubtful",
+       "m": "怀疑的；不确定的",
+       "note": "it is doubtful whether；也可指可能性小。"
+      },
+      {
+       "w": "dubious",
+       "m": "可疑的；半信半疑的",
+       "note": "比 doubtful 更强调“不可信”。"
+      },
+      {
+       "w": "suspicious",
+       "m": "怀疑的；可疑的",
+       "note": "be suspicious of；也可形容事物可疑。"
+      },
+      {
+       "w": "wary",
+       "m": "警惕的",
+       "note": "be wary of；强调防范风险。"
+      },
+      {
+       "w": "cautious",
+       "m": "谨慎的",
+       "note": "cautious about；语气温和，不等于反对。"
+      },
+      {
+       "w": "reserved",
+       "m": "有保留的；矜持的",
+       "note": "reserved about；不轻易表态。"
+      },
+      {
+       "w": "unconvinced",
+       "m": "未被说服的",
+       "note": "be unconvinced by；明确表示证据不足。"
+      },
+      {
+       "w": "guarded",
+       "m": "谨慎的；有戒心的",
+       "note": "guarded optimism；比 cautious 更防备。"
+      }
+     ]
+    },
+    {
+     "name": "反对与批评",
+     "note": "从温和不满到强烈谴责，注意强度梯度。",
+     "words": [
+      {
+       "w": "critical",
+       "m": "批判的；批评的",
+       "note": "be critical of；考研态度题高频正确项。"
+      },
+      {
+       "w": "disapproving",
+       "m": "不赞成的",
+       "note": "disapproving of；语气正式。"
+      },
+      {
+       "w": "negative",
+       "m": "负面的；否定的",
+       "note": "最笼统的负面词。"
+      },
+      {
+       "w": "opposed",
+       "m": "反对的",
+       "note": "be opposed to；明确站到对立面。"
+      },
+      {
+       "w": "hostile",
+       "m": "敌对的；强烈反对的",
+       "note": "be hostile to；强度很高。"
+      },
+      {
+       "w": "dismissive",
+       "m": "轻蔑的；不予考虑的",
+       "note": "dismissive of；认为不值得认真对待。"
+      },
+      {
+       "w": "contemptuous",
+       "m": "蔑视的",
+       "note": "比 dismissive 更强烈的看不起。"
+      },
+      {
+       "w": "scornful",
+       "m": "轻蔑的；嘲笑的",
+       "note": "scornful of；常带嘲讽语气。"
+      },
+      {
+       "w": "indignant",
+       "m": "愤慨的",
+       "note": "因不公而愤怒，常与 injustice 搭配。"
+      },
+      {
+       "w": "outraged",
+       "m": "愤怒的；震怒的",
+       "note": "强度高于 indignant。"
+      },
+      {
+       "w": "alarmed",
+       "m": "担忧的；警觉的",
+       "note": "be alarmed by；对风险感到不安。"
+      },
+      {
+       "w": "concerned",
+       "m": "担忧的；关切的",
+       "note": "be concerned about；不一定反对，但明确忧虑。"
+      }
+     ]
+    },
+    {
+     "name": "矛盾与复杂",
+     "note": "作者既看到好处也看到问题，态度题里常对应“mixed feelings”。",
+     "words": [
+      {
+       "w": "ambivalent",
+       "m": "矛盾的；好坏参半的",
+       "note": "be ambivalent about；态度题高频。"
+      },
+      {
+       "w": "mixed",
+       "m": "复杂的；褒贬兼有的",
+       "note": "mixed feelings/reaction；最常用的中性表达。"
+      },
+      {
+       "w": "conflicted",
+       "m": "内心冲突的",
+       "note": "feel conflicted about；强调心理拉扯。"
+      },
+      {
+       "w": "paradoxical",
+       "m": "矛盾的；似非而是的",
+       "note": "paradoxical situation；描述现象而非态度。"
+      },
+      {
+       "w": "ironic",
+       "m": "讽刺的",
+       "note": "ironic tone；作者用反讽表达批评。"
+      },
+      {
+       "w": "resigned",
+       "m": "无奈接受的",
+       "note": "resigned to；不情愿但不再抗争。"
+      },
+      {
+       "w": "grudging",
+       "m": "勉强的；不情愿的",
+       "note": "grudging admiration；勉强承认。"
+      }
+     ]
+    },
+    {
+     "name": "冷漠与超然（多为干扰项）",
+     "note": "作者写文章通常有立场；这类词若与原文关怀语气冲突，多为干扰。",
+     "words": [
+      {
+       "w": "indifferent",
+       "m": "漠不关心的",
+       "note": "态度题经典干扰项；作者很少真正 indifferent。"
+      },
+      {
+       "w": "unconcerned",
+       "m": "不在意的",
+       "note": "be unconcerned about；与 concerned 相对。"
+      },
+      {
+       "w": "apathetic",
+       "m": "冷漠的；无动于衷的",
+       "note": "比 indifferent 更贬义。"
+      },
+      {
+       "w": "disinterested",
+       "m": "无私的；不偏袒的",
+       "note": "注意：不是“不感兴趣”，而是“无利害关系”。"
+      },
+      {
+       "w": "aloof",
+       "m": "疏远的；冷淡的",
+       "note": "keep aloof from；强调距离感。"
+      },
+      {
+       "w": "unmoved",
+       "m": "无动于衷的",
+       "note": "remain unmoved by；强调未被感动或说服。"
+      }
+     ]
+    },
+    {
+     "name": "语气强度词",
+     "note": "态度题常考“强度”而非方向；这些词决定选项能不能选。",
+     "words": [
+      {
+       "w": "wholehearted",
+       "m": "全心全意的",
+       "note": "wholehearted support；无保留支持。"
+      },
+      {
+       "w": "unqualified",
+       "m": "无保留的；绝对的",
+       "note": "unqualified success；注意不是“不合格的”。"
+      },
+      {
+       "w": "mild",
+       "m": "温和的；轻微的",
+       "note": "mild criticism；强度低。"
+      },
+      {
+       "w": "lukewarm",
+       "m": "不冷不热的",
+       "note": "lukewarm response；支持力度弱。"
+      },
+      {
+       "w": "half-hearted",
+       "m": "三心二意的",
+       "note": "half-hearted attempt；敷衍。"
+      },
+      {
+       "w": "scathing",
+       "m": "严厉的；尖刻的",
+       "note": "scathing criticism；强度极高。"
+      },
+      {
+       "w": "damning",
+       "m": "足以定罪的；严厉谴责的",
+       "note": "damning evidence/report；语气很重。"
+      },
+      {
+       "w": "glowing",
+       "m": "热情赞扬的",
+       "note": "glowing review；高度好评。"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "synonyms",
+   "title": "近义词辨析：考研高频易混词",
+   "intro": "辨析题和写作都在考“词与词的差别”。先看词性，再看及物/不及物、搭配、程度与褒贬；只记中文“都差不多”会在完型和写作里出错。",
+   "groups": [
+    {
+     "name": "affect / effect",
+     "note": "一个是动词，一个是名词；effect 作动词时是“实现”。",
+     "words": [
+      {
+       "w": "affect",
+       "m": "影响（动词）",
+       "note": "affect sth；主语通常是影响因素。"
+      },
+      {
+       "w": "effect",
+       "m": "影响（名词）；实现（动词）",
+       "note": "have an effect on；effect a change 才是“实现”。"
+      }
+     ]
+    },
+    {
+     "name": "adapt / adopt / adept",
+     "note": "拼写只差一个字母，词性和意思完全不同。",
+     "words": [
+      {
+       "w": "adapt",
+       "m": "适应；改编",
+       "note": "adapt to；adapt a novel for film。"
+      },
+      {
+       "w": "adopt",
+       "m": "采用；收养",
+       "note": "adopt a policy/approach；adopt a child。"
+      },
+      {
+       "w": "adept",
+       "m": "熟练的（形容词）",
+       "note": "be adept at；名词是“能手”。"
+      }
+     ]
+    },
+    {
+     "name": "considerable / considerate",
+     "note": "一个说“量大”，一个说“体贴”。",
+     "words": [
+      {
+       "w": "considerable",
+       "m": "相当大的；可观的",
+       "note": "considerable influence/amount。"
+      },
+      {
+       "w": "considerate",
+       "m": "体贴的；考虑周到的",
+       "note": "be considerate of others。"
+      }
+     ]
+    },
+    {
+     "name": "economic / economical",
+     "note": "economic 关于经济；economical 关于省钱。",
+     "words": [
+      {
+       "w": "economic",
+       "m": "经济的；经济学的",
+       "note": "economic growth/policy。"
+      },
+      {
+       "w": "economical",
+       "m": "节约的；经济实惠的",
+       "note": "an economical car；be economical with time。"
+      }
+     ]
+    },
+    {
+     "name": "historic / historical",
+     "note": "historic 有历史意义；historical 与历史有关。",
+     "words": [
+      {
+       "w": "historic",
+       "m": "有历史意义的",
+       "note": "a historic moment/decision。"
+      },
+      {
+       "w": "historical",
+       "m": "历史的；史学的",
+       "note": "historical research/novel。"
+      }
+     ]
+    },
+    {
+     "name": "principal / principle",
+     "note": "principal 主要/校长；principle 原则/原理。",
+     "words": [
+      {
+       "w": "principal",
+       "m": "主要的；校长；本金",
+       "note": "the principal reason；school principal。"
+      },
+      {
+       "w": "principle",
+       "m": "原则；原理",
+       "note": "in principle 原则上；moral principles。"
+      }
+     ]
+    },
+    {
+     "name": "complement / compliment",
+     "note": "complement 补充完整；compliment 称赞。",
+     "words": [
+      {
+       "w": "complement",
+       "m": "补充；与…相配",
+       "note": "complement each other；complementary skills。"
+      },
+      {
+       "w": "compliment",
+       "m": "称赞；恭维",
+       "note": "pay sb a compliment；compliment sb on sth。"
+      }
+     ]
+    },
+    {
+     "name": "assure / ensure / insure",
+     "note": "宾语不同：assure 人，ensure 事，insure 投保。",
+     "words": [
+      {
+       "w": "assure",
+       "m": "向某人保证；使确信",
+       "note": "assure sb that；宾语是人。"
+      },
+      {
+       "w": "ensure",
+       "m": "确保（某事发生）",
+       "note": "ensure that；宾语是事。"
+      },
+      {
+       "w": "insure",
+       "m": "给…投保",
+       "note": "insure sth against loss。"
+      }
+     ]
+    },
+    {
+     "name": "lie / lay",
+     "note": "lie 不及物，lay 及物；lie 的过去式 lay 最易混。",
+     "words": [
+      {
+       "w": "lie",
+       "m": "躺；位于（不及物）",
+       "note": "lie-lay-lain；lie in 在于。"
+      },
+      {
+       "w": "lay",
+       "m": "放置；铺设（及物）",
+       "note": "lay-laid-laid；lay the foundation。"
+      }
+     ]
+    },
+    {
+     "name": "rise / raise / arise",
+     "note": "rise 不及物上升；raise 及物提高；arise 指问题出现。",
+     "words": [
+      {
+       "w": "rise",
+       "m": "上升；升起（不及物）",
+       "note": "prices rise；rise from。"
+      },
+      {
+       "w": "raise",
+       "m": "提高；举起（及物）",
+       "note": "raise awareness；raise a question。"
+      },
+      {
+       "w": "arise",
+       "m": "出现；产生（不及物）",
+       "note": "problems arise from；多接抽象名词。"
+      }
+     ]
+    },
+    {
+     "name": "borrow / lend",
+     "note": "borrow 借入，lend 借出。",
+     "words": [
+      {
+       "w": "borrow",
+       "m": "借入",
+       "note": "borrow sth from sb。"
+      },
+      {
+       "w": "lend",
+       "m": "借出",
+       "note": "lend sth to sb；lend support to。"
+      }
+     ]
+    },
+    {
+     "name": "imply / infer",
+     "note": "说话人 imply，听者 infer。",
+     "words": [
+      {
+       "w": "imply",
+       "m": "暗示；意味着",
+       "note": "作者 implies，读者 infers。"
+      },
+      {
+       "w": "infer",
+       "m": "推断",
+       "note": "infer from evidence；阅读题常用。"
+      }
+     ]
+    },
+    {
+     "name": "precede / proceed",
+     "note": "precede 在…之前；proceed 继续进行。",
+     "words": [
+      {
+       "w": "precede",
+       "m": "先于；在…之前发生",
+       "note": "be preceded by。"
+      },
+      {
+       "w": "proceed",
+       "m": "继续进行；着手",
+       "note": "proceed with/to。"
+      }
+     ]
+    },
+    {
+     "name": "sensible / sensitive",
+     "note": "sensible 明智；sensitive 敏感。",
+     "words": [
+      {
+       "w": "sensible",
+       "m": "明智的；合情理的",
+       "note": "a sensible decision。"
+      },
+      {
+       "w": "sensitive",
+       "m": "敏感的；体贴的",
+       "note": "be sensitive to；sensitive data。"
+      }
+     ]
+    },
+    {
+     "name": "intelligent / intelligible",
+     "note": "intelligent 聪明；intelligible 可理解。",
+     "words": [
+      {
+       "w": "intelligent",
+       "m": "聪明的",
+       "note": "an intelligent person。"
+      },
+      {
+       "w": "intelligible",
+       "m": "可理解的；易懂的",
+       "note": "intelligible speech。"
+      }
+     ]
+    },
+    {
+     "name": "respectable / respectful / respective",
+     "note": "值得尊敬 / 恭敬 / 各自的。",
+     "words": [
+      {
+       "w": "respectable",
+       "m": "值得尊敬的；体面的",
+       "note": "a respectable family。"
+      },
+      {
+       "w": "respectful",
+       "m": "恭敬的；尊重的",
+       "note": "be respectful of/to。"
+      },
+      {
+       "w": "respective",
+       "m": "各自的",
+       "note": "their respective roles。"
+      }
+     ]
+    },
+    {
+     "name": "continual / continuous",
+     "note": "continual 反复发生、有间断；continuous 连续不断。",
+     "words": [
+      {
+       "w": "continual",
+       "m": "反复的；频繁的",
+       "note": "continual interruptions。"
+      },
+      {
+       "w": "continuous",
+       "m": "连续不断的",
+       "note": "continuous growth。"
+      }
+     ]
+    },
+    {
+     "name": "alternate / alternative",
+     "note": "alternate 交替的；alternative 可替代的。",
+     "words": [
+      {
+       "w": "alternate",
+       "m": "交替的；轮流的",
+       "note": "alternate days。"
+      },
+      {
+       "w": "alternative",
+       "m": "替代的；可供选择的",
+       "note": "alternative energy；an alternative to。"
+      }
+     ]
+    },
+    {
+     "name": "acquire / inquire / require",
+     "note": "获得 / 询问 / 需要。",
+     "words": [
+      {
+       "w": "acquire",
+       "m": "获得；习得",
+       "note": "acquire knowledge/skills。"
+      },
+      {
+       "w": "inquire",
+       "m": "询问；查究",
+       "note": "inquire about/into。"
+      },
+      {
+       "w": "require",
+       "m": "需要；要求",
+       "note": "require sb to do；require that。"
+      }
+     ]
+    },
+    {
+     "name": "attribute / contribute / distribute",
+     "note": "归因 / 贡献 / 分配。",
+     "words": [
+      {
+       "w": "attribute",
+       "m": "把…归因于",
+       "note": "attribute A to B；attribute 也可作名词“属性”。"
+      },
+      {
+       "w": "contribute",
+       "m": "贡献；促成",
+       "note": "contribute to；后接因素或结果。"
+      },
+      {
+       "w": "distribute",
+       "m": "分配；分发",
+       "note": "distribute sth among/to。"
+      }
+     ]
+    },
+    {
+     "name": "compose / comprise / consist",
+     "note": "整体与部分的方向最容易写反。",
+     "words": [
+      {
+       "w": "compose",
+       "m": "组成；构成",
+       "note": "be composed of = 由…组成。"
+      },
+      {
+       "w": "comprise",
+       "m": "包含；由…组成",
+       "note": "整体 comprises 部分；不用 be comprised of 为佳。"
+      },
+      {
+       "w": "consist",
+       "m": "由…组成",
+       "note": "consist of；无被动。"
+      }
+     ]
+    },
+    {
+     "name": "convince / persuade",
+     "note": "convince 使确信（思想）；persuade 说服（行动）。",
+     "words": [
+      {
+       "w": "convince",
+       "m": "使确信；使信服",
+       "note": "convince sb of/that。"
+      },
+      {
+       "w": "persuade",
+       "m": "说服；劝服",
+       "note": "persuade sb to do。"
+      }
+     ]
+    },
+    {
+     "name": "deny / refuse / reject / decline",
+     "note": "否认 / 拒绝给 / 驳回 / 婉拒或下降。",
+     "words": [
+      {
+       "w": "deny",
+       "m": "否认；拒绝给予",
+       "note": "deny doing；deny sb sth。"
+      },
+      {
+       "w": "refuse",
+       "m": "拒绝（做某事）",
+       "note": "refuse to do。"
+      },
+      {
+       "w": "reject",
+       "m": "拒绝接受；驳回",
+       "note": "reject a proposal；语气强。"
+      },
+      {
+       "w": "decline",
+       "m": "婉拒；下降",
+       "note": "decline an invitation；prices decline。"
+      }
+     ]
+    },
+    {
+     "name": "discover / invent",
+     "note": "发现已存在之物 / 发明新事物。",
+     "words": [
+      {
+       "w": "discover",
+       "m": "发现",
+       "note": "discover a substance/law。"
+      },
+      {
+       "w": "invent",
+       "m": "发明",
+       "note": "invent a device。"
+      }
+     ]
+    },
+    {
+     "name": "distinguish / discriminate",
+     "note": "区分 / 歧视（也可指区分，但常含贬义）。",
+     "words": [
+      {
+       "w": "distinguish",
+       "m": "区分；辨别",
+       "note": "distinguish A from B。"
+      },
+      {
+       "w": "discriminate",
+       "m": "歧视；区别",
+       "note": "discriminate against；作“区别”时较正式。"
+      }
+     ]
+    },
+    {
+     "name": "expand / extend / stretch",
+     "note": "扩大规模 / 延长范围 / 拉伸长度。",
+     "words": [
+      {
+       "w": "expand",
+       "m": "扩大；膨胀",
+       "note": "expand the market。"
+      },
+      {
+       "w": "extend",
+       "m": "延伸；延长",
+       "note": "extend the deadline；extend to。"
+      },
+      {
+       "w": "stretch",
+       "m": "伸展；拉长",
+       "note": "stretch the budget；stretch one's legs。"
+      }
+     ]
+    },
+    {
+     "name": "explore / exploit",
+     "note": "探索 / 开发利用（也可指剥削）。",
+     "words": [
+      {
+       "w": "explore",
+       "m": "探索；考察",
+       "note": "explore possibilities。"
+      },
+      {
+       "w": "exploit",
+       "m": "开发；利用；剥削",
+       "note": "exploit resources/workers。"
+      }
+     ]
+    },
+    {
+     "name": "forbid / ban / prohibit",
+     "note": "禁止的正式程度和搭配不同。",
+     "words": [
+      {
+       "w": "forbid",
+       "m": "禁止",
+       "note": "forbid sb to do；较普通。"
+      },
+      {
+       "w": "ban",
+       "m": "明令禁止",
+       "note": "ban sth；多指官方。"
+      },
+      {
+       "w": "prohibit",
+       "m": "正式禁止",
+       "note": "prohibit sb from doing；法律、规章。"
+      }
+     ]
+    },
+    {
+     "name": "ignore / neglect / overlook",
+     "note": "故意忽视 / 疏忽未尽 / 忽略或俯视。",
+     "words": [
+      {
+       "w": "ignore",
+       "m": "忽视；不理会",
+       "note": "故意不理会。"
+      },
+      {
+       "w": "neglect",
+       "m": "疏忽；未尽责",
+       "note": "neglect one's duty。"
+      },
+      {
+       "w": "overlook",
+       "m": "忽略；俯瞰",
+       "note": "overlook a detail；也可指没注意。"
+      }
+     ]
+    },
+    {
+     "name": "immigrate / emigrate / migrate",
+     "note": "移入 / 移出 / 迁徙。",
+     "words": [
+      {
+       "w": "immigrate",
+       "m": "移入（到某国）",
+       "note": "immigrate to。"
+      },
+      {
+       "w": "emigrate",
+       "m": "移出（离开某国）",
+       "note": "emigrate from。"
+      },
+      {
+       "w": "migrate",
+       "m": "迁徙；迁移",
+       "note": "birds migrate；people migrate。"
+      }
+     ]
+    },
+    {
+     "name": "include / contain / involve",
+     "note": "包含 / 容纳含有 / 涉及需要。",
+     "words": [
+      {
+       "w": "include",
+       "m": "包括",
+       "note": "强调部分被包含。"
+      },
+      {
+       "w": "contain",
+       "m": "含有；容纳",
+       "note": "容器/物质含有。"
+      },
+      {
+       "w": "involve",
+       "m": "涉及；需要",
+       "note": "the job involves travel。"
+      }
+     ]
+    },
+    {
+     "name": "insist / persist / persevere",
+     "note": "坚持主张 / 固执坚持 / 坚持不懈。",
+     "words": [
+      {
+       "w": "insist",
+       "m": "坚持（说/做）",
+       "note": "insist on/that；强调主张。"
+      },
+      {
+       "w": "persist",
+       "m": "坚持；持续",
+       "note": "persist in；常含固执。"
+      },
+      {
+       "w": "persevere",
+       "m": "坚持不懈",
+       "note": "persevere with；褒义。"
+      }
+     ]
+    },
+    {
+     "name": "interpret / translate",
+     "note": "解释、口译 / 笔译、转化。",
+     "words": [
+      {
+       "w": "interpret",
+       "m": "解释；口译",
+       "note": "interpret data；口译。"
+      },
+      {
+       "w": "translate",
+       "m": "翻译；转化",
+       "note": "translate into；translate into action。"
+      }
+     ]
+    },
+    {
+     "name": "maintain / retain / sustain",
+     "note": "维持/主张 / 保留 / 支撑持续。",
+     "words": [
+      {
+       "w": "maintain",
+       "m": "维持；主张",
+       "note": "maintain order；maintain that。"
+      },
+      {
+       "w": "retain",
+       "m": "保留；留住",
+       "note": "retain talent。"
+      },
+      {
+       "w": "sustain",
+       "m": "维持；支撑",
+       "note": "sustain growth；sustain an injury。"
+      }
+     ]
+    },
+    {
+     "name": "notice / note / observe",
+     "note": "注意到 / 指出 / 观察遵守。",
+     "words": [
+      {
+       "w": "notice",
+       "m": "注意到",
+       "note": "notice sth；无意或有意皆可。"
+      },
+      {
+       "w": "note",
+       "m": "注意到；指出",
+       "note": "note that；写作常用。"
+      },
+      {
+       "w": "observe",
+       "m": "观察；遵守",
+       "note": "observe behavior；observe rules。"
+      }
+     ]
+    },
+    {
+     "name": "occur / happen / take place",
+     "note": "偶然发生 / 发生 / 有计划发生。",
+     "words": [
+      {
+       "w": "occur",
+       "m": "发生；出现",
+       "note": "it occurs to sb that 突然想到。"
+      },
+      {
+       "w": "happen",
+       "m": "发生",
+       "note": "最通用，常指偶然。"
+      },
+      {
+       "w": "take place",
+       "m": "发生；举行",
+       "note": "多指有计划的事件。"
+      }
+     ]
+    },
+    {
+     "name": "permit / allow / let",
+     "note": "正式允许 / 允许 / 让（口语）。",
+     "words": [
+      {
+       "w": "permit",
+       "m": "允许；许可",
+       "note": "permit sb to do；正式。"
+      },
+      {
+       "w": "allow",
+       "m": "允许；使能够",
+       "note": "allow sb to do；allow for 考虑到。"
+      },
+      {
+       "w": "let",
+       "m": "让；允许",
+       "note": "let sb do；无 to。"
+      }
+     ]
+    },
+    {
+     "name": "possess / own / hold",
+     "note": "拥有（正式）/ 拥有财产 / 持有容纳。",
+     "words": [
+      {
+       "w": "possess",
+       "m": "拥有（品质、能力）",
+       "note": "possess skills；正式。"
+      },
+      {
+       "w": "own",
+       "m": "拥有（财产）",
+       "note": "own a house。"
+      },
+      {
+       "w": "hold",
+       "m": "持有；容纳；认为",
+       "note": "hold a view；hold 100 people。"
+      }
+     ]
+    },
+    {
+     "name": "predict / forecast / foresee",
+     "note": "基于知识预测 / 预报 / 预见。",
+     "words": [
+      {
+       "w": "predict",
+       "m": "预测",
+       "note": "predict the outcome。"
+      },
+      {
+       "w": "forecast",
+       "m": "预报",
+       "note": "weather/economic forecast。"
+      },
+      {
+       "w": "foresee",
+       "m": "预见",
+       "note": "foresee problems。"
+      }
+     ]
+    },
+    {
+     "name": "prevent / avoid / refrain",
+     "note": "阻止发生 / 避免 / 克制不做。",
+     "words": [
+      {
+       "w": "prevent",
+       "m": "阻止；预防",
+       "note": "prevent sb from doing。"
+      },
+      {
+       "w": "avoid",
+       "m": "避免",
+       "note": "avoid doing；后接动名词。"
+      },
+      {
+       "w": "refrain",
+       "m": "克制不做",
+       "note": "refrain from doing。"
+      }
+     ]
+    },
+    {
+     "name": "provide / supply / offer",
+     "note": "提供所需 / 供应 / 主动提出。",
+     "words": [
+      {
+       "w": "provide",
+       "m": "提供",
+       "note": "provide sb with sth；provide sth for sb。"
+      },
+      {
+       "w": "supply",
+       "m": "供应",
+       "note": "supply sb with sth；强调持续供给。"
+      },
+      {
+       "w": "offer",
+       "m": "主动提供；提议",
+       "note": "offer to do；offer help。"
+      }
+     ]
+    },
+    {
+     "name": "reduce / decrease / diminish",
+     "note": "及物减少 / 下降 / 逐渐减弱。",
+     "words": [
+      {
+       "w": "reduce",
+       "m": "减少；降低（及物）",
+       "note": "reduce costs。"
+      },
+      {
+       "w": "decrease",
+       "m": "下降；减少",
+       "note": "可不及物；decrease in。"
+      },
+      {
+       "w": "diminish",
+       "m": "逐渐减少；削弱",
+       "note": "diminish the importance。"
+      }
+     ]
+    },
+    {
+     "name": "regard / consider / deem",
+     "note": "认为的正式程度与搭配不同。",
+     "words": [
+      {
+       "w": "regard",
+       "m": "认为；看待",
+       "note": "regard A as B。"
+      },
+      {
+       "w": "consider",
+       "m": "认为；考虑",
+       "note": "consider A (to be) B；consider doing。"
+      },
+      {
+       "w": "deem",
+       "m": "认为（正式）",
+       "note": "deem sth necessary。"
+      }
+     ]
+    },
+    {
+     "name": "replace / substitute / displace",
+     "note": "取代 / 用A替代B / 迫使离开。",
+     "words": [
+      {
+       "w": "replace",
+       "m": "取代；替换",
+       "note": "replace A with B。"
+      },
+      {
+       "w": "substitute",
+       "m": "替代；用…代替",
+       "note": "substitute A for B = 用A代替B。"
+      },
+      {
+       "w": "displace",
+       "m": "取代；迫使离开",
+       "note": "workers displaced by machines。"
+      }
+     ]
+    },
+    {
+     "name": "reveal / disclose / expose",
+     "note": "揭示 / 披露 / 暴露。",
+     "words": [
+      {
+       "w": "reveal",
+       "m": "揭示；显示",
+       "note": "research reveals that。"
+      },
+      {
+       "w": "disclose",
+       "m": "披露（信息）",
+       "note": "disclose information。"
+      },
+      {
+       "w": "expose",
+       "m": "暴露；揭露",
+       "note": "expose sb to danger；expose a scandal。"
+      }
+     ]
+    },
+    {
+     "name": "solve / resolve / settle",
+     "note": "解决 / 解决或决心 / 解决或定居。",
+     "words": [
+      {
+       "w": "solve",
+       "m": "解决（问题）",
+       "note": "solve a problem。"
+      },
+      {
+       "w": "resolve",
+       "m": "解决；决心",
+       "note": "resolve a conflict；resolve to do。"
+      },
+      {
+       "w": "settle",
+       "m": "解决；定居",
+       "note": "settle a dispute；settle down。"
+      }
+     ]
+    },
+    {
+     "name": "spend / cost / take",
+     "note": "主语不同：人 spend，物 cost，事 take。",
+     "words": [
+      {
+       "w": "spend",
+       "m": "花费（时间/钱）",
+       "note": "sb spends time/money on sth。"
+      },
+      {
+       "w": "cost",
+       "m": "花费（主语是物）",
+       "note": "it costs sb money。"
+      },
+      {
+       "w": "take",
+       "m": "花费（时间）",
+       "note": "it takes sb time to do。"
+      }
+     ]
+    },
+    {
+     "name": "transform / transfer / transmit",
+     "note": "彻底改变 / 转移 / 传送传播。",
+     "words": [
+      {
+       "w": "transform",
+       "m": "彻底改变；转化",
+       "note": "transform A into B。"
+      },
+      {
+       "w": "transfer",
+       "m": "转移；调动",
+       "note": "transfer money/data。"
+      },
+      {
+       "w": "transmit",
+       "m": "传送；传播",
+       "note": "transmit signals/diseases。"
+      }
+     ]
+    },
+    {
+     "name": "treat / cure / heal",
+     "note": "治疗 / 治愈 / 愈合。",
+     "words": [
+      {
+       "w": "treat",
+       "m": "治疗；对待",
+       "note": "treat a disease；treat sb to sth。"
+      },
+      {
+       "w": "cure",
+       "m": "治愈",
+       "note": "cure sb of a disease。"
+      },
+      {
+       "w": "heal",
+       "m": "愈合；使愈合",
+       "note": "wounds heal；heal the division。"
+      }
+     ]
+    },
+    {
+     "name": "vary / change / alter / convert",
+     "note": "变化 / 改变 / 改动 / 转换。",
+     "words": [
+      {
+       "w": "vary",
+       "m": "变化；不同",
+       "note": "vary from…to…；不及物。"
+      },
+      {
+       "w": "change",
+       "m": "改变",
+       "note": "最通用；及物或不及物。"
+      },
+      {
+       "w": "alter",
+       "m": "改动；改变",
+       "note": "alter a plan；部分改变。"
+      },
+      {
+       "w": "convert",
+       "m": "转换；改变信仰",
+       "note": "convert A into B。"
+      }
+     ]
+    },
+    {
+     "name": "worth / worthy / worthwhile",
+     "note": "值得的三种句型。",
+     "words": [
+      {
+       "w": "worth",
+       "m": "值得的",
+       "note": "be worth doing；be worth + 钱。"
+      },
+      {
+       "w": "worthy",
+       "m": "值得的；配得上的",
+       "note": "be worthy of；worthy of praise。"
+      },
+      {
+       "w": "worthwhile",
+       "m": "值得花时间的",
+       "note": "it is worthwhile to do/doing。"
+      }
+     ]
+    },
+    {
+     "name": "assume / presume / suppose",
+     "note": "假定 / 推测 / 假设。",
+     "words": [
+      {
+       "w": "assume",
+       "m": "假定；承担",
+       "note": "assume responsibility；未必有依据。"
+      },
+      {
+       "w": "presume",
+       "m": "推测；假定",
+       "note": "presume sb innocent；有一定依据。"
+      },
+      {
+       "w": "suppose",
+       "m": "假设；认为",
+       "note": "be supposed to do 应该。"
+      }
+     ]
+    },
+    {
+     "name": "compare / contrast",
+     "note": "比较相同点 / 对比差异。",
+     "words": [
+      {
+       "w": "compare",
+       "m": "比较；比作",
+       "note": "compare A with/to B。"
+      },
+      {
+       "w": "contrast",
+       "m": "对比；形成对照",
+       "note": "contrast A with B；in contrast。"
+      }
+     ]
+    },
+    {
+     "name": "credible / credulous",
+     "note": "可信的 / 轻信的。",
+     "words": [
+      {
+       "w": "credible",
+       "m": "可信的",
+       "note": "credible evidence。"
+      },
+      {
+       "w": "credulous",
+       "m": "轻信的",
+       "note": "credulous consumers。"
+      }
+     ]
+    },
+    {
+     "name": "elicit / illicit",
+     "note": "引出 / 非法的。",
+     "words": [
+      {
+       "w": "elicit",
+       "m": "引出；诱出",
+       "note": "elicit a response。"
+      },
+      {
+       "w": "illicit",
+       "m": "非法的；不正当的",
+       "note": "illicit trade。"
+      }
+     ]
+    },
+    {
+     "name": "enhance / enlarge / enrich",
+     "note": "提升 / 扩大 / 丰富。",
+     "words": [
+      {
+       "w": "enhance",
+       "m": "提升；增强",
+       "note": "enhance quality。"
+      },
+      {
+       "w": "enlarge",
+       "m": "扩大",
+       "note": "enlarge the scope。"
+      },
+      {
+       "w": "enrich",
+       "m": "丰富；使富裕",
+       "note": "enrich the experience。"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "themes",
+   "title": "常见话题词汇：按考研阅读与写作场景",
+   "intro": "按话题记词，阅读时能快速预测段落走向，写作时能直接调用搭配。每个词条后面的搭配比中文释义更值得背。",
+   "groups": [
+    {
+     "name": "教育与学习",
+     "note": "阅读常考教育公平、大学使命、职业培训；写作常用“培养/评估/负担”。",
+     "words": [
+      {
+       "w": "curriculum",
+       "m": "课程体系",
+       "note": "design/revise the curriculum。"
+      },
+      {
+       "w": "compulsory",
+       "m": "义务的；强制的",
+       "note": "compulsory education。"
+      },
+      {
+       "w": "literacy",
+       "m": "读写能力；素养",
+       "note": "digital/financial literacy。"
+      },
+      {
+       "w": "enrollment",
+       "m": "入学人数；注册",
+       "note": "college enrollment。"
+      },
+      {
+       "w": "tuition",
+       "m": "学费",
+       "note": "tuition fees；注意不是“辅导”。"
+      },
+      {
+       "w": "scholarship",
+       "m": "奖学金；学术研究",
+       "note": "win a scholarship。"
+      },
+      {
+       "w": "vocational",
+       "m": "职业的",
+       "note": "vocational training。"
+      },
+      {
+       "w": "dropout",
+       "m": "辍学者；辍学率",
+       "note": "the dropout rate。"
+      },
+      {
+       "w": "extracurricular",
+       "m": "课外的",
+       "note": "extracurricular activities。"
+      },
+      {
+       "w": "tertiary",
+       "m": "高等教育的",
+       "note": "tertiary education。"
+      },
+      {
+       "w": "foster",
+       "m": "培养；促进",
+       "note": "foster creativity。"
+      },
+      {
+       "w": "cultivate",
+       "m": "培养；耕作",
+       "note": "cultivate a habit。"
+      },
+      {
+       "w": "assess",
+       "m": "评估",
+       "note": "assess students' performance。"
+      },
+      {
+       "w": "discipline",
+       "m": "学科；纪律；管教",
+       "note": "academic discipline。"
+      }
+     ]
+    },
+    {
+     "name": "科技与创新",
+     "note": "常考 AI、隐私、自动化与就业；注意“双刃剑”表达。",
+     "words": [
+      {
+       "w": "innovation",
+       "m": "创新",
+       "note": "technological innovation。"
+      },
+      {
+       "w": "algorithm",
+       "m": "算法",
+       "note": "algorithm-driven recommendations。"
+      },
+      {
+       "w": "automation",
+       "m": "自动化",
+       "note": "automation replaces jobs。"
+      },
+      {
+       "w": "artificial intelligence",
+       "m": "人工智能",
+       "note": "AI-powered tools。"
+      },
+      {
+       "w": "digital",
+       "m": "数字的",
+       "note": "digital divide 数字鸿沟。"
+      },
+      {
+       "w": "cyber",
+       "m": "网络的",
+       "note": "cyber security。"
+      },
+      {
+       "w": "privacy",
+       "m": "隐私",
+       "note": "invade/protect privacy。"
+      },
+      {
+       "w": "surveillance",
+       "m": "监控",
+       "note": "mass surveillance。"
+      },
+      {
+       "w": "breakthrough",
+       "m": "突破",
+       "note": "make a breakthrough。"
+      },
+      {
+       "w": "patent",
+       "m": "专利",
+       "note": "apply for a patent。"
+      },
+      {
+       "w": "prototype",
+       "m": "原型",
+       "note": "build a prototype。"
+      },
+      {
+       "w": "obsolete",
+       "m": "过时的",
+       "note": "become obsolete。"
+      },
+      {
+       "w": "deploy",
+       "m": "部署；运用",
+       "note": "deploy technology。"
+      },
+      {
+       "w": "disrupt",
+       "m": "颠覆；打断",
+       "note": "disruptive innovation。"
+      }
+     ]
+    },
+    {
+     "name": "环境与气候",
+     "note": "阅读常考减排、可再生能源、生态保护；写作常用“遏制/缓解”。",
+     "words": [
+      {
+       "w": "emission",
+       "m": "排放",
+       "note": "carbon emissions；cut emissions。"
+      },
+      {
+       "w": "carbon footprint",
+       "m": "碳足迹",
+       "note": "reduce one's carbon footprint。"
+      },
+      {
+       "w": "renewable",
+       "m": "可再生的",
+       "note": "renewable energy。"
+      },
+      {
+       "w": "sustainable",
+       "m": "可持续的",
+       "note": "sustainable development。"
+      },
+      {
+       "w": "biodiversity",
+       "m": "生物多样性",
+       "note": "loss of biodiversity。"
+      },
+      {
+       "w": "ecosystem",
+       "m": "生态系统",
+       "note": "fragile ecosystem。"
+      },
+      {
+       "w": "deforestation",
+       "m": "森林砍伐",
+       "note": "large-scale deforestation。"
+      },
+      {
+       "w": "pollution",
+       "m": "污染",
+       "note": "air/water pollution。"
+      },
+      {
+       "w": "conservation",
+       "m": "保护；节约",
+       "note": "wildlife conservation。"
+      },
+      {
+       "w": "habitat",
+       "m": "栖息地",
+       "note": "natural habitat。"
+      },
+      {
+       "w": "climate",
+       "m": "气候",
+       "note": "climate change。"
+      },
+      {
+       "w": "degrade",
+       "m": "退化；降解",
+       "note": "land degradation。"
+      },
+      {
+       "w": "curb",
+       "m": "遏制",
+       "note": "curb emissions。"
+      },
+      {
+       "w": "mitigate",
+       "m": "缓解；减轻",
+       "note": "mitigate the impact。"
+      }
+     ]
+    },
+    {
+     "name": "经济与商业",
+     "note": "阅读常考衰退、通胀、刺激政策、垄断；写作常用“促进/抑制”。",
+     "words": [
+      {
+       "w": "recession",
+       "m": "经济衰退",
+       "note": "slip into recession。"
+      },
+      {
+       "w": "inflation",
+       "m": "通货膨胀",
+       "note": "curb inflation。"
+      },
+      {
+       "w": "stimulus",
+       "m": "刺激（政策）",
+       "note": "economic stimulus。"
+      },
+      {
+       "w": "revenue",
+       "m": "收入；税收",
+       "note": "tax revenue。"
+      },
+      {
+       "w": "expenditure",
+       "m": "支出",
+       "note": "public expenditure。"
+      },
+      {
+       "w": "deficit",
+       "m": "赤字；缺口",
+       "note": "budget deficit。"
+      },
+      {
+       "w": "subsidy",
+       "m": "补贴",
+       "note": "government subsidies。"
+      },
+      {
+       "w": "tariff",
+       "m": "关税",
+       "note": "impose tariffs on。"
+      },
+      {
+       "w": "monopoly",
+       "m": "垄断",
+       "note": "break up a monopoly。"
+      },
+      {
+       "w": "entrepreneurship",
+       "m": "创业精神",
+       "note": "promote entrepreneurship。"
+      },
+      {
+       "w": "productivity",
+       "m": "生产率",
+       "note": "boost productivity。"
+      },
+      {
+       "w": "consumption",
+       "m": "消费",
+       "note": "household consumption。"
+      },
+      {
+       "w": "investment",
+       "m": "投资",
+       "note": "attract investment。"
+      },
+      {
+       "w": "fluctuate",
+       "m": "波动",
+       "note": "prices fluctuate。"
+      }
+     ]
+    },
+    {
+     "name": "社会与人口",
+     "note": "常考不平等、城市化、福利、社会凝聚力。",
+     "words": [
+      {
+       "w": "inequality",
+       "m": "不平等",
+       "note": "income inequality。"
+      },
+      {
+       "w": "disparity",
+       "m": "差距；悬殊",
+       "note": "regional disparities。"
+      },
+      {
+       "w": "demographic",
+       "m": "人口的；人口结构",
+       "note": "demographic change。"
+      },
+      {
+       "w": "urbanization",
+       "m": "城市化",
+       "note": "rapid urbanization。"
+      },
+      {
+       "w": "welfare",
+       "m": "福利",
+       "note": "social welfare。"
+      },
+      {
+       "w": "cohesion",
+       "m": "凝聚力",
+       "note": "social cohesion。"
+      },
+      {
+       "w": "mobility",
+       "m": "流动性",
+       "note": "social mobility。"
+      },
+      {
+       "w": "marginalize",
+       "m": "使边缘化",
+       "note": "marginalized groups。"
+      },
+      {
+       "w": "integrate",
+       "m": "融合；整合",
+       "note": "integrate into society。"
+      },
+      {
+       "w": "norm",
+       "m": "规范；常态",
+       "note": "social norms。"
+      },
+      {
+       "w": "consensus",
+       "m": "共识",
+       "note": "reach a consensus。"
+      },
+      {
+       "w": "civic",
+       "m": "公民的",
+       "note": "civic engagement。"
+      },
+      {
+       "w": "philanthropy",
+       "m": "慈善",
+       "note": "corporate philanthropy。"
+      },
+      {
+       "w": "volunteer",
+       "m": "志愿者；自愿",
+       "note": "volunteer work。"
+      }
+     ]
+    },
+    {
+     "name": "文化与身份",
+     "note": "常考文化多样性、同化、传统保护；写作可谈“传承”。",
+     "words": [
+      {
+       "w": "heritage",
+       "m": "遗产",
+       "note": "cultural heritage。"
+      },
+      {
+       "w": "diversity",
+       "m": "多样性",
+       "note": "cultural diversity。"
+      },
+      {
+       "w": "assimilation",
+       "m": "同化；吸收",
+       "note": "cultural assimilation。"
+      },
+      {
+       "w": "identity",
+       "m": "身份；认同",
+       "note": "cultural identity。"
+      },
+      {
+       "w": "custom",
+       "m": "习俗",
+       "note": "local customs。"
+      },
+      {
+       "w": "ritual",
+       "m": "仪式",
+       "note": "religious rituals。"
+      },
+      {
+       "w": "aesthetic",
+       "m": "审美的；美学",
+       "note": "aesthetic value。"
+      },
+      {
+       "w": "preserve",
+       "m": "保护；保存",
+       "note": "preserve traditions。"
+      },
+      {
+       "w": "exhibit",
+       "m": "展出；展示",
+       "note": "exhibit artifacts。"
+      },
+      {
+       "w": "indigenous",
+       "m": "本土的；土著的",
+       "note": "indigenous culture。"
+      },
+      {
+       "w": "mainstream",
+       "m": "主流的",
+       "note": "mainstream culture。"
+      },
+      {
+       "w": "subculture",
+       "m": "亚文化",
+       "note": "youth subcultures。"
+      },
+      {
+       "w": "multicultural",
+       "m": "多元文化的",
+       "note": "a multicultural society。"
+      },
+      {
+       "w": "transmit",
+       "m": "传承；传播",
+       "note": "transmit culture to the next generation。"
+      }
+     ]
+    },
+    {
+     "name": "健康与医疗",
+     "note": "常考公共卫生、慢性病、医保；注意“预防/诊断/康复”链条。",
+     "words": [
+      {
+       "w": "nutrition",
+       "m": "营养",
+       "note": "poor nutrition。"
+      },
+      {
+       "w": "obesity",
+       "m": "肥胖",
+       "note": "childhood obesity。"
+      },
+      {
+       "w": "epidemic",
+       "m": "流行病",
+       "note": "contain an epidemic。"
+      },
+      {
+       "w": "immunity",
+       "m": "免疫力",
+       "note": "build immunity。"
+      },
+      {
+       "w": "chronic",
+       "m": "慢性的",
+       "note": "chronic disease。"
+      },
+      {
+       "w": "therapy",
+       "m": "治疗；疗法",
+       "note": "physical therapy。"
+      },
+      {
+       "w": "diagnose",
+       "m": "诊断",
+       "note": "be diagnosed with。"
+      },
+      {
+       "w": "prescription",
+       "m": "处方",
+       "note": "prescribe medication。"
+      },
+      {
+       "w": "sedentary",
+       "m": "久坐的",
+       "note": "a sedentary lifestyle。"
+      },
+      {
+       "w": "well-being",
+       "m": "身心健康",
+       "note": "mental well-being。"
+      },
+      {
+       "w": "hygiene",
+       "m": "卫生",
+       "note": "personal hygiene。"
+      },
+      {
+       "w": "symptom",
+       "m": "症状",
+       "note": "show symptoms of。"
+      },
+      {
+       "w": "rehabilitation",
+       "m": "康复",
+       "note": "drug rehabilitation。"
+      },
+      {
+       "w": "preventive",
+       "m": "预防性的",
+       "note": "preventive care。"
+      }
+     ]
+    },
+    {
+     "name": "心理与行为",
+     "note": "阅读常考认知偏差、压力、韧性；写作可谈“心理健康”。",
+     "words": [
+      {
+       "w": "cognition",
+       "m": "认知",
+       "note": "human cognition。"
+      },
+      {
+       "w": "perception",
+       "m": "感知；看法",
+       "note": "public perception。"
+      },
+      {
+       "w": "motivation",
+       "m": "动机",
+       "note": "intrinsic motivation。"
+      },
+      {
+       "w": "anxiety",
+       "m": "焦虑",
+       "note": "suffer from anxiety。"
+      },
+      {
+       "w": "depression",
+       "m": "抑郁",
+       "note": "clinical depression。"
+      },
+      {
+       "w": "resilience",
+       "m": "韧性；恢复力",
+       "note": "build resilience。"
+      },
+      {
+       "w": "empathy",
+       "m": "共情",
+       "note": "show empathy for。"
+      },
+      {
+       "w": "stress",
+       "m": "压力",
+       "note": "cope with stress。"
+      },
+      {
+       "w": "impulse",
+       "m": "冲动",
+       "note": "impulse buying。"
+      },
+      {
+       "w": "bias",
+       "m": "偏见；偏差",
+       "note": "cognitive bias。"
+      },
+      {
+       "w": "self-esteem",
+       "m": "自尊",
+       "note": "boost self-esteem。"
+      },
+      {
+       "w": "trauma",
+       "m": "创伤",
+       "note": "childhood trauma。"
+      },
+      {
+       "w": "cope",
+       "m": "应对",
+       "note": "cope with pressure。"
+      },
+      {
+       "w": "mindset",
+       "m": "心态；思维模式",
+       "note": "a growth mindset。"
+      }
+     ]
+    },
+    {
+     "name": "工作与职业",
+     "note": "常考自动化与就业、工作与生活平衡、零工经济。",
+     "words": [
+      {
+       "w": "employment",
+       "m": "就业",
+       "note": "full-time employment。"
+      },
+      {
+       "w": "recruitment",
+       "m": "招聘",
+       "note": "recruitment process。"
+      },
+      {
+       "w": "retention",
+       "m": "留任；保留",
+       "note": "employee retention。"
+      },
+      {
+       "w": "workload",
+       "m": "工作量",
+       "note": "heavy workload。"
+      },
+      {
+       "w": "freelance",
+       "m": "自由职业的",
+       "note": "freelance work。"
+      },
+      {
+       "w": "incentive",
+       "m": "激励",
+       "note": "financial incentives。"
+      },
+      {
+       "w": "promotion",
+       "m": "晋升；推广",
+       "note": "get a promotion。"
+      },
+      {
+       "w": "resignation",
+       "m": "辞职",
+       "note": "hand in one's resignation。"
+      },
+      {
+       "w": "labor",
+       "m": "劳动；劳动力",
+       "note": "labor market。"
+      },
+      {
+       "w": "union",
+       "m": "工会",
+       "note": "trade union。"
+      },
+      {
+       "w": "burnout",
+       "m": "职业倦怠",
+       "note": "suffer from burnout。"
+      },
+      {
+       "w": "flexible",
+       "m": "灵活的",
+       "note": "flexible working hours。"
+      },
+      {
+       "w": "remote",
+       "m": "远程的",
+       "note": "remote work。"
+      },
+      {
+       "w": "compensation",
+       "m": "薪酬；补偿",
+       "note": "compensation package。"
+      }
+     ]
+    },
+    {
+     "name": "政府与法律",
+     "note": "常考监管、问责、司法；写作可谈“立法与执行”。",
+     "words": [
+      {
+       "w": "legislation",
+       "m": "立法；法律",
+       "note": "pass legislation。"
+      },
+      {
+       "w": "regulation",
+       "m": "监管；法规",
+       "note": "government regulation。"
+      },
+      {
+       "w": "enforcement",
+       "m": "执行；执法",
+       "note": "law enforcement。"
+      },
+      {
+       "w": "judiciary",
+       "m": "司法机构",
+       "note": "an independent judiciary。"
+      },
+      {
+       "w": "verdict",
+       "m": "裁决",
+       "note": "reach a verdict。"
+      },
+      {
+       "w": "plaintiff",
+       "m": "原告",
+       "note": "the plaintiff sued。"
+      },
+      {
+       "w": "defendant",
+       "m": "被告",
+       "note": "the defendant pleaded。"
+      },
+      {
+       "w": "liability",
+       "m": "责任；负债",
+       "note": "legal liability。"
+      },
+      {
+       "w": "corruption",
+       "m": "腐败",
+       "note": "fight corruption。"
+      },
+      {
+       "w": "transparency",
+       "m": "透明度",
+       "note": "government transparency。"
+      },
+      {
+       "w": "accountability",
+       "m": "问责",
+       "note": "public accountability。"
+      },
+      {
+       "w": "policy",
+       "m": "政策",
+       "note": "implement a policy。"
+      },
+      {
+       "w": "amendment",
+       "m": "修正案",
+       "note": "constitutional amendment。"
+      },
+      {
+       "w": "violate",
+       "m": "违反；侵犯",
+       "note": "violate the law/privacy。"
+      }
+     ]
+    },
+    {
+     "name": "媒体与信息",
+     "note": "常考虚假信息、审查、平台责任；注意“信息茧房”。",
+     "words": [
+      {
+       "w": "coverage",
+       "m": "报道；覆盖",
+       "note": "media coverage。"
+      },
+      {
+       "w": "broadcast",
+       "m": "播送；广播",
+       "note": "live broadcast。"
+      },
+      {
+       "w": "journalism",
+       "m": "新闻业",
+       "note": "investigative journalism。"
+      },
+      {
+       "w": "censorship",
+       "m": "审查",
+       "note": "strict censorship。"
+      },
+      {
+       "w": "propaganda",
+       "m": "宣传（贬义）",
+       "note": "political propaganda。"
+      },
+      {
+       "w": "misinformation",
+       "m": "错误信息",
+       "note": "the spread of misinformation。"
+      },
+      {
+       "w": "disclose",
+       "m": "披露",
+       "note": "disclose sources。"
+      },
+      {
+       "w": "source",
+       "m": "消息来源",
+       "note": "protect confidential sources。"
+      },
+      {
+       "w": "headline",
+       "m": "标题；头条",
+       "note": "make headlines。"
+      },
+      {
+       "w": "circulation",
+       "m": "发行量；循环",
+       "note": "newspaper circulation。"
+      },
+      {
+       "w": "audience",
+       "m": "受众",
+       "note": "target audience。"
+      },
+      {
+       "w": "platform",
+       "m": "平台",
+       "note": "social media platforms。"
+      },
+      {
+       "w": "viral",
+       "m": "病毒式传播的",
+       "note": "go viral。"
+      },
+      {
+       "w": "verify",
+       "m": "核实",
+       "note": "verify information。"
+      }
+     ]
+    },
+    {
+     "name": "全球化与贸易",
+     "note": "常考供应链、保护主义、文化输出；写作可谈“合作与竞争”。",
+     "words": [
+      {
+       "w": "globalization",
+       "m": "全球化",
+       "note": "the impact of globalization。"
+      },
+      {
+       "w": "integration",
+       "m": "一体化；整合",
+       "note": "economic integration。"
+      },
+      {
+       "w": "interdependence",
+       "m": "相互依存",
+       "note": "global interdependence。"
+      },
+      {
+       "w": "multinational",
+       "m": "跨国的",
+       "note": "multinational corporations。"
+      },
+      {
+       "w": "outsourcing",
+       "m": "外包",
+       "note": "outsource production。"
+      },
+      {
+       "w": "migration",
+       "m": "迁移；移民",
+       "note": "labor migration。"
+      },
+      {
+       "w": "trade",
+       "m": "贸易",
+       "note": "free trade。"
+      },
+      {
+       "w": "barrier",
+       "m": "壁垒；障碍",
+       "note": "trade barriers。"
+      },
+      {
+       "w": "cooperation",
+       "m": "合作",
+       "note": "international cooperation。"
+      },
+      {
+       "w": "sovereignty",
+       "m": "主权",
+       "note": "national sovereignty。"
+      },
+      {
+       "w": "competitiveness",
+       "m": "竞争力",
+       "note": "economic competitiveness。"
+      },
+      {
+       "w": "supply chain",
+       "m": "供应链",
+       "note": "global supply chains。"
+      },
+      {
+       "w": "cultural exchange",
+       "m": "文化交流",
+       "note": "promote cultural exchange。"
+      },
+      {
+       "w": "protectionism",
+       "m": "保护主义",
+       "note": "rising protectionism。"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "logic",
+   "title": "逻辑关系词：完型、新题型与写作的骨架",
+   "intro": "完型考逻辑，新题型考衔接，写作考层次。先把关系类型认准，再记一个最稳妥的用法；不要只背中文意思。",
+   "groups": [
+    {
+     "name": "因果",
+     "note": "注意“原因”和“结果”的方向；result from 与 result in 常互换设错。",
+     "words": [
+      {
+       "w": "therefore",
+       "m": "因此",
+       "note": "后接结果，写作最稳妥。"
+      },
+      {
+       "w": "consequently",
+       "m": "因此；结果",
+       "note": "较正式，可放句首。"
+      },
+      {
+       "w": "hence",
+       "m": "因此",
+       "note": "书面，后可直接接名词。"
+      },
+      {
+       "w": "thus",
+       "m": "因此；这样",
+       "note": "可接结果或方式。"
+      },
+      {
+       "w": "as a result",
+       "m": "结果",
+       "note": "独立短语，前后加逗号。"
+      },
+      {
+       "w": "result in",
+       "m": "导致",
+       "note": "主语是原因，宾语是结果。"
+      },
+      {
+       "w": "result from",
+       "m": "由…造成",
+       "note": "主语是结果，宾语是原因。"
+      },
+      {
+       "w": "give rise to",
+       "m": "引起",
+       "note": "后接问题/现象。"
+      },
+      {
+       "w": "stem from",
+       "m": "源于",
+       "note": "主语是结果。"
+      },
+      {
+       "w": "attribute to",
+       "m": "归因于",
+       "note": "attribute A to B。"
+      },
+      {
+       "w": "owing to",
+       "m": "由于",
+       "note": "后接名词，不接句子。"
+      },
+      {
+       "w": "account for",
+       "m": "解释；占",
+       "note": "account for the difference。"
+      }
+     ]
+    },
+    {
+     "name": "转折与对比",
+     "note": "转折后往往是作者真正观点；对比是并列差异。",
+     "words": [
+      {
+       "w": "however",
+       "m": "然而",
+       "note": "可放句首/句中，前后逗号。"
+      },
+      {
+       "w": "nevertheless",
+       "m": "尽管如此",
+       "note": "正式，让步后转折。"
+      },
+      {
+       "w": "nonetheless",
+       "m": "尽管如此",
+       "note": "与 nevertheless 近义。"
+      },
+      {
+       "w": "conversely",
+       "m": "相反",
+       "note": "用于方向相反的对比。"
+      },
+      {
+       "w": "whereas",
+       "m": "而；然而",
+       "note": "连接两个分句，对比。"
+      },
+      {
+       "w": "in contrast",
+       "m": "相比之下",
+       "note": "对比两组事实。"
+      },
+      {
+       "w": "on the contrary",
+       "m": "恰恰相反",
+       "note": "否定前述，不是简单对比。"
+      },
+      {
+       "w": "by contrast",
+       "m": "相比之下",
+       "note": "常放句首。"
+      },
+      {
+       "w": "instead",
+       "m": "反而；代替",
+       "note": "instead of + 名词；instead 单独用。"
+      },
+      {
+       "w": "rather",
+       "m": "而是；相当",
+       "note": "not A but rather B。"
+      }
+     ]
+    },
+    {
+     "name": "让步",
+     "note": "先承认再转折；写作常用于“辩证”。",
+     "words": [
+      {
+       "w": "although",
+       "m": "尽管",
+       "note": "后接从句，不与 but 连用。"
+      },
+      {
+       "w": "though",
+       "m": "尽管；不过",
+       "note": "可句末表“不过”。"
+      },
+      {
+       "w": "even if",
+       "m": "即使",
+       "note": "假设让步。"
+      },
+      {
+       "w": "while",
+       "m": "虽然；而",
+       "note": "可表让步或对比，看语境。"
+      },
+      {
+       "w": "despite",
+       "m": "尽管",
+       "note": "后接名词/动名词。"
+      },
+      {
+       "w": "in spite of",
+       "m": "尽管",
+       "note": "后接名词。"
+      }
+     ]
+    },
+    {
+     "name": "递进与补充",
+     "note": "写作中用来增加层次，不要连续堆砌。",
+     "words": [
+      {
+       "w": "moreover",
+       "m": "而且",
+       "note": "正式，补充同类论据。"
+      },
+      {
+       "w": "furthermore",
+       "m": "此外",
+       "note": "与 moreover 近义。"
+      },
+      {
+       "w": "in addition",
+       "m": "此外",
+       "note": "最通用。"
+      },
+      {
+       "w": "besides",
+       "m": "此外；而且",
+       "note": "口语化，也可表“除…之外还有”。"
+      },
+      {
+       "w": "what is more",
+       "m": "更重要的是",
+       "note": "强调递进。"
+      },
+      {
+       "w": "not only ... but also",
+       "m": "不仅…而且",
+       "note": "注意倒装与就近一致。"
+      },
+      {
+       "w": "similarly",
+       "m": "同样地",
+       "note": "类比。"
+      }
+     ]
+    },
+    {
+     "name": "举例与解释",
+     "note": "例证要服务于论点，不要变成堆例子。",
+     "words": [
+      {
+       "w": "for instance",
+       "m": "例如",
+       "note": "可放句首/句中。"
+      },
+      {
+       "w": "for example",
+       "m": "例如",
+       "note": "最通用。"
+      },
+      {
+       "w": "such as",
+       "m": "例如",
+       "note": "后接名词，不接句子。"
+      },
+      {
+       "w": "namely",
+       "m": "即",
+       "note": "列举全部，不是举例。"
+      },
+      {
+       "w": "a case in point",
+       "m": "恰好的例子",
+       "note": "可独立成句。"
+      },
+      {
+       "w": "to illustrate",
+       "m": "举例说明",
+       "note": "写作过渡。"
+      },
+      {
+       "w": "in other words",
+       "m": "换言之",
+       "note": "解释前句。"
+      },
+      {
+       "w": "that is",
+       "m": "也就是说",
+       "note": "i.e. 的完整写法。"
+      }
+     ]
+    },
+    {
+     "name": "总结与结论",
+     "note": "结论段开头用，后面不要再引入新论据。",
+     "words": [
+      {
+       "w": "in conclusion",
+       "m": "总之",
+       "note": "最正式。"
+      },
+      {
+       "w": "to sum up",
+       "m": "总而言之",
+       "note": "写作常用。"
+      },
+      {
+       "w": "overall",
+       "m": "总体而言",
+       "note": "可放句首。"
+      },
+      {
+       "w": "in short",
+       "m": "简言之",
+       "note": "简短收束。"
+      },
+      {
+       "w": "on balance",
+       "m": "权衡之后",
+       "note": "兼顾正反后的结论。"
+      }
+     ]
+    },
+    {
+     "name": "条件与假设",
+     "note": "注意虚拟语气与条件句的搭配。",
+     "words": [
+      {
+       "w": "provided that",
+       "m": "如果；只要",
+       "note": "正式条件。"
+      },
+      {
+       "w": "unless",
+       "m": "除非",
+       "note": "if not。"
+      },
+      {
+       "w": "otherwise",
+       "m": "否则",
+       "note": "单独使用或连接分句。"
+      },
+      {
+       "w": "as long as",
+       "m": "只要",
+       "note": "条件。"
+      }
+     ]
+    },
+    {
+     "name": "时间与顺序",
+     "note": "新题型排序题常用；注意事件先后。",
+     "words": [
+      {
+       "w": "subsequently",
+       "m": "随后",
+       "note": "正式。"
+      },
+      {
+       "w": "meanwhile",
+       "m": "与此同时",
+       "note": "两条线并行。"
+      },
+      {
+       "w": "eventually",
+       "m": "最终",
+       "note": "强调结果。"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rare",
+   "title": "熟词僻义：认识却会做错的词",
+   "intro": "考研阅读最爱考“熟词僻义”。看到认识的词先别按第一义翻，结合搭配和上下文判断；下面这些词在真题语境里经常不是你以为的意思。",
+   "groups": [
+    {
+     "name": "动词类",
+     "note": "这些动词的僻义常出现在学术、政策、商业语境。",
+     "words": [
+      {
+       "w": "address",
+       "m": "处理；应对",
+       "note": "address the issue；不是“地址”。"
+      },
+      {
+       "w": "subject",
+       "m": "使遭受；使服从",
+       "note": "be subjected to pressure。"
+      },
+      {
+       "w": "yield",
+       "m": "产生；屈服；产量",
+       "note": "yield results；yield to pressure。"
+      },
+      {
+       "w": "bear",
+       "m": "承担；忍受；生育",
+       "note": "bear the cost；bear in mind。"
+      },
+      {
+       "w": "hold",
+       "m": "认为；容纳；举行",
+       "note": "hold that；hold a view。"
+      },
+      {
+       "w": "maintain",
+       "m": "主张；坚持说",
+       "note": "maintain that；不是“维修”。"
+      },
+      {
+       "w": "observe",
+       "m": "遵守；评论",
+       "note": "observe rules；observe that。"
+      },
+      {
+       "w": "entertain",
+       "m": "考虑；怀有",
+       "note": "entertain an idea。"
+      },
+      {
+       "w": "admit",
+       "m": "容纳；容许",
+       "note": "admit of；the hall admits 500。"
+      },
+      {
+       "w": "strike",
+       "m": "打动；突然想到；罢工",
+       "note": "strike sb as；it struck me that。"
+      },
+      {
+       "w": "tell",
+       "m": "辨别；起作用",
+       "note": "tell A from B；tell on。"
+      },
+      {
+       "w": "prompt",
+       "m": "促使；提示",
+       "note": "prompt sb to do。"
+      },
+      {
+       "w": "ground",
+       "m": "以…为基础；理由",
+       "note": "be grounded in；on the grounds that。"
+      },
+      {
+       "w": "lodge",
+       "m": "提出（投诉）；寄宿",
+       "note": "lodge a complaint。"
+      },
+      {
+       "w": "level",
+       "m": "使平等；瞄准；水平",
+       "note": "level criticism at。"
+      },
+      {
+       "w": "matter",
+       "m": "要紧；物质",
+       "note": "it matters little。"
+      },
+      {
+       "w": "rear",
+       "m": "抚养；后部",
+       "note": "rear children。"
+      },
+      {
+       "w": "weather",
+       "m": "度过（难关）",
+       "note": "weather the storm。"
+      },
+      {
+       "w": "dress",
+       "m": "处理；包扎",
+       "note": "dress a wound。"
+      },
+      {
+       "w": "exercise",
+       "m": "行使；锻炼",
+       "note": "exercise power。"
+      }
+     ]
+    },
+    {
+     "name": "名词类",
+     "note": "名词僻义常与抽象概念有关。",
+     "words": [
+      {
+       "w": "capital",
+       "m": "资本；大写；首都",
+       "note": "human capital。"
+      },
+      {
+       "w": "article",
+       "m": "物品；条款；文章",
+       "note": "an article of clothing。"
+      },
+      {
+       "w": "company",
+       "m": "陪伴；公司",
+       "note": "keep sb company。"
+      },
+      {
+       "w": "course",
+       "m": "进程；路线；课程",
+       "note": "in the course of。"
+      },
+      {
+       "w": "credit",
+       "m": "归功于；信用",
+       "note": "credit A with B。"
+      },
+      {
+       "w": "discipline",
+       "m": "学科；纪律",
+       "note": "academic discipline。"
+      },
+      {
+       "w": "figure",
+       "m": "人物；数字；认为",
+       "note": "a public figure。"
+      },
+      {
+       "w": "issue",
+       "m": "问题；发行；期号",
+       "note": "the latest issue。"
+      },
+      {
+       "w": "measure",
+       "m": "措施；程度",
+       "note": "take measures。"
+      },
+      {
+       "w": "practice",
+       "m": "做法；惯例；实践",
+       "note": "common practice。"
+      },
+      {
+       "w": "respect",
+       "m": "方面；尊重",
+       "note": "in this respect。"
+      },
+      {
+       "w": "term",
+       "m": "术语；条款；学期",
+       "note": "in terms of。"
+      },
+      {
+       "w": "volume",
+       "m": "音量；卷；量",
+       "note": "the volume of trade。"
+      },
+      {
+       "w": "spring",
+       "m": "泉水；弹簧；春天",
+       "note": "a hot spring。"
+      },
+      {
+       "w": "store",
+       "m": "储备；商店",
+       "note": "a store of knowledge。"
+      },
+      {
+       "w": "tip",
+       "m": "提示；小费；倾斜",
+       "note": "practical tips。"
+      },
+      {
+       "w": "train",
+       "m": "一系列；训练",
+       "note": "a train of thought。"
+      },
+      {
+       "w": "watch",
+       "m": "监视；手表",
+       "note": "keep watch on。"
+      },
+      {
+       "w": "well",
+       "m": "井；良好",
+       "note": "oil well。"
+      },
+      {
+       "w": "press",
+       "m": "新闻界；敦促",
+       "note": "the press；press sb to do。"
+      }
+     ]
+    },
+    {
+     "name": "形容词与副词",
+     "note": "这些词的第二义常决定句子褒贬。",
+     "words": [
+      {
+       "w": "fine",
+       "m": "精细的；罚款",
+       "note": "fine details。"
+      },
+      {
+       "w": "just",
+       "m": "公正的；仅仅",
+       "note": "a just society。"
+      },
+      {
+       "w": "sound",
+       "m": "健全的；合理的",
+       "note": "sound judgment。"
+      },
+      {
+       "w": "pretty",
+       "m": "相当；漂亮的",
+       "note": "pretty much。"
+      },
+      {
+       "w": "still",
+       "m": "使静止；仍然",
+       "note": "still the noise。"
+      },
+      {
+       "w": "spare",
+       "m": "空闲的；抽出",
+       "note": "spare time；spare a thought。"
+      },
+      {
+       "w": "odd",
+       "m": "古怪的；奇数的",
+       "note": "odd behavior。"
+      },
+      {
+       "w": "mean",
+       "m": "卑鄙的；平均的；意味着",
+       "note": "a mean trick。"
+      },
+      {
+       "w": "present",
+       "m": "出席的；呈现",
+       "note": "be present at。"
+      },
+      {
+       "w": "minute",
+       "m": "微小的；分钟",
+       "note": "minute changes。"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "writing",
+   "title": "写作替换词：把低分词换成可得分表达",
+   "intro": "替换不是越难越好，而是准确、搭配自然。下面每组给一个低分表达和 1–2 个可替换项；先保证语法正确，再追求亮点。",
+   "groups": [
+    {
+     "name": "important",
+     "note": "不要通篇 crucial；按语境选。",
+     "words": [
+      {
+       "w": "crucial",
+       "m": "至关重要的",
+       "note": "crucial to/for。"
+      },
+      {
+       "w": "indispensable",
+       "m": "不可或缺的",
+       "note": "indispensable to。"
+      },
+      {
+       "w": "pivotal",
+       "m": "关键的",
+       "note": "play a pivotal role。"
+      }
+     ]
+    },
+    {
+     "name": "think",
+     "note": "议论文中比 I think 更正式。",
+     "words": [
+      {
+       "w": "maintain",
+       "m": "主张",
+       "note": "maintain that。"
+      },
+      {
+       "w": "contend",
+       "m": "认为；争辩",
+       "note": "contend that。"
+      },
+      {
+       "w": "argue",
+       "m": "论证；主张",
+       "note": "argue that。"
+      }
+     ]
+    },
+    {
+     "name": "many",
+     "note": "修饰可数名词。",
+     "words": [
+      {
+       "w": "numerous",
+       "m": "众多的",
+       "note": "numerous studies。"
+      },
+      {
+       "w": "a host of",
+       "m": "大量的",
+       "note": "a host of problems。"
+      },
+      {
+       "w": "an increasing number of",
+       "m": "越来越多的",
+       "note": "后接可数复数。"
+      }
+     ]
+    },
+    {
+     "name": "improve",
+     "note": "按宾语搭配选择。",
+     "words": [
+      {
+       "w": "enhance",
+       "m": "提升",
+       "note": "enhance efficiency。"
+      },
+      {
+       "w": "boost",
+       "m": "促进；提高",
+       "note": "boost the economy。"
+      },
+      {
+       "w": "optimize",
+       "m": "优化",
+       "note": "optimize resource allocation。"
+      }
+     ]
+    },
+    {
+     "name": "cause",
+     "note": "后接结果，注意主语。",
+     "words": [
+      {
+       "w": "give rise to",
+       "m": "引起",
+       "note": "give rise to concern。"
+      },
+      {
+       "w": "trigger",
+       "m": "引发",
+       "note": "trigger a debate。"
+      },
+      {
+       "w": "result in",
+       "m": "导致",
+       "note": "result in failure。"
+      }
+     ]
+    },
+    {
+     "name": "solve",
+     "note": "问题类作文高频。",
+     "words": [
+      {
+       "w": "address",
+       "m": "处理",
+       "note": "address the problem。"
+      },
+      {
+       "w": "tackle",
+       "m": "应对",
+       "note": "tackle the challenge。"
+      },
+      {
+       "w": "resolve",
+       "m": "解决",
+       "note": "resolve the conflict。"
+      }
+     ]
+    },
+    {
+     "name": "obvious",
+     "note": "可放句首作过渡。",
+     "words": [
+      {
+       "w": "apparent",
+       "m": "明显的",
+       "note": "it is apparent that。"
+      },
+      {
+       "w": "evident",
+       "m": "显而易见的",
+       "note": "it is evident that。"
+      },
+      {
+       "w": "manifest",
+       "m": "明显的；显现",
+       "note": "be manifest in。"
+      }
+     ]
+    },
+    {
+     "name": "get",
+     "note": "按“获得/得到”替换。",
+     "words": [
+      {
+       "w": "obtain",
+       "m": "获得",
+       "note": "obtain permission。"
+      },
+      {
+       "w": "acquire",
+       "m": "习得；获得",
+       "note": "acquire skills。"
+      },
+      {
+       "w": "secure",
+       "m": "争取到",
+       "note": "secure a job。"
+      }
+     ]
+    },
+    {
+     "name": "show",
+     "note": "图表/研究类表达。",
+     "words": [
+      {
+       "w": "demonstrate",
+       "m": "表明；证明",
+       "note": "demonstrate the importance。"
+      },
+      {
+       "w": "reveal",
+       "m": "揭示",
+       "note": "research reveals that。"
+      },
+      {
+       "w": "illustrate",
+       "m": "说明",
+       "note": "illustrate the trend。"
+      }
+     ]
+    },
+    {
+     "name": "bad",
+     "note": "正式议论文用。",
+     "words": [
+      {
+       "w": "detrimental",
+       "m": "有害的",
+       "note": "be detrimental to。"
+      },
+      {
+       "w": "adverse",
+       "m": "不利的",
+       "note": "adverse effects。"
+      },
+      {
+       "w": "harmful",
+       "m": "有害的",
+       "note": "harmful to health。"
+      }
+     ]
+    },
+    {
+     "name": "good",
+     "note": "按“有益/有利”替换。",
+     "words": [
+      {
+       "w": "beneficial",
+       "m": "有益的",
+       "note": "be beneficial to。"
+      },
+      {
+       "w": "favorable",
+       "m": "有利的",
+       "note": "favorable conditions。"
+      },
+      {
+       "w": "rewarding",
+       "m": "有回报的",
+       "note": "a rewarding experience。"
+      }
+     ]
+    },
+    {
+     "name": "big",
+     "note": "修饰抽象名词。",
+     "words": [
+      {
+       "w": "substantial",
+       "m": "大量的；实质的",
+       "note": "substantial progress。"
+      },
+      {
+       "w": "considerable",
+       "m": "相当大的",
+       "note": "considerable influence。"
+      },
+      {
+       "w": "immense",
+       "m": "巨大的",
+       "note": "immense pressure。"
+      }
+     ]
+    },
+    {
+     "name": "problem",
+     "note": "换词时注意可数性。",
+     "words": [
+      {
+       "w": "issue",
+       "m": "问题；议题",
+       "note": "a pressing issue。"
+      },
+      {
+       "w": "challenge",
+       "m": "挑战",
+       "note": "meet the challenge。"
+      },
+      {
+       "w": "dilemma",
+       "m": "困境",
+       "note": "face a dilemma。"
+      }
+     ]
+    },
+    {
+     "name": "change",
+     "note": "按“改变/转变”替换。",
+     "words": [
+      {
+       "w": "transform",
+       "m": "彻底改变",
+       "note": "transform society。"
+      },
+      {
+       "w": "alter",
+       "m": "改动",
+       "note": "alter the situation。"
+      },
+      {
+       "w": "shift",
+       "m": "转变",
+       "note": "shift the focus。"
+      }
+     ]
+    },
+    {
+     "name": "use",
+     "note": "正式表达。",
+     "words": [
+      {
+       "w": "utilize",
+       "m": "利用",
+       "note": "utilize resources。"
+      },
+      {
+       "w": "employ",
+       "m": "采用",
+       "note": "employ a method。"
+      },
+      {
+       "w": "apply",
+       "m": "应用",
+       "note": "apply theory to practice。"
+      }
+     ]
+    },
+    {
+     "name": "because",
+     "note": "后接名词或从句。",
+     "words": [
+      {
+       "w": "owing to",
+       "m": "由于",
+       "note": "owing to the fact that。"
+      },
+      {
+       "w": "due to",
+       "m": "由于",
+       "note": "due to circumstances。"
+      },
+      {
+       "w": "in that",
+       "m": "因为",
+       "note": "in that it is cheaper。"
+      }
+     ]
+    },
+    {
+     "name": "but",
+     "note": "句首转折。",
+     "words": [
+      {
+       "w": "nevertheless",
+       "m": "然而",
+       "note": "nevertheless, the benefits..."
+      },
+      {
+       "w": "whereas",
+       "m": "而",
+       "note": "A is..., whereas B is..."
+      },
+      {
+       "w": "conversely",
+       "m": "相反",
+       "note": "conversely, ..."
+      }
+     ]
+    },
+    {
+     "name": "so",
+     "note": "结论。",
+     "words": [
+      {
+       "w": "therefore",
+       "m": "因此",
+       "note": "therefore, we should..."
+      },
+      {
+       "w": "consequently",
+       "m": "结果",
+       "note": "consequently, ..."
+      },
+      {
+       "w": "hence",
+       "m": "因此",
+       "note": "hence the need for..."
+      }
+     ]
+    },
+    {
+     "name": "in my opinion",
+     "note": "避免重复 I think。",
+     "words": [
+      {
+       "w": "from my perspective",
+       "m": "在我看来",
+       "note": "较自然。"
+      },
+      {
+       "w": "as far as I am concerned",
+       "m": "就我而言",
+       "note": "正式。"
+      }
+     ]
+    },
+    {
+     "name": "more and more",
+     "note": "后接名词。",
+     "words": [
+      {
+       "w": "a growing number of",
+       "m": "越来越多的",
+       "note": "可数。"
+      },
+      {
+       "w": "a growing proportion of",
+       "m": "越来越大的比例",
+       "note": "可数/不可数。"
+      }
+     ]
+    },
+    {
+     "name": "with the development of",
+     "note": "开头句，避免年年用。",
+     "words": [
+      {
+       "w": "along with the advancement of",
+       "m": "随着…的进步",
+       "note": "后接科技/社会。"
+      },
+      {
+       "w": "as society progresses",
+       "m": "随着社会进步",
+       "note": "独立短语。"
+      }
+     ]
+    },
+    {
+     "name": "play an important role",
+     "note": "换 role 的修饰语。",
+     "words": [
+      {
+       "w": "play a pivotal role",
+       "m": "起关键作用",
+       "note": "pivotal。"
+      },
+      {
+       "w": "play an indispensable role",
+       "m": "起不可或缺的作用",
+       "note": "indispensable。"
+      }
+     ]
+    },
+    {
+     "name": "make progress",
+     "note": "搭配。",
+     "words": [
+      {
+       "w": "make strides",
+       "m": "取得长足进步",
+       "note": "make strides in。"
+      },
+      {
+       "w": "achieve progress",
+       "m": "取得进展",
+       "note": "achieve progress in。"
+      }
+     ]
+    },
+    {
+     "name": "pay attention to",
+     "note": "正式。",
+     "words": [
+      {
+       "w": "attach importance to",
+       "m": "重视",
+       "note": "attach importance to education。"
+      },
+      {
+       "w": "give priority to",
+       "m": "优先考虑",
+       "note": "give priority to safety。"
+      }
+     ]
+    },
+    {
+     "name": "take measures",
+     "note": "措施类结尾。",
+     "words": [
+      {
+       "w": "adopt effective measures",
+       "m": "采取有效措施",
+       "note": "adopt measures to do。"
+      },
+      {
+       "w": "implement policies",
+       "m": "实施政策",
+       "note": "implement policies。"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

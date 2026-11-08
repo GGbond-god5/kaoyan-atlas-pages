@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="铆钉搭接">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#A8342A;fill:none;stroke-width:1.7}.dim{stroke:#6B6357;fill:none;stroke-width:.9}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+  </style>
+  <text class="sub" x="24" y="24">铆钉/螺栓搭接：每个铆钉的剪切面与挤压面</text>
+  <rect class="ink" x="90" y="86" width="280" height="34"/>
+  <rect class="ink" x="230" y="120" width="300" height="34"/>
+  <g class="acc">
+    <circle cx="180" cy="103" r="9"/><circle cx="250" cy="103" r="9"/><circle cx="320" cy="103" r="9"/>
+    <circle cx="250" cy="137" r="9"/><circle cx="320" cy="137" r="9"/><circle cx="390" cy="137" r="9"/>
+  </g>
+  <line class="acc" x1="90" y1="60" x2="40" y2="60"/><path class="acc" d="M48 54 l-10 6 l10 6"/>
+  <line class="acc" x1="560" y1="160" x2="610" y2="160"/><path class="acc" d="M602 154 l10 6 l-10 6"/>
+  <text class="lbl" x="66" y="52">P</text><text class="lbl" x="570" y="180">P</text>
+  <text class="sub" x="196" y="150">d</text><text class="sub" x="142" y="78">t</text>
+  <text class="sub" x="24" y="206">单剪：A_s=πd²/4；挤压：A_bs=t·d；每个铆钉受力 F=P/n（对称布置）。</text>
+  <text class="sub" x="24" y="228">强度：τ=F/A_s≤[τ]，σ_bs=F/A_bs≤[σ_bs]；还要校核板件削弱截面。</text>
+</svg>

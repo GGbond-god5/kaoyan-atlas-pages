@@ -1,0 +1,464 @@
+{
+ "id": "english-07",
+ "subject": "english",
+ "code": "EN · 07",
+ "title": "大作文",
+ "subtitle": "20 分，160–200 词，30–35 分钟。英语一的图画作文有稳定的三段逻辑；你要做的不是背一篇万能文，而是把功能句练成自己的表达。",
+ "priority": "S",
+ "meta": [
+  "20 分 / 160–200 词",
+  "建议 30–35 分钟",
+  "模板未定稿"
+ ],
+ "syllabus": [
+  "根据图画或图表写出说明、议论性短文",
+  "准确描述图画内容并提炼寓意",
+  "分析原因、举例论证、提出建议",
+  "语言准确、句式多样、篇章连贯"
+ ],
+ "kps": [
+  {
+   "id": "kp-01",
+   "name": "评分标准与三档文",
+   "level": "核心",
+   "freq": "必考",
+   "core": "大作文按**内容、语言、结构、卷面**评分。高分文不是词最难，而是：寓意提炼准确、论证有层次、语言错误少、句式有变化。低分文常见问题是描述过多、分析空泛、通篇简单句或模板腔。160–200 词即可，重点在第二段的论证质量。",
+   "formulas": [
+    {
+     "tex": "内容：描述准确 + 寓意明确 + 论证具体",
+     "note": "三项缺一降档"
+    },
+    {
+     "tex": "语言：错误少 > 词汇难",
+     "note": "准确优先"
+    },
+    {
+     "tex": "结构：三段，段内 2–4 句，衔接自然",
+     "note": "不堆连接词"
+    }
+   ],
+   "exams": [
+    {
+     "year": "",
+     "source": "英语一真题同型",
+     "text": "一幅漫画：两人面对同一块石头，一人绕行，一人搬开。要求写出寓意并评论。",
+     "answer": "寓意应落在“面对困难的态度/解决问题的方式”，而不是“石头很重”；第二段分析为何有人绕行、有人搬开，第三段给建议。",
+     "steps": [
+      "先描述图：两人面对同一块石头，一人绕行、一人搬开。",
+      "提炼寓意：面对困难的态度与解决问题的方式不同，结果不同。",
+      "第二段分析原因：绕行者畏难、搬开者主动；可延伸到个人成长与社会进步。",
+      "第三段给建议：遇到问题先判断能否解决，能解决就动手，不能解决再绕行。",
+      "检查：寓意是否落在“态度/方式”，而不是“石头很重”。"
+     ]
+    }
+   ],
+   "pitfalls": [
+    "花 100 词描述图画，第二段只剩两句。",
+    "寓意提炼偏题，只写表面现象。",
+    "通篇简单句，句式单一。"
+   ],
+   "teachers": [
+    {
+     "name": "石雷鹏",
+     "note": "大作文先定寓意，再定三段功能；描述只占首段一半。"
+    }
+   ]
+  },
+  {
+   "id": "kp-02",
+   "name": "图画描述的三种类型",
+   "level": "核心",
+   "freq": "必考",
+   "core": "英语一图画作文主要有三类：**单图**（一个人/场景）、**双图对比**（两幅图对照）、**漫画/象征**（夸张形象表达观点）。单图抓人物动作与表情，双图抓差异，漫画抓象征义。描述时用现在时，先整体后细节。",
+   "formulas": [
+    {
+     "tex": "单图：As is shown, a man is doing ...",
+     "note": "动作 + 状态"
+    },
+    {
+     "tex": "双图：In the first picture ... while in the second ...",
+     "note": "对比结构"
+    },
+    {
+     "tex": "漫画：The cartoon presents a symbolic scene in which ...",
+     "note": "点出象征"
+    }
+   ],
+   "exams": [
+    {
+     "year": "",
+     "source": "英语一真题同型",
+     "text": "双图对比：左图年轻人熬夜刷手机，右图同一人早起锻炼。要求描述并评论。",
+     "answer": "首段用 while 对比两图动作与状态，末句点出“生活方式选择”的寓意；不要分别用两段描述。",
+     "steps": [
+      "首段用 while 对比两图：左图熬夜刷手机，右图早起锻炼。",
+      "末句点寓意：生活方式的选择决定状态与长期结果。",
+      "第二段分析原因：即时满足 vs 延迟满足；压力与自律。",
+      "第三段建议：设定屏幕时间、培养线下爱好。",
+      "检查：两图是否在同一段对比，没有分成两段各写一图。"
+     ]
+    }
+   ],
+   "pitfalls": [
+    "双图写成两段，结构失衡。",
+    "描述加入过多主观评价，挤占分析段。",
+    "时态混用，过去与现在交替。"
+   ],
+   "teachers": [
+    {
+     "name": "石雷鹏",
+     "note": "描述抓“谁在做什么、结果如何”，两句话足够，不写小说。"
+    }
+   ]
+  },
+  {
+   "id": "kp-03",
+   "name": "首段描述句型",
+   "level": "核心",
+   "freq": "必考",
+   "core": "首段三件事：**描述图画—点出细节—提炼寓意**。句型要具体，避免空泛的 With the development of society。常用：As is vividly depicted in the cartoon, ... / What catches my eye is ... / The picture conveys the message that ...。寓意句必须与第二段论证衔接。",
+   "formulas": [
+    {
+     "tex": "As is vividly depicted in the cartoon, ...",
+     "note": "描述开头"
+    },
+    {
+     "tex": "What catches my eye is that ...",
+     "note": "聚焦细节"
+    },
+    {
+     "tex": "The picture conveys the message that ...",
+     "note": "提炼寓意"
+    },
+    {
+     "tex": "Simple as the picture is, it reflects a common phenomenon.",
+     "note": "过渡句"
+    }
+   ],
+   "exams": [
+    {
+     "year": "",
+     "source": "英语一真题同型",
+     "text": "单图：一位老人独自坐在餐桌前，桌上摆满菜，手机屏幕亮着。写首段。",
+     "answer": "As is vividly depicted, an elderly man sits alone at a table full of dishes, staring at a glowing phone. What catches my eye is the contrast between the abundant meal and his loneliness. The picture conveys the message that family companionship is being replaced by digital contact.",
+     "steps": [
+      "首句描述：As is vividly depicted, an elderly man sits alone at a table full of dishes, staring at a glowing phone.",
+      "第二句聚焦细节：What catches my eye is the contrast between the abundant meal and his loneliness.",
+      "第三句点寓意：The picture conveys the message that family companionship is being replaced by digital contact.",
+      "检查：描述不超过 80 词，寓意句与第二段第一句形成因果或递进。"
+     ]
+    }
+   ],
+   "pitfalls": [
+    "首段只描述不点寓意，第二段突然转折。",
+    "寓意句过于宽泛（we should do something）。",
+    "细节堆砌，描述超过 80 词。"
+   ],
+   "teachers": [
+    {
+     "name": "石雷鹏",
+     "note": "首段最后一句必须是寓意句，且与第二段第一句形成因果或递进。"
+    }
+   ]
+  },
+  {
+   "id": "kp-04",
+   "name": "第二段原因分析：因果链",
+   "level": "核心",
+   "freq": "必考",
+   "core": "第二段是得分核心。最稳的写法是**两层原因 + 一层后果**：表层原因（个人选择/习惯）→ 深层原因（社会压力/制度/技术）→ 后果（对个人或社会的影响）。用 First and foremost / Moreover / As a result 组织，每层一句原因 + 一句解释。",
+   "formulas": [
+    {
+     "tex": "Several factors contribute to this phenomenon.",
+     "note": "总起"
+    },
+    {
+     "tex": "First and foremost, ...",
+     "note": "表层原因"
+    },
+    {
+     "tex": "A deeper reason lies in ...",
+     "note": "深层原因"
+    },
+    {
+     "tex": "As a result, ... / This may lead to ...",
+     "note": "后果"
+    }
+   ],
+   "exams": [
+    {
+     "year": "",
+     "source": "英语一真题同型",
+     "text": "现象：年轻人沉迷短视频。要求分析原因。",
+     "answer": "表层：碎片化内容即时满足；深层：现实压力大、缺乏深度休闲方式；后果：注意力下降、时间被吞噬。每层用一句解释，不列举五个原因。",
+     "steps": [
+      "表层原因：短视频碎片化、即时反馈，容易获得快感。",
+      "深层原因：现实压力大、缺乏深度休闲方式、社交需求转移到线上。",
+      "后果：注意力下降、时间被吞噬、真实社交减少。",
+      "每层用一句解释，不堆五个原因；最后一句收口到“需要自律与环境支持”。"
+     ]
+    }
+   ],
+   "pitfalls": [
+    "原因全是空话（people pay attention to it）。",
+    "只列原因不解释，论证没有推进。",
+    "原因与寓意不匹配。"
+   ],
+   "teachers": [
+    {
+     "name": "石雷鹏",
+     "note": "原因写两层就够，一层比一层深；不要凑三条平行空话。"
+    }
+   ]
+  },
+  {
+   "id": "kp-05",
+   "name": "例证、对比与让步",
+   "level": "进阶",
+   "freq": "高频",
+   "core": "论证要有变化：**举例**（for instance + 具体场景）、**对比**（those who ... while those who ...）、**让步**（Admittedly ... but ...）。例子不需要真实数据，可以是典型场景，但必须具体到行为与结果。让步能让论证显得客观，是 15 分以上作文的常见特征。",
+   "formulas": [
+    {
+     "tex": "For instance, a student who ... may ...",
+     "note": "具体场景"
+    },
+    {
+     "tex": "Those who ... tend to ... while those who ...",
+     "note": "对比"
+    },
+    {
+     "tex": "Admittedly, ... However, ...",
+     "note": "让步转折"
+    }
+   ],
+   "exams": [
+    {
+     "year": "",
+     "source": "英语一真题同型",
+     "text": "论证“坚持”的价值，要求用一个具体例子。",
+     "answer": "For instance, a student who reviews one difficult passage every day may outperform one who crams before the exam. 例子落到行为（每天一篇）与结果（表现更好），不空谈。",
+     "steps": [
+      "先亮观点：坚持是把普通努力变成结果的关键。",
+      "举例：一名学生每天精读一段难文章，三个月后阅读速度与正确率同时提升。",
+      "分析：例子要说明“持续—积累—质变”的机制，而不是只讲故事。",
+      "收口：坚持不是盲目重复，而是有反馈的持续修正。"
+     ]
+    }
+   ],
+   "pitfalls": [
+    "例子编造数据（80% of people），不可信且易错。",
+    "让步后没有转折，逻辑断掉。",
+    "对比双方不在同一维度。"
+   ],
+   "teachers": [
+    {
+     "name": "石雷鹏",
+     "note": "例子写“行为 + 结果”，两个词就够具体；不要编统计数字。"
+    }
+   ]
+  },
+  {
+   "id": "kp-06",
+   "name": "第三段建议与展望",
+   "level": "核心",
+   "freq": "必考",
+   "core": "第三段给**具体建议 + 适度展望**，不要喊口号。建议分主体：个人可以做什么、学校/社会可以做什么；展望用 only in this way / it is reasonable to believe。句式可用虚拟语气：It is high time that we took action. 注意 high time 后接过去式。",
+   "formulas": [
+    {
+     "tex": "It is high time that we took concrete action.",
+     "note": "虚拟语气，用过去式"
+    },
+    {
+     "tex": "Individuals should ... while institutions ought to ...",
+     "note": "分主体建议"
+    },
+    {
+     "tex": "Only in this way can we ...",
+     "note": "倒装，展望"
+    },
+    {
+     "tex": "It is reasonable to believe that ...",
+     "note": "克制展望"
+    }
+   ],
+   "exams": [
+    {
+     "year": "",
+     "source": "英语一真题同型",
+     "text": "针对“沉迷手机”提建议，要求分个人与学校两个层面。",
+     "answer": "个人应设定屏幕时间、培养线下爱好；学校可提供更多体育活动与心理支持；结尾用 Only in this way can we... 收束，不空喊“社会应重视”。",
+     "steps": [
+      "个人层面：设定屏幕时间、培养线下爱好、固定作息。",
+      "学校层面：提供体育活动、心理支持、讲座与同伴互助。",
+      "结尾用 Only in this way can we ... 收口，但前面必须有具体内容支撑。",
+      "检查：两个层面各自成句，建议具体可执行，不空喊口号。"
+     ]
+    }
+   ],
+   "pitfalls": [
+    "建议空泛（we should pay attention）。",
+    "三段全是口号，没有具体动作。",
+    "虚拟语气写成 It is high time we take action。"
+   ],
+   "teachers": [
+    {
+     "name": "石雷鹏",
+     "note": "建议要能执行：谁做、做什么、做到什么程度；一句一个主体。"
+    }
+   ]
+  },
+  {
+   "id": "kp-07",
+   "name": "主题词库与替换",
+   "level": "核心",
+   "freq": "高频",
+   "core": "大作文的词汇不需要难，需要**准**。按主题准备四组词：品质（perseverance, cooperation, honesty, responsibility）、社会现象（consumerism, digital addiction, aging population）、科技（artificial intelligence, innovation）、文化（cultural confidence, inheritance）。同一意思准备 2–3 个替换，避免通篇重复。",
+   "formulas": [
+    {
+     "tex": "important → crucial / essential / indispensable",
+     "note": "程度递进"
+    },
+    {
+     "tex": "help → contribute to / facilitate / give rise to",
+     "note": "搭配不同"
+    },
+    {
+     "tex": "problem → challenge / dilemma / drawback",
+     "note": "语气不同"
+    }
+   ],
+   "exams": [
+    {
+     "year": "",
+     "source": "英语一真题同型",
+     "text": "一篇关于“文化传承”的图画作文，要求避免通篇 important。",
+     "answer": "用 cultural confidence / inheritance / carry forward / take root in 等主题搭配替换空泛形容词；关键词准确比高级词更加分。",
+     "steps": [
+      "替换 important：essential / vital / indispensable / of great significance。",
+      "替换文化相关表达：cultural confidence, cultural inheritance, carry forward, take root in。",
+      "每个替换词检查搭配：be essential to, play a vital role in, take root in society。",
+      "不要整段堆大词；每段用 2–3 个准确替换即可，其余用简单词保证正确。"
+     ]
+    }
+   ],
+   "pitfalls": [
+    "背了高级词但搭配错误。",
+    "同一词在 200 词里出现 8 次。",
+    "主题词与图画寓意不符。"
+   ],
+   "teachers": [
+    {
+     "name": "石雷鹏",
+     "note": "主题词按话题成组背，考场只调用对应组，不临时造词。"
+    }
+   ]
+  },
+  {
+   "id": "kp-08",
+   "name": "去模板化：功能句组合",
+   "level": "进阶",
+   "freq": "高频",
+   "core": "模板腔的根源是**空泛主语 + 万能动词**（with the development of society, we should pay attention to）。去模板化不是不用功能句，而是把功能句与图画的具体名词、具体动作绑定。每段至少有一句只属于这道题的内容，阅卷老师才能看到“你读了图”。",
+   "formulas": [
+    {
+     "tex": "把 With the development of society 换成具体背景",
+     "note": "如 In an age of short videos"
+    },
+    {
+     "tex": "把 We should pay attention to 换成具体动作",
+     "note": "如 set a daily screen limit"
+    },
+    {
+     "tex": "每段一句题目专属细节",
+     "note": "防模板腔"
+    }
+   ],
+   "exams": [
+    {
+     "year": "",
+     "source": "英语一真题同型",
+     "text": "同一篇作文，一版通篇模板句，一版每段有一句图画细节，得分差异在哪？",
+     "answer": "模板版内容分低，因无法证明切题；细节版在内容与连贯上更高，即使语言普通也能上 13–15 分。",
+     "steps": [
+      "模板版：句子漂亮但每段没有题目细节，内容分低，容易被判套作。",
+      "细节版：每段有一句图画/现象细节，证明切题；即使语言普通，内容与连贯分更高。",
+      "得分差异主要在内容与连贯，而不是高级词数量。",
+      "改写时先补细节句，再替换 2–3 个表达，不要反过来。"
+     ]
+    }
+   ],
+   "pitfalls": [
+    "整篇背模板，题目细节只换两个词。",
+    "为了去模板化，写出语法错误的长难句。",
+    "细节与论证无关，只是装饰。"
+   ],
+   "teachers": [
+    {
+     "name": "石雷鹏",
+     "note": "功能句是骨架，题目细节是血肉；只有骨架的作文拿不到高分。"
+    }
+   ]
+  }
+ ],
+ "topics": [
+  {
+   "id": "topic-01",
+   "name": "大作文三段式功能句框架",
+   "why": "英语一图画作文的结构高度稳定。把三段的功能句练熟，考场只需填图画细节与主题词，30 分钟可以写完 180 词。",
+   "method": [
+    "首段：As is vividly depicted ... → What catches my eye is ... → The picture conveys the message that ...",
+    "第二段：Several factors contribute to this phenomenon. → First and foremost ... → A deeper reason lies in ... → As a result ...",
+    "第三段：It is high time that we took action. → Individuals should ... while institutions ought to ... → Only in this way can we ...",
+    "每段至少一句只属于本题的细节，避免模板腔。",
+    "写完后检查：寓意—原因—建议是否一条线。"
+   ],
+   "example": {
+    "q": "用框架写“合作”主题的第二段。",
+    "a": "Several factors contribute to this phenomenon. First and foremost, many tasks today are too complex for one person to complete alone. A deeper reason lies in the fact that cooperation allows different strengths to complement each other. As a result, those who learn to work in teams are more likely to succeed."
+   },
+   "trap": "框架句不要连续使用三句以上；每段插入题目细节，否则一眼模板。"
+  },
+  {
+   "id": "topic-02",
+   "name": "最后六周大作文成稿计划",
+   "why": "你的作文模板还没定稿。最后六周，目标不是背更多范文，而是形成一套自己的、能稳定输出的三段式。",
+   "method": [
+    "第 1 周：定稿首段 3 句、第二段 4 句、第三段 3 句的功能句骨架，写 2 篇完整作文。",
+    "第 2–4 周：每周 2 篇，限时 35 分钟；题材覆盖品质、社会现象、科技、文化四类。",
+    "每篇写完后只做三件事：改语法错、删模板空话、补一句题目细节。",
+    "第 5 周：把 8 篇作文压缩成 1 页“自己的功能句库”，只留真正会用的句子。",
+    "考前 7 天：每天默写 1 篇，保持 180 词的手感，不再背新范文。"
+   ],
+   "example": {
+    "q": "只写 8 篇够吗？",
+    "a": "够。关键是每篇都改到无语法错、每段都有题目细节；重复写新题而不修改，收益远低于把 8 篇打磨成自己的模板。"
+   },
+   "trap": "不要收集几十篇范文却一篇没写完；考场输出的是你的句子，不是范文的数量。"
+  }
+ ],
+ "summary": {
+  "must": [
+   "三段式：描述—分析—建议",
+   "首段末句点明寓意",
+   "第二段两层原因 + 一层后果",
+   "第三段分主体给具体建议",
+   "每段一句题目专属细节",
+   "160–200 词，30–35 分钟",
+   "主题词按四类成组准备"
+  ],
+  "drop": [
+   "生僻高级词",
+   "编造统计数据的例子",
+   "整篇万能模板",
+   "超过 220 词的长文"
+  ],
+  "checklist": [
+   "能否 35 分钟写完 180 词且三段完整",
+   "寓意句是否与第二段原因一致",
+   "第二段是否有两层原因而非并列空话",
+   "第三段建议是否具体到主体与动作",
+   "每段是否有一句只属于本题的细节",
+   "是否已形成自己的功能句库"
+  ]
+ }
+}

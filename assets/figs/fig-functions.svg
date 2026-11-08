@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-label="常见函数图像">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.2}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.acc2{stroke:#5B3A6B;fill:none;stroke-width:1.4}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:10.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+  </style>
+  <text class="lbl" x="20" y="22">常考函数图像：先看定义域、单调、奇偶、渐近线</text>
+  <text class="sub" x="20" y="40">画图题/比较大小/极限题都靠这几张“母图”。</text>
+
+  <!-- panel 1 -->
+  <text class="sub" x="30" y="70">e^x 与 ln x（互为反函数）</text>
+  <line class="thin" x1="30" y1="170" x2="210" y2="170"/><line class="thin" x1="60" y1="70" x2="60" y2="190"/>
+  <path class="acc" d="M60 166 C90 160 120 140 150 100 C170 76 185 70 200 68"/>
+  <path class="acc2" d="M70 190 C80 160 110 140 150 124 C180 112 200 106 210 104"/>
+  <line class="dash" x1="60" y1="170" x2="200" y2="90"/>
+  <text class="sub" x="196" y="66">e^x</text><text class="sub" x="198" y="102">ln x</text>
+
+  <!-- panel 2 -->
+  <text class="sub" x="250" y="70">sin x / cos x：周期 2π</text>
+  <line class="thin" x1="250" y1="140" x2="440" y2="140"/><line class="thin" x1="280" y1="90" x2="280" y2="190"/>
+  <path class="acc" d="M250 140 C265 100 295 100 310 140 C325 180 355 180 370 140 C385 100 415 100 430 140"/>
+  <path class="acc2" d="M250 120 C280 120 280 160 310 160 C340 160 340 120 370 120 C400 120 400 160 430 160"/>
+  <text class="sub" x="250" y="208">奇函数；有界；零点 kπ</text>
+
+  <!-- panel 3 -->
+  <text class="sub" x="470" y="70">|x|、x²、√x</text>
+  <line class="thin" x1="470" y1="170" x2="660" y2="170"/><line class="thin" x1="560" y1="70" x2="560" y2="190"/>
+  <path class="acc" d="M500 170 L560 110 L620 170"/>
+  <path class="acc2" d="M500 118 C530 160 590 160 620 118"/>
+  <path class="dash" d="M560 170 C590 150 610 130 625 110"/>
+  <text class="sub" x="470" y="208">不可导点：|x| 在 0；√x 在 0 右导无穷</text>
+
+  <!-- panel 4 -->
+  <text class="sub" x="30" y="248">arctan x：两条水平渐近线</text>
+  <line class="thin" x1="30" y1="292" x2="220" y2="292"/><line class="thin" x1="125" y1="230" x2="125" y2="310"/>
+  <line class="dash" x1="30" y1="244" x2="220" y2="244"/><line class="dash" x1="30" y1="300" x2="220" y2="300"/>
+  <path class="acc" d="M30 298 C70 294 100 270 125 262 C150 254 180 250 220 246"/>
+  <text class="sub" x="180" y="240">π/2</text><text class="sub" x="180" y="314">−π/2</text>
+
+  <text class="sub" x="300" y="248">奇偶性：sin、tan、arcsin、arctan 为奇；cos、|x|、x² 为偶。</text>
+  <text class="sub" x="300" y="270">等价无穷小与图像在 0 附近的切线斜率一致：sin x~x，ln(1+x)~x，e^x−1~x。</text>
+  <text class="sub" x="300" y="292">比较大小：先看单调区间，再用 0、1、e 等分界点。</text>
+</svg>

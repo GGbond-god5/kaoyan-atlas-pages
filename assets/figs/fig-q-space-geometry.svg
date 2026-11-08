@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="空间直线与平面">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.acc2{stroke:#5B3A6B;fill:none;stroke-width:1.5}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="sub" x="24" y="24">空间解析几何：平面看 n，直线看 s，夹角看投影</text>
+  <path class="fill" d="M120 190 L330 120 L470 170 L260 240 Z" fill="rgba(138,75,42,.08)" stroke="#8A4B2A" stroke-width="1.2"/>
+  <line class="ink" x1="80" y1="220" x2="180" y2="250"/><text class="sub" x="182" y="254">y</text>
+  <line class="ink" x1="80" y1="220" x2="200" y2="220"/><text class="sub" x="202" y="224">x</text>
+  <line class="ink" x1="80" y1="220" x2="80" y2="120"/><text class="sub" x="72" y="116">z</text>
+  <line class="acc" x1="250" y1="120" x2="250" y2="70"/><path class="acc" d="M246 76 l4 -8 l4 8"/>
+  <text class="sub" x="256" y="72">n=(A,B,C)</text>
+  <line class="acc2" x1="170" y1="210" x2="360" y2="150"/><path class="acc2" d="M350 148 l10 2 l-7 7"/>
+  <text class="sub" x="300" y="136">s=(m,n,p)</text>
+  <text class="fml" x="500" y="90">Π: Ax+By+Cz+D=0</text>
+  <text class="fml" x="500" y="118">L: (x−x₀)/m=(y−y₀)/n=(z−z₀)/p</text>
+  <text class="sub" x="500" y="148">线面角：sinθ=|s·n|/(|s||n|)</text>
+  <text class="sub" x="500" y="172">面面角：cosθ=|n₁·n₂|/(|n₁||n₂|)</text>
+  <text class="sub" x="500" y="196">点到面距离：|Ax₀+By₀+Cz₀+D|/√(A²+B²+C²)</text>
+</svg>

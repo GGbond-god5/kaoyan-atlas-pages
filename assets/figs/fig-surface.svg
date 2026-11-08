@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="第二类曲面积分">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.fill{fill:rgba(138,75,42,.12);stroke:#8A4B2A;stroke-width:1.3}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">第二类曲面积分：通量与法向</text>
+  <text class="sub" x="24" y="44">dS 的法向与投影面积的夹角决定正负；高斯公式要求外侧。</text>
+  <path class="fill" d="M110 200 C130 120 270 80 390 110 C500 138 510 210 400 240 C280 270 120 260 110 200 Z"/>
+  <ellipse cx="260" cy="245" rx="150" ry="34" fill="none" stroke="#B9AE9C" stroke-width="1"/>
+  <line class="dash" x1="300" y1="150" x2="300" y2="245"/>
+  <line class="acc" x1="300" y1="150" x2="348" y2="102"/>
+  <path class="acc" d="M340 112 l10 -10 l-13 1"/>
+  <text class="sub" x="350" y="100">n</text>
+  <text class="sub" x="306" y="222">γ</text>
+  <text class="sub" x="240" y="270">D_xy（投影）</text>
+  <text class="fml" x="470" y="110">∬_Σ F·n dS</text>
+  <text class="fml" x="470" y="142">= ∬_D F·n / |cosγ| dxdy</text>
+  <text class="sub" x="470" y="174">上侧/下侧、外侧/内侧决定符号</text>
+  <text class="sub" x="470" y="198">高斯：∭_Ω divF dV = ∮_Σ F·n dS</text>
+  <text class="sub" x="470" y="222">Σ 取外侧；有洞时内表面取内侧</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="矩形截面简支梁">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#A8342A;fill:none;stroke-width:1.6}.dim{stroke:#6B6357;fill:none;stroke-width:.9}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+  </style>
+  <text class="sub" x="24" y="24">矩形截面简支梁：跨长 l、宽 b、高 h，受均布载荷 q</text>
+  <line class="ink" x1="90" y1="110" x2="530" y2="110"/>
+  <path class="thin" d="M90 110 l-12 20 h24 z"/><path class="thin" d="M530 110 l-12 20 h24 z"/>
+  <g class="acc"><line x1="130" y1="74" x2="130" y2="110"/><line x1="180" y1="74" x2="180" y2="110"/><line x1="230" y1="74" x2="230" y2="110"/><line x1="280" y1="74" x2="280" y2="110"/><line x1="330" y1="74" x2="330" y2="110"/><line x1="380" y1="74" x2="380" y2="110"/><line x1="430" y1="74" x2="430" y2="110"/><line x1="480" y1="74" x2="480" y2="110"/></g>
+  <text class="lbl" x="300" y="62">q</text>
+  <line class="dim" x1="90" y1="150" x2="530" y2="150"/><text class="sub" x="302" y="166">l</text>
+  <rect class="ink" x="590" y="96" width="46" height="76"/>
+  <text class="sub" x="584" y="88">b</text><text class="sub" x="642" y="138">h</text>
+  <text class="sub" x="24" y="206">M_max=ql²/8；σ_max=M/W_z，W_z=bh²/6；τ 按矩形截面抛物线分布。</text>
+  <text class="sub" x="24" y="228">求最大正应力：先反力 → 弯矩图 → 危险截面 → 代入 W_z。</text>
+</svg>

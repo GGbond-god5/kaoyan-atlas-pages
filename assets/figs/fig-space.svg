@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img" aria-label="空间弯矩分解示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .soft{fill:rgba(138,75,42,.08);stroke:#8A4B2A;stroke-width:1.2}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:13px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">空间受力：力向截面形心简化，分解为 M_y、M_z</text>
+  <text class="sub" x="24" y="44">斜弯曲/双向弯曲的关键：先分解，再分别算应力，最后在点处代数叠加。</text>
+
+  <!-- side view -->
+  <path class="thin" d="M80 100 h8 M80 112 h8 M80 124 h8 M80 136 h8 M80 148 h8 M80 160 h8 M80 172 h8 M80 184 h8" stroke="#6B6357"/>
+  <line class="ink" x1="88" y1="100" x2="88" y2="190"/>
+  <path class="soft" d="M88 110 L330 140 L330 180 L88 150 Z"/>
+  <path class="ink" d="M330 140 L362 128 L362 168 L330 180"/>
+  <path class="ink" d="M88 110 L330 140"/>
+  <path class="ink" d="M88 150 L330 180"/>
+  <path class="thin" d="M330 160 L362 150" stroke-dasharray="3 3"/>
+
+  <!-- force P offset -->
+  <circle cx="352" cy="148" r="2.6" fill="#A8342A"/>
+  <line class="acc" x1="352" y1="120" x2="352" y2="166"/>
+  <path class="acc" d="M345 158 l7 9 l7 -9"/>
+  <text class="lbl" x="360" y="128">P</text>
+  <line class="dash" x1="345" y1="148" x2="352" y2="148"/>
+  <text class="sub" x="346" y="142">e</text>
+  <text class="sub" x="300" y="196">偏心距 e 产生附加弯矩</text>
+
+  <!-- axes triad -->
+  <line class="ink" x1="70" y1="290" x2="130" y2="290"/><path class="ink" d="M124 286 l8 4 l-8 4"/>
+  <text class="sub" x="134" y="294">x</text>
+  <line class="ink" x1="70" y1="290" x2="70" y2="236"/><path class="ink" d="M66 242 l4 -8 l4 8"/>
+  <text class="sub" x="62" y="232">y</text>
+  <line class="ink" x1="70" y1="290" x2="34" y2="308"/><path class="ink" d="M40 302 l-7 5 l8 3"/>
+  <text class="sub" x="22" y="318">z</text>
+
+  <!-- cross section -->
+  <text class="sub" x="430" y="78">危险截面（形心 O）</text>
+  <rect class="soft" x="470" y="96" width="150" height="120"/>
+  <line class="thin" x1="545" y1="88" x2="545" y2="224" stroke-dasharray="3 3"/>
+  <line class="thin" x1="462" y1="156" x2="628" y2="156" stroke-dasharray="3 3"/>
+  <text class="sub" x="548" y="88">y</text>
+  <text class="sub" x="628" y="154">z</text>
+  <circle cx="470" cy="96" r="2.5" fill="#2A2723"/><text class="sub" x="448" y="94">1</text>
+  <circle cx="620" cy="96" r="2.5" fill="#2A2723"/><text class="sub" x="626" y="94">2</text>
+  <circle cx="620" cy="216" r="2.5" fill="#2A2723"/><text class="sub" x="626" y="228">3</text>
+  <circle cx="470" cy="216" r="2.5" fill="#2A2723"/><text class="sub" x="448" y="228">4</text>
+
+  <line class="acc" x1="470" y1="96" x2="470" y2="76"/><path class="acc" d="M466 82 l4 -7 l4 7"/>
+  <line class="acc" x1="620" y1="216" x2="620" y2="238"/><path class="acc" d="M616 232 l4 7 l4 -7"/>
+  <text class="sub" x="430" y="252">受拉</text>
+  <text class="sub" x="596" y="260">受压</text>
+
+  <!-- neutral axis -->
+  <line class="dash" x1="470" y1="156" x2="620" y2="156"/>
+  <text class="sub" x="500" y="172">中性轴</text>
+
+  <text class="fml" x="424" y="292">σ = M_y z / I_y + M_z y / I_z</text>
+  <text class="sub" x="424" y="314">先定各弯矩正负，再按点的 y、z 坐标叠加；最大应力在角点。</text>
+</svg>

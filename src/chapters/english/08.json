@@ -1,0 +1,389 @@
+{
+  "id": "english-08",
+  "subject": "english",
+  "code": "EN · 08",
+  "title": "作文句式分类库",
+  "subtitle": "不背整篇模板，按功能存句：开头、描述、原因、举例、让步、建议、结尾、小作文。考场只做“选句 + 填本题信息”。",
+  "priority": "A",
+  "meta": ["大作文 + 小作文", "功能句", "可直接背写"],
+  "syllabus": [
+    "图画/图表/文字作文：描述、说明、议论",
+    "应用文：建议信、邀请信、通知、道歉与感谢",
+    "语言准确、句式多样、篇章连贯",
+    "功能句服务于内容，不堆砌模板"
+  ],
+  "kps": [
+    {
+      "id": "kp-01",
+      "name": "开头与现象引出",
+      "level": "核心",
+      "freq": "必考",
+      "core": "首段只做三件事：引出画面或现象、抓住一个关键细节、点明寓意。**寓意句必须具体到本题**，不能停在“值得深思”。开头句是“壳”，细节和寓意才是分。2–3 句足够，不要用三句套话替换一句有效信息。",
+      "formulas": [
+        { "tex": "As is vividly depicted in the picture, ...", "note": "图画作文首句；depicted 可换 shown / portrayed" },
+        { "tex": "The cartoon presents a thought-provoking scene in which ...", "note": "引出画面主体，适合单图" },
+        { "tex": "What immediately catches my eye is ...", "note": "聚焦细节，后接名词或名词短语" },
+        { "tex": "The picture conveys a clear message that ...", "note": "点寓意；that 后必须是完整句" },
+        { "tex": "Recent years have witnessed a growing tendency toward ...", "note": "图表/社会现象开头，toward 后接名词" },
+        { "tex": "The chart above illustrates changes in ... over the past decade.", "note": "图表作文；illustrates 可换 shows / reveals" },
+        { "tex": "Behind this seemingly simple scene lies a question worth pondering: ...", "note": "引出问题；冒号后接问句或名词短语" },
+        { "tex": "Simple as the picture is, the message it carries is far-reaching.", "note": "过渡句；不要每篇都用，容易模板腔" }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "图画：一位年轻人站在岔路口，一条路写着“shortcut”，另一条写着“long way”，他低头看手机导航。要求描述并评论。",
+          "answer": "首段：画面 + 岔路与手机细节 + 寓意“选择捷径还是踏实积累”。不要只写“年轻人在看手机”。",
+          "steps": [
+            "审题：单图，主题是“捷径与积累/选择”，不是“手机依赖”。",
+            "结构：首段 2–3 句；先引出画面，再抓“岔路/手机”细节，最后点寓意。",
+            "选句：As is vividly depicted ... + What catches my eye is ... + The picture conveys ...。",
+            "成段：寓意写成“面对捷径诱惑，是否愿意走长期积累的路”，与第二段原因衔接。",
+            "检查：首段是否有一句只属于本题的细节，而不是纯套话。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "开头连用三句套话，首段没有画面细节。",
+        "寓意写成“科技发展”这种大词，与图画不匹配。"
+      ],
+      "teachers": [
+        { "name": "石雷鹏", "note": "首段只留“描述 + 寓意”两个功能，描述不超过首段一半。" }
+      ]
+    },
+    {
+      "id": "kp-02",
+      "name": "图画描述与细节展开",
+      "level": "核心",
+      "freq": "高频",
+      "core": "描述不是“把画讲一遍”，而是挑**与寓意直接相关**的 1–2 个细节。双图题用对比结构；单图题用“位置 + 动作 + 神态 + 文字”四选二。描述句要短，避免从句套从句；写完立刻用一句过渡转到寓意。",
+      "formulas": [
+        { "tex": "In the first picture, ...; in the second, however, ...", "note": "双图对比，however 前用分号" },
+        { "tex": "On the left stands ... while on the right sits ...", "note": "位置描述；stands/sits 可换 lies / appears" },
+        { "tex": "The former is ..., whereas the latter ...", "note": "对比二者；前后结构尽量对称" },
+        { "tex": "With a ... expression on his face, he ...", "note": "神态 + 动作；expression 前加形容词" },
+        { "tex": "The caption reads, \"...\"", "note": "引用图注；引号内照抄，不要改写" },
+        { "tex": "What makes the scene striking is ...", "note": "突出反差细节；后接名词短语" },
+        { "tex": "Instead of ..., the character chooses to ...", "note": "行为对比，暗示态度" },
+        { "tex": "This sharp contrast suggests that ...", "note": "描述转寓意；suggests 比 shows 更稳" }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "双图：左图一位学生把书堆得很高却只拍照发朋友圈；右图一位学生只读一本书，做了满满笔记。要求评论。",
+          "answer": "用 the former ... whereas the latter ... 对比“摆拍式学习”与“深度学习”，寓意落在“形式与实效”。",
+          "steps": [
+            "审题：双图对比，主题是“学习的形式与实效”，不是“读书方法”。",
+            "结构：首段两句对比 + 一句寓意；第二段分析“为什么摆拍有市场”；第三段建议。",
+            "选句：In the first picture ...; in the second, however, ... + The former ... whereas the latter ...。",
+            "成段：寓意句写“真正的成长来自深度投入，而非可见的形式”。",
+            "检查：描述是否只保留“书堆/拍照”与“笔记/专注”两组细节。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "逐个人物、逐件物品描述，首段超过 80 词。",
+        "描述细节与寓意无关，第二段接不上。"
+      ],
+      "teachers": [
+        { "name": "石雷鹏", "note": "描述只写“谁在做什么、结果如何”，两句就够，不写小说。" }
+      ]
+    },
+    {
+      "id": "kp-03",
+      "name": "原因分析：个人、社会、制度三层",
+      "level": "核心",
+      "freq": "必考",
+      "core": "第二段决定分数。最稳的结构是**两层原因 + 一层后果**：个人层面（意识、习惯、能力）→ 社会层面（风气、技术、舆论）→ 后果（对个人/社会的影响）。不要写“随着社会发展”这种空开头；每层都要有本题的具体机制。",
+      "formulas": [
+        { "tex": "Several factors may account for this phenomenon.", "note": "段首；account for 后接现象" },
+        { "tex": "To begin with, ...", "note": "第一层原因，后接完整句" },
+        { "tex": "A deeper reason lies in ...", "note": "第二层原因；lie in 后接名词/动名词" },
+        { "tex": "This is largely driven by ...", "note": "被动结构；driven by 后接因素" },
+        { "tex": "Another contributing factor is that ...", "note": "补充第三层；不要与第一层重复" },
+        { "tex": "While individual awareness matters, institutional support is equally indispensable.", "note": "个人 + 制度对照" },
+        { "tex": "As a consequence, ...", "note": "写后果；前后逻辑要能对应" },
+        { "tex": "It is therefore no coincidence that ...", "note": "总结性原因句，适合段尾" }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "图画：很多人排队买“网红书店”的文创，却很少有人翻开书架上的书。要求分析原因。",
+          "answer": "个人：追求社交货币与即时满足；社会：平台算法放大“打卡”文化；后果：阅读被符号化。",
+          "steps": [
+            "审题：现象是“打卡式阅读”，不是“实体书店经营”。",
+            "结构：第二段三层——个人心理、平台机制、后果。",
+            "选句：Several factors ... + To begin with ... + A deeper reason lies in ... + As a consequence ...。",
+            "成段：每层写“机制 + 本题细节”，如“拍照发圈获得即时反馈”。",
+            "检查：是否出现“随着社会发展”这类空话；每层是否不同。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "三层原因其实是同义重复（个人意识/个人习惯/个人态度）。",
+        "只写原因不写后果，第二段没有落点。"
+      ],
+      "teachers": [
+        { "name": "王江涛", "note": "第二段先列提纲（两层原因 + 一层后果），再写句子，避免边写边想。" }
+      ]
+    },
+    {
+      "id": "kp-04",
+      "name": "举例与论证",
+      "level": "基础",
+      "freq": "中频",
+      "core": "例子要短、要贴题，1–2 句就够。考研作文不需要“名人名言 + 详细生平”；一个生活化的小例子，或一个概括性的社会现象，比编造统计数据更安全。数据句只能用“a recent survey”这类泛化表达，不要编具体百分比。",
+      "formulas": [
+        { "tex": "A case in point is ...", "note": "举例；后接名词或从句" },
+        { "tex": "Take ... as an example.", "note": "最稳的举例句；example 前不加冠词" },
+        { "tex": "This is well illustrated by ...", "note": "被例子说明；illustrated by 后接名词" },
+        { "tex": "According to a recent survey, ...", "note": "泛化数据；不要编造具体机构与精确数字" },
+        { "tex": "Such examples are not rare; they can be found in ...", "note": "扩展例子到社会层面" },
+        { "tex": "The lesson we can draw from this is that ...", "note": "例子收束到论点" },
+        { "tex": "If we look around, we will find that ...", "note": "生活化引入，适合段中" }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "图画：一位老人独自坐在餐桌前，桌上摆满菜，手机屏幕亮着。要求评论“陪伴与数字生活”。",
+          "answer": "例子用“节假日家庭聚餐各自看手机”这一生活场景，说明“在场不等于陪伴”。",
+          "steps": [
+            "审题：主题是“陪伴的质量”，不是“老年人不会用手机”。",
+            "结构：第二段先原因，再举一个 1–2 句的生活例子。",
+            "选句：A case in point is ... + The lesson we can draw ...。",
+            "成段：例子写“菜很丰盛、人都在，但交流很少”，紧扣画面。",
+            "检查：例子是否超过三句；是否编造了具体调查数据。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "例子讲成完整故事，占掉第二段一半。",
+        "编造“某大学调查显示 73.6%”这类无法核实的数字。"
+      ],
+      "teachers": [
+        { "name": "石雷鹏", "note": "例子只写“场景 + 结果”，一句场景一句点题，不展开人物背景。" }
+      ]
+    },
+    {
+      "id": "kp-05",
+      "name": "对比、让步与转折",
+      "level": "进阶",
+      "freq": "中频",
+      "core": "让步不是为了凑字数，而是为了显示思维层次：先承认对方一点合理之处，再转回主论点。常用“Admittedly ...; however ...”或“While it is true that ..., it does not follow that ...”。转折后必须回到本题立场，不能两边都赞成。",
+      "formulas": [
+        { "tex": "Admittedly, ...; however, ...", "note": "先让步后转折；分号连接两个完整句" },
+        { "tex": "While it is true that ..., it does not follow that ...", "note": "承认事实，否定推论" },
+        { "tex": "Compared with ..., ...", "note": "对比；比较对象要同类" },
+        { "tex": "On the one hand, ...; on the other hand, ...", "note": "两面分析；不要写成流水账" },
+        { "tex": "Rather than ..., we should ...", "note": "取舍；rather than 后接同类结构" },
+        { "tex": "This does not mean that ..., but that ...", "note": "澄清误解；两个 that 后都接完整句" },
+        { "tex": "Nevertheless, ...", "note": "强转折；适合段首" }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "图画：一位跑者在中途停下看别人超过自己，表情焦虑。要求评论“比较与自我节奏”。",
+          "answer": "让步：适度比较能提供动力；转折：过度比较多导致节奏被打乱，结论落在“以自己的目标为参照”。",
+          "steps": [
+            "审题：主题是“比较的度”，不是“跑步技巧”。",
+            "结构：第二段先让步，再转折，最后给结论。",
+            "选句：Admittedly ...; however, ... + This does not mean that ...。",
+            "成段：让步句写“比较能发现差距”，转折句写“频繁比较多打乱节奏”。",
+            "检查：转折后是否回到“自我节奏”这一主论点。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "让步写了两句，主论点只剩一句，立场不清。",
+        "一边倒地说“比较完全不好”，论证绝对化。"
+      ],
+      "teachers": [
+        { "name": "王江涛", "note": "让步句只写一句，转折词后立刻给主论点，避免“两头都赞成”。" }
+      ]
+    },
+    {
+      "id": "kp-06",
+      "name": "建议与措施",
+      "level": "核心",
+      "freq": "必考",
+      "core": "建议要具体到**主体 + 动作 + 目的**：个人做什么、学校/家庭做什么、制度做什么。避免“we should pay attention to”这种空建议。常用“It is high time that ...”虚拟语气、“Only by ... can we ...”倒装；一篇用一处即可，不要通篇炫技。",
+      "formulas": [
+        { "tex": "It is high time that we took effective measures to ...", "note": "虚拟语气；that 从句用过去式" },
+        { "tex": "Individuals should ... while institutions ought to ...", "note": "个人与机构分工；ought to 语气更正式" },
+        { "tex": "The government is expected to ...", "note": "政府层面；后接动词原形" },
+        { "tex": "Schools and families can work together to ...", "note": "学校 + 家庭协同" },
+        { "tex": "Only by ... can we ...", "note": "倒装；Only by 后接动名词/名词" },
+        { "tex": "It would be advisable to ...", "note": "温和建议；比 must 更稳" },
+        { "tex": "More importantly, ... should be ...", "note": "强调最重要的一条；不要每条都用" }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "图画：一位年轻人把“计划”写满一整面墙，却始终没有开始。要求提出建议。",
+          "answer": "个人：把计划拆成最小行动；学校/家庭：减少“结果导向”的压力；制度：给试错空间。",
+          "steps": [
+            "审题：主题是“计划与行动”，不是“时间管理工具”。",
+            "结构：第三段三条建议，按个人—学校家庭—制度排列。",
+            "选句：Individuals should ... while institutions ought to ... + Only by ... can we ...。",
+            "成段：每条建议写“谁 + 做什么 + 为了什么”，不写空话。",
+            "检查：是否出现“pay attention to”“improve ourselves”这类空建议。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "三条建议都是“个人要努力”，没有主体分层。",
+        "倒装句用错语序，反而扣分。"
+      ],
+      "teachers": [
+        { "name": "石雷鹏", "note": "建议句固定“主体 + 动作 + 目的”，一条建议只写一件事。" }
+      ]
+    },
+    {
+      "id": "kp-07",
+      "name": "结尾与展望",
+      "level": "基础",
+      "freq": "高频",
+      "core": "结尾只做两件事：收束主论点、给一个有限度的展望。不要引入新论点，也不要空喊“让我们一起努力”。展望句要克制：用“it is reasonable to believe”比“will definitely”稳。升华要回到本题，不要突然上升到“人类命运”。",
+      "formulas": [
+        { "tex": "In conclusion, ...", "note": "最稳的总结；后接主论点复述" },
+        { "tex": "To sum up, ...", "note": "与 In conclusion 二选一，不要连用" },
+        { "tex": "Only in this way can we ...", "note": "倒装收尾；与前文建议对应" },
+        { "tex": "It is reasonable to believe that ...", "note": "克制展望；比 will surely 稳" },
+        { "tex": "With joint efforts, ... will surely ...", "note": "多方努力；surely 前有 with joint efforts 限定" },
+        { "tex": "The significance of ... goes far beyond ...", "note": "升华；后接具体范围，不要空" },
+        { "tex": "Therefore, it is everyone's responsibility to ...", "note": "呼吁；适合社会话题" }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "图画：一位园丁耐心给一棵小树苗浇水，旁边另一人不停拔苗看长高没有。要求评论“耐心与成长”。",
+          "answer": "结尾收束“尊重成长规律”，展望用“it is reasonable to believe”，不喊口号。",
+          "steps": [
+            "审题：主题是“耐心/规律”，不是“园艺”。",
+            "结构：结尾两句——复述主论点 + 克制展望。",
+            "选句：In conclusion ... + It is reasonable to believe that ...。",
+            "成段：展望写“愿意按规律投入的人，更可能获得长期回报”。",
+            "检查：是否引入新论点；是否出现“人类命运”这类过度升华。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "结尾又讲一个新原因，结构松散。",
+        "空喊“让我们携手共创美好明天”，没有本题信息。"
+      ],
+      "teachers": [
+        { "name": "王江涛", "note": "结尾只复述、不新增；展望句要有限定条件，避免绝对化。" }
+      ]
+    },
+    {
+      "id": "kp-08",
+      "name": "小作文功能句",
+      "level": "核心",
+      "freq": "必考",
+      "core": "小作文 100 词、10 分，格式分很重：称呼、开头目的、主体细节、结尾客套、落款。句式要礼貌、直接，不要用大作文的议论句。建议信/邀请信/通知/道歉感谢四类各准备 2–3 句，考场按题目填时间、地点、事由。",
+      "formulas": [
+        { "tex": "I am writing to express my sincere gratitude for ...", "note": "感谢信开头；for 后接名词/动名词" },
+        { "tex": "I am writing to apologize for ...", "note": "道歉信开头；说明具体事由" },
+        { "tex": "I would like to invite you to ...", "note": "邀请信；to 后接活动/场合" },
+        { "tex": "I am writing to recommend ...", "note": "建议/推荐信；recommend 后接名词" },
+        { "tex": "This is to inform you that ...", "note": "通知开头；that 后接完整句" },
+        { "tex": "The meeting is scheduled for ... in ...", "note": "通知细节；时间 + 地点" },
+        { "tex": "I would appreciate it if you could ...", "note": "礼貌请求；could 后接动词原形" },
+        { "tex": "Please let me know if you need further information.", "note": "通用结尾；正式且不卑微" },
+        { "tex": "Looking forward to your reply.", "note": "结尾；正式信件可用 I look forward to your reply." },
+        { "tex": "Thank you for your time and consideration.", "note": "结尾客套；适合建议信/申请信" }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "给你的外教写一封邮件：邀请他参加下周五晚上的中文角活动，并说明活动安排。",
+          "answer": "称呼 + 邀请目的 + 时间地点 + 活动内容 + 期待回复 + 落款；100 词左右。",
+          "steps": [
+            "审题：邀请信，收件人是外教，语气正式但友好。",
+            "结构：称呼 → 自我介绍/邀请目的 → 时间地点与安排 → 期待回复 → 落款。",
+            "选句：I would like to invite you to ... + The event is scheduled for ... + Please let me know ...。",
+            "成段：补足“中文角”的具体活动（自由交流、文化分享），不要只写套话。",
+            "检查：称呼与落款是否齐全；时间地点是否写清；词数是否 90–110。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "忘记称呼或落款，直接丢格式分。",
+        "把大作文的议论句搬进小作文，语气不匹配。"
+      ],
+      "teachers": [
+        { "name": "石雷鹏", "note": "小作文先搭“格式骨架”，再填 2–3 个具体信息，不追求高级词。" }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "topic-01",
+      "name": "功能句如何拼成三段",
+      "why": "你已经有句子，但考场容易“句子都会、段落不连贯”。真正要练的是从题目到提纲、再到成段的顺序。",
+      "method": [
+        "审题：用一句话写出“主题 + 态度”，例如“捷径诱惑下仍要长期积累”。",
+        "列提纲：首段 2 句（描述 + 寓意），第二段 3 句（原因 1、原因 2、后果），第三段 2 句（建议 + 收束）。",
+        "选句：每段只选 1 个开头功能句 + 1 个展开功能句，其余用本题信息填。",
+        "成段：先写每段第一句，确认逻辑链，再补细节；不要在考场上边写边想结构。",
+        "检查：寓意—原因—建议是否一条线；每段是否有一句只属于本题的细节。"
+      ],
+      "example": {
+        "q": "题目：图画中一位年轻人反复修改简历，却迟迟不投递。用三段框架写提纲。",
+        "a": "首段：画面（反复修改）+ 寓意（过度准备导致行动拖延）；第二段：个人完美主义、平台竞争焦虑、后果（机会流失）；第三段：先投递再迭代、学校提供模拟面试、收束“完成优于完美”。"
+      },
+      "trap": "不要把功能句当填空题：每段至少一句必须来自本题，否则模板腔明显。"
+    },
+    {
+      "id": "topic-02",
+      "name": "低分句升级替换",
+      "why": "作文提分最快的不是背难词，而是把“important / think / many / cause / solve”这类低分表达换成准确、自然的搭配。",
+      "method": [
+        "先保准确：不确定的高级词不用，优先换“搭配”而不是换“大词”。",
+        "important → play a vital role in / be of great significance to。",
+        "think → hold the view that / it is widely believed that。",
+        "many → a considerable number of / a growing number of。",
+        "cause → give rise to / contribute to；solve → address / tackle。",
+        "每段只升级 2–3 处，通篇替换会显得用力过猛。"
+      ],
+      "example": {
+        "q": "把“Many people think education is important and it can solve many problems.”升级。",
+        "a": "A growing number of people hold the view that education plays a vital role in personal development and can address a range of social problems."
+      },
+      "trap": "不要用自己没把握的“高级词”；搭配错误比用词简单更扣分。"
+    }
+  ],
+  "summary": {
+    "must": [
+      "首段 2–3 句：描述 + 寓意",
+      "第二段两层原因 + 一层后果",
+      "第三段主体分层建议",
+      "每段一句本题专属细节",
+      "小作文格式：称呼、目的、细节、结尾、落款",
+      "四类小作文各 2–3 句功能句",
+      "功能句按“开头/描述/原因/举例/让步/建议/结尾”归档"
+    ],
+    "drop": [
+      "整篇万能模板",
+      "生僻难词堆砌",
+      "编造具体统计数据",
+      "过度升华到“人类命运”"
+    ],
+    "checklist": [
+      "能否 35 分钟写完 180 词且三段完整",
+      "首段寓意是否与第二段原因一致",
+      "第二段是否两层不同原因 + 一层后果",
+      "第三段建议是否具体到主体与动作",
+      "小作文称呼与落款是否齐全",
+      "是否每段都有一句只属于本题的细节"
+    ]
+  }
+}

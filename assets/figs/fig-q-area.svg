@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="定积分面积与旋转体">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.fill{fill:rgba(138,75,42,.14);stroke:none}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="sub" x="24" y="24">定积分几何应用：先画区域，再定上下限与“谁减谁”</text>
+  <line class="ink" x1="60" y1="220" x2="400" y2="220"/><path class="ink" d="M394 216 l10 4 l-10 4"/>
+  <line class="ink" x1="90" y1="250" x2="90" y2="50"/><path class="ink" d="M86 56 l4 -10 l4 10"/>
+  <path class="acc" d="M90 220 C160 220 220 180 270 120 C320 60 360 58 390 58"/>
+  <line class="acc" x1="90" y1="220" x2="390" y2="58" stroke-dasharray="0"/>
+  <path class="fill" d="M90 220 L390 58 C360 58 320 60 270 120 C220 180 160 220 90 220 Z"/>
+  <text class="sub" x="396" y="54">y=√x</text><text class="sub" x="352" y="44">y=x</text>
+  <text class="sub" x="70" y="240">O</text><text class="sub" x="340" y="240">1</text>
+  <line class="dash" x1="300" y1="220" x2="300" y2="110"/>
+  <text class="sub" x="304" y="132">x</text>
+  <text class="fml" x="440" y="90">A = ∫₀¹ (√x − x) dx</text>
+  <text class="fml" x="440" y="120">V_x = π∫₀¹ [(√x)² − x²] dx</text>
+  <text class="sub" x="440" y="150">旋转体：绕 x 轴用 π∫(y_上²−y_下²) dx</text>
+  <text class="sub" x="440" y="174">绕 y 轴：2π∫x(y_上−y_下) dx（柱壳）</text>
+  <text class="sub" x="440" y="198">先求交点，再判上下曲线，最后分段。</text>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="正态分布">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:2}.fill{fill:rgba(138,75,42,.10);stroke:none}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">正态分布：N(μ, σ²) 的“三σ原则”</text>
+  <text class="sub" x="24" y="44">标准化 z=(X−μ)/σ；查表、反查分位数都先标准化。</text>
+  <path class="fill" d="M110 240 C150 240 170 120 260 92 C350 64 370 240 410 240 Z" opacity=".35"/>
+  <path class="acc" d="M70 240 C130 240 160 170 200 120 C240 72 280 62 300 62 C320 62 360 72 400 120 C440 170 470 240 530 240"/>
+  <line class="thin" x1="60" y1="240" x2="540" y2="240"/>
+  <line class="dash" x1="300" y1="62" x2="300" y2="240"/>
+  <text class="sub" x="292" y="258">μ</text>
+  <line class="dash" x1="240" y1="240" x2="240" y2="120"/><text class="sub" x="228" y="258">μ−σ</text>
+  <line class="dash" x1="360" y1="240" x2="360" y2="120"/><text class="sub" x="350" y="258">μ+σ</text>
+  <line class="dash" x1="190" y1="240" x2="190" y2="170"/><text class="sub" x="176" y="258">μ−2σ</text>
+  <line class="dash" x1="410" y1="240" x2="410" y2="170"/><text class="sub" x="400" y="258">μ+2σ</text>
+  <text class="sub" x="250" y="120">68.3%</text>
+  <text class="sub" x="198" y="160">95.4%</text>
+  <text class="sub" x="126" y="200">99.7%</text>
+  <text class="fml" x="565" y="100">φ(x)=1/(√(2π)σ)·e^{−(x−μ)²/(2σ²)}</text>
+  <text class="sub" x="565" y="136">P(μ−σ&lt;X≤μ+σ)=0.6827</text>
+  <text class="sub" x="565" y="160">P(μ−2σ&lt;X≤μ+2σ)=0.9545</text>
+  <text class="sub" x="565" y="184">P(μ−3σ&lt;X≤μ+3σ)=0.9973</text>
+  <text class="sub" x="565" y="214">对称性：Φ(−z)=1−Φ(z)</text>
+</svg>

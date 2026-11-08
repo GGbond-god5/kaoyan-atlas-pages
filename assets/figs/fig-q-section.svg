@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="T形截面几何性质">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .soft{fill:rgba(138,75,42,.10);stroke:#8A4B2A;stroke-width:1.3}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="sub" x="24" y="24">T 形截面：形心、惯性矩、平行移轴</text>
+  <path class="soft" d="M110 70 H310 V96 H282 V220 H138 V96 H110 Z"/>
+  <line class="dash" x1="60" y1="96" x2="340" y2="96"/>
+  <line class="dash" x1="210" y1="50" x2="210" y2="240"/>
+  <text class="sub" x="60" y="88">翼缘</text><text class="sub" x="220" y="150">腹板</text>
+  <text class="sub" x="318" y="90">b</text><text class="sub" x="286" y="120">t_f</text><text class="sub" x="300" y="200">h</text><text class="sub" x="146" y="150">t_w</text>
+  <text class="sub" x="212" y="252">z 轴（形心轴）</text>
+  <text class="fml" x="380" y="96">A = b·t_f + h_w·t_w</text>
+  <text class="fml" x="380" y="124">z̄ = ΣA_i z_i / ΣA_i</text>
+  <text class="fml" x="380" y="152">I_z = Σ(I_zi + A_i d_i²)</text>
+  <text class="sub" x="380" y="182">先分块（翼缘/腹板）→ 求形心 → 平行移轴 → 组合。</text>
+  <text class="sub" x="380" y="206">弯曲正应力 σ=My/I_z；W_z=I_z/y_max。</text>
+</svg>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>题库索引 · 考研科目大观</title>
+<link rel="stylesheet" href="assets/bank.css">
+</head>
+<body>
+<header class="btop">
+  <a class="bback" href="index.html">← 返回图谱</a>
+  <div class="bbrand"><span class="bmark">题</span><div><b>题库索引</b><small>QUESTION BANK · 2027</small></div></div>
+  <input id="bsearch" type="search" placeholder="搜索章节、考点…" autocomplete="off">
+  <a class="blink" href="timeline.html">政治时间轴</a>
+</header>
+<main class="bmain">
+  <section class="bhero">
+    <div class="bkicker">QUESTION BANK HUB</div>
+    <h1>按考点，接题库</h1>
+    <p>这里可以直接刷大观自带的 4662 道题：题干、题图、完整解答与自评判分都在网页里完成。数学一 2009–2025 共 17 套真题（386 题）已全部逐题入库；2026、2025 两年模拟卷共 65 份也全部逐题入库（李林、张宇、李艳芳、合工大超越、欧几里得）。政治 2017–2026 年真题 267 题、肖1000 1127 题、英语一 2009–2025 共 17 套真题（884 题）已全部逐题入库；其余年份可在套卷模式打开原卷与解析 PDF。这些试卷题已按知识点章节打标签，可直接在「按知识点刷」里按章节筛选。华南理工 807 材料力学 2022/2023 同样已逐题入库。</p>
+    <div class="bcta"><a href="practice.html">开始刷题（4662 题）→</a></div>
+    <div class="bcontext" id="bcontext"></div>
+  </section>
+
+  <section class="bsection">
+    <div class="bhead"><h2>资料总览</h2><span>已下载的 500 份 PDF · 硬链接分类</span></div>
+    <div class="bcat-stats" id="bcatStats"></div>
+    <div class="bcat-controls">
+      <select id="bcatType"><option value="all">全部类型</option></select>
+      <select id="bcatSubject"><option value="all">全部科目</option></select>
+      <input id="bcatSearch" type="search" placeholder="搜索文件名 / 来源…">
+    </div>
+    <div class="bcat-list" id="bcatList"></div>
+    <button class="bmore" id="bcatMore">加载更多</button>
+  </section>
+
+  <section class="bsection">
+    <div class="bhead"><h2>题库来源</h2><span>先选来源，再按考点练</span></div>
+    <div class="bsource-groups" id="bsources"></div>
+  </section>
+
+  <section class="bsection">
+    <div class="bhead"><h2>小狗资料箱 · 推荐导入清单</h2><span>先从夸克下载，再放进 bank/</span></div>
+    <div class="bimport" id="bimport"></div>
+  </section>
+
+  <section class="bsection">
+    <div class="bhead"><h2>按考点找题</h2><span>点考点 → 回大观读讲义，或看推荐来源</span></div>
+    <div class="bresults" id="bresults"></div>
+  </section>
+
+  <section class="bsection">
+    <div class="bhead"><h2>本地题库文件</h2><span>扫描 bank/ 目录生成</span></div>
+    <div class="bfiles" id="bfiles"></div>
+  </section>
+
+  <p class="bnote">来源说明：肖秀荣系列、李林、张宇、合工大超越、历年真题等版权归原作者/出版社所有；本页仅提供索引与跳转，不存储、不转载题目内容。807 在 2020 年前科目代码为 801，检索旧资料时注意。</p>
+</main>
+<script src="assets/config.js?v=2027-11-07"></script>
+<script src="assets/data.js"></script>
+<script src="assets/bank-catalog.js"></script>
+<script src="assets/import-list.js"></script>
+<script src="assets/bank-files.js"></script>
+<script src="assets/bank.js"></script>
+</body>
+</html>

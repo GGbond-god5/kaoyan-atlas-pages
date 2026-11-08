@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>考研科目大观 · 2027 · 华南理工 085500</title>
+<meta name="description" content="数学一、英语一、807 材料力学、政治：考点、真题与专题的交互式阅读图谱，支持页内阅读与 PDF 下载。">
+<link rel="stylesheet" href="assets/atlas.css?v=15">
+<link rel="stylesheet" href="assets/web.css?v=15">
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">观</div>
+    <div>
+      <div class="brand-title">考研科目大观</div>
+      <div class="brand-sub">KAOYAN ATLAS · 2027</div>
+    </div>
+  </div>
+  <nav class="subject-nav" id="subjectNav" aria-label="科目切换"></nav>
+  <div class="stats" id="stats"></div>
+  <div class="actions">
+    <a class="btn ghost" href="vocab.html">词汇</a>
+    <a class="btn ghost" href="timeline.html">时间轴</a>
+    <a class="btn ghost" href="practice.html">刷题</a>
+    <button class="btn ghost" id="listBtn">目录视图</button>
+    <button class="btn" id="searchBtn">搜索考点 <kbd>/</kbd></button>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+  <div class="stage-bg" aria-hidden="true">
+    <div class="watermark">2027</div>
+    <div class="meta-mark">SCUT · 085500</div>
+  </div>
+  <svg class="links" id="links" aria-hidden="true"></svg>
+  <div class="nodes" id="nodes"></div>
+
+  <div class="stage-top">
+    <div class="crumb" id="crumb"></div>
+    <div class="countdown" id="countdown"></div>
+  </div>
+
+  <div class="stage-bottom">
+    <div class="legend" id="legend"></div>
+    <div class="hint">点击科目展开 · 点击章节在页内阅读 · 考点可直达 · PDF 可下载</div>
+    <div class="zoom">
+      <button data-zoom="out" aria-label="缩小">−</button>
+      <span id="zoomLabel">90%</span>
+      <button data-zoom="in" aria-label="放大">+</button>
+      <button data-zoom="fit">适应</button>
+    </div>
+  </div>
+</main>
+
+<div class="overlay" id="searchOverlay" hidden>
+  <div class="search-box">
+    <input id="searchInput" placeholder="搜索科目 / 章节 / 知识点…" autocomplete="off" spellcheck="false">
+    <div class="search-results" id="searchResults"></div>
+    <div class="search-foot">↑↓ 选择 · Enter 打开讲义 · Esc 关闭</div>
+  </div>
+</div>
+
+<div class="sheet" id="listSheet" hidden>
+  <div class="sheet-head">
+    <div><div class="kicker">CONTENTS</div><h2>目录</h2></div>
+    <button id="closeSheet">关闭</button>
+  </div>
+  <div class="sheet-body" id="listBody"></div>
+</div>
+
+<div class="mobile-list" id="mobileList"></div>
+
+
+<div class="reader" id="reader" role="dialog" aria-modal="true" aria-label="讲义阅读" aria-hidden="true">
+  <div class="reader-top">
+    <button class="reader-back" id="readerBack">← 返回图谱</button>
+    <div class="reader-crumb" id="readerCrumb"></div>
+    <div class="reader-actions">
+      <button class="reader-btn" id="readerTocBtn">目录</button>
+      <a class="reader-btn" id="readerVocab" href="vocab.html#test" hidden>词汇自测</a>
+      <a class="reader-btn accent" id="readerDownload" download>下载 PDF</a>
+    </div>
+  </div>
+  <div class="reader-progress"><i id="readerBar"></i></div>
+  <div class="reader-body">
+    <nav class="reader-toc" id="readerToc" aria-label="本章目录"></nav>
+    <article class="reader-article" id="readerArticle"></article>
+  </div>
+</div>
+
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/config.js?v=2027-11-07"></script>
+<script src="assets/data.js?v=15"></script>
+<script src="assets/atlas.js?v=15"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-label="叠加法示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.5}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1.1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">叠加法：多个载荷共同作用 = 各载荷单独作用之和</text>
+  <text class="sub" x="24" y="44">前提：线弹性、小变形；每段内力/位移与载荷成线性关系。</text>
+
+  <text class="sub" x="24" y="84">原结构</text>
+  <line class="ink" x1="90" y1="96" x2="470" y2="96"/>
+  <path class="thin" d="M90 96 l-10 16 h20 z"/>
+  <path class="thin" d="M470 96 l-10 16 h20 z"/>
+  <line class="acc" x1="280" y1="60" x2="280" y2="96"/>
+  <path class="acc" d="M272 66 l8 -10 l8 10"/>
+  <text class="lbl" x="286" y="72">P</text>
+  <g class="acc">
+    <line x1="150" y1="66" x2="150" y2="96"/><line x1="180" y1="66" x2="180" y2="96"/>
+    <line x1="210" y1="66" x2="210" y2="96"/><line x1="240" y1="66" x2="240" y2="96"/>
+  </g>
+  <text class="lbl" x="152" y="58">q</text>
+
+  <text class="lbl" x="330" y="150">=</text>
+
+  <text class="sub" x="24" y="190">工况①：只有 P</text>
+  <line class="ink" x1="90" y1="200" x2="470" y2="200"/>
+  <path class="thin" d="M90 200 l-10 16 h20 z"/>
+  <path class="thin" d="M470 200 l-10 16 h20 z"/>
+  <line class="acc" x1="280" y1="166" x2="280" y2="200"/>
+  <path class="acc" d="M272 172 l8 -10 l8 10"/>
+  <text class="lbl" x="286" y="178">P</text>
+  <path class="dash" d="M90 200 Q280 246 470 200"/>
+  <text class="sub" x="292" y="248">v₁</text>
+
+  <text class="lbl" x="330" y="230">+</text>
+
+  <text class="sub" x="24" y="284">工况②：只有 q</text>
+  <line class="ink" x1="90" y1="294" x2="470" y2="294"/>
+  <path class="thin" d="M90 294 l-10 16 h20 z"/>
+  <path class="thin" d="M470 294 l-10 16 h20 z"/>
+  <g class="acc">
+    <line x1="150" y1="264" x2="150" y2="294"/><line x1="180" y1="264" x2="180" y2="294"/>
+    <line x1="210" y1="264" x2="210" y2="294"/><line x1="240" y1="264" x2="240" y2="294"/>
+  </g>
+  <text class="lbl" x="152" y="256">q</text>
+  <path class="dash" d="M90 294 Q240 330 470 294"/>
+  <text class="sub" x="252" y="330">v₂</text>
+
+  <text class="lbl" x="520" y="180">v = v₁ + v₂</text>
+  <text class="sub" x="520" y="204">M = M₁ + M₂</text>
+  <text class="sub" x="520" y="228">σ = σ₁ + σ₂</text>
+  <text class="sub" x="520" y="252">同一截面、同一点代数相加</text>
+</svg>

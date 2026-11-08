@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="二维联合密度区域">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.fill{fill:rgba(138,75,42,.14);stroke:#8A4B2A;stroke-width:1.2}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="sub" x="24" y="24">二维联合密度：积分区域就是“概率质量”所在区域</text>
+  <line class="ink" x1="70" y1="220" x2="360" y2="220"/><path class="ink" d="M354 216 l10 4 l-10 4"/>
+  <line class="ink" x1="100" y1="250" x2="100" y2="50"/><path class="ink" d="M96 56 l4 -10 l4 10"/>
+  <path class="fill" d="M100 220 L300 220 L100 80 Z"/>
+  <text class="sub" x="88" y="74">y</text><text class="sub" x="366" y="224">x</text>
+  <text class="sub" x="306" y="236">1</text><text class="sub" x="86" y="86">1</text>
+  <text class="sub" x="210" y="150">D: x≥0, y≥0, x+y≤1</text>
+  <text class="fml" x="410" y="96">f(x,y)=C（区域 D 上）</text>
+  <text class="fml" x="410" y="124">∫∫_D f dxdy = 1 → 定 C</text>
+  <text class="fml" x="410" y="152">f_X(x)=∫₀^{1−x} C dy</text>
+  <text class="sub" x="410" y="182">求 P((X,Y)∈G)：在 D∩G 上积分；先画图再定限。</text>
+  <text class="sub" x="410" y="206">独立：f(x,y)=f_X(x)f_Y(y)（或矩形区域 + 可分离）。</text>
+</svg>

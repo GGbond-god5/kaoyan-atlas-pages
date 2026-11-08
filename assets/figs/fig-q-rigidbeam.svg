@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="刚性梁双吊杆">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#A8342A;fill:none;stroke-width:1.8}.dim{stroke:#6B6357;fill:none;stroke-width:.9}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+  </style>
+  <text class="sub" x="24" y="24">刚性梁 AB：A 端铰支，杆 1、杆 2 悬挂，梁上受集中力 P</text>
+  <line class="ink" x1="120" y1="140" x2="600" y2="140"/>
+  <path class="ink" d="M120 140 l-14 22 h28 z"/>
+  <line class="acc" x1="280" y1="80" x2="280" y2="140"/><line class="acc" x1="520" y1="80" x2="520" y2="140"/>
+  <line class="ink" x1="260" y1="80" x2="300" y2="80"/><line class="ink" x1="500" y1="80" x2="540" y2="80"/>
+  <text class="sub" x="258" y="72">杆 1</text><text class="sub" x="498" y="72">杆 2</text>
+  <line class="acc" x1="400" y1="96" x2="400" y2="140"/><path class="acc" d="M393 104 l7 -10 l7 10"/>
+  <text class="lbl" x="406" y="110">P</text>
+  <text class="sub" x="110" y="180">A</text><text class="sub" x="270" y="180">C</text><text class="sub" x="510" y="180">B</text>
+  <line class="dim" x1="120" y1="200" x2="400" y2="200"/><text class="sub" x="252" y="216">a</text>
+  <line class="dim" x1="400" y1="200" x2="600" y2="200"/><text class="sub" x="492" y="216">a</text>
+  <text class="sub" x="24" y="246">协调：梁转角 θ → Δ₁=aθ、Δ₂=2aθ；物理 Δ=F l/(EA)；联立平衡方程求 F₁、F₂。</text>
+</svg>

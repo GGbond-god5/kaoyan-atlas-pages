@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img" aria-label="常见弯矩图">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.fill{fill:rgba(138,75,42,.10);stroke:#8A4B2A;stroke-width:1.2}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:11.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:10.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:11.5px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="20" y="22">三个必须背下来的弯矩图</text>
+  <text class="sub" x="20" y="40">画图先定支座反力，再分段；剪力零处弯矩取极值。</text>
+
+  <!-- 1 -->
+  <text class="sub" x="30" y="70">简支梁 + 均布 q</text>
+  <line class="ink" x1="40" y1="92" x2="240" y2="92"/>
+  <path class="thin" d="M40 92 l-9 14 h18 z"/><path class="thin" d="M240 92 l-9 14 h18 z"/>
+  <g class="acc"><line x1="60" y1="64" x2="60" y2="92"/><line x1="90" y1="64" x2="90" y2="92"/><line x1="120" y1="64" x2="120" y2="92"/><line x1="150" y1="64" x2="150" y2="92"/><line x1="180" y1="64" x2="180" y2="92"/><line x1="210" y1="64" x2="210" y2="92"/></g>
+  <path class="fill" d="M40 180 L140 118 L240 180 Z"/>
+  <text class="fml" x="82" y="202">M_max = ql²/8</text>
+
+  <!-- 2 -->
+  <text class="sub" x="270" y="70">简支梁 + 跨中 P</text>
+  <line class="ink" x1="280" y1="92" x2="480" y2="92"/>
+  <path class="thin" d="M280 92 l-9 14 h18 z"/><path class="thin" d="M480 92 l-9 14 h18 z"/>
+  <line class="acc" x1="380" y1="62" x2="380" y2="92"/><path class="acc" d="M373 70 l7 -9 l7 9"/>
+  <path class="fill" d="M280 180 L380 118 L480 180 Z"/>
+  <text class="fml" x="318" y="202">M_max = Pl/4</text>
+
+  <!-- 3 -->
+  <text class="sub" x="510" y="70">悬臂梁 + 端部 P</text>
+  <line class="ink" x1="520" y1="92" x2="700" y2="92"/>
+  <path class="thin" d="M520 92 v-26 M520 92 v26 M520 80 h-10 M520 92 h-10 M520 104 h-10"/>
+  <line class="acc" x1="700" y1="60" x2="700" y2="92"/><path class="acc" d="M693 68 l7 -9 l7 9"/>
+  <path class="fill" d="M520 180 L700 118 L700 180 Z"/>
+  <text class="fml" x="560" y="202">M_max = Pl</text>
+
+  <text class="sub" x="20" y="240">画图步骤：求反力 → 分段列 M(x) → 找 Q=0 或集中力/集中力偶处 → 连线（均布为抛物线，集中力为折线）。</text>
+  <text class="sub" x="20" y="262">微分关系：dM/dx=Q，dQ/dx=q；M 图斜率突变处对应 Q 图跳变。</text>
+  <text class="sub" x="20" y="284">807：弯矩图很少单独考，通常接着弯曲正应力/组合变形；图错了后面全错。</text>
+</svg>

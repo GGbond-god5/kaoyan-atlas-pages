@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大观题库 · 考研科目大观</title>
+<link rel="stylesheet" href="assets/practice.css?v=16">
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+</head>
+<body>
+<header class="etop">
+  <a class="eback" href="index.html">← 返回图谱</a>
+  <div class="ebrand"><span class="emark">观</span><div><b>大观题库</b><small>PRACTICE · 2027</small></div></div>
+  <div class="etitle" id="paperTitle">组卷</div>
+  <div class="etimer" id="timer">00:00</div>
+  <button class="etoc" id="tocBtn" hidden>目录</button>
+  <button class="esubmit" id="submitBtn" hidden>交卷</button>
+  <button class="eexit" id="exitBtn" hidden>退出考试</button>
+  <a class="elink" id="bankLink" href="bank.html">题库来源</a>
+</header>
+
+<main class="emain">
+  <section id="setup">
+    <div class="ehero">
+      <div class="ekicker">QUESTION BANK · 2027</div>
+      <h1>选一种刷法。</h1>
+      <p id="pintro"></p>
+    </div>
+
+    <div class="mode-tabs" id="modeTabs">
+      <button data-mode="knowledge" class="on">按知识点刷</button>
+      <button data-mode="paper">按套卷刷</button>
+    </div>
+
+    <div class="setup-panel">
+      <div class="srow"><span class="slabel">科目</span><select id="fSubject"></select></div>
+      <div class="srow" id="rowChapter"><span class="slabel">章节</span><select id="fChapter"></select></div>
+      <div class="srow" id="rowPaper" hidden><span class="slabel">套卷</span><select id="fPaper"></select></div>
+      <div class="srow" id="rowDiff"><span class="slabel">难度</span><select id="fDiff">
+        <option value="all">全部难度</option><option value="易">易</option><option value="中">中</option><option value="难">难</option>
+      </select></div>
+      <div class="srow" id="rowSource"><span class="slabel">来源</span><select id="fSource">
+        <option value="all">全部</option><option value="real">真题</option><option value="same">同型题</option><option value="mock">模拟卷</option>
+      </select></div>
+      <div class="srow" id="countRow"><span class="slabel">题量</span><div class="seg" id="fCount">
+        <button data-n="10" class="on">10</button><button data-n="20">20</button><button data-n="50">50</button><button data-n="0">全部</button>
+      </div></div>
+    </div>
+
+    <div class="start-row">
+      <button class="start" id="pstart">开始答题</button>
+      <span class="pool-count" id="pcount"></span>
+      <a class="pool-count" id="paperSol" href="#" target="_blank" rel="noopener" hidden>打开解析 ↗</a>
+    </div>
+    <p class="setup-note" id="paperNote" hidden>「可刷题」= 已逐题录入，直接进入答题；「原卷」= 完整试卷 PDF，点开始答题打开原卷，解析 PDF 在右侧。</p>
+  </section>
+
+  <section id="exam" hidden>
+    <div class="exam-grid" id="examGrid">
+      <aside class="sheet" id="sheet">
+        <div class="sheet-head"><b>答题卡</b><span id="sheetMeta"></span></div>
+        <div class="qgrid" id="qgrid"></div>
+        <div class="legend">
+          <span><i class="st-new"></i>未做</span><span><i class="st-ok"></i>做对</span>
+          <span><i class="st-wrong"></i>做错</span><span><i class="st-fuzzy"></i>模糊</span>
+        </div>
+        <div class="sheet-stats" id="sheetStats"></div>
+        <button class="side-submit" id="sideSubmit">交卷</button>
+      </aside>
+
+      <article class="paper" id="paperCard">
+        <div class="paper-head"><span id="qno"></span><span id="qtype"></span><span id="qsrc"></span></div>
+        <div class="split-wrap" id="splitWrap">
+          <details id="qpassage" class="paper-passage" hidden><summary>原文</summary><div id="qpassagebody"></div></details>
+          <div class="q-main" id="qmain">
+            <div class="paper-kp" id="qkp"></div>
+            <div class="paper-figs" id="qfigs"></div>
+            <div class="paper-text" id="qtext"></div>
+            <div class="workarea">
+              <label for="work">作答 / 关键步骤</label>
+              <textarea id="work" placeholder="在纸上演算；这里可记关键步骤，切题不会丢。"></textarea>
+              <div class="photo-box" id="photoBox" hidden>
+                <input type="file" id="photoInput" accept="image/*" capture="environment" hidden>
+                <button class="photo-pick" id="photoPick" type="button">＋ 拍照 / 上传作答</button>
+                <button class="ai-grade" id="aiGrade" type="button" hidden>AI 评卷</button>
+                <div class="photo-preview" id="photoPreview" hidden>
+                  <img id="photoImg" alt="作答照片">
+                  <button id="photoRemove" type="button">移除</button>
+                </div>
+                <span class="photo-note">照片只保存在本机浏览器；AI 评卷需先配置阿里云 Key</span>
+              </div>
+            </div>
+            <div class="paper-actions">
+              <button id="prev">← 上一题</button>
+              <button class="reveal" id="reveal">显示解析（Space）</button>
+              <button id="aiAsk" type="button" hidden>AI 核对答案</button>
+              <button id="next">下一题 →</button>
+            </div>
+            <div class="solution" id="solution" hidden></div>
+            <div class="ai-result" id="aiResult" hidden></div>
+            <div class="gradebar" id="gradebar" hidden>
+              <span>这道题：</span>
+              <button data-grade="ok">做对了（1）</button>
+              <button data-grade="fuzzy">模糊（3）</button>
+              <button data-grade="wrong">做错了（2）</button>
+            </div>
+            <div class="paper-link"><a id="pklink" href="#" target="_blank" rel="noopener">去读对应考点 ↗</a><a id="psource" href="#" target="_blank" rel="noopener" hidden>原题页 ↗</a><a id="psol" href="#" target="_blank" rel="noopener" hidden>原解析 ↗</a><button id="pbig" type="button" hidden>原题整页 ↗</button></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="result" hidden></section>
+</main>
+
+<div class="img-modal" id="imgModal" hidden>
+  <div class="img-bar"><span id="imgCap"></span><a id="imgPdf" href="#" target="_blank" rel="noopener">原 PDF ↗</a><button id="imgClose">关闭</button></div>
+  <div class="img-scroll"><img id="imgBig" alt="原题整页"></div>
+</div>
+
+<div class="modal" id="confirmModal" hidden>
+  <div class="modal-box">
+    <h3 id="confirmTitle"></h3>
+    <p id="confirmText"></p>
+    <div class="modal-acts">
+      <button id="confirmCancel">取消</button>
+      <button class="danger" id="confirmOk">确认</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/questions.js?v=26"></script>
+<script src="assets/papers.js?v=3"></script>
+<script src="assets/config.js?v=2027-11-08"></script>
+<script src="assets/practice.js?v=31"></script>
+</body>
+</html>

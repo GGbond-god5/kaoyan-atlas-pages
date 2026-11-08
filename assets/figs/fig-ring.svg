@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img" aria-label="旋转圆环惯性力示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .soft{fill:rgba(138,75,42,.08);stroke:#8A4B2A;stroke-width:1.2}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:13px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">旋转薄圆环：惯性力产生的环向拉应力</text>
+  <text class="sub" x="24" y="44">转速越高，应力按 v² 增长；与截面积 A 无关，不能靠加厚解决。</text>
+
+  <!-- ring -->
+  <circle class="ink" cx="250" cy="180" r="104"/>
+  <circle class="ink" cx="250" cy="180" r="82"/>
+  <line class="thin" x1="250" y1="180" x2="354" y2="180"/>
+  <text class="sub" x="296" y="176">R</text>
+  <line class="thin" x1="330" y1="150" x2="330" y2="164"/>
+  <text class="sub" x="336" y="162">t</text>
+  <path class="acc" d="M250 180 m74 -74 a104 104 0 0 1 0 148"/>
+  <path class="acc" d="M318 240 l-8 6 l10 4"/>
+  <text class="lbl" x="336" y="212">ω</text>
+
+  <!-- element highlight at top -->
+  <path class="soft" d="M232 76 A104 104 0 0 1 268 76 L262 98 A82 82 0 0 0 238 98 Z"/>
+  <line class="acc" x1="250" y1="76" x2="250" y2="58"/>
+  <path class="acc" d="M245 64 l5 -8 l5 8"/>
+  <text class="sub" x="256" y="58">dF</text>
+  <text class="sub" x="196" y="102">dθ</text>
+
+  <!-- inset element -->
+  <line class="thin" x1="420" y1="70" x2="680" y2="70" stroke="#DAD2C3"/>
+  <text class="sub" x="430" y="60">取 dθ 微元</text>
+  <path class="ink" d="M470 150 q40 -34 80 0"/>
+  <line class="acc" x1="470" y1="150" x2="448" y2="150"/>
+  <path class="acc" d="M456 145 l-8 5 l8 5"/>
+  <text class="lbl" x="426" y="154">T</text>
+  <line class="acc" x1="550" y1="150" x2="572" y2="150"/>
+  <path class="acc" d="M564 145 l8 5 l-8 5"/>
+  <text class="lbl" x="578" y="154">T</text>
+  <line class="acc" x1="510" y1="118" x2="510" y2="96"/>
+  <path class="acc" d="M505 102 l5 -8 l5 8"/>
+  <text class="lbl" x="518" y="108">dF</text>
+  <text class="sub" x="466" y="178">dθ 很小时：2T·(dθ/2) = dF</text>
+
+  <text class="fml" x="424" y="232">dF = ρ A R ω² dθ</text>
+  <text class="fml" x="424" y="258">σ = T / A = ρ R² ω² = ρ v²</text>
+  <text class="sub" x="424" y="282">v = ωR；环向拉应力，沿圆周均匀。</text>
+  <text class="sub" x="424" y="304">要降应力，只能降转速或减小直径；加厚 A 不改变 σ。</text>
+</svg>
