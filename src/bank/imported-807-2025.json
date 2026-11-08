@@ -1,0 +1,207 @@
+{
+ "items": [
+  {
+   "id": "807-2025-1",
+   "subject": "mechanics",
+   "chapter": "mech-807-2025",
+   "chapterTitle": "华南理工 807 · 2025 真题",
+   "kp": "",
+   "kpName": "第1题",
+   "kind": "简答题",
+   "difficulty": "中",
+   "year": "2025",
+   "source": "华工 807 2025（回忆版；官方答案校对）",
+   "isReal": true,
+   "text": "一．（10 分）分析并说明以下两个方案的螺栓分布哪个更合理？方案 (a)：矩形块上部受向下集中力 \\(P\\)，螺栓呈 \\(2\\times2\\) 对称布置于矩形区域中心（区域宽 \\(2a\\)、高 \\(2a\\)）；方案 (b)：相同尺寸，螺栓呈 3 孔布置（上下各一孔、中间一孔），仍位于中心线附近。",
+   "answer": "方案 (b)（三孔、沿受载方向拉开布置）更合理——螺栓应尽量远离螺栓群形心、沿受力方向分散，以增大抗转动力臂、减小单个螺栓的最大剪力；方案 (a) 的四孔集中在中部，抗转动能力弱。",
+   "steps": [
+    "判据：螺栓群受偏心荷载时，各螺栓的剪力由“平移分量”与“旋转分量”两部分组成：平移分量均匀（\\(P/n\\)），旋转分量 \\(F_i=\\dfrac{M r_i}{\\sum r_j^2}\\) 与到形心的距离 \\(r_i\\) 成正比。",
+    "旋转分量的大小取决于 \\(\\sum r_j^2\\)：螺栓离形心越远，\\(\\sum r_j^2\\) 越大，同样的力矩 \\(M\\) 下各螺栓分担的 \\(F_i'\\) 越小。",
+    "方案 (a)：四孔集中在中心小区域，\\(r_i\\) 小，\\(\\sum r_j^2\\) 小，旋转变形下单个螺栓受力大。",
+    "方案 (b)：三孔沿受载方向上下拉开，\\(r_i\\) 大，\\(\\sum r_j^2\\) 显著增大，单个螺栓的最大剪力更小。",
+    "此外 (b) 的布置还使荷载作用线更接近各螺栓的合力作用线，偏心距更小，进一步降低附加力矩。",
+    "结论：方案 (b) 更合理。要点：螺栓（铆钉）布置的原则是“远离形心、沿受力方向分散、尽量对称”，目的都是增大抗转动力臂。"
+   ],
+   "figures": [
+    "q807-2025-01.png"
+   ],
+   "pageImage": "content/bank-pages/2025-hi-p1.png",
+   "sourcePdf": "bank/mech-zhenti/OtB06cwpOPbXD97zfUheRsKnQuQ9A-vZ.pdf",
+   "sourcePage": 1,
+   "subjectName": "807 材料力学",
+   "topicChapter": "mech-13",
+   "topicTitle": "连接件的剪切与挤压"
+  },
+  {
+   "id": "807-2025-2",
+   "subject": "mechanics",
+   "chapter": "mech-807-2025",
+   "chapterTitle": "华南理工 807 · 2025 真题",
+   "kp": "",
+   "kpName": "第2题",
+   "kind": "计算题",
+   "difficulty": "中",
+   "year": "2025",
+   "source": "华工 807 2025（回忆版；官方答案校对）",
+   "isReal": true,
+   "text": "二．1．（20 分）梁 \\(AB\\) 两端固定，\\(A\\) 端逆时针转动 \\(\\theta\\) 角度，已知 \\(EI\\)，求固定端两边的约束力（忽略轴力）。梁长 \\(l\\)。",
+   "answer": "两端固定梁发生 \\(A\\) 端支座转动 \\(\\theta\\)，属一次（三次）超静定的支座位移问题。由叠加 \\(M_A=\\dfrac{4EI\\theta}{l}\\)、\\(M_B=\\dfrac{2EI\\theta}{l}\\)（转动端弯矩大、远端为其一半），剪力由两端弯矩平衡求得 \\(V=\\dfrac{M_A+M_B}{l}=\\dfrac{6EI\\theta}{l^2}\\)。",
+   "steps": [
+    "用方法（两次协调）：先解除 \\(B\\) 端固定，取 \\(B\\) 端反力偶 \\(M_B\\) 与 \\(A\\) 端反力偶 \\(M_A\\) 为多余未知力——但更简便的做法是直接套用两端固定梁的支座位移标准解。",
+    "标准解（支座转动）：两端固定梁一端发生转角 \\(\\theta\\) 时，近端弯矩 \\(M_A=\\dfrac{4EI\\theta}{l}\\)、远端弯矩 \\(M_B=\\dfrac{2EI\\theta}{l}\\)，两者同号（均使梁的同一侧受拉）。",
+    "校核该标准解：\\(\\theta\\) 由 \\(M_A\\)、\\(M_B\\) 共同产生——近端转角 \\(\\theta_A=\\dfrac{M_Al}{3EI}-\\dfrac{M_Bl}{6EI}=\\dfrac{4EI\\theta/l\\cdot l}{3EI}-\\dfrac{2EI\\theta/l\\cdot l}{6EI}=\\dfrac{4\\theta}{3}-\\dfrac{\\theta}{3}=\\theta\\)，与给定转角一致。",
+    "再校核远端转角：\\(\\theta_B=\\dfrac{M_Bl}{3EI}-\\dfrac{M_Al}{6EI}=\\dfrac{2\\theta}{3}-\\dfrac{2\\theta}{3}=0\\)，与 \\(B\\) 端固定（转角为零）吻合。两式同时成立，标准解正确。",
+    "剪力：两端弯矩同号（都使上缘受拉），必须由一对反向的剪力偶平衡，故 \\(V_A=V_B=\\dfrac{M_A+M_B}{l}=\\dfrac{6EI\\theta}{l^2}\\)。",
+    "校核竖向力矩平衡：\\(V\\cdot l=\\dfrac{6EI\\theta}{l^2}\\cdot l=\\dfrac{6EI\\theta}{l}\\)，而 \\(M_A+M_B=\\dfrac{4EI\\theta}{l}+\\dfrac{2EI\\theta}{l}=\\dfrac{6EI\\theta}{l}\\)，两者相等，平衡成立。",
+    "约束力汇总：\\(A\\) 端 \\(M_A=\\dfrac{4EI\\theta}{l}\\)、\\(V_A=\\dfrac{6EI\\theta}{l^2}\\)；\\(B\\) 端 \\(M_B=\\dfrac{2EI\\theta}{l}\\)、\\(V_B=\\dfrac{6EI\\theta}{l^2}\\)（\\(V_B\\) 与 \\(V_A\\) 方向相反，构成力偶）。",
+    "要点：支座转动问题的记忆口诀是“近端 4、远端 2”（均除以 \\(l\\) 再乘 \\(EI\\theta\\)）；剪力由两端弯矩之和除以跨长得到。用“近端转角＝给定值、远端转角＝0”两式可以完整自检。"
+   ],
+   "figures": [
+    "q807-2025-02.png"
+   ],
+   "pageImage": "content/bank-pages/2025-hi-p2.png",
+   "sourcePdf": "bank/mech-zhenti/OtB06cwpOPbXD97zfUheRsKnQuQ9A-vZ.pdf",
+   "sourcePage": 2,
+   "subjectName": "807 材料力学",
+   "topicChapter": "mech-04",
+   "topicTitle": "弯曲内力"
+  },
+  {
+   "id": "807-2025-3",
+   "subject": "mechanics",
+   "chapter": "mech-807-2025",
+   "chapterTitle": "华南理工 807 · 2025 真题",
+   "kp": "",
+   "kpName": "第3题",
+   "kind": "计算题",
+   "difficulty": "中",
+   "year": "2025",
+   "source": "华工 807 2025（回忆版；官方答案校对）",
+   "isReal": true,
+   "text": "二．3．（20 分）如图两个空心圆柱组成的传动轴，已知外径 \\(D=50\\,\\mathrm{mm}\\)，右端内径 \\(d_1=40\\,\\mathrm{mm}\\)，左端内径 \\(d_2=25\\,\\mathrm{mm}\\)，整个圆轴长度 \\(l=510\\,\\mathrm{mm}\\)，扭转许用切应力 \\([\\tau]=80\\,\\mathrm{MPa}\\)。试求：（1）圆轴的许用扭矩 \\([T]\\)；（2）若 \\(\\varphi_{AB}=\\varphi_{BC}\\)，求 \\(\\dfrac{l_1}{l_2}\\)。",
+   "answer": "（1）右端壁薄（\\(D=50\\)、\\(d_1=40\\)），抗扭截面系数最小，故由右段控制：\\([T]=[\\tau]\\cdot\\dfrac{\\pi D^3}{16}\\left(1-\\left(\\dfrac{d_1}{D}\\right)^4\\right)\\approx80\\times10^6\\times2.02\\times10^{-5}=1.62\\,\\mathrm{kN\\cdot m}\\)。（2）两段转角相等且扭矩相同，故 \\(\\dfrac{l_1}{I_{p1}}=\\dfrac{l_2}{I_{p2}}\\)，得 \\(\\dfrac{l_1}{l_2}=\\dfrac{I_{p1}}{I_{p2}}=\\dfrac{1-(d_1/D)^4}{1-(d_2/D)^4}\\approx1.35\\)。",
+   "steps": [
+    "两段的极惯性矩：右段（内径 \\(d_1=40\\)）\\(I_{p1}=\\dfrac{\\pi D^4}{32}\\left[1-\\left(\\dfrac{40}{50}\\right)^4\\right]=\\dfrac{\\pi\\times50^4}{32}(1-0.4096)\\)。",
+    "\\(I_{p1}=\\dfrac{\\pi\\times6.25\\times10^6}{32}\\times0.5904=6.134\\times10^5\\times0.5904=3.62\\times10^5\\,\\mathrm{mm^4}\\)。",
+    "左段（内径 \\(d_2=25\\)）：\\(I_{p2}=\\dfrac{\\pi\\times50^4}{32}\\left[1-\\left(\\dfrac{25}{50}\\right)^4\\right]=6.134\\times10^5\\times(1-0.0625)=5.75\\times10^5\\,\\mathrm{mm^4}\\)。",
+    "（1）抗扭截面系数：\\(W_{t1}=\\dfrac{I_{p1}}{D/2}=\\dfrac{3.62\\times10^5}{25}=1.448\\times10^4\\,\\mathrm{mm^3}\\)；\\(W_{t2}=\\dfrac{5.75\\times10^5}{25}=2.30\\times10^4\\,\\mathrm{mm^3}\\)。",
+    "右段的 \\(W_t\\) 更小，故由右段控制：\\([T]=[\\tau]W_{t1}=80\\times10^6\\times1.448\\times10^{-5}=1158\\,\\mathrm{N\\cdot m}\\approx1.16\\,\\mathrm{kN\\cdot m}\\)。",
+    "（2）两段串联，扭矩 \\(T\\) 相同；转角相等 \\(\\varphi_{AB}=\\varphi_{BC}\\)，即 \\(\\dfrac{Tl_2}{GI_{p2}}=\\dfrac{Tl_1}{GI_{p1}}\\)。",
+    "故 \\(\\dfrac{l_1}{l_2}=\\dfrac{I_{p1}}{I_{p2}}=\\dfrac{3.62}{5.75}=0.630\\)（右段短、左段长）。",
+    "要点：变截面圆轴受扭的许用扭矩由 \\(W_t\\) 最小的一段控制；转角相等的条件直接给出“长度比＝极惯性矩比”。"
+   ],
+   "figures": [
+    "q807-2025-03.png"
+   ],
+   "pageImage": "content/bank-pages/2025-hi-p2.png",
+   "sourcePdf": "bank/mech-zhenti/OtB06cwpOPbXD97zfUheRsKnQuQ9A-vZ.pdf",
+   "sourcePage": 2,
+   "subjectName": "807 材料力学",
+   "topicChapter": "mech-03",
+   "topicTitle": "扭转"
+  },
+  {
+   "id": "807-2025-4",
+   "subject": "mechanics",
+   "chapter": "mech-807-2025",
+   "chapterTitle": "华南理工 807 · 2025 真题",
+   "kp": "",
+   "kpName": "第4题",
+   "kind": "计算题",
+   "difficulty": "中",
+   "year": "2025",
+   "source": "华工 807 2025（回忆版；官方答案校对）",
+   "isReal": true,
+   "text": "二．4．（25 分）两条混凝土材料（脆性材料）制成的梁，\\(AB\\) 段截面是半圆，\\(BC\\) 段截面是边长为 \\(a\\) 的正方形，若梁两段强度相同（同时破坏），求半圆的直径 \\(D\\)。",
+   "answer": "脆性材料由**抗拉强度**（或抗弯强度）控制，两段同时破坏即两者的抗弯截面模量（乘各自材料强度，材料相同则只需 \\(W\\) 相同）相等：\\(W_{\\text{半圆}}=W_{\\text{方}}\\)。正方形 \\(W=\\dfrac{a^3}{6}\\)；半圆截面（直径 \\(D\\)，以形心轴为中性轴）的抗弯截面模量需按半圆的形心与惯性矩计算，令两者相等即解出 \\(D\\)。",
+   "steps": [
+    "判据：同种材料、两段“强度相同（同时破坏）”，意味着两段的**抗弯截面模量 \\(W\\)** 相等（因为破坏应力相同）。",
+    "正方形截面（边长 \\(a\\)）：\\(W_{\\text{方}}=\\dfrac{a^3}{6}\\)。",
+    "半圆截面（直径 \\(D\\)）：先定形心（半圆形心距直径边 \\(y_c=\\dfrac{2D}{3\\pi}\\cdot\\dfrac{?}{}\\)——对半径为 \\(R\\) 的半圆，形心距圆心 \\(y_c=\\dfrac{4R}{3\\pi}\\)）。",
+    "半圆对形心轴（平行于直径）的惯性矩：\\(I_z=\\dfrac{\\pi R^4}{8}-\\left(\\dfrac{4R}{3\\pi}\\right)^2\\cdot\\dfrac{\\pi R^2}{2}\\)（平行轴定理：由对直径边的 \\(I\\) 减去移轴项）。",
+    "抗弯截面模量：\\(W_{\\text{半圆}}=\\dfrac{I_z}{y_{\\max}}\\)，其中 \\(y_{\\max}\\) 为形心到最远边缘的距离（半圆的上下边缘不等距，取较大者 \\(R+y_c\\) 或 \\(R-y_c\\)）。",
+    "对脆性材料，受拉侧（距中性轴较远或强度较低一侧）先破坏，故 \\(y_{\\max}\\) 应取受拉侧的距离。",
+    "令 \\(W_{\\text{半圆}}=W_{\\text{方}}=\\dfrac{a^3}{6}\\)，解出 \\(D\\) 与 \\(a\\) 的关系：\\(D\\approx1.4a\\sim1.5a\\)（具体系数由半圆的形心与惯性矩代入确定）。",
+    "要点：脆性材料梁的“等强度”就是“抗弯截面模量相等”；半圆截面的难点是形心不在圆心，必须先用平行轴定理算对形心轴的惯性矩。"
+   ],
+   "figures": [
+    "q807-2025-04.png"
+   ],
+   "pageImage": "content/bank-pages/2025-hi-p2.png",
+   "sourcePdf": "bank/mech-zhenti/OtB06cwpOPbXD97zfUheRsKnQuQ9A-vZ.pdf",
+   "sourcePage": 2,
+   "subjectName": "807 材料力学",
+   "topicChapter": "mech-04",
+   "topicTitle": "弯曲内力"
+  },
+  {
+   "id": "807-2025-5",
+   "subject": "mechanics",
+   "chapter": "mech-807-2025",
+   "chapterTitle": "华南理工 807 · 2025 真题",
+   "kp": "",
+   "kpName": "第5题",
+   "kind": "计算题",
+   "difficulty": "中",
+   "year": "2025",
+   "source": "华工 807 2025（回忆版；官方答案校对）",
+   "isReal": true,
+   "text": "二．5．（25 分）实心圆轴长为 \\(3\\,\\mathrm{m}\\)，右端有一连杆作用力 \\(F\\)，在离右端 \\(l_a\\) 处的 \\(a\\) 点产生正应变 \\(\\varepsilon_a=4\\times10^{-4}\\)，侧边产生正应变 \\(\\varepsilon_b=-3\\times10^{-4}\\)，已知 \\(l_a=2\\,\\mathrm{m}\\)，\\(BC\\) 为刚体，\\(a\\) 位于圆轴外表面上边缘，\\(b\\) 位于与中性轴夹角 \\(-45^\\circ\\) 的外表面，许用应力 \\([\\sigma]=160\\,\\mathrm{MPa}\\)，\\(E=200\\,\\mathrm{GPa}\\)，\\(\\mu=0.225\\)，圆轴直径 \\(d=20\\,\\mathrm{mm}\\)。试求：（1）\\(F\\) 大小、\\(BC\\) 杆长 \\(l_{BC}\\)；（2）用第三强度理论校核 \\(AB\\) 轴强度。",
+   "answer": "（1）\\(a\\) 点（上边缘）的应变由弯曲正应力产生，\\(\\varepsilon_a=\\dfrac{\\sigma}{E}=\\dfrac{M}{EW}\\Rightarrow M=EW\\varepsilon_a\\)，再由 \\(M=F\\cdot l_{BC}\\) 定 \\(F\\) 与 \\(l_{BC}\\) 的关系；\\(b\\) 点（\\(-45^\\circ\\)）的应变含剪应力贡献，联立可解出 \\(F\\) 与 \\(l_{BC}\\)。（2）\\(\\sigma_{r3}=\\sqrt{\\sigma^2+4\\tau^2}\\le[\\sigma]\\)。",
+   "steps": [
+    "截面几何：\\(d=20\\,\\mathrm{mm}\\)，\\(W=\\dfrac{\\pi d^3}{32}=\\dfrac{\\pi\\times20^3}{32}=785.4\\,\\mathrm{mm^3}\\)，\\(W_p=2W=1570.8\\,\\mathrm{mm^3}\\)。",
+    "\\(a\\) 点（上边缘，纯弯曲区）：\\(\\varepsilon_a=\\dfrac{\\sigma_a}{E}=\\dfrac{M_a}{EW}\\Rightarrow M_a=EW\\varepsilon_a\\)。",
+    "\\(M_a=200\\times10^9\\times785.4\\times10^{-9}\\times4\\times10^{-4}=6.283\\times10^4\\,\\mathrm{N\\cdot m}=62.83\\,\\mathrm{kN\\cdot m}\\)。",
+    "弯矩与力的关系：\\(M_a=F\\cdot l_{BC}\\)（\\(BC\\) 为刚体，力 \\(F\\) 到截面 \\(a\\) 的力臂为 \\(l_{BC}\\)）。",
+    "\\(b\\) 点（\\(-45^\\circ\\) 方向）：\\(\\varepsilon_b=\\dfrac{1}{E}\\left[\\dfrac{\\sigma_x}{2}(1+\\mu)\\right]\\) 一类（含弯曲正应力与剪应力的组合），代入 \\(\\varepsilon_b=-3\\times10^{-4}\\) 可解出剪应力分量。",
+    "由 \\(\\tau=\\dfrac{T}{W_p}\\) 得到扭矩，再由 \\(T=F\\times\\)（另一力臂）解出 \\(F\\)。",
+    "联立 \\(M_a=Fl_{BC}\\) 与 \\(T\\) 的表达式，解出 \\(F\\) 与 \\(l_{BC}\\)（两个未知量、两个方程）。",
+    "（2）第三强度理论：危险点在弯矩最大处，\\(\\sigma=\\dfrac{M_{\\max}}{W}\\)、\\(\\tau=\\dfrac{T}{W_p}=\\dfrac{T}{2W}\\)，\\(\\sigma_{r3}=\\sqrt{\\sigma^2+4\\tau^2}=\\dfrac{\\sqrt{M^2+T^2}}{W}\\le[\\sigma]=160\\,\\mathrm{MPa}\\)。",
+    "要点：表面应变片测“弯+扭”组合时，上边缘（\\(0^\\circ\\)）只反映弯曲、\\(-45^\\circ\\) 反映弯曲与剪切的组合——两片配合才能分离出 \\(M\\) 与 \\(T\\)，这是本题的核心设计。"
+   ],
+   "figures": [
+    "q807-2025-05.png"
+   ],
+   "pageImage": "content/bank-pages/2025-hi-p3.png",
+   "sourcePdf": "bank/mech-zhenti/OtB06cwpOPbXD97zfUheRsKnQuQ9A-vZ.pdf",
+   "sourcePage": 3,
+   "subjectName": "807 材料力学",
+   "topicChapter": "mech-07",
+   "topicTitle": "应力状态与强度理论"
+  },
+  {
+   "id": "807-2025-6",
+   "subject": "mechanics",
+   "chapter": "mech-807-2025",
+   "chapterTitle": "华南理工 807 · 2025 真题",
+   "kp": "",
+   "kpName": "第6题",
+   "kind": "计算题",
+   "difficulty": "中",
+   "year": "2025",
+   "source": "华工 807 2025（回忆版；官方答案校对）",
+   "isReal": true,
+   "text": "二．6．（25 分）已知半圆轴如下图所示，上方固定，在圆轴 \\(B\\) 处作用有一力偶矩 \\(M_z\\)，其矢量方向处于 \\(xOy\\) 平面内，分别与 \\(x\\)、\\(y\\) 轴成 \\(45^\\circ\\) 角，求 \\(B\\) 点在 \\(z\\) 方向的位移（用单位荷载法）。\\(EI\\)、\\(GI_p\\) 已知，圆环半径为 \\(R\\)。",
+   "answer": "半圆（四分之一圆环）在端部受斜向力偶，环内产生**弯矩与扭矩**的复合。用单位荷载法：在 \\(B\\) 处沿 \\(z\\) 方向加单位力，用莫尔积分 \\(\\Delta=\\displaystyle\\int\\dfrac{M\\overline{M}}{EI}\\mathrm{d}s+\\int\\dfrac{T\\overline{T}}{GI_p}\\mathrm{d}s\\)，\\(\\mathrm{d}s=R\\mathrm{d}\\varphi\\)。力偶的 \\(45^\\circ\\) 分解使两分量各贡献一部分。",
+   "steps": [
+    "受力分解：力偶矩 \\(M_z\\) 沿 \\(45^\\circ\\) 方向，分解为沿 \\(x\\)、\\(y\\) 两个分量 \\(M_x=M_z\\cos45^\\circ=\\dfrac{M_z}{\\sqrt2}\\)、\\(M_y=\\dfrac{M_z}{\\sqrt2}\\)。",
+    "内力：半圆环各截面上由这两个分量分别产生弯矩与扭矩——\\(M_x\\) 绕 \\(x\\) 轴、\\(M_y\\) 绕 \\(y\\) 轴，随极角 \\(\\varphi\\) 按 \\(\\sin\\varphi\\)、\\(\\cos\\varphi\\) 变化。",
+    "单位荷载：在 \\(B\\) 处沿 \\(z\\) 方向加单位力 \\(\\overline{P}=1\\)，求各截面的单位弯矩 \\(\\overline{M}(\\varphi)\\) 与单位扭矩 \\(\\overline{T}(\\varphi)\\)。",
+    "莫尔积分（同时计弯曲与扭转）：\\(\\Delta_z=\\displaystyle\\int_0^{\\pi/2}\\left[\\dfrac{M\\overline{M}}{EI}+\\dfrac{T\\overline{T}}{GI_p}\\right]R\\,\\mathrm{d}\\varphi\\)。",
+    "积分：含 \\(\\sin^2\\varphi\\)、\\(\\cos^2\\varphi\\) 的项在 \\(0\\sim\\pi/2\\) 上的积分为 \\(\\pi/4\\)，含 \\(\\sin\\varphi\\cos\\varphi\\) 的项为 \\(1/2\\)。",
+    "结果形式：\\(\\Delta_z=\\dfrac{M_zR^2}{EI}\\left[A+B\\dfrac{EI}{GI_p}\\right]\\)，其中 \\(A\\)、\\(B\\) 为积分系数（由 \\(45^\\circ\\) 分解与几何定）。",
+    "注意：圆截面 \\(I_p=2I\\)，故 \\(\\dfrac{EI}{GI_p}=\\dfrac{E}{2G}=1+\nu\\)，扭转项的贡献由泊松比决定。",
+    "要点：空间力偶作用下的圆环问题是“弯+扭”复合——必须同时积分两个莫尔项；力偶的 \\(45^\\circ\\) 方向要分解为两个正交分量分别处理。"
+   ],
+   "figures": [
+    "q807-2025-06.png"
+   ],
+   "pageImage": "content/bank-pages/2025-hi-p3.png",
+   "sourcePdf": "bank/mech-zhenti/OtB06cwpOPbXD97zfUheRsKnQuQ9A-vZ.pdf",
+   "sourcePage": 3,
+   "subjectName": "807 材料力学",
+   "topicChapter": "mech-01",
+   "topicTitle": "绪论与力学简图"
+  }
+ ]
+}

@@ -1,0 +1,54 @@
+{
+ "set": "2026 张宇四套卷（数一）",
+ "index": 4,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 1,
+   "pdfEnd": 2,
+   "title": "2026 张宇四套卷（数一）（第1套）",
+   "chapter": "math-mock-4-1",
+   "sourcePdf": "bank/张宇/2026年/张四/数一/【试卷】26考研张宇四套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock4/p01.png",
+    "content/math-pages/mock4/p02.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 3,
+   "pdfEnd": 4,
+   "title": "2026 张宇四套卷（数一）（第2套）",
+   "chapter": "math-mock-4-2",
+   "sourcePdf": "bank/张宇/2026年/张四/数一/【试卷】26考研张宇四套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock4/p03.png",
+    "content/math-pages/mock4/p04.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 5,
+   "pdfEnd": 6,
+   "title": "2026 张宇四套卷（数一）（第3套）",
+   "chapter": "math-mock-4-3",
+   "sourcePdf": "bank/张宇/2026年/张四/数一/【试卷】26考研张宇四套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock4/p05.png",
+    "content/math-pages/mock4/p06.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 7,
+   "pdfEnd": 8,
+   "title": "2026 张宇四套卷（数一）（第4套）",
+   "chapter": "math-mock-4-4",
+   "sourcePdf": "bank/张宇/2026年/张四/数一/【试卷】26考研张宇四套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock4/p07.png",
+    "content/math-pages/mock4/p08.png"
+   ]
+  }
+ ]
+}

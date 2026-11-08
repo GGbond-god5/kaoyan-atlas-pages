@@ -1,0 +1,21 @@
+{
+ "set": "2026 Kira 模考卷二（数一）",
+ "index": 18,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 1,
+   "pdfEnd": 5,
+   "title": "2026 Kira 模考卷二（数一）（第1套）",
+   "chapter": "math-mock-18-1",
+   "sourcePdf": "bank/_分类/模拟题/数学一/kira/【Kira】26数学一模考卷2 (试卷).pdf",
+   "images": [
+    "content/math-pages/mock18/p01.png",
+    "content/math-pages/mock18/p02.png",
+    "content/math-pages/mock18/p03.png",
+    "content/math-pages/mock18/p04.png",
+    "content/math-pages/mock18/p05.png"
+   ]
+  }
+ ]
+}

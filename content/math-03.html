@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>数学一 · 一元函数积分学</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#1F3A5F;--accent-soft:#E7ECF3;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MATH · 03</span><span>MATHEMATICS I</span></div>
+    <h1>一元函数积分学</h1>
+    <p class="cover-sub">数一分值最重的一章：不定积分是基本功，定积分与变限积分是解答题常客，几何物理应用至少一道小题。</p>
+    <div class="cover-meta"><span class="meta-pill acc">S 级 · 必须拿下</span><span class="meta-pill">解答题必考</span><span class="meta-pill">变限积分</span><span class="meta-pill">应用题载体</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>原函数与不定积分的概念，基本性质与基本积分公式</li><li>定积分的概念与性质，定积分中值定理</li><li>变上限积分函数及其导数</li><li>牛顿—莱布尼茨公式</li><li>不定积分与定积分的换元积分法、分部积分法</li><li>有理函数、三角函数有理式与简单无理函数的积分</li><li>反常积分的概念与敛散性判别</li><li>定积分应用：面积、弧长、旋转体体积与侧面积</li><li>平行截面面积已知的立体体积</li><li>功、压力、质心、形心</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>原函数与基本积分公式</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">不定积分是求导的逆运算，结果必须带 \(C\)。基本积分表要背到条件反射，尤其 \(1/x\)、\(1/(1+x^2)\)、\(1/\sqrt{1-x^2}\)、\(\sec^2x\) 四组。连续函数一定有原函数，但原函数不一定是初等函数。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\int x^\alpha dx=\dfrac{x^{\alpha+1}}{\alpha+1}+C\ (\alpha\ne-1)\)</span><span class="f-note">幂函数</span></div><div class="f-row"><span class="f-tex">\(\int\dfrac{dx}{x}=\ln|x|+C\)</span><span class="f-note">绝对值不能丢</span></div><div class="f-row"><span class="f-tex">\(\int\dfrac{dx}{1+x^2}=\arctan x+C,\quad \int\dfrac{dx}{\sqrt{1-x^2}}=\arcsin x+C\)</span><span class="f-note">反三角两组</span></div><div class="f-row"><span class="f-tex">\(\int\sec^2x\,dx=\tan x+C\)</span><span class="f-note">三角常用</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">求 \(\int\left(3x^2+\dfrac{2}{x}+e^x\right)dx\)。</p><div class="exam-ans"><b>要点</b> \(x^3+2\ln|x|+e^x+C\)；注意 \(1/x\) 的积分带绝对值，且三项都要并到同一个 \(C\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>逐项积分：\(\int3x^2dx=x^3\)，\(\int\frac2x dx=2\ln|x|\)，\(\int e^x dx=e^x\)。</li><li>三项都是同一变量的不定积分，常数只需写一个 \(C\)，不要每项各写一个。</li><li>合并得 \(x^3+2\ln|x|+e^x+C\)。</li><li>检查：对结果求导应还原被积函数 \(3x^2+\frac2x+e^x\)；注意 \(\ln|x|\) 的绝对值不能丢。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>忘记写 \(+C\)。</li><li>\(\int x^{-1}dx\) 写成 \(x^0/0\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>基本积分表按“幂、指、对、三角、反三角”五组默写，每天一遍，三天成型。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>换元积分法</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">第一类换元（凑微分）识别“内层函数的导数是否在旁”；第二类换元用于根式，三角代换 \(x=a\sin t\)、\(x=a\tan t\)、\(x=a\sec t\) 分别对付 \(\sqrt{a^2-x^2}\)、\(\sqrt{a^2+x^2}\)、\(\sqrt{x^2-a^2}\)。定积分换元必须<strong>同时换上下限</strong>。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\int f(\varphi(x))\varphi'(x)dx=\int f(u)du\)</span><span class="f-note">第一类</span></div><div class="f-row"><span class="f-tex">\(\sqrt{a^2-x^2}:\ x=a\sin t\)</span><span class="f-note">\(t\in[-\pi/2,\pi/2]\)</span></div><div class="f-row"><span class="f-tex">\(\sqrt{a^2+x^2}:\ x=a\tan t\)</span><span class="f-note">\(t\in(-\pi/2,\pi/2)\)</span></div><div class="f-row"><span class="f-tex">\(\sqrt{x^2-a^2}:\ x=a\sec t\)</span><span class="f-note">注意分区讨论</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">求 \(\int\dfrac{dx}{x^2\sqrt{1+x^2}}\)。</p><div class="exam-ans"><b>要点</b> 令 \(x=\tan t\)，\(dx=\sec^2t\,dt\)，化为 \(\int\cos t\,dt=\sin t+C=\dfrac{x}{\sqrt{1+x^2}}+C\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>被积函数含 \(\sqrt{1+x^2}\)，令 \(x=\tan t,\ dx=\sec^2t\,dt,\ \sqrt{1+x^2}=\sec t\)。</li><li>代入：\(\int\frac{\sec^2t}{\tan^2t\cdot\sec t}dt=\int\frac{\cos t}{\sin^2t}dt\)。</li><li>再令 \(u=\sin t\)，得 \(\int u^{-2}du=-\frac1u+C=-\frac{1}{\sin t}+C\)。</li><li>由 \(x=\tan t\) 得 \(\sin t=\frac{x}{\sqrt{1+x^2}}\)，故原式 \(=-\frac{\sqrt{1+x^2}}{x}+C\)。</li><li>检查：对结果求导可还原；也可用 \(x=1/t\) 倒代换得到同一结果。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>定积分换元后仍用原上下限。</li><li>三角代换不回代 \(x\)，答案含 \(t\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>三角代换先画直角三角形，回代时直接读边长，比反解 \(t\) 快。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>分部积分与循环积分</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">分部积分口诀“反对幂指三”，排在前面的优先当 \(u\)。出现 \(e^x\sin x\)、\(e^x\cos x\) 这类循环积分，连续分部两次后移项解出；定积分分部注意上下限代入。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\int u\,dv=uv-\int v\,du\)</span><span class="f-note">不定积分</span></div><div class="f-row"><span class="f-tex">\(\int_a^b u\,dv=[uv]_a^b-\int_a^b v\,du\)</span><span class="f-note">定积分</span></div><div class="f-row"><span class="f-tex">\(\int e^x\sin x\,dx=\dfrac{e^x(\sin x-\cos x)}{2}+C\)</span><span class="f-note">循环结果</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">求 \(\int x\ln x\,dx\)。</p><div class="exam-ans"><b>要点</b> \(u=\ln x,\ dv=x\,dx\)，得 \(\dfrac{x^2}{2}\ln x-\int\dfrac{x}{2}dx=\dfrac{x^2}{2}\ln x-\dfrac{x^2}{4}+C\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>分部积分取 \(u=\ln x,\ dv=x\,dx\)，则 \(du=\frac1x dx,\ v=\frac{x^2}{2}\)。</li><li>代入 \(\int u\,dv=uv-\int v\,du\)：\(\frac{x^2}{2}\ln x-\int\frac{x^2}{2}\cdot\frac1x dx\)。</li><li>第二项 \(\int\frac x2 dx=\frac{x^2}{4}\)。</li><li>故原式 \(=\frac{x^2}{2}\ln x-\frac{x^2}{4}+C\)。</li><li>检查：求导得 \(x\ln x+\frac x2-\frac x2=x\ln x\)，正确；分部积分选 \(u\) 的原则是“对数优先”。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>\(u\) 与 \(dv\) 选反，越积越复杂。</li><li>循环积分移项时符号出错。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>分部积分只记一句“谁求导会变简单，谁当 u”，880 题按此分类刷一遍即可。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>有理函数与三角有理式积分</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">有理函数先化真分式，再部分分式分解；分母含不可约二次因式时配方。三角有理式用万能代换 \(t=\tan(x/2)\) 兜底，但优先用凑微分或积化和差，计算量小得多。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\dfrac{P(x)}{Q(x)}=\sum\dfrac{A_i}{(x-a_i)^{k}}+\sum\dfrac{Bx+C}{x^2+px+q}\)</span><span class="f-note">部分分式</span></div><div class="f-row"><span class="f-tex">\(t=\tan\dfrac{x}{2}\Rightarrow\sin x=\dfrac{2t}{1+t^2},\ \cos x=\dfrac{1-t^2}{1+t^2}\)</span><span class="f-note">万能代换</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">求 \(\int\dfrac{dx}{x^2-a^2}\ (a&gt;0)\)。</p><div class="exam-ans"><b>要点</b> 分解为 \(\dfrac{1}{2a}\left(\dfrac{1}{x-a}-\dfrac{1}{x+a}\right)\)，积分得 \(\dfrac{1}{2a}\ln\left|\dfrac{x-a}{x+a}\right|+C\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>分解分母：\(x^2-a^2=(x-a)(x+a)\)，设 \(\frac{1}{x^2-a^2}=\frac{A}{x-a}+\frac{B}{x+a}\)。</li><li>通分比较分子：\(1=A(x+a)+B(x-a)\)，令 \(x=a\) 得 \(A=\frac1{2a}\)，令 \(x=-a\) 得 \(B=-\frac1{2a}\)。</li><li>积分：\(\frac1{2a}\int\frac{dx}{x-a}-\frac1{2a}\int\frac{dx}{x+a}=\frac1{2a}\ln|x-a|-\frac1{2a}\ln|x+a|+C\)。</li><li>合并对数：\(\frac1{2a}\ln\left|\frac{x-a}{x+a}\right|+C\)。</li><li>检查：对结果求导得 \(\frac1{2a}\left(\frac1{x-a}-\frac1{x+a}\right)=\frac1{x^2-a^2}\)，正确。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>假分式不先做除法，直接分解。</li><li>万能代换后忘记 \(dx=\dfrac{2dt}{1+t^2}\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>有理函数积分固定流程：假分式除法—因式分解—部分分式—逐项积分，四步不跳。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>变限积分与定积分性质</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">变限积分是被积函数的原函数，求导时上限、下限、被积函数都可能含 \(x\)：\(\dfrac{d}{dx}\int_{a(x)}^{b(x)}f(t)dt=f(b)b'-f(a)a'\)。若被积函数含 \(x\)，必须先换元把 \(x\) 移出积分号，再求导。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\dfrac{d}{dx}\int_a^{\varphi(x)}f(t)dt=f(\varphi(x))\varphi'(x)\)</span><span class="f-note">基本型</span></div><div class="f-row"><span class="f-tex">\(\dfrac{d}{dx}\int_{\alpha(x)}^{\beta(x)}f(t)dt=f(\beta)\beta'-f(\alpha)\alpha'\)</span><span class="f-note">上下限都变</span></div><div class="f-row"><span class="f-tex">\(\int_a^b f(x)dx=f(\xi)(b-a)\)</span><span class="f-note">积分中值定理</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">求 \(\lim_{x\to0}\dfrac{\int_0^x\sin t^2\,dt}{x^3}\)。</p><div class="exam-ans"><b>要点</b> \(0/0\) 型，洛必达一次得 \(\sin x^2/(3x^2)\to1/3\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>当 \(x\to0\) 时，分子 \(\int_0^x\sin t^2dt\to0\)，分母 \(x^3\to0\)，属 \(\frac00\) 型。</li><li>用洛必达法则，对分子用变上限积分求导：\(\frac{d}{dx}\int_0^x\sin t^2dt=\sin x^2\)，分母导数 \(3x^2\)。</li><li>原极限 \(=\lim_{x\to0}\frac{\sin x^2}{3x^2}\)。</li><li>用 \(\sin u\sim u\)，得 \(\frac{x^2}{3x^2}=\frac13\)。</li><li>结论：极限为 \(\frac13\)；变上限积分求导是这类题的固定第一步。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>被积函数含 \(x\) 仍直接套求导公式。</li><li>变限积分与定积分混淆，忘记它是函数。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>变限积分题先问“积分号里有没有 x”，有就先换元，没有就直接求导。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>对称性、奇偶性与区间再现</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">对称区间上奇函数积分为零、偶函数折半，是定积分最快的简化。区间再现公式 \(\int_0^a f(x)dx=\int_0^a f(a-x)dx\) 能秒杀一类三角积分；华里士公式处理 \(\sin^n,\cos^n\) 在 \([0,\pi/2]\) 上的积分。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\int_{-a}^{a}f=0\)（奇），\(2\int_0^a f\)（偶）</span><span class="f-note">先判奇偶</span></div><div class="f-row"><span class="f-tex">\(\int_0^{\pi/2}\sin^n x\,dx=\int_0^{\pi/2}\cos^n x\,dx\)</span><span class="f-note">华里士</span></div><div class="f-row"><span class="f-tex">\(\int_0^\pi x f(\sin x)dx=\dfrac{\pi}{2}\int_0^\pi f(\sin x)dx\)</span><span class="f-note">区间再现常用</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">求 \(\int_0^{\pi/2}\sin^5x\,dx\)。</p><div class="exam-ans"><b>要点</b> 华里士公式：\(\dfrac{4}{5}\cdot\dfrac{2}{3}\cdot1=\dfrac{8}{15}\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>利用华里士（点火）公式：\(\int_0^{\pi/2}\sin^n x\,dx=\frac{n-1}{n}\cdot\frac{n-3}{n-2}\cdots\)，奇偶分别收尾。</li><li>本题 \(n=5\) 为奇数，依次乘 \(\frac45\cdot\frac23\cdot1\)。</li><li>计算：\(\frac45\cdot\frac23=\frac{8}{15}\)。</li><li>结论：\(\int_0^{\pi/2}\sin^5x\,dx=\frac{8}{15}\)；偶数次时最后乘 \(\frac{\pi}{2}\)，不要混。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>不判奇偶就直接硬算，浪费 5 分钟。</li><li>华里士公式用于非 \([0,\pi/2]\) 区间。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>定积分先看区间是否对称、函数是否奇偶，再看是否可区间再现；两步筛选能省一半计算。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>反常积分与敛散性</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">反常积分分无穷限与瑕积分两类，先找瑕点再拆分。\(p\) 积分结论必须记牢：\(\int_1^\infty x^{-p}dx\) 在 \(p&gt;1\) 收敛，\(\int_0^1 x^{-p}dx\) 在 \(p&lt;1\) 收敛。比较判别法用于判断敛散，不必算出值。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\int_1^{\infty}\dfrac{dx}{x^p}\)：\(p&gt;1\) 收敛</span><span class="f-note">无穷限</span></div><div class="f-row"><span class="f-tex">\(\int_0^1\dfrac{dx}{x^p}\)：\(p&lt;1\) 收敛</span><span class="f-note">瑕积分</span></div><div class="f-row"><span class="f-tex">\(\int_0^{\infty}e^{-x}dx=1\)</span><span class="f-note">常用值</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">判断 \(\int_1^{\infty}\dfrac{dx}{x\sqrt{x^2+1}}\) 的敛散性。</p><div class="exam-ans"><b>要点</b> \(x\to\infty\) 时被积函数 \(\sim1/x^2\)，而 \(\int_1^\infty x^{-2}dx\) 收敛，故原积分收敛。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先看被积函数在无穷远处的阶：\(\frac{1}{x\sqrt{x^2+1}}\)，当 \(x\to+\infty\) 时 \(\sqrt{x^2+1}\sim x\)，故被积函数 \(\sim\frac1{x^2}\)。</li><li>取比较函数 \(g(x)=\frac1{x^2}\)，在 \([1,+\infty)\) 上非负连续。</li><li>由极限比较判别法：\(\lim_{x\to\infty}\frac{f(x)}{g(x)}=1\)，且 \(\int_1^\infty\frac{dx}{x^2}\) 收敛（\(p=2&gt;1\)）。</li><li>故原反常积分收敛。</li><li>结论：收敛；判断反常积分先看阶，再与 p 积分比较。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>忽略瑕点，直接牛顿—莱布尼茨。</li><li>把两类 p 积分的收敛条件记反。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>反常积分先“找瑕点、拆区间”，再对每段做等价无穷小定阶。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-08">
+  <span class="anchor">[[K-kp-08]]</span>
+  <div class="kp-head">
+    <span class="kp-no">08</span>
+    <h2>定积分的几何应用</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">面积、体积、弧长、侧面积四类公式要会选：绕 \(x\) 轴旋转用圆盘法，绕 \(y\) 轴可用柱壳法；参数方程与极坐标下的弧长公式不同。应用题先画图、再定积分变量与上下限。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(V_x=\pi\int_a^b y^2\,dx\)</span><span class="f-note">绕 x 轴</span></div><div class="f-row"><span class="f-tex">\(V_y=2\pi\int_a^b x|y|\,dx\)</span><span class="f-note">柱壳法</span></div><div class="f-row"><span class="f-tex">\(s=\int_a^b\sqrt{1+y'^2}\,dx\)</span><span class="f-note">直角坐标弧长</span></div><div class="f-row"><span class="f-tex">\(S=2\pi\int_a^b|y|\sqrt{1+y'^2}\,dx\)</span><span class="f-note">旋转体侧面积</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="定积分面积与旋转体">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.fill{fill:rgba(138,75,42,.14);stroke:none}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="sub" x="24" y="24">定积分几何应用：先画区域，再定上下限与“谁减谁”</text>
+  <line class="ink" x1="60" y1="220" x2="400" y2="220"/><path class="ink" d="M394 216 l10 4 l-10 4"/>
+  <line class="ink" x1="90" y1="250" x2="90" y2="50"/><path class="ink" d="M86 56 l4 -10 l4 10"/>
+  <path class="acc" d="M90 220 C160 220 220 180 270 120 C320 60 360 58 390 58"/>
+  <line class="acc" x1="90" y1="220" x2="390" y2="58" stroke-dasharray="0"/>
+  <path class="fill" d="M90 220 L390 58 C360 58 320 60 270 120 C220 180 160 220 90 220 Z"/>
+  <text class="sub" x="396" y="54">y=√x</text><text class="sub" x="352" y="44">y=x</text>
+  <text class="sub" x="70" y="240">O</text><text class="sub" x="340" y="240">1</text>
+  <line class="dash" x1="300" y1="220" x2="300" y2="110"/>
+  <text class="sub" x="304" y="132">x</text>
+  <text class="fml" x="440" y="90">A = ∫₀¹ (√x − x) dx</text>
+  <text class="fml" x="440" y="120">V_x = π∫₀¹ [(√x)² − x²] dx</text>
+  <text class="sub" x="440" y="150">旋转体：绕 x 轴用 π∫(y_上²−y_下²) dx</text>
+  <text class="sub" x="440" y="174">绕 y 轴：2π∫x(y_上−y_下) dx（柱壳）</text>
+  <text class="sub" x="440" y="198">先求交点，再判上下曲线，最后分段。</text>
+</svg><figcaption>定积分面积与旋转体</figcaption></figure><p class="exam-q">求 \(y=\sqrt{x}\) 在 \([0,1]\) 上绕 \(x\) 轴旋转所得旋转体体积。</p><div class="exam-ans"><b>要点</b> \(V=\pi\int_0^1 x\,dx=\dfrac{\pi}{2}\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>绕 \(x\) 轴旋转用圆盘法：\(V=\pi\int_a^b y^2dx\)。</li><li>代入 \(y=\sqrt x\)，得 \(y^2=x\)，积分区间 \([0,1]\)。</li><li>计算 \(V=\pi\int_0^1x\,dx=\pi\cdot\frac12=\frac{\pi}{2}\)。</li><li>检查：旋转体是抛物面下的立体，体积应为有限正数，结果合理。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>绕 \(y\) 轴仍用 \(\pi\int y^2dx\)。</li><li>弧长公式漏根号或漏 \(dx\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>旋转体先画一条代表矩形，看它旋转后是圆盘还是柱壳，再写微元。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-09">
+  <span class="anchor">[[K-kp-09]]</span>
+  <div class="kp-head">
+    <span class="kp-no">09</span>
+    <h2>定积分的物理应用</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">功、水压力、质心三类模型本质都是“微元法”：取一小段，写出微元，再积分。水压力 \(dP=\rho g h\cdot w(h)dh\)，质心 \(\bar x=\int x\,dA/\int dA\)。数一每隔几年出一道小题。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(W=\int_a^b F(x)\,dx\)</span><span class="f-note">变力做功</span></div><div class="f-row"><span class="f-tex">\(P=\rho g\int h\,w(h)\,dh\)</span><span class="f-note">水压力</span></div><div class="f-row"><span class="f-tex">\(\bar x=\dfrac{\int x\,dA}{\int dA}\)</span><span class="f-note">形心横坐标</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">半径为 \(R\) 的圆形闸门竖直置于水中，圆心在水面下 \(R\) 处，求闸门所受水压力。</p><div class="exam-ans"><b>要点</b> 取深度 \(y\) 处宽 \(2\sqrt{R^2-(y-R)^2}\) 的微元，\(dP=\rho gy\,dA\)，积分得 \(P=\pi\rho gR^3\)；也可用形心法 \(P=\rho gA h_c\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>建立坐标：取圆心为原点、\(y\) 轴竖直向下，水面在 \(y=0\)，圆方程为 \(x^2+(y-R)^2=R^2\)。</li><li>在深度 \(y\) 处取水平微元，宽度 \(2x=2\sqrt{R^2-(y-R)^2}\)，面积 \(dA=2\sqrt{R^2-(y-R)^2}\,dy\)，积分区间 \(y\in[0,2R]\)。</li><li>水压力微元 \(dP=\rho gy\,dA=2\rho gy\sqrt{R^2-(y-R)^2}\,dy\)。</li><li>令 \(y-R=R\sin\theta\)，则 \(dy=R\cos\theta\,d\theta\)，根式为 \(R\cos\theta\)，积分化为 \(2\rho gR^3\int_{-\pi/2}^{\pi/2}(\sin\theta+1)\cos^2\theta\,d\theta\)。</li><li>由 \(\int\cos^2\theta=\pi/2\)、\(\int\sin\theta\cos^2\theta=0\)，得 \(P=2\rho gR^3\cdot\frac{\pi}{2}=\pi\rho gR^3\)。</li><li>复核：用形心法 \(P=\rho gA h_c=\rho g(\pi R^2)R=\pi\rho gR^3\)，结果一致；若题图是“直径在水面”的半圆，则 \(A=\pi R^2/2\)、\(h_c=4R/(3\pi)\)，得 \(P=\frac23\rho gR^3\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>深度 \(h\) 从水面量起还是从圆心量起不统一。</li><li>宽度函数写错，未按几何关系表示。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>物理应用只做“建系—取微元—定限—积分”四步，单位统一用国际单位。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>定积分计算的结构识别与速算</h2>
+  </div>
+  <p class="t-why">数一定积分大题往往不是难在技巧，而是难在“选错方法”。结构识别能在 30 秒内决定换元、分部还是对称性，直接决定能否在考场上做完。</p>
+  
+  <ol class="method"><li>先看区间：对称区间先判奇偶；含 \(\pi\) 的区间想区间再现；\([0,\pi/2]\) 想华里士。</li><li>再看被积函数结构：含根式走三角代换；含 \(\ln x\)、反三角走分部；有理式走部分分式。</li><li>含 \(x\) 与 \(f(x)\) 混合时，优先把 \(x\) 凑进微分或分部消去。</li><li>定积分换元三件套：换元、换限、换微分，缺一不可。</li><li>算完用“被积函数符号 + 区间长度”估数量级，检查结果是否离谱。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>求 \(\int_0^\pi\dfrac{x\sin x}{1+\cos^2x}dx\)。</p><p class="t-ans"><b>解</b> 令 \(x\to\pi-x\)，利用区间再现得 \(2I=\pi\int_0^\pi\dfrac{\sin x}{1+\cos^2x}dx\)，再令 \(u=\cos x\) 得 \(2I=\pi\cdot\dfrac{\pi}{2}\)，故 \(I=\dfrac{\pi^2}{4}\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 看到 \(x\sin x\) 就想分部，是最常见的弯路；含 \(x\) 与三角函数乘积且区间为 \([0,\pi]\)，优先区间再现。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>变限积分综合：求导、极限与最值</h2>
+  </div>
+  <p class="t-why">变限积分把积分与微分连在一起，是数一解答题的经典载体。它既能考求导，也能考极限、单调性、最值，一题多问。</p>
+  
+  <ol class="method"><li>先检查被积函数是否含 \(x\)：含则换元把 \(x\) 移到积分号外或上限。</li><li>求导套公式：上限导数乘被积函数在上限的值，减去下限对应项。</li><li>求极限时判断型，通常洛必达一次即可去掉积分号。</li><li>求最值时令导数为零，注意变限积分函数定义域由被积函数与上下限共同决定。</li><li>若被积函数含参数，先讨论参数对符号的影响再定单调区间。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>设 \(F(x)=\int_0^x(t^2-x^2)\sin t\,dt\)，求 \(F'(x)\)。</p><p class="t-ans"><b>解</b> 先拆：\(F(x)=\int_0^xt^2\sin t\,dt-x^2\int_0^x\sin t\,dt\)，再求导得 \(x^2\sin x-2x\int_0^x\sin t\,dt-x^2\sin x=-2x(1-\cos x)\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 被积函数含 \(x\) 时直接对上限求导，是最致命的错误；必须先拆分或换元。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>基本积分表五组</li><li>第一类换元的凑微分意识</li><li>三角代换与回代</li><li>分部积分“反对幂指三”</li><li>变限积分求导三情形</li><li>对称性与华里士公式</li><li>两类 p 积分的敛散条件</li><li>旋转体体积与弧长公式</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>复杂有理函数的完整部分分式（考场上可跳过）</li><li>极坐标下侧面积的推导</li><li>物理应用的复杂建模（掌握微元法即可）</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否 1 分钟内算完 \(\int xe^x dx\)</li><li>能否正确对含 \(x\) 的变限积分求导</li><li>能否说出两类 p 积分的收敛条件</li><li>能否选择圆盘法还是柱壳法</li><li>能否用区间再现秒杀 \(\int_0^\pi x\sin x/(1+\cos^2x)dx\)</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

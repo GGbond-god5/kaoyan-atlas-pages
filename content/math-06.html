@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>数学一 · 多元函数积分学</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#1F3A5F;--accent-soft:#E7ECF3;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MATH · 06</span><span>MATHEMATICS I</span></div>
+    <h1>多元函数积分学</h1>
+    <p class="cover-sub">数一独有的重头戏：二重、三重、曲线、曲面积分加三大公式。冲刺只抓“选坐标、定限、选公式”三件事。</p>
+    <div class="cover-meta"><span class="meta-pill acc">S 级 · 必须拿下</span><span class="meta-pill">解答题必考</span><span class="meta-pill">三大公式</span><span class="meta-pill">数一独有</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>二重积分与三重积分的概念、性质与计算</li><li>二重积分与三重积分的应用</li><li>两类曲线积分的概念、性质及计算</li><li>两类曲线积分的关系</li><li>格林公式，平面曲线积分与路径无关的条件</li><li>二元函数的全微分求积</li><li>两类曲面积分的概念、性质及计算</li><li>两类曲面积分的关系</li><li>高斯公式，斯托克斯公式</li><li>散度与旋度的概念及计算</li><li>曲线积分与曲面积分的应用</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>二重积分：直角坐标与换序</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">二重积分先画区域、再定限。X 型区域先对 \(y\) 积，Y 型先对 \(x\) 积；换序的本质是<strong>把区域重新按另一方向描述</strong>，不是简单交换上下限。被积函数含 \(e^{y^2}\)、\(\sin(y^2)\) 时，换序往往是唯一出路。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\iint_D f\,d\sigma=\int_a^b dx\int_{y_1(x)}^{y_2(x)}f\,dy\)</span><span class="f-note">X 型</span></div><div class="f-row"><span class="f-tex">\(\int_0^1dx\int_x^1 f\,dy=\int_0^1dy\int_0^y f\,dx\)</span><span class="f-note">换序示例</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">计算 \(\int_0^1dx\int_x^1 e^{y^2}dy\)。</p><div class="exam-ans"><b>要点</b> 原式无法先对 \(y\) 积，换序为 \(\int_0^1dy\int_0^y e^{y^2}dx=\int_0^1 ye^{y^2}dy=\dfrac{e-1}{2}\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先画区域：\(0\le x\le1,\ x\le y\le1\)，即由 \(y=x,\ y=1,\ x=0\) 围成的三角形。</li><li>原顺序先对 \(y\) 积分，但 \(e^{y^2}\) 无初等原函数，必须换序。</li><li>改写成 \(y\) 型：\(0\le y\le1,\ 0\le x\le y\)。</li><li>换序后 \(\int_0^1\left(\int_0^y e^{y^2}dx\right)dy=\int_0^1 y e^{y^2}dy\)。</li><li>令 \(u=y^2,\ du=2y\,dy\)，得 \(\frac12\int_0^1e^u du=\frac{e-1}{2}\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>换序时上下限仍用原变量。</li><li>不画图直接写限，区域描述错。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>二重积分先画图，再把区域投影到轴上看“穿过区域的直线”，限自然出来。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>二重积分：极坐标与对称性</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">圆域、扇形、环域优先极坐标，\(d\sigma=r\,dr\,d\theta\)，不要漏 \(r\)。轮换对称性 \(\iint_D f(x,y)=\iint_D f(y,x)\) 在 \(D\) 关于 \(y=x\) 对称时成立，可把复杂被积函数化简。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="极坐标二重积分">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.5}.fill{fill:rgba(138,75,42,.10);stroke:#8A4B2A;stroke-width:1.3}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">极坐标：面积微元 dσ = r dr dθ</text>
+  <text class="sub" x="24" y="44">先画区域、再定 θ 与 r 的上下限；圆、扇形、环域优先用极坐标。</text>
+  <ellipse cx="250" cy="170" rx="130" ry="92" fill="none" stroke="#B9AE9C" stroke-width="1.2"/>
+  <line class="thin" x1="250" y1="170" x2="380" y2="170"/><text class="sub" x="384" y="174">θ=0</text>
+  <line class="thin" x1="250" y1="170" x2="342" y2="94"/><text class="sub" x="322" y="92">θ=α</text>
+  <path class="acc" d="M330 170 A80 80 0 0 0 296 116"/>
+  <path class="fill" d="M330 170 L296 116 A80 80 0 0 0 292 122 L326 174 Z"/>
+  <text class="sub" x="338" y="150">dθ</text>
+  <line class="dash" x1="250" y1="170" x2="326" y2="174"/>
+  <text class="sub" x="286" y="184">r</text>
+  <text class="sub" x="306" y="164">dr</text>
+  <text class="fml" x="430" y="110">∬_D f(x,y) dxdy</text>
+  <text class="fml" x="430" y="142">= ∬_D f(r cosθ, r sinθ) · r dr dθ</text>
+  <text class="sub" x="430" y="176">区域：θ ∈ [α,β]，r ∈ [r₁(θ), r₂(θ)]</text>
+  <text class="sub" x="430" y="200">对称性：关于 x 轴 / y 轴 / 原点先看奇偶</text>
+  <text class="sub" x="430" y="224">常见：圆 x²+y²≤R² → r ∈ [0,R]，θ ∈ [0,2π]</text>
+</svg><figcaption>极坐标面积微元：dσ = r dr dθ</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\iint_D f\,d\sigma=\int_{\theta_1}^{\theta_2}d\theta\int_{r_1(\theta)}^{r_2(\theta)}f\,r\,dr\)</span><span class="f-note">极坐标</span></div><div class="f-row"><span class="f-tex">\(D\) 关于 \(y=x\) 对称 \(\Rightarrow\iint_D f(x,y)=\iint_D f(y,x)\)</span><span class="f-note">轮换对称</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="极坐标二重积分">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.5}.fill{fill:rgba(138,75,42,.10);stroke:#8A4B2A;stroke-width:1.3}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">极坐标：面积微元 dσ = r dr dθ</text>
+  <text class="sub" x="24" y="44">先画区域、再定 θ 与 r 的上下限；圆、扇形、环域优先用极坐标。</text>
+  <ellipse cx="250" cy="170" rx="130" ry="92" fill="none" stroke="#B9AE9C" stroke-width="1.2"/>
+  <line class="thin" x1="250" y1="170" x2="380" y2="170"/><text class="sub" x="384" y="174">θ=0</text>
+  <line class="thin" x1="250" y1="170" x2="342" y2="94"/><text class="sub" x="322" y="92">θ=α</text>
+  <path class="acc" d="M330 170 A80 80 0 0 0 296 116"/>
+  <path class="fill" d="M330 170 L296 116 A80 80 0 0 0 292 122 L326 174 Z"/>
+  <text class="sub" x="338" y="150">dθ</text>
+  <line class="dash" x1="250" y1="170" x2="326" y2="174"/>
+  <text class="sub" x="286" y="184">r</text>
+  <text class="sub" x="306" y="164">dr</text>
+  <text class="fml" x="430" y="110">∬_D f(x,y) dxdy</text>
+  <text class="fml" x="430" y="142">= ∬_D f(r cosθ, r sinθ) · r dr dθ</text>
+  <text class="sub" x="430" y="176">区域：θ ∈ [α,β]，r ∈ [r₁(θ), r₂(θ)]</text>
+  <text class="sub" x="430" y="200">对称性：关于 x 轴 / y 轴 / 原点先看奇偶</text>
+  <text class="sub" x="430" y="224">常见：圆 x²+y²≤R² → r ∈ [0,R]，θ ∈ [0,2π]</text>
+</svg><figcaption>极坐标面积微元</figcaption></figure><p class="exam-q">计算 \(\iint_D(x^2+y^2)d\sigma\)，其中 \(D:x^2+y^2\le1\)。</p><div class="exam-ans"><b>要点</b> 极坐标：\(\int_0^{2\pi}d\theta\int_0^1 r^2\cdot r\,dr=2\pi\cdot\dfrac14=\dfrac{\pi}{2}\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>区域为单位圆，被积函数 \(x^2+y^2=r^2\)，用极坐标 \(x=r\cos\theta,\ y=r\sin\theta\)。</li><li>面积元 \(d\sigma=r\,dr\,d\theta\)，积分限 \(0\le\theta\le2\pi,\ 0\le r\le1\)。</li><li>代入：\(\iint_D(x^2+y^2)d\sigma=\int_0^{2\pi}\int_0^1r^2\cdot r\,dr\,d\theta\)。</li><li>内层 \(\int_0^1r^3dr=\frac14\)，外层 \(\int_0^{2\pi}d\theta=2\pi\)。</li><li>故结果为 \(2\pi\cdot\frac14=\frac{\pi}{2}\)；也可用对称性/极坐标直接看出。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>极坐标漏乘 \(r\)。</li><li>圆心不在原点时不会平移极坐标。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>看到 \(x^2+y^2\) 就想极坐标；圆心偏移先平移，再换极坐标。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>三重积分：柱坐标与球坐标</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">三重积分先看积分域形状：旋转体、圆柱用柱坐标 \((r,\theta,z)\)，\(dV=r\,dr\,d\theta\,dz\)；球体、锥体用球坐标 \((r,\varphi,\theta)\)，\(dV=r^2\sin\varphi\,dr\,d\varphi\,d\theta\)。投影法适合“先一后二”，截面法适合“先二后一”。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="柱坐标与球坐标">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.2}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.acc2{stroke:#5B3A6B;fill:none;stroke-width:1.5}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="20" y="22">柱坐标与球坐标：体积微元不要背错</text>
+  <text class="sub" x="20" y="40">先认区域，再选坐标；被积函数含 x²+y² 优先柱/球。</text>
+
+  <!-- cylindrical -->
+  <text class="sub" x="40" y="72">柱坐标 (r, θ, z)</text>
+  <line class="thin" x1="40" y1="210" x2="150" y2="230"/><text class="sub" x="152" y="234">y</text>
+  <line class="thin" x1="40" y1="210" x2="160" y2="210"/><text class="sub" x="162" y="214">x</text>
+  <line class="thin" x1="40" y1="210" x2="40" y2="100"/><text class="sub" x="32" y="96">z</text>
+  <ellipse cx="100" cy="150" rx="58" ry="20" fill="none" stroke="#B9AE9C"/>
+  <line class="acc" x1="40" y1="210" x2="130" y2="160"/>
+  <line class="acc" x1="130" y1="160" x2="130" y2="110"/>
+  <text class="sub" x="86" y="184">r</text><text class="sub" x="134" y="140">z</text>
+  <text class="sub" x="60" y="196">θ</text>
+  <text class="fml" x="40" y="258">dV = r dr dθ dz</text>
+
+  <!-- spherical -->
+  <text class="sub" x="330" y="72">球坐标 (r, θ, φ)</text>
+  <line class="thin" x1="330" y1="210" x2="450" y2="230"/><text class="sub" x="452" y="234">y</text>
+  <line class="thin" x1="330" y1="210" x2="450" y2="210"/><text class="sub" x="452" y="214">x</text>
+  <line class="thin" x1="330" y1="210" x2="330" y2="100"/><text class="sub" x="322" y="96">z</text>
+  <line class="acc" x1="330" y1="210" x2="410" y2="132"/>
+  <path class="acc2" d="M410 132 A90 90 0 0 1 360 120"/>
+  <path class="acc2" d="M330 210 L400 190"/>
+  <text class="sub" x="372" y="176">r</text>
+  <text class="sub" x="396" y="118">φ</text>
+  <text class="sub" x="360" y="200">θ</text>
+  <text class="fml" x="330" y="258">dV = r² sinφ dr dφ dθ</text>
+  <text class="sub" x="500" y="120">记忆：柱坐标只在 xy 平面用 r,θ；</text>
+  <text class="sub" x="500" y="144">球坐标多一个 φ，体积元多 r²sinφ。</text>
+  <text class="sub" x="500" y="168">先画投影 D_xy，再定 z 或 r 的范围。</text>
+</svg><figcaption>柱坐标与球坐标的体积微元</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(dV=r\,dr\,d\theta\,dz\)</span><span class="f-note">柱坐标</span></div><div class="f-row"><span class="f-tex">\(dV=r^2\sin\varphi\,dr\,d\varphi\,d\theta\)</span><span class="f-note">球坐标，\(\varphi\) 与 \(z\) 轴夹角</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">计算 \(\iiint_\Omega z\,dV\)，其中 \(\Omega\) 为上半球 \(x^2+y^2+z^2\le1,\ z\ge0\)。</p><div class="exam-ans"><b>要点</b> 球坐标：\(\int_0^{2\pi}d\theta\int_0^{\pi/2}d\varphi\int_0^1 r\cos\varphi\cdot r^2\sin\varphi\,dr=\dfrac{\pi}{4}\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>上半球 \(x^2+y^2+z^2\le1,\ z\ge0\)，用球坐标 \(z=r\cos\varphi\)，\(dV=r^2\sin\varphi\,dr\,d\varphi\,d\theta\)。</li><li>积分限：\(0\le\theta\le2\pi,\ 0\le\varphi\le\frac\pi2,\ 0\le r\le1\)。</li><li>被积函数 \(z=r\cos\varphi\)，故积分 \(\int_0^{2\pi}d\theta\int_0^{\pi/2}\cos\varphi\sin\varphi\,d\varphi\int_0^1r^3dr\)。</li><li>分别计算：\(2\pi\)、\(\frac12\)、\(\frac14\)，相乘得 \(\frac{\pi}{4}\)。</li><li>检查：上半球体积 \(\frac{2\pi}{3}\)，形心高度 \(\frac38\)，体积×形心高度 \(=\frac{\pi}{4}\)，一致。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>球坐标 \(\varphi\) 与 \(\theta\) 的定义混淆。</li><li>柱坐标体积元漏 \(r\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>三重积分先问“投影好写还是截面好写”，再选柱/球；不要一上来就套球坐标。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>第一类曲线积分</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">第一类曲线积分对弧长积分，与方向无关。参数化后 \(ds=\sqrt{x'^2+y'^2+z'^2}dt\)；被积函数直接代入曲线方程。对称性与二重积分类似。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\int_L f\,ds=\int_\alpha^\beta f(x(t),y(t))\sqrt{x'^2+y'^2}\,dt\)</span><span class="f-note">参数式</span></div><div class="f-row"><span class="f-tex">\(ds=\sqrt{1+y'^2}\,dx\)</span><span class="f-note">显式</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">计算 \(\int_L(x+y)ds\)，\(L\) 为圆 \(x^2+y^2=1\) 在第一象限的弧。</p><div class="exam-ans"><b>要点</b> 参数化 \(x=\cos t,y=\sin t,t\in[0,\pi/2]\)，\(ds=dt\)，积分 \(\int_0^{\pi/2}(\cos t+\sin t)dt=2\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>把圆弧参数化：\(x=\cos t,\ y=\sin t,\ t\in[0,\frac\pi2]\)。</li><li>弧长微元 \(ds=\sqrt{(x')^2+(y')^2}\,dt=\sqrt{\sin^2t+\cos^2t}\,dt=dt\)。</li><li>代入：\(\int_L(x+y)ds=\int_0^{\pi/2}(\cos t+\sin t)dt\)。</li><li>积分得 \([\sin t-\cos t]_0^{\pi/2}=1-0-(0-1)=2\)。</li><li>结论：积分为 2；第一类曲线积分与方向无关，参数化后直接算 \(ds\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把第一类与第二类混淆，代入方向。</li><li>\(ds\) 忘记根号因子。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>第一类“对弧长、无方向”，第二类“对坐标、有方向”，先分清再动笔。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>第二类曲线积分与格林公式</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">第二类曲线积分 \(\int_L Pdx+Qdy\) 与方向有关，反向变号。闭曲线优先格林公式化为二重积分；使用前必须确认 \(L\) 取正向（逆时针）且 \(P,Q\) 在区域内无奇点。有奇点时挖洞。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="格林公式">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.fill{fill:rgba(138,75,42,.10);stroke:#8A4B2A;stroke-width:1.4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">格林公式：边界曲线积分 ↔ 区域二重积分</text>
+  <text class="sub" x="24" y="44">L 取正向（区域在左侧）；有洞时内边界取负向。</text>
+  <path class="fill" d="M120 200 C120 90 300 60 420 100 C520 132 540 220 420 240 C300 260 120 250 120 200 Z"/>
+  <path class="acc" d="M360 238 C440 234 512 210 512 172"/>
+  <path class="acc" d="M512 172 l-4 10 l10 -3"/>
+  <path class="acc" d="M190 96 C140 120 128 170 160 200"/>
+  <path class="acc" d="M160 200 l-9 -6 l1 11"/>
+  <text class="sub" x="356" y="256">L（正向）</text>
+  <text class="sub" x="300" y="156">D</text>
+  <text class="fml" x="560" y="120">∮_L P dx + Q dy</text>
+  <text class="fml" x="560" y="152">= ∬_D (∂Q/∂x − ∂P/∂y) dxdy</text>
+  <text class="sub" x="560" y="184">条件：P、Q 在 D 上有一阶连续偏导</text>
+  <text class="sub" x="560" y="208">用途：把难算的线积分转成二重积分</text>
+  <text class="sub" x="560" y="232">路径无关 ⇔ ∂Q/∂x = ∂P/∂y（单连通）</text>
+</svg><figcaption>格林公式：边界曲线积分与区域二重积分</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\oint_L Pdx+Qdy=\iint_D(Q_x-P_y)dxdy\)</span><span class="f-note">格林公式，L 正向</span></div><div class="f-row"><span class="f-tex">\(\oint_L\dfrac{xdy-ydx}{x^2+y^2}=2\pi\)</span><span class="f-note">含奇点，挖洞后成立</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="格林公式">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.fill{fill:rgba(138,75,42,.10);stroke:#8A4B2A;stroke-width:1.4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">格林公式：边界曲线积分 ↔ 区域二重积分</text>
+  <text class="sub" x="24" y="44">L 取正向（区域在左侧）；有洞时内边界取负向。</text>
+  <path class="fill" d="M120 200 C120 90 300 60 420 100 C520 132 540 220 420 240 C300 260 120 250 120 200 Z"/>
+  <path class="acc" d="M360 238 C440 234 512 210 512 172"/>
+  <path class="acc" d="M512 172 l-4 10 l10 -3"/>
+  <path class="acc" d="M190 96 C140 120 128 170 160 200"/>
+  <path class="acc" d="M160 200 l-9 -6 l1 11"/>
+  <text class="sub" x="356" y="256">L（正向）</text>
+  <text class="sub" x="300" y="156">D</text>
+  <text class="fml" x="560" y="120">∮_L P dx + Q dy</text>
+  <text class="fml" x="560" y="152">= ∬_D (∂Q/∂x − ∂P/∂y) dxdy</text>
+  <text class="sub" x="560" y="184">条件：P、Q 在 D 上有一阶连续偏导</text>
+  <text class="sub" x="560" y="208">用途：把难算的线积分转成二重积分</text>
+  <text class="sub" x="560" y="232">路径无关 ⇔ ∂Q/∂x = ∂P/∂y（单连通）</text>
+</svg><figcaption>格林公式</figcaption></figure><p class="exam-q">计算 \(\oint_L(x^2-y)dx+(x+y^2)dy\)，\(L\) 为圆 \(x^2+y^2=1\) 正向。</p><div class="exam-ans"><b>要点</b> \(Q_x=1,\ P_y=-1\)，格林公式得 \(\iint_D2\,dxdy=2\pi\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>识别为第二类曲线积分，\(P=x^2-y,\ Q=x+y^2\)，\(L\) 为闭曲线正向，可用格林公式。</li><li>计算 \(Q_x=1,\ P_y=-1\)，故 \(Q_x-P_y=2\)。</li><li>格林公式：\(\oint_L Pdx+Qdy=\iint_D(Q_x-P_y)dxdy=\iint_D2\,dxdy\)。</li><li>\(D\) 为单位圆，面积 \(\pi\)，故积分为 \(2\pi\)。</li><li>检查：被积函数为常数 2，结果等于 2×面积，合理；注意方向为正向（逆时针）。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>曲线方向取反，格林公式符号错。</li><li>区域含原点奇点仍直接用格林。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>格林公式三查：闭曲线？正向？区域内无奇点？三查通过再用。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>路径无关与全微分求积</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">单连通区域内 \(Q_x=P_y\) 是路径无关的充要条件，此时存在势函数 \(u\) 使 \(du=Pdx+Qdy\)。求 \(u\) 用折线积分或凑全微分；考试中凑微分更快。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(Q_x=P_y\iff\int_L Pdx+Qdy\) 路径无关</span><span class="f-note">单连通</span></div><div class="f-row"><span class="f-tex">\(u(x,y)=\int_{x_0}^xP(t,y_0)dt+\int_{y_0}^yQ(x,t)dt\)</span><span class="f-note">折线法</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">验证 \((2x+y)dx+(x+2y)dy\) 为全微分，并求原函数。</p><div class="exam-ans"><b>要点</b> \(P_y=1=Q_x\)，故为全微分；凑得 \(u=x^2+xy+y^2+C\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>记 \(P=2x+y,\ Q=x+2y\)，验证 \(P_y=1,\ Q_x=1\)，二者相等。</li><li>在单连通区域内 \(P_y=Q_x\)，故表达式为全微分，且积分与路径无关。</li><li>求原函数：由 \(u_x=2x+y\) 对 \(x\) 积分得 \(u=x^2+xy+g(y)\)。</li><li>对 \(y\) 求导：\(u_y=x+g'(y)\)，令其等于 \(Q=x+2y\)，得 \(g'(y)=2y\)，故 \(g=y^2\)。</li><li>所以 \(u=x^2+xy+y^2+C\)；检查 \(du=(2x+y)dx+(x+2y)dy\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>不验证单连通就断言路径无关。</li><li>折线法积分路径选得使分母为零。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>路径无关题先验 \(P_y=Q_x\)，再凑 \(d(xy)\)、\(d(x^2+y^2)\) 这类整体。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>第一类曲面积分</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">第一类曲面积分对面积积分，与侧无关。显式曲面 \(z=z(x,y)\) 时 \(dS=\sqrt{1+z_x^2+z_y^2}dxdy\)，投影到 \(xOy\) 面。对称性可大幅简化。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(dS=\sqrt{1+z_x^2+z_y^2}\,dxdy\)</span><span class="f-note">显式曲面</span></div><div class="f-row"><span class="f-tex">\(\iint_\Sigma f\,dS=\iint_D f(x,y,z(x,y))\sqrt{1+z_x^2+z_y^2}\,dxdy\)</span><span class="f-note">化为二重</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">计算 \(\iint_\Sigma z\,dS\)，\(\Sigma\) 为平面 \(z=1\) 上 \(x^2+y^2\le1\) 的部分。</p><div class="exam-ans"><b>要点</b> \(z=1\)，\(dS=dxdy\)，积分 \(=\iint_D1\,dxdy=\pi\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>曲面 \(\Sigma\) 是平面 \(z=1\) 上被 \(x^2+y^2\le1\) 截出的圆盘。</li><li>对显式曲面 \(z=1\)，\(z_x=z_y=0\)，故 \(dS=\sqrt{1+z_x^2+z_y^2}\,dxdy=dxdy\)。</li><li>被积函数 \(z=1\)，积分化为圆盘面积 \(\iint_D1\,dxdy\)。</li><li>圆盘半径 1，面积 \(\pi\)，故结果为 \(\pi\)。</li><li>检查：第一类曲面积分的被积函数是常数 1 时，结果就是曲面面积。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把 \(dS\) 写成 \(dxdy\)，漏根号因子。</li><li>投影区域写错，尤其是曲面超出投影范围时。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>第一类曲面“投影 + 根号”，第二类曲面“投影 + 定侧”，两句话区分。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-08">
+  <span class="anchor">[[K-kp-08]]</span>
+  <div class="kp-head">
+    <span class="kp-no">08</span>
+    <h2>第二类曲面积分与高斯公式</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">第二类曲面积分 \(\iint_\Sigma Pdydz+Qdzdx+Rdxdy\) 与侧有关，取外侧为正。闭曲面优先高斯公式化为三重积分；非闭曲面补面后再用，补的面要减去。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="第二类曲面积分">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.fill{fill:rgba(138,75,42,.12);stroke:#8A4B2A;stroke-width:1.3}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">第二类曲面积分：通量与法向</text>
+  <text class="sub" x="24" y="44">dS 的法向与投影面积的夹角决定正负；高斯公式要求外侧。</text>
+  <path class="fill" d="M110 200 C130 120 270 80 390 110 C500 138 510 210 400 240 C280 270 120 260 110 200 Z"/>
+  <ellipse cx="260" cy="245" rx="150" ry="34" fill="none" stroke="#B9AE9C" stroke-width="1"/>
+  <line class="dash" x1="300" y1="150" x2="300" y2="245"/>
+  <line class="acc" x1="300" y1="150" x2="348" y2="102"/>
+  <path class="acc" d="M340 112 l10 -10 l-13 1"/>
+  <text class="sub" x="350" y="100">n</text>
+  <text class="sub" x="306" y="222">γ</text>
+  <text class="sub" x="240" y="270">D_xy（投影）</text>
+  <text class="fml" x="470" y="110">∬_Σ F·n dS</text>
+  <text class="fml" x="470" y="142">= ∬_D F·n / |cosγ| dxdy</text>
+  <text class="sub" x="470" y="174">上侧/下侧、外侧/内侧决定符号</text>
+  <text class="sub" x="470" y="198">高斯：∭_Ω divF dV = ∮_Σ F·n dS</text>
+  <text class="sub" x="470" y="222">Σ 取外侧；有洞时内表面取内侧</text>
+</svg><figcaption>第二类曲面积分：法向、投影与通量</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\iint_\Sigma Pdydz+Qdzdx+Rdxdy=\iiint_\Omega(P_x+Q_y+R_z)dV\)</span><span class="f-note">高斯公式，外侧</span></div><div class="f-row"><span class="f-tex">\(\iint_\Sigma R\,dxdy=\pm\iint_D R(x,y,z(x,y))dxdy\)</span><span class="f-note">上侧取正</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="第二类曲面积分">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}.fill{fill:rgba(138,75,42,.12);stroke:#8A4B2A;stroke-width:1.3}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">第二类曲面积分：通量与法向</text>
+  <text class="sub" x="24" y="44">dS 的法向与投影面积的夹角决定正负；高斯公式要求外侧。</text>
+  <path class="fill" d="M110 200 C130 120 270 80 390 110 C500 138 510 210 400 240 C280 270 120 260 110 200 Z"/>
+  <ellipse cx="260" cy="245" rx="150" ry="34" fill="none" stroke="#B9AE9C" stroke-width="1"/>
+  <line class="dash" x1="300" y1="150" x2="300" y2="245"/>
+  <line class="acc" x1="300" y1="150" x2="348" y2="102"/>
+  <path class="acc" d="M340 112 l10 -10 l-13 1"/>
+  <text class="sub" x="350" y="100">n</text>
+  <text class="sub" x="306" y="222">γ</text>
+  <text class="sub" x="240" y="270">D_xy（投影）</text>
+  <text class="fml" x="470" y="110">∬_Σ F·n dS</text>
+  <text class="fml" x="470" y="142">= ∬_D F·n / |cosγ| dxdy</text>
+  <text class="sub" x="470" y="174">上侧/下侧、外侧/内侧决定符号</text>
+  <text class="sub" x="470" y="198">高斯：∭_Ω divF dV = ∮_Σ F·n dS</text>
+  <text class="sub" x="470" y="222">Σ 取外侧；有洞时内表面取内侧</text>
+</svg><figcaption>第二类曲面积分</figcaption></figure><p class="exam-q">计算 \(\iint_\Sigma x\,dydz+y\,dzdx+z\,dxdy\)，\(\Sigma\) 为球面 \(x^2+y^2+z^2=1\) 外侧。</p><div class="exam-ans"><b>要点</b> 散度为 3，高斯公式得 \(3\cdot\dfrac{4\pi}{3}=4\pi\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>这是第二类曲面积分，\(\Sigma\) 为球面外侧，封闭，可用高斯公式。</li><li>记 \(\vec F=(P,Q,R)=(x,y,z)\)，求散度 \(\operatorname{div}\vec F=P_x+Q_y+R_z=1+1+1=3\)。</li><li>高斯公式：\(\iint_\Sigma P\,dydz+Q\,dzdx+R\,dxdy=\iiint_\Omega3\,dV\)。</li><li>\(\Omega\) 为单位球，体积 \(\frac{4\pi}{3}\)，故积分 \(=3\cdot\frac{4\pi}{3}=4\pi\)。</li><li>检查：外侧取正号；若为内侧，结果取负。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>曲面取内侧仍用正号。</li><li>补面后忘记减去补面上的积分。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>高斯公式先看“闭不闭、外不外”；不闭就补面，补完记得减。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-09">
+  <span class="anchor">[[K-kp-09]]</span>
+  <div class="kp-head">
+    <span class="kp-no">09</span>
+    <h2>斯托克斯公式、散度与旋度</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">斯托克斯公式把空间闭曲线积分化为曲面积分，右手法则定侧。散度是“源强度” \(P_x+Q_y+R_z\)，旋度是“旋转强度”的行列式。数一选填常考散度、旋度的直接计算。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\operatorname{div}\vec F=P_x+Q_y+R_z\)</span><span class="f-note">散度</span></div><div class="f-row"><span class="f-tex">\(\operatorname{rot}\vec F=\begin{vmatrix}\vec i&amp;\vec j&amp;\vec k\partial_x&amp;\partial_y&amp;\partial_z\P&amp;Q&amp;R\end{vmatrix}\)</span><span class="f-note">旋度</span></div><div class="f-row"><span class="f-tex">\(\oint_\Gamma Pdx+Qdy+Rdz=\iint_\Sigma(\operatorname{rot}\vec F)\cdot\vec n\,dS\)</span><span class="f-note">斯托克斯</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">求 \(\vec F=(y,z,x)\) 的散度与旋度。</p><div class="exam-ans"><b>要点</b> \(\operatorname{div}\vec F=0\)；\(\operatorname{rot}\vec F=(-1,-1,0)\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>记 \(\vec F=(P,Q,R)=(y,z,x)\)，散度 \(\operatorname{div}\vec F=P_x+Q_y+R_z=0+0+0=0\)。</li><li>旋度 \(\operatorname{rot}\vec F=(R_y-Q_z,\ P_z-R_x,\ Q_x-P_y)\)。</li><li>逐项计算：\(R_y-Q_z=0-1=-1\)；\(P_z-R_x=0-1=-1\)；\(Q_x-P_y=0-0=0\)。</li><li>故 \(\operatorname{rot}\vec F=(-1,-1,0)\)。</li><li>检查：用行列式 \(\nabla\times\vec F\) 展开复核，三个分量依次为 \(-1,-1,0\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>旋度行列式展开符号错。</li><li>斯托克斯公式曲面侧与曲线方向不匹配。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>散度旋度只考计算，按行列式展开一遍即可；不要背口诀，容易错符号。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>三大公式怎么选：格林、高斯、斯托克斯</h2>
+  </div>
+  <p class="t-why">数一解答题常把曲线/曲面积分包装成“看起来要硬算”的题，实际一步公式就结束。选错公式会多算 20 分钟，选对 3 分钟出答案。</p>
+  
+  <ol class="method"><li>先看积分对象：平面闭曲线 → 格林；空间闭曲面 → 高斯；空间闭曲线 → 斯托克斯。</li><li>再看是否闭合：不闭合优先补线/补面，补的部分单独减去。</li><li>检查方向：格林取逆时针正向，高斯取外侧，斯托克斯按右手法则。</li><li>检查奇点：区域内有奇点先挖洞，再套公式。</li><li>最后看被积函数：散度/旋度是否简单，简单才值得用公式；否则直接参数化可能更快。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>计算 \(\oint_L\dfrac{xdy-ydx}{x^2+y^2}\)，\(L\) 为不过原点的任意正向闭曲线。</p><p class="t-ans"><b>解</b> 若 \(L\) 不围原点，格林公式得 0；若围原点，挖去小圆后格林公式得 0，故积分等于小圆上的积分 \(2\pi\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 格林公式最大的坑是“区域内有奇点仍直接用”，此时结论会从 \(2\pi\) 变成 0，必须挖洞。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>重积分换序与轮换对称</h2>
+  </div>
+  <p class="t-why">换序是二重积分最常考的技巧，轮换对称是化简被积函数的捷径。两者都不难，但考场紧张时最容易写错上下限。</p>
+  
+  <ol class="method"><li>画区域图，标出边界交点。</li><li>把区域分别按 X 型、Y 型描述，写出两套上下限。</li><li>换序时把原式中的 \(x\) 与 \(y\) 角色互换，重新定限。</li><li>观察区域是否关于 \(y=x\) 对称；若对称，用轮换把 \(f(x,y)\) 换成 \(\frac12[f(x,y)+f(y,x)]\)。</li><li>被积函数含 \(x^2+y^2\) 且区域为圆时，直接转极坐标，通常比换序更快。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>计算 \(\iint_D(x+y)^2d\sigma\)，\(D:x^2+y^2\le1\)。</p><p class="t-ans"><b>解</b> 展开为 \(x^2+2xy+y^2\)。由对称性 \(\iint xy=0\)，且 \(\iint x^2=\iint y^2=\frac{\pi}{4}\)，故结果为 \(\frac{\pi}{2}\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 轮换对称只在区域关于 \(y=x\) 对称时成立；区域不对称时使用会直接算错。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>二重积分换序与极坐标</li><li>三重积分柱/球坐标体积元</li><li>第一类曲线/曲面的 \(ds,dS\)</li><li>格林公式三查</li><li>路径无关与全微分求积</li><li>高斯公式补面</li><li>斯托克斯公式与散度旋度</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>复杂曲面的参数化（考法固定）</li><li>曲线积分应用中的转动惯量</li><li>高维斯托克斯的几何证明</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否 2 分钟完成一次换序</li><li>能否判断格林公式能否直接用</li><li>能否写出球坐标体积元</li><li>能否补面后用高斯公式</li><li>能否计算散度与旋度</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

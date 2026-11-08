@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>807 材料力学 · 动载荷与冲击</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#8A4B2A;--accent-soft:#F2E9E1;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MECH · 11</span><span>MECHANICS OF MATERIALS</span></div>
+    <h1>动载荷与冲击</h1>
+    <p class="cover-sub">核心只有一个：动荷系数。把静载结果乘以 K_d，就能得到动应力与动变形。近年低频，但大纲仍列。</p>
+    <div class="cover-meta"><span class="meta-pill acc">B 级 · 覆盖即可</span><span class="meta-pill">约 10–20 分</span><span class="meta-pill">动荷系数</span><span class="meta-pill">近年低频</span><span class="meta-pill">2026 不考加速/转动</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>动载荷与惯性力的概念</li><li>铅垂冲击（2026 不考加速/转动动载荷）</li><li>匀速转动构件的应力</li><li>铅垂冲击的动荷系数</li><li>水平冲击与突然加载</li><li>冲击应力与变形计算</li><li>提高构件抗冲击能力的措施</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>动载荷与惯性力</h2>
+    <span class="kp-tags"><span class="tag tag-low ">了解</span><span class="tag tag-low ">低频</span></span>
+  </div>
+  <p class="kp-core"><strong>2026 明确不考加速/转动动载荷，本节只作概念理解。</strong> 动载荷是随时间变化或引起构件加速度的载荷；用动静法把惯性力加在构件上，按静力平衡处理。匀加速提升时吊杆轴力为 F(1±a/g)，动荷系数 1±a/g。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(F_I=-ma\)</span><span class="f-note">惯性力，方向与加速度相反</span></div><div class="f-row"><span class="f-tex">\(\sigma_d=\sigma_{st}\left(1+\dfrac{a}{g}\right)\)</span><span class="f-note">匀加速提升</span></div><div class="f-row"><span class="f-tex">\(\sigma_d=\rho v^2\)</span><span class="f-note">匀速转动薄圆环</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 动载题</div><p class="exam-q">构件以加速度 a 向上提升，求吊杆动应力与静应力的比值。</p><div class="exam-ans"><b>要点</b> 惯性力向下，吊杆轴力增大为 \(F(1+a/g)\)；动应力为静应力的 \(1+a/g\) 倍，向下加速时取负号。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>构件以加速度 \(a\) 向上提升，惯性力方向向下。</li><li>吊杆轴力 \(F_d=F+ma=F(1+a/g)\)。</li><li>动应力 \(\sigma_d=F_d/A=\sigma_{st}(1+a/g)\)。</li><li>向下加速时惯性力向上，取 \(1-a/g\)。</li><li>结论：动荷系数 \(K_d=1\pm a/g\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>惯性力方向与加速度同向。</li><li>向下加速时仍用加号。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>动载题先判加速度方向，再写惯性力，最后按静力平衡算内力。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>铅垂冲击的动荷系数</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">重物自由下落冲击构件，由能量守恒可导出动荷系数 \(K_d=1+\sqrt{1+2h/\Delta_{st}}\)，其中 \(\Delta_{st}\) 是冲击物重量作为静载作用时构件的静变形。动应力 \(\sigma_d=K_d\sigma_{st}\)，动变形 \(\Delta_d=K_d\Delta_{st}\)。自由落体高度 h=0（突然加载）时 \(K_d=2\)。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(K_d=1+\sqrt{1+\dfrac{2h}{\Delta_{st}}}\)</span><span class="f-note">铅垂冲击</span></div><div class="f-row"><span class="f-tex">\(\sigma_d=K_d\sigma_{st},\quad \Delta_d=K_d\Delta_{st}\)</span><span class="f-note">动应力、动变形</span></div><div class="f-row"><span class="f-tex">\(K_d=2\)</span><span class="f-note">突然加载（h=0）</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 冲击题</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-label="动荷系数示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1.1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:13px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">铅垂冲击：动荷系数把静载结果放大</text>
+  <text class="sub" x="24" y="44">自由落体是特例；遇到弹簧、变截面、非自由落体，回到能量守恒。</text>
+
+  <!-- beam -->
+  <line class="ink" x1="100" y1="170" x2="620" y2="170"/>
+  <path class="thin" d="M100 170 l-10 16 h20 z"/>
+  <path class="thin" d="M620 170 l-10 16 h20 z"/>
+  <line class="thin" x1="100" y1="186" x2="620" y2="186" stroke="#DAD2C3"/>
+
+  <!-- weight -->
+  <rect class="acc" x="318" y="60" width="64" height="44"/>
+  <text class="lbl" x="336" y="88">Q</text>
+  <line class="acc" x1="350" y1="112" x2="350" y2="156"/>
+  <path class="acc" d="M343 148 l7 9 l7 -9"/>
+
+  <!-- height h -->
+  <line class="thin" x1="410" y1="104" x2="410" y2="170" stroke-dasharray="4 3"/>
+  <line class="thin" x1="402" y1="104" x2="418" y2="104"/>
+  <line class="thin" x1="402" y1="170" x2="418" y2="170"/>
+  <text class="sub" x="418" y="142">h</text>
+
+  <!-- deflections -->
+  <path class="dash" d="M100 170 Q350 206 620 170"/>
+  <text class="sub" x="332" y="208">Δ_st</text>
+  <path class="dash" d="M100 170 Q350 244 620 170" stroke="#8A4B2A"/>
+  <text class="sub" x="332" y="250">Δ_d</text>
+
+  <text class="fml" x="120" y="290">K_d = 1 + √(1 + 2h / Δ_st)</text>
+  <text class="fml" x="420" y="290">σ_d = K_d · σ_st</text>
+  <text class="sub" x="120" y="312">突然加载 h=0：K_d=2；自由落体 h≫Δ_st：K_d≈√(2h/Δ_st)。</text>
+</svg><figcaption>铅垂冲击与动荷系数</figcaption></figure><p class="exam-q">重物 P 从高度 h 自由下落，冲击简支梁跨中，求最大动应力。</p><div class="exam-ans"><b>要点</b> 先求静载 P 作用下的 \(\Delta_{st}=Pl^3/(48EI)\) 与 \(\sigma_{st}\)；代入 \(K_d=1+\sqrt{1+2h/\Delta_{st}}\)；动应力 \(\sigma_d=K_d\sigma_{st}\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先按静载 \(P\) 作用求跨中静挠度 \(\Delta_{st}=Pl^3/(48EI)\)。</li><li>静应力 \(\sigma_{st}=M/W\)。</li><li>自由落体动荷系数 \(K_d=1+\sqrt{1+2h/\Delta_{st}}\)。</li><li>动应力 \(\sigma_d=K_d\sigma_{st}\)。</li><li>若 \(h=0\)（突然加载），\(K_d=2\)，可作校核。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把 h 直接代入 \(K_d=1+\sqrt{2h/\Delta}\)（漏掉 1+）。</li><li>\(\Delta_{st}\) 用错：应为冲击物重量作为静载时的变形。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>动荷系数只背一个通式，h=0 退化为 2；先算静变形，再算 K_d。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>水平冲击与突然加载</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">水平冲击时重力不做功，只有动能转化为应变能：\(K_d=\sqrt{v^2/(g\Delta_{st})}\)。突然加载（载荷由零突加到全值，h=0）时 \(K_d=2\)，动应力是静应力的两倍。注意水平冲击的 \(\Delta_{st}\) 是水平力作为静载时的变形。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(K_d=\sqrt{\dfrac{v^2}{g\Delta_{st}}}\)</span><span class="f-note">水平冲击</span></div><div class="f-row"><span class="f-tex">\(K_d=2\)</span><span class="f-note">突然加载</span></div><div class="f-row"><span class="f-tex">\(\dfrac12mv^2=\dfrac12F_d\Delta_d\)</span><span class="f-note">能量守恒</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 冲击题</div><p class="exam-q">重物以水平速度 v 撞击构件，求动荷系数；若改为突然加载，动荷系数是多少？</p><div class="exam-ans"><b>要点</b> 水平冲击 \(K_d=v/\sqrt{g\Delta_{st}}\)；突然加载 \(K_d=2\)。两者不能混用，关键看是否有重力做功。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>水平冲击无重力势能项，由动能定理 \( \frac12mv^2=\frac12P\Delta_d\) 推得。</li><li>动荷系数 \(K_d=v/\sqrt{g\Delta_{st}}\)。</li><li>突然加载（无初速、无高度）由能量守恒得 \(K_d=2\)。</li><li>两者物理来源不同，不能混用公式。</li><li>结论：先判断冲击形式，再选对应 \(K_d\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>水平冲击也加 1（那是铅垂冲击的公式）。</li><li>把速度 v 直接当变形。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>铅垂有 1+，水平没有 1+；记“重力做功才有 1”。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>冲击应力与变形计算</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">冲击问题的标准流程：把冲击物重量作为静载，求静内力、静应力、静变形；求动荷系数；动应力、动变形 = 静值 × K_d。强度条件为 \(\sigma_{d,\max}=K_d\sigma_{st,\max}\le[\sigma]\)。由于 K_d 可能很大，冲击往往是设计的控制工况。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma_{d,\max}=K_d\sigma_{st,\max}\le[\sigma]\)</span><span class="f-note">冲击强度条件</span></div><div class="f-row"><span class="f-tex">\(F_d=K_dF_{st}\)</span><span class="f-note">动内力</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 冲击题</div><p class="exam-q">已知冲击动荷系数与静应力，求动应力并判断是否安全。</p><div class="exam-ans"><b>要点</b> \(\sigma_d=K_d\sigma_{st}\)，与许用应力比较；若超限，可通过增大静变形（加柔性支承）降低 K_d。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>由 \(K_d\) 与静应力求 \(\sigma_d=K_d\sigma_{st}\)。</li><li>与许用应力比较，判断是否安全。</li><li>若超限，可增大静变形 \(\Delta_{st}\)（加柔性支承）降低 \(K_d\)。</li><li>也可减小冲击高度、速度或增大截面。</li><li>结论：动载问题优先“降 \(K_d\)”，再考虑“加截面”。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>只算动应力，忘记与许用应力比较。</li><li>认为增大截面一定降低动应力（可能降低静应力但提高刚度、增大 K_d）。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>冲击强度题最后要讨论“增大柔度可降低 K_d”，这是常见简答点。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>提高抗冲击能力的措施</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">由 \(K_d=1+\sqrt{1+2h/\Delta_{st}}\) 可知，增大静变形 \(\Delta_{st}\) 可显著降低动荷系数。工程措施：在冲击点设置缓冲弹簧、橡胶垫、柔性支承；避免刚度突变；减轻冲击物质量或降低下落高度。注意这与提高静强度/刚度的思路相反。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\Delta_{st}\uparrow\ \Rightarrow\ K_d\downarrow\)</span><span class="f-note">增大柔度降低动荷系数</span></div><div class="f-row"><span class="f-tex">\(h\downarrow\ \Rightarrow\ K_d\downarrow\)</span><span class="f-note">降低下落高度</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 概念题</div><p class="exam-q">为什么汽车悬架要做得比较“软”？</p><div class="exam-ans"><b>要点</b> 增大静变形可降低动荷系数，从而减小路面冲击传到车身的动应力与动变形；但过软会影响操控与静刚度，需要折中。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>路面冲击可近似为动载，动荷系数随静变形增大而减小。</li><li>悬架越软，\(\Delta_{st}\) 越大，\(K_d\) 越小，传到车身的动应力越小。</li><li>但过软会使静挠度、操控性与通过性变差。</li><li>工程上在舒适性与操控性之间折中。</li><li>结论：这是动荷系数在工程中的典型应用。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>认为抗冲击就要增大刚度。</li><li>忽略缓冲装置的静变形会占用空间。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>抗冲击与抗静载思路相反：静载要刚，冲击要柔。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>冲击的能量守恒解法</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">遇到弹簧、变截面、串联系统等非标准冲击，不要硬套自由落体公式。用能量守恒：重力做功等于系统储存的弹性应变能，解出最大动变形，再求动荷系数。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(P(h+\Delta_d)=\dfrac12 k_{\text{eq}}\Delta_d^2\)</span><span class="f-note">能量守恒</span></div><div class="f-row"><span class="f-tex">\(\Delta_d=\Delta_{st}\left(1+\sqrt{1+\dfrac{2h}{\Delta_{st}}}\right)\)</span><span class="f-note">线性系统统一结果</span></div><div class="f-row"><span class="f-tex">\(K_d=\dfrac{\Delta_d}{\Delta_{st}}\)</span><span class="f-note">动荷系数</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 题（2018 风格）</div><p class="exam-q">重物 \(P\) 从高度 \(h\) 自由落下，冲击由梁与弹簧串联的系统，等效刚度 \(k_{\text{eq}}\)。求动荷系数，并说明与直接套自由落体公式的区别。</p><div class="exam-ans"><b>要点</b> \(\Delta_{st}=P/k_{\text{eq}}\)，\(K_d=1+\sqrt{1+2h/\Delta_{st}}\)；关键是先求整个系统的等效静变形。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>求系统等效刚度：串联时 \(1/k_{\text{eq}}=1/k_1+1/k_2\)。</li><li>静载 \(P\) 作用下的静变形 \(\Delta_{st}=P/k_{\text{eq}}\)。</li><li>设最大动变形为 \(\Delta_d\)，重力做功 \(P(h+\Delta_d)\)。</li><li>系统应变能 \(\frac12k_{\text{eq}}\Delta_d^2\)，令两者相等。</li><li>解二次方程取正根，得 \(K_d=\Delta_d/\Delta_{st}=1+\sqrt{1+2h/\Delta_{st}}\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>只套 \(K_d=1+\sqrt{1+2h/\Delta_{st}}\)，却把 \(\Delta_{st}\) 算成梁的挠度而漏掉弹簧。</li><li>能量守恒漏掉重力在动变形过程中继续做的功。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>非标准冲击一律回到能量守恒，先求等效静变形。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>冲击问题统一解法：先静后动</h2>
+  </div>
+  <p class="t-why">冲击题的公式容易记混，但只要坚持“先算静载、再算 K_d、最后乘回去”，铅垂、水平、突然加载都能统一处理。</p>
+  
+  <ol class="method"><li>把冲击物重量（或等效静力）作为静载加到结构上。</li><li>求静内力、静应力、静变形 \(\Delta_{st}\)。</li><li>按冲击类型选 K_d：铅垂 \(1+\sqrt{1+2h/\Delta_{st}}\)，水平 \(\sqrt{v^2/(g\Delta_{st})}\)，突然 2。</li><li>动应力、动变形 = 静值 × K_d。</li><li>按强度条件校核，必要时讨论降低 K_d 的措施。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>简支梁跨中受重物 P 从高度 h 自由下落冲击，求最大动应力。</p><p class="t-ans"><b>解</b> \(\Delta_{st}=Pl^3/(48EI)\)，\(\sigma_{st}=Pl/(4W)\)；\(K_d=1+\sqrt{1+2h/\Delta_{st}}\)；\(\sigma_d=K_d\sigma_{st}\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 冲击物重量与冲击能量要分清：铅垂冲击用 h 与 Δ_st，水平冲击用速度 v，二者公式不同。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>动荷系数的三种来源：自由落体、突然加载、能量守恒</h2>
+  </div>
+  <p class="t-why">807 动载荷 historically 只考动荷系数，但 2018 起出现需要能量守恒的非标准冲击。把三种来源分清，比背一个公式稳。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-label="动荷系数示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1.1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:13px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">铅垂冲击：动荷系数把静载结果放大</text>
+  <text class="sub" x="24" y="44">自由落体是特例；遇到弹簧、变截面、非自由落体，回到能量守恒。</text>
+
+  <!-- beam -->
+  <line class="ink" x1="100" y1="170" x2="620" y2="170"/>
+  <path class="thin" d="M100 170 l-10 16 h20 z"/>
+  <path class="thin" d="M620 170 l-10 16 h20 z"/>
+  <line class="thin" x1="100" y1="186" x2="620" y2="186" stroke="#DAD2C3"/>
+
+  <!-- weight -->
+  <rect class="acc" x="318" y="60" width="64" height="44"/>
+  <text class="lbl" x="336" y="88">Q</text>
+  <line class="acc" x1="350" y1="112" x2="350" y2="156"/>
+  <path class="acc" d="M343 148 l7 9 l7 -9"/>
+
+  <!-- height h -->
+  <line class="thin" x1="410" y1="104" x2="410" y2="170" stroke-dasharray="4 3"/>
+  <line class="thin" x1="402" y1="104" x2="418" y2="104"/>
+  <line class="thin" x1="402" y1="170" x2="418" y2="170"/>
+  <text class="sub" x="418" y="142">h</text>
+
+  <!-- deflections -->
+  <path class="dash" d="M100 170 Q350 206 620 170"/>
+  <text class="sub" x="332" y="208">Δ_st</text>
+  <path class="dash" d="M100 170 Q350 244 620 170" stroke="#8A4B2A"/>
+  <text class="sub" x="332" y="250">Δ_d</text>
+
+  <text class="fml" x="120" y="290">K_d = 1 + √(1 + 2h / Δ_st)</text>
+  <text class="fml" x="420" y="290">σ_d = K_d · σ_st</text>
+  <text class="sub" x="120" y="312">突然加载 h=0：K_d=2；自由落体 h≫Δ_st：K_d≈√(2h/Δ_st)。</text>
+</svg><figcaption>铅垂冲击：动荷系数把静载结果放大</figcaption></figure>
+  <ol class="method"><li>自由落体：\(K_d=1+\sqrt{1+2h/\Delta_{st}}\)。</li><li>突然加载（h=0）：\(K_d=2\)。</li><li>水平冲击：\(K_d=v/\sqrt{g\Delta_{st}}\)。</li><li>非标准系统：先求等效静变形，再回到能量守恒。</li><li>动应力统一为 \(\sigma_d=K_d\sigma_{st}\)。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>为什么突然加载的动荷系数恰好是 2？</p><p class="t-ans"><b>解</b> 载荷从零突然加上，达到静平衡位置时仍有速度，会继续变形到两倍静变形处才停下；故最大动变形是静变形的 2 倍。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要把水平冲击套自由落体公式；两者能量来源不同。另外，2026 明确不考动载荷中的加速/转动情形；旋转圆环只在第 15 章拓展，不要占时间。</div>
+</section>
+<section class="topic" id="topic-03">
+  <span class="anchor">[[T-topic-03]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 03</span>
+    <h2>推导：动荷系数（能量守恒）</h2>
+  </div>
+  <p class="t-why">807 的冲击题常被当成“套 Kd 公式”，但 2018 年考过能量守恒。会推 Kd，才能处理弹簧、变截面、非自由落体。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-label="动荷系数示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1.1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:13px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">铅垂冲击：动荷系数把静载结果放大</text>
+  <text class="sub" x="24" y="44">自由落体是特例；遇到弹簧、变截面、非自由落体，回到能量守恒。</text>
+
+  <!-- beam -->
+  <line class="ink" x1="100" y1="170" x2="620" y2="170"/>
+  <path class="thin" d="M100 170 l-10 16 h20 z"/>
+  <path class="thin" d="M620 170 l-10 16 h20 z"/>
+  <line class="thin" x1="100" y1="186" x2="620" y2="186" stroke="#DAD2C3"/>
+
+  <!-- weight -->
+  <rect class="acc" x="318" y="60" width="64" height="44"/>
+  <text class="lbl" x="336" y="88">Q</text>
+  <line class="acc" x1="350" y1="112" x2="350" y2="156"/>
+  <path class="acc" d="M343 148 l7 9 l7 -9"/>
+
+  <!-- height h -->
+  <line class="thin" x1="410" y1="104" x2="410" y2="170" stroke-dasharray="4 3"/>
+  <line class="thin" x1="402" y1="104" x2="418" y2="104"/>
+  <line class="thin" x1="402" y1="170" x2="418" y2="170"/>
+  <text class="sub" x="418" y="142">h</text>
+
+  <!-- deflections -->
+  <path class="dash" d="M100 170 Q350 206 620 170"/>
+  <text class="sub" x="332" y="208">Δ_st</text>
+  <path class="dash" d="M100 170 Q350 244 620 170" stroke="#8A4B2A"/>
+  <text class="sub" x="332" y="250">Δ_d</text>
+
+  <text class="fml" x="120" y="290">K_d = 1 + √(1 + 2h / Δ_st)</text>
+  <text class="fml" x="420" y="290">σ_d = K_d · σ_st</text>
+  <text class="sub" x="120" y="312">突然加载 h=0：K_d=2；自由落体 h≫Δ_st：K_d≈√(2h/Δ_st)。</text>
+</svg><figcaption>铅垂冲击与动荷系数</figcaption></figure>
+  <ol class="method"><li>自由落体：重物 \(Q\) 从高度 \(h\) 落下，梁最大动位移 \(\Delta_d\)；忽略能量损失，重力势能减少等于梁的应变能：\(Q(h+\Delta_d)=\dfrac12 P_d\Delta_d\)。</li><li>线弹性关系：同一位置 \(P_d/\Delta_d=P_{st}/\Delta_{st}\)，其中 \(P_{st}=Q\)，\(\Delta_{st}\) 为静载位移。</li><li>代入并消去 \(P_d\)：\(Q(h+\Delta_d)=\dfrac12 Q\dfrac{\Delta_d^2}{\Delta_{st}}\)，整理得 \(\Delta_d^2-2\Delta_{st}\Delta_d-2h\Delta_{st}=0\)。</li><li>取正根：\(\Delta_d=\Delta_{st}\left[1+\sqrt{1+\dfrac{2h}{\Delta_{st}}}\right]\)，故 \(K_d=\dfrac{\Delta_d}{\Delta_{st}}=1+\sqrt{1+\dfrac{2h}{\Delta_{st}}}\)。</li><li>特例：突然加载 \(h=0\) 得 \(K_d=2\)；自由落体 \(h\gg\Delta_{st}\) 时 \(K_d\approx\sqrt{2h/\Delta_{st}}\)。</li><li>水平冲击：\(\dfrac12 mv^2=\dfrac12 P_d\Delta_d\)，结合 \(P_d/\Delta_d=P_{st}/\Delta_{st}\) 与 \(P_{st}=mg\)，得 \(K_d=v/\sqrt{g\Delta_{st}}\)。</li><li>动应力与动变形：\(\sigma_d=K_d\sigma_{st}\)，\(\Delta_d=K_d\Delta_{st}\)；\(K_d\) 只适用于线弹性、无能量损失、同一冲击点。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>简支梁跨中静挠度 \(\Delta_{st}=2\,\text{mm}\)，重物从 \(h=50\,\text{mm}\) 自由落下，静应力 \(\sigma_{st}=20\,\text{MPa}\)，求动荷系数与动应力。</p><p class="t-ans"><b>解</b> \(K_d=1+\sqrt{1+2\times50/2}=1+\sqrt{51}\approx8.14\)；\(\sigma_d=K_d\sigma_{st}\approx162.8\,\text{MPa}\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> \(K_d\) 同时放大应力和位移，但静载值必须取同一冲击点；有弹簧时要先求等效刚度再算 \(\Delta_{st}\)；不要把转动/加速动载荷套这个公式（807 不考）。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>动静法与惯性力</li><li>铅垂冲击动荷系数</li><li>水平冲击与突然加载的 K_d</li><li>动应力 = K_d × 静应力</li><li>冲击强度条件</li><li>增大柔度降低 K_d</li><li>非标准冲击回到能量守恒</li><li>铅垂冲击是官方第 8 条；2026 不考加速/转动动载荷</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>冲击波传播</li><li>多次反复冲击的疲劳</li><li>复杂弹性体系的冲击</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否默写铅垂冲击 K_d</li><li>能否区分水平与铅垂冲击</li><li>能否先算静变形再算 K_d</li><li>能否解释缓冲垫的作用</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

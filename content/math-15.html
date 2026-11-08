@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>数学一 · 一维随机变量及其分布</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#1F3A5F;--accent-soft:#E7ECF3;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MATH · 15</span><span>MATHEMATICS I</span></div>
+    <h1>一维随机变量及其分布</h1>
+    <p class="cover-sub">从“事件”升级到“变量”。分布函数是统一语言，密度与分布律是两种写法；正态与指数是后面统计推断的两根支柱。</p>
+    <div class="cover-meta"><span class="meta-pill acc">A 级 · 重点掌握</span><span class="meta-pill">约 5–11 分</span><span class="meta-pill">选填 + 小解答</span><span class="meta-pill">正态必考</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>随机变量的概念</li><li>分布函数的性质</li><li>离散型随机变量及其分布律</li><li>连续型随机变量及其概率密度</li><li>均匀分布、指数分布、正态分布</li><li>随机变量函数的分布</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>分布函数及其性质</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">分布函数 \(F(x)=P(X\le x)\) 是描述随机变量的统一工具，离散型、连续型都适用。四条性质必须能默写：单调不减、右连续、\(F(-\infty)=0\)、\(F(+\infty)=1\)。求区间概率时注意端点：\(P(a&lt;X\le b)=F(b)-F(a)\)。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(F(x)=P(X\le x)\)</span><span class="f-note">定义域为全体实数</span></div><div class="f-row"><span class="f-tex">\(P(a&lt;X\le b)=F(b)-F(a)\)</span><span class="f-note">左开右闭，端点归属要与 F 一致</span></div><div class="f-row"><span class="f-tex">\(P(X=a)=F(a)-F(a-0)\)</span><span class="f-note">跳跃度即该点概率</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">已知 \(F(x)\) 分段给出，求 \(P(1&lt;X\le 3)\) 与 \(P(X=2)\)。</p><div class="exam-ans"><b>要点</b> \(P(1&lt;X\le3)=F(3)-F(1)\)；\(P(X=2)=F(2)-F(2-0)\)。连续型在单点概率恒为 0，离散型才看跳跃。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>由分布函数定义 \(P(a&lt;X\le b)=F(b)-F(a)\)，取 \(a=1,b=3\)。</li><li>\(P(1&lt;X\le3)=F(3)-F(1)\)，把分段表达式代入即可。</li><li>\(P(X=2)=F(2)-F(2-0)\)，即 \(F\) 在 \(x=2\) 处的跳跃高度。</li><li>检验：连续型在单点概率为 0；离散型才等于跳跃值。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把 \(P(a&lt;X&lt;b)\) 写成 \(F(b)-F(a)\)，漏掉端点概率；</li><li>认为分布函数一定连续（离散型是阶梯）。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>分布函数先看右连续与两端极限，选择题常用这两条排除错误选项。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>离散型随机变量与常见分布</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">离散型由分布律 \(p_k=P(X=x_k)\) 完全确定，\(\sum p_k=1\)。四个必背分布：0-1 分布、二项分布、泊松分布、几何分布。泊松是二项的极限情形（n 大 p 小，\(\lambda=np\)），题干出现“稀有事件”“单位时间次数”优先想泊松。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" role="img" aria-label="常见分布图形">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.2}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.bar{fill:rgba(138,75,42,.35);stroke:#8A4B2A;stroke-width:1}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:10.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:11.5px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="20" y="22">常见分布的“形状记忆”</text>
+  <text class="sub" x="20" y="40">选择题常考：名称—参数—期望方差—图形，四者要能互推。</text>
+
+  <text class="sub" x="30" y="68">二项分布 B(n,p)：离散柱形</text>
+  <line class="thin" x1="30" y1="160" x2="230" y2="160"/>
+  <rect class="bar" x="50" y="140" width="12" height="20"/><rect class="bar" x="70" y="118" width="12" height="42"/>
+  <rect class="bar" x="90" y="96" width="12" height="64"/><rect class="bar" x="110" y="82" width="12" height="78"/>
+  <rect class="bar" x="130" y="96" width="12" height="64"/><rect class="bar" x="150" y="120" width="12" height="40"/>
+  <rect class="bar" x="170" y="142" width="12" height="18"/>
+  <text class="fml" x="30" y="186">E=np, D=np(1−p)</text>
+
+  <text class="sub" x="270" y="68">泊松分布 P(λ)：离散、右偏</text>
+  <line class="thin" x1="270" y1="160" x2="450" y2="160"/>
+  <rect class="bar" x="290" y="120" width="12" height="40"/><rect class="bar" x="310" y="96" width="12" height="64"/>
+  <rect class="bar" x="330" y="90" width="12" height="70"/><rect class="bar" x="350" y="104" width="12" height="56"/>
+  <rect class="bar" x="370" y="126" width="12" height="34"/><rect class="bar" x="390" y="142" width="12" height="18"/>
+  <text class="fml" x="270" y="186">E=D=λ</text>
+
+  <text class="sub" x="490" y="68">指数分布 E(λ)：连续、单调降</text>
+  <line class="thin" x1="490" y1="160" x2="700" y2="160"/>
+  <path class="acc" d="M500 76 C540 110 580 142 700 158"/>
+  <text class="fml" x="490" y="186">E=1/λ, D=1/λ²</text>
+
+  <text class="sub" x="20" y="228">均匀 U(a,b)：矩形；正态 N(μ,σ²)：钟形；χ²/t/F 见抽样分布页。</text>
+  <text class="sub" x="20" y="250">无记忆性：P(X&gt;s+t|X&gt;s)=P(X&gt;t)，只有指数分布（离散为几何分布）具有。</text>
+</svg><figcaption>常见分布的形状记忆：二项/泊松/指数</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(X\sim B(n,p):\ P(X=k)=C_n^k p^k(1-p)^{n-k}\)</span><span class="f-note">n 重伯努利成功次数</span></div><div class="f-row"><span class="f-tex">\(X\sim P(\lambda):\ P(X=k)=\dfrac{\lambda^k}{k!}e^{-\lambda}\)</span><span class="f-note">\(E=D=\lambda\)</span></div><div class="f-row"><span class="f-tex">\(X\sim G(p):\ P(X=k)=(1-p)^{k-1}p\)</span><span class="f-note">首次成功所需次数，\(k=1,2,\dots\)</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" role="img" aria-label="常见分布图形">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.2}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.bar{fill:rgba(138,75,42,.35);stroke:#8A4B2A;stroke-width:1}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:10.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:11.5px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="20" y="22">常见分布的“形状记忆”</text>
+  <text class="sub" x="20" y="40">选择题常考：名称—参数—期望方差—图形，四者要能互推。</text>
+
+  <text class="sub" x="30" y="68">二项分布 B(n,p)：离散柱形</text>
+  <line class="thin" x1="30" y1="160" x2="230" y2="160"/>
+  <rect class="bar" x="50" y="140" width="12" height="20"/><rect class="bar" x="70" y="118" width="12" height="42"/>
+  <rect class="bar" x="90" y="96" width="12" height="64"/><rect class="bar" x="110" y="82" width="12" height="78"/>
+  <rect class="bar" x="130" y="96" width="12" height="64"/><rect class="bar" x="150" y="120" width="12" height="40"/>
+  <rect class="bar" x="170" y="142" width="12" height="18"/>
+  <text class="fml" x="30" y="186">E=np, D=np(1−p)</text>
+
+  <text class="sub" x="270" y="68">泊松分布 P(λ)：离散、右偏</text>
+  <line class="thin" x1="270" y1="160" x2="450" y2="160"/>
+  <rect class="bar" x="290" y="120" width="12" height="40"/><rect class="bar" x="310" y="96" width="12" height="64"/>
+  <rect class="bar" x="330" y="90" width="12" height="70"/><rect class="bar" x="350" y="104" width="12" height="56"/>
+  <rect class="bar" x="370" y="126" width="12" height="34"/><rect class="bar" x="390" y="142" width="12" height="18"/>
+  <text class="fml" x="270" y="186">E=D=λ</text>
+
+  <text class="sub" x="490" y="68">指数分布 E(λ)：连续、单调降</text>
+  <line class="thin" x1="490" y1="160" x2="700" y2="160"/>
+  <path class="acc" d="M500 76 C540 110 580 142 700 158"/>
+  <text class="fml" x="490" y="186">E=1/λ, D=1/λ²</text>
+
+  <text class="sub" x="20" y="228">均匀 U(a,b)：矩形；正态 N(μ,σ²)：钟形；χ²/t/F 见抽样分布页。</text>
+  <text class="sub" x="20" y="250">无记忆性：P(X&gt;s+t|X&gt;s)=P(X&gt;t)，只有指数分布（离散为几何分布）具有。</text>
+</svg><figcaption>常见分布图形</figcaption></figure><p class="exam-q">某放射性物质单位时间内放出粒子数服从参数为 \(\lambda\) 的泊松分布，求单位时间内至少放出 1 个粒子的概率。</p><div class="exam-ans"><b>要点</b> \(1-P(X=0)=1-e^{-\lambda}\)。凡“至少一个”先取对立事件，是离散分布的基本功。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>\(X\sim P(\lambda)\)，\(P(X=k)=e^{-\lambda}\lambda^k/k!\)。</li><li>“至少放出一个”取对立事件：\(P(X\ge1)=1-P(X=0)\)。</li><li>\(P(X=0)=e^{-\lambda}\)，故 \(P(X\ge1)=1-e^{-\lambda}\)。</li><li>检验：\(\lambda\to0\) 时概率趋于 0；\(\lambda=1\) 时为 \(0.632\)，合理。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>几何分布从 0 还是从 1 开始记错；</li><li>二项与泊松的适用条件混淆；</li><li>泊松分布归一化记成 \(\lambda^k/k!\) 漏掉 \(e^{-\lambda}\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>四个分布画一张表：参数、分布律、期望、方差，背表不背推导。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>连续型随机变量与概率密度</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">连续型由概率密度 \(f(x)\) 描述，\(f(x)\ge0\) 且 \(\int_{-\infty}^{+\infty}f=1\)。密度<strong>不是概率</strong>，可以大于 1；连续型随机变量取任一点的概率为 0。\(F(x)=\int_{-\infty}^{x}f(t)dt\)，在 \(f\) 的连续点处 \(F'(x)=f(x)\)。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(P(a&lt;X&lt;b)=\int_a^b f(x)\,dx\)</span><span class="f-note">端点开闭无关</span></div><div class="f-row"><span class="f-tex">\(F(x)=\int_{-\infty}^{x}f(t)\,dt,\quad F'(x)=f(x)\)</span><span class="f-note">连续点处</span></div><div class="f-row"><span class="f-tex">\(\int_{-\infty}^{+\infty}f(x)\,dx=1\)</span><span class="f-note">归一化，求未知常数必用</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">已知 \(f(x)=Ae^{-|x|}\) 为某随机变量的密度，求 \(A\) 与 \(P(|X|&lt;1)\)。</p><div class="exam-ans"><b>要点</b> \(\int_{-\infty}^{\infty}Ae^{-|x|}dx=2A=1\)，故 \(A=1/2\)；\(P(|X|&lt;1)=2\int_0^1 \frac12 e^{-x}dx=1-e^{-1}\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>密度归一化：\(\int_{-\infty}^{\infty}Ae^{-|x|}dx=2A\int_0^\infty e^{-x}dx=2A=1\)，故 \(A=1/2\)。</li><li>\(P(|X|&lt;1)=\int_{-1}^{1}\frac12 e^{-|x|}dx=2\cdot\frac12\int_0^1 e^{-x}dx\)。</li><li>积分得 \(1-e^{-1}\approx0.632\)。</li><li>检验：结果小于 1；密度关于 0 对称，对称区间可直接用 2 倍半区间。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把 \(f(x)\) 当作 \(P(X=x)\)；</li><li>求归一化常数时漏掉分段积分的另一半；</li><li>认为密度必须小于 1。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>密度只保证“积分是概率”，先画密度图再定积分限，比套公式稳。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>均匀分布</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">\(X\sim U(a,b)\) 在区间内等可能，密度为常数 \(1/(b-a)\)。它的分布函数是一条斜线，常作为“取一个随机点”的模型，也是二维均匀分布与几何概型的桥梁。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(f(x)=\dfrac{1}{b-a},\ a&lt;x&lt;b\)</span><span class="f-note">区间外为 0</span></div><div class="f-row"><span class="f-tex">\(F(x)=\dfrac{x-a}{b-a},\ a\le x&lt;b\)</span><span class="f-note">线性增长</span></div><div class="f-row"><span class="f-tex">\(E(X)=\dfrac{a+b}{2},\ D(X)=\dfrac{(b-a)^2}{12}\)</span><span class="f-note">必背</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">\(X\sim U(0,2)\)，求 \(P(X^2&lt;1)\)。</p><div class="exam-ans"><b>要点</b> \(X^2&lt;1\iff -1&lt;X&lt;1\)，在 \((0,2)\) 内为 \((0,1)\)，概率 \(=1/2\)。先解不等式再与支撑集取交。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>\(X\sim U(0,2)\)，密度在 \((0,2)\) 上为 \(1/2\)。</li><li>解不等式 \(X^2&lt;1\)，得 \(-1&lt;X&lt;1\)。</li><li>与支撑集 \((0,2)\) 取交，得 \((0,1)\)，区间长度 1。</li><li>故概率 \(=1/2\)；区间完全落在支撑集内，可直接用长度比。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>忘记与支撑集取交集，直接用区间长度；</li><li>把均匀分布的密度区间端点写反。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>均匀分布题一律先画数轴，标出支撑集，再把事件翻译成区间。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>指数分布与无记忆性</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">\(X\sim E(\lambda)\) 描述等待时间，密度 \(\lambda e^{-\lambda x}\)。最重要的性质是<strong>无记忆性</strong>：\(P(X&gt;s+t\mid X&gt;s)=P(X&gt;t)\)。题干出现“已使用/已等待了多久，再等多久”优先想无记忆性。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(f(x)=\lambda e^{-\lambda x},\ x&gt;0\)</span><span class="f-note">\(\lambda&gt;0\)</span></div><div class="f-row"><span class="f-tex">\(F(x)=1-e^{-\lambda x},\ x&gt;0\)</span><span class="f-note">求“至多”直接用</span></div><div class="f-row"><span class="f-tex">\(E(X)=\dfrac{1}{\lambda},\ D(X)=\dfrac{1}{\lambda^2}\)</span><span class="f-note">参数是率，不是均值</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">某元件寿命服从参数为 \(\lambda\) 的指数分布，已知已使用 \(s\) 小时，求再使用 \(t\) 小时仍正常的概率。</p><div class="exam-ans"><b>要点</b> 由无记忆性，概率为 \(e^{-\lambda t}\)，与 \(s\) 无关。若用条件概率定义算，会得到同一个指数尾。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>\(X\sim E(\lambda)\)，尾概率 \(P(X&gt;t)=e^{-\lambda t}\)。</li><li>条件概率 \(P(X&gt;s+t\mid X&gt;s)=\frac{P(X&gt;s+t)}{P(X&gt;s)}\)。</li><li>代入 \(=\frac{e^{-\lambda(s+t)}}{e^{-\lambda s}}=e^{-\lambda t}\)。</li><li>结果与 \(s\) 无关，即无记忆性；检验：\(t=0\) 时为 1。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把 \(\lambda\) 当成平均寿命；</li><li>无记忆性只对指数分布成立，不能套到其他分布。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>指数分布记“率参数”，均值是 \(1/\lambda\)；看到“已经用了多久”直接写无记忆性。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>正态分布与标准化</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">\(X\sim N(\mu,\sigma^2)\) 的密度关于 \(\mu\) 对称，标准化 \(Z=(X-\mu)/\sigma\sim N(0,1)\) 后查表。核心技巧：所有正态概率都化为 \(\Phi\) 值，利用 \(\Phi(-z)=1-\Phi(z)\)。线性变换保持正态：\(aX+b\sim N(a\mu+b,a^2\sigma^2)\)。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="正态分布">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:2}.fill{fill:rgba(138,75,42,.10);stroke:none}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">正态分布：N(μ, σ²) 的“三σ原则”</text>
+  <text class="sub" x="24" y="44">标准化 z=(X−μ)/σ；查表、反查分位数都先标准化。</text>
+  <path class="fill" d="M110 240 C150 240 170 120 260 92 C350 64 370 240 410 240 Z" opacity=".35"/>
+  <path class="acc" d="M70 240 C130 240 160 170 200 120 C240 72 280 62 300 62 C320 62 360 72 400 120 C440 170 470 240 530 240"/>
+  <line class="thin" x1="60" y1="240" x2="540" y2="240"/>
+  <line class="dash" x1="300" y1="62" x2="300" y2="240"/>
+  <text class="sub" x="292" y="258">μ</text>
+  <line class="dash" x1="240" y1="240" x2="240" y2="120"/><text class="sub" x="228" y="258">μ−σ</text>
+  <line class="dash" x1="360" y1="240" x2="360" y2="120"/><text class="sub" x="350" y="258">μ+σ</text>
+  <line class="dash" x1="190" y1="240" x2="190" y2="170"/><text class="sub" x="176" y="258">μ−2σ</text>
+  <line class="dash" x1="410" y1="240" x2="410" y2="170"/><text class="sub" x="400" y="258">μ+2σ</text>
+  <text class="sub" x="250" y="120">68.3%</text>
+  <text class="sub" x="198" y="160">95.4%</text>
+  <text class="sub" x="126" y="200">99.7%</text>
+  <text class="fml" x="565" y="100">φ(x)=1/(√(2π)σ)·e^{−(x−μ)²/(2σ²)}</text>
+  <text class="sub" x="565" y="136">P(μ−σ&lt;X≤μ+σ)=0.6827</text>
+  <text class="sub" x="565" y="160">P(μ−2σ&lt;X≤μ+2σ)=0.9545</text>
+  <text class="sub" x="565" y="184">P(μ−3σ&lt;X≤μ+3σ)=0.9973</text>
+  <text class="sub" x="565" y="214">对称性：Φ(−z)=1−Φ(z)</text>
+</svg><figcaption>正态分布与三σ原则</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(Z=\dfrac{X-\mu}{\sigma}\sim N(0,1)\)</span><span class="f-note">标准化</span></div><div class="f-row"><span class="f-tex">\(P(X\le x)=\Phi\!\left(\dfrac{x-\mu}{\sigma}\right)\)</span><span class="f-note">查表</span></div><div class="f-row"><span class="f-tex">\(\Phi(-z)=1-\Phi(z)\)</span><span class="f-note">对称性，负值转正</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="正态分布">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:2}.fill{fill:rgba(138,75,42,.10);stroke:none}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:14px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="24" y="24">正态分布：N(μ, σ²) 的“三σ原则”</text>
+  <text class="sub" x="24" y="44">标准化 z=(X−μ)/σ；查表、反查分位数都先标准化。</text>
+  <path class="fill" d="M110 240 C150 240 170 120 260 92 C350 64 370 240 410 240 Z" opacity=".35"/>
+  <path class="acc" d="M70 240 C130 240 160 170 200 120 C240 72 280 62 300 62 C320 62 360 72 400 120 C440 170 470 240 530 240"/>
+  <line class="thin" x1="60" y1="240" x2="540" y2="240"/>
+  <line class="dash" x1="300" y1="62" x2="300" y2="240"/>
+  <text class="sub" x="292" y="258">μ</text>
+  <line class="dash" x1="240" y1="240" x2="240" y2="120"/><text class="sub" x="228" y="258">μ−σ</text>
+  <line class="dash" x1="360" y1="240" x2="360" y2="120"/><text class="sub" x="350" y="258">μ+σ</text>
+  <line class="dash" x1="190" y1="240" x2="190" y2="170"/><text class="sub" x="176" y="258">μ−2σ</text>
+  <line class="dash" x1="410" y1="240" x2="410" y2="170"/><text class="sub" x="400" y="258">μ+2σ</text>
+  <text class="sub" x="250" y="120">68.3%</text>
+  <text class="sub" x="198" y="160">95.4%</text>
+  <text class="sub" x="126" y="200">99.7%</text>
+  <text class="fml" x="565" y="100">φ(x)=1/(√(2π)σ)·e^{−(x−μ)²/(2σ²)}</text>
+  <text class="sub" x="565" y="136">P(μ−σ&lt;X≤μ+σ)=0.6827</text>
+  <text class="sub" x="565" y="160">P(μ−2σ&lt;X≤μ+2σ)=0.9545</text>
+  <text class="sub" x="565" y="184">P(μ−3σ&lt;X≤μ+3σ)=0.9973</text>
+  <text class="sub" x="565" y="214">对称性：Φ(−z)=1−Φ(z)</text>
+</svg><figcaption>正态分布与三σ原则</figcaption></figure><p class="exam-q">\(X\sim N(2,9)\)，求 \(P(1&lt;X&lt;5)\)（用 \(\Phi\) 表示）。</p><div class="exam-ans"><b>要点</b> 标准化：\(P=\Phi\!\left(\frac{5-2}{3}\right)-\Phi\!\left(\frac{1-2}{3}\right)=\Phi(1)-\Phi(-1/3)=\Phi(1)+\Phi(1/3)-1\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>\(X\sim N(2,9)\)，\(\sigma=3\)，标准化 \(Z=(X-2)/3\sim N(0,1)\)。</li><li>\(P(1&lt;X&lt;5)=P\!\left(\frac{1-2}{3}&lt;Z&lt;\frac{5-2}{3}\right)=P(-1/3&lt;Z&lt;1)\)。</li><li>\(=\Phi(1)-\Phi(-1/3)=\Phi(1)+\Phi(1/3)-1\)。</li><li>数值 \(\approx0.8413+0.6306-1=0.4719\)；区间关于均值不对称，略小于 0.5 合理。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>方差 \(\sigma^2\) 与标准差 \(\sigma\) 混用；</li><li>负分位数不转化，直接查表；</li><li>认为正态分布密度最大值是 \(1/\sigma\)（漏 \(\sqrt{2\pi}\)）。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>正态题三步：标准化、化正、查表；草稿上先写 \(Z=\cdot\) 再代数字。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>一维随机变量函数的分布</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">求 \(Y=g(X)\) 的分布，通用方法是<strong>分布函数法</strong>：先写 \(F_Y(y)=P(g(X)\le y)\)，把事件翻译成 X 的区间，再用 X 的分布求概率，最后求导得密度。只有当 \(g\) 严格单调且可导时，才能直接用反函数公式。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(F_Y(y)=P(g(X)\le y)\)</span><span class="f-note">通用起点，不要跳步</span></div><div class="f-row"><span class="f-tex">\(f_Y(y)=f_X(h(y))\,|h'(y)|\)</span><span class="f-note">\(h=g^{-1}\)，仅单调时可用</span></div><div class="f-row"><span class="f-tex">\(Y=aX+b\Rightarrow f_Y(y)=\dfrac{1}{|a|}f_X\!\left(\dfrac{y-b}{a}\right)\)</span><span class="f-note">线性变换</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">\(X\sim U(0,1)\)，令 \(Y=-2\ln X\)，求 \(Y\) 的密度。</p><div class="exam-ans"><b>要点</b> \(F_Y(y)=P(-2\ln X\le y)=P(X\ge e^{-y/2})=1-e^{-y/2}\)（\(y&gt;0\)），求导得 \(f_Y(y)=\frac12 e^{-y/2}\)，即 \(Y\sim E(1/2)\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>\(X\in(0,1)\)，故 \(Y=-2\ln X&gt;0\)；先求分布函数。</li><li>\(F_Y(y)=P(-2\ln X\le y)=P(X\ge e^{-y/2})=1-e^{-y/2}\)，\(y&gt;0\)。</li><li>求导得 \(f_Y(y)=\frac12 e^{-y/2}\)，\(y&gt;0\)。</li><li>即 \(Y\sim E(1/2)\)；检验 \(\int_0^\infty\frac12e^{-y/2}dy=1\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>不讨论 \(y\) 的取值范围，密度写成全轴；</li><li>单调公式漏绝对值；</li><li>分段函数忘记逐段求再合并。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>函数分布题只用分布函数法，先事件、再区间、再求导，三步不跳。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>分布函数法求 \(Y=g(X)\) 的五步</h2>
+  </div>
+  <p class="t-why">这是本章最稳定的解答题来源，也是二维“和的分布”的基础。失分点几乎都在取值范围与分段，而不是积分本身。</p>
+  
+  <ol class="method"><li>写定义：\(F_Y(y)=P(g(X)\le y)\)，先不要动 X 的密度。</li><li>解不等式：把 \(g(X)\le y\) 解成 X 的区间，注意 \(g\) 不单调时要分段。</li><li>定范围：由 X 的支撑集确定 \(y\) 的有效范围，范围外 \(F_Y=0\) 或 1。</li><li>算概率：用 X 的分布函数或密度积分，得到 \(F_Y(y)\)。</li><li>求导：在可导点对 \(y\) 求导得 \(f_Y(y)\)，并写成分段形式。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>\(X\sim N(0,1)\)，\(Y=X^2\)，求 \(f_Y(y)\)。</p><p class="t-ans"><b>解</b> \(y\le0\) 时 \(F_Y=0\)；\(y&gt;0\) 时 \(F_Y=P(-\sqrt y\le X\le\sqrt y)=2\Phi(\sqrt y)-1\)，求导得 \(f_Y(y)=\frac{1}{\sqrt{2\pi y}}e^{-y/2}\)，即 \(\chi^2(1)\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> \(g\) 不单调时，一个 \(y\) 对应两段 X 区间，概率必须相加；只写一段是本章最常见的错误。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>分布函数四条性质</li><li>四个离散分布的分布律与期望方差</li><li>密度归一化与区间概率</li><li>正态标准化与对称性</li><li>指数分布无记忆性</li><li>分布函数法求函数分布</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>超几何分布的复杂计数</li><li>非单调函数的反函数公式</li><li>极端的分段密度构造题</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否由密度求分布函数并检查右连续</li><li>能否把正态概率化为 Φ 值</li><li>能否独立完成 Y=X² 的密度推导</li><li>能否说清密度为何可以大于 1</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

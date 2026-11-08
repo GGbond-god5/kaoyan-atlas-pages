@@ -1,0 +1,150 @@
+{
+ "set": "2026 张宇八套卷（数一）",
+ "index": 3,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 1,
+   "pdfEnd": 8,
+   "title": "2026 张宇八套卷（数一）（第1套）",
+   "chapter": "math-mock-3-1",
+   "sourcePdf": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "images": [
+    "content/math-pages/mock3/p01.png",
+    "content/math-pages/mock3/p02.png",
+    "content/math-pages/mock3/p03.png",
+    "content/math-pages/mock3/p04.png",
+    "content/math-pages/mock3/p05.png",
+    "content/math-pages/mock3/p06.png",
+    "content/math-pages/mock3/p07.png",
+    "content/math-pages/mock3/p08.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 9,
+   "pdfEnd": 16,
+   "title": "2026 张宇八套卷（数一）（第2套）",
+   "chapter": "math-mock-3-2",
+   "sourcePdf": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "images": [
+    "content/math-pages/mock3/p09.png",
+    "content/math-pages/mock3/p10.png",
+    "content/math-pages/mock3/p11.png",
+    "content/math-pages/mock3/p12.png",
+    "content/math-pages/mock3/p13.png",
+    "content/math-pages/mock3/p14.png",
+    "content/math-pages/mock3/p15.png",
+    "content/math-pages/mock3/p16.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 17,
+   "pdfEnd": 24,
+   "title": "2026 张宇八套卷（数一）（第3套）",
+   "chapter": "math-mock-3-3",
+   "sourcePdf": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "images": [
+    "content/math-pages/mock3/p17.png",
+    "content/math-pages/mock3/p18.png",
+    "content/math-pages/mock3/p19.png",
+    "content/math-pages/mock3/p20.png",
+    "content/math-pages/mock3/p21.png",
+    "content/math-pages/mock3/p22.png",
+    "content/math-pages/mock3/p23.png",
+    "content/math-pages/mock3/p24.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 25,
+   "pdfEnd": 32,
+   "title": "2026 张宇八套卷（数一）（第4套）",
+   "chapter": "math-mock-3-4",
+   "sourcePdf": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "images": [
+    "content/math-pages/mock3/p25.png",
+    "content/math-pages/mock3/p26.png",
+    "content/math-pages/mock3/p27.png",
+    "content/math-pages/mock3/p28.png",
+    "content/math-pages/mock3/p29.png",
+    "content/math-pages/mock3/p30.png",
+    "content/math-pages/mock3/p31.png",
+    "content/math-pages/mock3/p32.png"
+   ]
+  },
+  {
+   "n": 5,
+   "pdfStart": 33,
+   "pdfEnd": 40,
+   "title": "2026 张宇八套卷（数一）（第5套）",
+   "chapter": "math-mock-3-5",
+   "sourcePdf": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "images": [
+    "content/math-pages/mock3/p33.png",
+    "content/math-pages/mock3/p34.png",
+    "content/math-pages/mock3/p35.png",
+    "content/math-pages/mock3/p36.png",
+    "content/math-pages/mock3/p37.png",
+    "content/math-pages/mock3/p38.png",
+    "content/math-pages/mock3/p39.png",
+    "content/math-pages/mock3/p40.png"
+   ]
+  },
+  {
+   "n": 6,
+   "pdfStart": 41,
+   "pdfEnd": 48,
+   "title": "2026 张宇八套卷（数一）（第6套）",
+   "chapter": "math-mock-3-6",
+   "sourcePdf": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "images": [
+    "content/math-pages/mock3/p41.png",
+    "content/math-pages/mock3/p42.png",
+    "content/math-pages/mock3/p43.png",
+    "content/math-pages/mock3/p44.png",
+    "content/math-pages/mock3/p45.png",
+    "content/math-pages/mock3/p46.png",
+    "content/math-pages/mock3/p47.png",
+    "content/math-pages/mock3/p48.png"
+   ]
+  },
+  {
+   "n": 7,
+   "pdfStart": 49,
+   "pdfEnd": 56,
+   "title": "2026 张宇八套卷（数一）（第7套）",
+   "chapter": "math-mock-3-7",
+   "sourcePdf": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "images": [
+    "content/math-pages/mock3/p49.png",
+    "content/math-pages/mock3/p50.png",
+    "content/math-pages/mock3/p51.png",
+    "content/math-pages/mock3/p52.png",
+    "content/math-pages/mock3/p53.png",
+    "content/math-pages/mock3/p54.png",
+    "content/math-pages/mock3/p55.png",
+    "content/math-pages/mock3/p56.png"
+   ]
+  },
+  {
+   "n": 8,
+   "pdfStart": 57,
+   "pdfEnd": 64,
+   "title": "2026 张宇八套卷（数一）（第8套）",
+   "chapter": "math-mock-3-8",
+   "sourcePdf": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "images": [
+    "content/math-pages/mock3/p57.png",
+    "content/math-pages/mock3/p58.png",
+    "content/math-pages/mock3/p59.png",
+    "content/math-pages/mock3/p60.png",
+    "content/math-pages/mock3/p61.png",
+    "content/math-pages/mock3/p62.png",
+    "content/math-pages/mock3/p63.png",
+    "content/math-pages/mock3/p64.png"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>英语一 · 大作文</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#5B3A6B;--accent-soft:#EEE8F2;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">EN · 07</span><span>ENGLISH I</span></div>
+    <h1>大作文</h1>
+    <p class="cover-sub">20 分，160–200 词，30–35 分钟。英语一的图画作文有稳定的三段逻辑；你要做的不是背一篇万能文，而是把功能句练成自己的表达。</p>
+    <div class="cover-meta"><span class="meta-pill acc">S 级 · 必须拿下</span><span class="meta-pill">20 分 / 160–200 词</span><span class="meta-pill">建议 30–35 分钟</span><span class="meta-pill">模板未定稿</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>根据图画或图表写出说明、议论性短文</li><li>准确描述图画内容并提炼寓意</li><li>分析原因、举例论证、提出建议</li><li>语言准确、句式多样、篇章连贯</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>评分标准与三档文</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">大作文按<strong>内容、语言、结构、卷面</strong>评分。高分文不是词最难，而是：寓意提炼准确、论证有层次、语言错误少、句式有变化。低分文常见问题是描述过多、分析空泛、通篇简单句或模板腔。160–200 词即可，重点在第二段的论证质量。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">内容：描述准确 + 寓意明确 + 论证具体</span><span class="f-note">三项缺一降档</span></div><div class="f-row"><span class="f-tex">语言：错误少 &gt; 词汇难</span><span class="f-note">准确优先</span></div><div class="f-row"><span class="f-tex">结构：三段，段内 2–4 句，衔接自然</span><span class="f-note">不堆连接词</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 英语一</div><p class="exam-q">一幅漫画：两人面对同一块石头，一人绕行，一人搬开。要求写出寓意并评论。</p><div class="exam-ans"><b>要点</b> 寓意应落在“面对困难的态度/解决问题的方式”，而不是“石头很重”；第二段分析为何有人绕行、有人搬开，第三段给建议。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先描述图：两人面对同一块石头，一人绕行、一人搬开。</li><li>提炼寓意：面对困难的态度与解决问题的方式不同，结果不同。</li><li>第二段分析原因：绕行者畏难、搬开者主动；可延伸到个人成长与社会进步。</li><li>第三段给建议：遇到问题先判断能否解决，能解决就动手，不能解决再绕行。</li><li>检查：寓意是否落在“态度/方式”，而不是“石头很重”。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>花 100 词描述图画，第二段只剩两句。</li><li>寓意提炼偏题，只写表面现象。</li><li>通篇简单句，句式单一。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>石雷鹏</b>大作文先定寓意，再定三段功能；描述只占首段一半。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>图画描述的三种类型</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">英语一图画作文主要有三类：<strong>单图</strong>（一个人/场景）、<strong>双图对比</strong>（两幅图对照）、<strong>漫画/象征</strong>（夸张形象表达观点）。单图抓人物动作与表情，双图抓差异，漫画抓象征义。描述时用现在时，先整体后细节。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">单图：As is shown, a man is doing ...</span><span class="f-note">动作 + 状态</span></div><div class="f-row"><span class="f-tex">双图：In the first picture ... while in the second ...</span><span class="f-note">对比结构</span></div><div class="f-row"><span class="f-tex">漫画：The cartoon presents a symbolic scene in which ...</span><span class="f-note">点出象征</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 英语一</div><p class="exam-q">双图对比：左图年轻人熬夜刷手机，右图同一人早起锻炼。要求描述并评论。</p><div class="exam-ans"><b>要点</b> 首段用 while 对比两图动作与状态，末句点出“生活方式选择”的寓意；不要分别用两段描述。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>首段用 while 对比两图：左图熬夜刷手机，右图早起锻炼。</li><li>末句点寓意：生活方式的选择决定状态与长期结果。</li><li>第二段分析原因：即时满足 vs 延迟满足；压力与自律。</li><li>第三段建议：设定屏幕时间、培养线下爱好。</li><li>检查：两图是否在同一段对比，没有分成两段各写一图。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>双图写成两段，结构失衡。</li><li>描述加入过多主观评价，挤占分析段。</li><li>时态混用，过去与现在交替。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>石雷鹏</b>描述抓“谁在做什么、结果如何”，两句话足够，不写小说。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>首段描述句型</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">首段三件事：<strong>描述图画—点出细节—提炼寓意</strong>。句型要具体，避免空泛的 With the development of society。常用：As is vividly depicted in the cartoon, ... / What catches my eye is ... / The picture conveys the message that ...。寓意句必须与第二段论证衔接。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">As is vividly depicted in the cartoon, ...</span><span class="f-note">描述开头</span></div><div class="f-row"><span class="f-tex">What catches my eye is that ...</span><span class="f-note">聚焦细节</span></div><div class="f-row"><span class="f-tex">The picture conveys the message that ...</span><span class="f-note">提炼寓意</span></div><div class="f-row"><span class="f-tex">Simple as the picture is, it reflects a common phenomenon.</span><span class="f-note">过渡句</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 英语一</div><p class="exam-q">单图：一位老人独自坐在餐桌前，桌上摆满菜，手机屏幕亮着。写首段。</p><div class="exam-ans"><b>要点</b> As is vividly depicted, an elderly man sits alone at a table full of dishes, staring at a glowing phone. What catches my eye is the contrast between the abundant meal and his loneliness. The picture conveys the message that family companionship is being replaced by digital contact.</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>首句描述：As is vividly depicted, an elderly man sits alone at a table full of dishes, staring at a glowing phone.</li><li>第二句聚焦细节：What catches my eye is the contrast between the abundant meal and his loneliness.</li><li>第三句点寓意：The picture conveys the message that family companionship is being replaced by digital contact.</li><li>检查：描述不超过 80 词，寓意句与第二段第一句形成因果或递进。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>首段只描述不点寓意，第二段突然转折。</li><li>寓意句过于宽泛（we should do something）。</li><li>细节堆砌，描述超过 80 词。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>石雷鹏</b>首段最后一句必须是寓意句，且与第二段第一句形成因果或递进。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>第二段原因分析：因果链</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">第二段是得分核心。最稳的写法是<strong>两层原因 + 一层后果</strong>：表层原因（个人选择/习惯）→ 深层原因（社会压力/制度/技术）→ 后果（对个人或社会的影响）。用 First and foremost / Moreover / As a result 组织，每层一句原因 + 一句解释。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">Several factors contribute to this phenomenon.</span><span class="f-note">总起</span></div><div class="f-row"><span class="f-tex">First and foremost, ...</span><span class="f-note">表层原因</span></div><div class="f-row"><span class="f-tex">A deeper reason lies in ...</span><span class="f-note">深层原因</span></div><div class="f-row"><span class="f-tex">As a result, ... / This may lead to ...</span><span class="f-note">后果</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 英语一</div><p class="exam-q">现象：年轻人沉迷短视频。要求分析原因。</p><div class="exam-ans"><b>要点</b> 表层：碎片化内容即时满足；深层：现实压力大、缺乏深度休闲方式；后果：注意力下降、时间被吞噬。每层用一句解释，不列举五个原因。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>表层原因：短视频碎片化、即时反馈，容易获得快感。</li><li>深层原因：现实压力大、缺乏深度休闲方式、社交需求转移到线上。</li><li>后果：注意力下降、时间被吞噬、真实社交减少。</li><li>每层用一句解释，不堆五个原因；最后一句收口到“需要自律与环境支持”。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>原因全是空话（people pay attention to it）。</li><li>只列原因不解释，论证没有推进。</li><li>原因与寓意不匹配。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>石雷鹏</b>原因写两层就够，一层比一层深；不要凑三条平行空话。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>例证、对比与让步</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">论证要有变化：<strong>举例</strong>（for instance + 具体场景）、<strong>对比</strong>（those who ... while those who ...）、<strong>让步</strong>（Admittedly ... but ...）。例子不需要真实数据，可以是典型场景，但必须具体到行为与结果。让步能让论证显得客观，是 15 分以上作文的常见特征。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">For instance, a student who ... may ...</span><span class="f-note">具体场景</span></div><div class="f-row"><span class="f-tex">Those who ... tend to ... while those who ...</span><span class="f-note">对比</span></div><div class="f-row"><span class="f-tex">Admittedly, ... However, ...</span><span class="f-note">让步转折</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 英语一</div><p class="exam-q">论证“坚持”的价值，要求用一个具体例子。</p><div class="exam-ans"><b>要点</b> For instance, a student who reviews one difficult passage every day may outperform one who crams before the exam. 例子落到行为（每天一篇）与结果（表现更好），不空谈。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先亮观点：坚持是把普通努力变成结果的关键。</li><li>举例：一名学生每天精读一段难文章，三个月后阅读速度与正确率同时提升。</li><li>分析：例子要说明“持续—积累—质变”的机制，而不是只讲故事。</li><li>收口：坚持不是盲目重复，而是有反馈的持续修正。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>例子编造数据（80% of people），不可信且易错。</li><li>让步后没有转折，逻辑断掉。</li><li>对比双方不在同一维度。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>石雷鹏</b>例子写“行为 + 结果”，两个词就够具体；不要编统计数字。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>第三段建议与展望</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">第三段给<strong>具体建议 + 适度展望</strong>，不要喊口号。建议分主体：个人可以做什么、学校/社会可以做什么；展望用 only in this way / it is reasonable to believe。句式可用虚拟语气：It is high time that we took action. 注意 high time 后接过去式。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">It is high time that we took concrete action.</span><span class="f-note">虚拟语气，用过去式</span></div><div class="f-row"><span class="f-tex">Individuals should ... while institutions ought to ...</span><span class="f-note">分主体建议</span></div><div class="f-row"><span class="f-tex">Only in this way can we ...</span><span class="f-note">倒装，展望</span></div><div class="f-row"><span class="f-tex">It is reasonable to believe that ...</span><span class="f-note">克制展望</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 英语一</div><p class="exam-q">针对“沉迷手机”提建议，要求分个人与学校两个层面。</p><div class="exam-ans"><b>要点</b> 个人应设定屏幕时间、培养线下爱好；学校可提供更多体育活动与心理支持；结尾用 Only in this way can we... 收束，不空喊“社会应重视”。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>个人层面：设定屏幕时间、培养线下爱好、固定作息。</li><li>学校层面：提供体育活动、心理支持、讲座与同伴互助。</li><li>结尾用 Only in this way can we ... 收口，但前面必须有具体内容支撑。</li><li>检查：两个层面各自成句，建议具体可执行，不空喊口号。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>建议空泛（we should pay attention）。</li><li>三段全是口号，没有具体动作。</li><li>虚拟语气写成 It is high time we take action。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>石雷鹏</b>建议要能执行：谁做、做什么、做到什么程度；一句一个主体。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>主题词库与替换</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">大作文的词汇不需要难，需要<strong>准</strong>。按主题准备四组词：品质（perseverance, cooperation, honesty, responsibility）、社会现象（consumerism, digital addiction, aging population）、科技（artificial intelligence, innovation）、文化（cultural confidence, inheritance）。同一意思准备 2–3 个替换，避免通篇重复。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">important → crucial / essential / indispensable</span><span class="f-note">程度递进</span></div><div class="f-row"><span class="f-tex">help → contribute to / facilitate / give rise to</span><span class="f-note">搭配不同</span></div><div class="f-row"><span class="f-tex">problem → challenge / dilemma / drawback</span><span class="f-note">语气不同</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 英语一</div><p class="exam-q">一篇关于“文化传承”的图画作文，要求避免通篇 important。</p><div class="exam-ans"><b>要点</b> 用 cultural confidence / inheritance / carry forward / take root in 等主题搭配替换空泛形容词；关键词准确比高级词更加分。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>替换 important：essential / vital / indispensable / of great significance。</li><li>替换文化相关表达：cultural confidence, cultural inheritance, carry forward, take root in。</li><li>每个替换词检查搭配：be essential to, play a vital role in, take root in society。</li><li>不要整段堆大词；每段用 2–3 个准确替换即可，其余用简单词保证正确。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>背了高级词但搭配错误。</li><li>同一词在 200 词里出现 8 次。</li><li>主题词与图画寓意不符。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>石雷鹏</b>主题词按话题成组背，考场只调用对应组，不临时造词。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-08">
+  <span class="anchor">[[K-kp-08]]</span>
+  <div class="kp-head">
+    <span class="kp-no">08</span>
+    <h2>去模板化：功能句组合</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">模板腔的根源是<strong>空泛主语 + 万能动词</strong>（with the development of society, we should pay attention to）。去模板化不是不用功能句，而是把功能句与图画的具体名词、具体动作绑定。每段至少有一句只属于这道题的内容，阅卷老师才能看到“你读了图”。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">把 With the development of society 换成具体背景</span><span class="f-note">如 In an age of short videos</span></div><div class="f-row"><span class="f-tex">把 We should pay attention to 换成具体动作</span><span class="f-note">如 set a daily screen limit</span></div><div class="f-row"><span class="f-tex">每段一句题目专属细节</span><span class="f-note">防模板腔</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 英语一</div><p class="exam-q">同一篇作文，一版通篇模板句，一版每段有一句图画细节，得分差异在哪？</p><div class="exam-ans"><b>要点</b> 模板版内容分低，因无法证明切题；细节版在内容与连贯上更高，即使语言普通也能上 13–15 分。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>模板版：句子漂亮但每段没有题目细节，内容分低，容易被判套作。</li><li>细节版：每段有一句图画/现象细节，证明切题；即使语言普通，内容与连贯分更高。</li><li>得分差异主要在内容与连贯，而不是高级词数量。</li><li>改写时先补细节句，再替换 2–3 个表达，不要反过来。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>整篇背模板，题目细节只换两个词。</li><li>为了去模板化，写出语法错误的长难句。</li><li>细节与论证无关，只是装饰。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>石雷鹏</b>功能句是骨架，题目细节是血肉；只有骨架的作文拿不到高分。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>大作文三段式功能句框架</h2>
+  </div>
+  <p class="t-why">英语一图画作文的结构高度稳定。把三段的功能句练熟，考场只需填图画细节与主题词，30 分钟可以写完 180 词。</p>
+  
+  <ol class="method"><li>首段：As is vividly depicted ... → What catches my eye is ... → The picture conveys the message that ...</li><li>第二段：Several factors contribute to this phenomenon. → First and foremost ... → A deeper reason lies in ... → As a result ...</li><li>第三段：It is high time that we took action. → Individuals should ... while institutions ought to ... → Only in this way can we ...</li><li>每段至少一句只属于本题的细节，避免模板腔。</li><li>写完后检查：寓意—原因—建议是否一条线。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>用框架写“合作”主题的第二段。</p><p class="t-ans"><b>解</b> Several factors contribute to this phenomenon. First and foremost, many tasks today are too complex for one person to complete alone. A deeper reason lies in the fact that cooperation allows different strengths to complement each other. As a result, those who learn to work in teams are more likely to succeed.</p></div>
+  <div class="t-trap"><b>踩坑点</b> 框架句不要连续使用三句以上；每段插入题目细节，否则一眼模板。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>最后六周大作文成稿计划</h2>
+  </div>
+  <p class="t-why">你的作文模板还没定稿。最后六周，目标不是背更多范文，而是形成一套自己的、能稳定输出的三段式。</p>
+  
+  <ol class="method"><li>第 1 周：定稿首段 3 句、第二段 4 句、第三段 3 句的功能句骨架，写 2 篇完整作文。</li><li>第 2–4 周：每周 2 篇，限时 35 分钟；题材覆盖品质、社会现象、科技、文化四类。</li><li>每篇写完后只做三件事：改语法错、删模板空话、补一句题目细节。</li><li>第 5 周：把 8 篇作文压缩成 1 页“自己的功能句库”，只留真正会用的句子。</li><li>考前 7 天：每天默写 1 篇，保持 180 词的手感，不再背新范文。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>只写 8 篇够吗？</p><p class="t-ans"><b>解</b> 够。关键是每篇都改到无语法错、每段都有题目细节；重复写新题而不修改，收益远低于把 8 篇打磨成自己的模板。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要收集几十篇范文却一篇没写完；考场输出的是你的句子，不是范文的数量。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>三段式：描述—分析—建议</li><li>首段末句点明寓意</li><li>第二段两层原因 + 一层后果</li><li>第三段分主体给具体建议</li><li>每段一句题目专属细节</li><li>160–200 词，30–35 分钟</li><li>主题词按四类成组准备</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>生僻高级词</li><li>编造统计数据的例子</li><li>整篇万能模板</li><li>超过 220 词的长文</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否 35 分钟写完 180 词且三段完整</li><li>寓意句是否与第二段原因一致</li><li>第二段是否有两层原因而非并列空话</li><li>第三段建议是否具体到主体与动作</li><li>每段是否有一句只属于本题的细节</li><li>是否已形成自己的功能句库</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

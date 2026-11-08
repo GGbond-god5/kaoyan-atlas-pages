@@ -1,0 +1,96 @@
+{
+ "set": "2025 李林六套卷（数一）",
+ "index": 1,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 9,
+   "pdfEnd": 13,
+   "title": "2025 李林六套卷（数一）（第1套）",
+   "chapter": "math-mock-1-1",
+   "sourcePdf": "bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock1/p09.png",
+    "content/math-pages/mock1/p10.png",
+    "content/math-pages/mock1/p11.png",
+    "content/math-pages/mock1/p12.png",
+    "content/math-pages/mock1/p13.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 14,
+   "pdfEnd": 18,
+   "title": "2025 李林六套卷（数一）（第2套）",
+   "chapter": "math-mock-1-2",
+   "sourcePdf": "bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock1/p14.png",
+    "content/math-pages/mock1/p15.png",
+    "content/math-pages/mock1/p16.png",
+    "content/math-pages/mock1/p17.png",
+    "content/math-pages/mock1/p18.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 19,
+   "pdfEnd": 23,
+   "title": "2025 李林六套卷（数一）（第3套）",
+   "chapter": "math-mock-1-3",
+   "sourcePdf": "bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock1/p19.png",
+    "content/math-pages/mock1/p20.png",
+    "content/math-pages/mock1/p21.png",
+    "content/math-pages/mock1/p22.png",
+    "content/math-pages/mock1/p23.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 24,
+   "pdfEnd": 28,
+   "title": "2025 李林六套卷（数一）（第4套）",
+   "chapter": "math-mock-1-4",
+   "sourcePdf": "bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock1/p24.png",
+    "content/math-pages/mock1/p25.png",
+    "content/math-pages/mock1/p26.png",
+    "content/math-pages/mock1/p27.png",
+    "content/math-pages/mock1/p28.png"
+   ]
+  },
+  {
+   "n": 5,
+   "pdfStart": 29,
+   "pdfEnd": 33,
+   "title": "2025 李林六套卷（数一）（第5套）",
+   "chapter": "math-mock-1-5",
+   "sourcePdf": "bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock1/p29.png",
+    "content/math-pages/mock1/p30.png",
+    "content/math-pages/mock1/p31.png",
+    "content/math-pages/mock1/p32.png",
+    "content/math-pages/mock1/p33.png"
+   ]
+  },
+  {
+   "n": 6,
+   "pdfStart": 34,
+   "pdfEnd": 38,
+   "title": "2025 李林六套卷（数一）（第6套）",
+   "chapter": "math-mock-1-6",
+   "sourcePdf": "bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock1/p34.png",
+    "content/math-pages/mock1/p35.png",
+    "content/math-pages/mock1/p36.png",
+    "content/math-pages/mock1/p37.png",
+    "content/math-pages/mock1/p38.png"
+   ]
+  }
+ ]
+}

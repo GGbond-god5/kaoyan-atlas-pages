@@ -1,15 +1,16 @@
-# large copyrighted source material / generated page images (served locally only)
-bank/
-content/
-pdf/
-_ocr/
-_tmp_crops/
-tmp_crops/
-tmp_mock53/
+# copyrighted source PDFs (local only)
+/bank/
+/pdf/
+/_ocr/
+/content/math-pages/
+/content/x1000-pages/
+/_tmp_crops/
+/tmp_crops/
+/tmp_mock53/
+.tmp*/
+tmp*/
 __pycache__/
 *.key
 node_modules/
 .claude/
-.tmp*/
-tmp*/
 *.qkdownloading

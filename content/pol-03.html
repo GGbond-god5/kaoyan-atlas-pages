@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>政治 · 毛泽东思想和中国特色社会主义理论体系</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#A02C2C;--accent-soft:#F5E6E3;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">POL · 03</span><span>POLITICS</span></div>
+    <h1>毛泽东思想和中国特色社会主义理论体系</h1>
+    <p class="cover-sub">毛中特考的是「理论—会议—著作」三件事的对应关系。把时间轴立起来，再用关键词卡收口，选择题会非常稳。</p>
+    <div class="cover-meta"><span class="meta-pill acc">S 级 · 必须拿下</span><span class="meta-pill">毛中特约 30 分（含新思想）</span><span class="meta-pill">选择题 + 分析题</span><span class="meta-pill">已一刷，重在二刷</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>毛泽东思想及其历史地位</li><li>新民主主义革命理论</li><li>社会主义改造理论</li><li>社会主义建设道路初步探索的理论成果</li><li>邓小平理论</li><li>「三个代表」重要思想</li><li>科学发展观</li><li>中国特色社会主义理论体系与社会主义初级阶段</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>毛泽东思想及其活的灵魂</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">毛泽东思想是马克思列宁主义在中国的运用和发展，是被实践证明了的关于中国革命和建设的正确理论原则和经验总结，是中国共产党集体智慧的结晶。<strong>活的灵魂</strong>是实事求是、群众路线、独立自主。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">活的灵魂：实事求是 · 群众路线 · 独立自主</span><span class="f-note">三个词必须完整</span></div><div class="f-row"><span class="f-tex">实事求是 = 精髓</span><span class="f-note">群众路线 = 根本工作路线；独立自主 = 基本立足点</span></div><div class="f-row"><span class="f-tex">毛泽东思想 ≠ 毛泽东个人思想</span><span class="f-note">是集体智慧的结晶</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 毛中特选择题</div><p class="exam-q">毛泽东思想活的灵魂是（ ）。</p><div class="exam-ans"><b>要点</b> 实事求是、群众路线、独立自主。其中实事求是是毛泽东思想的精髓。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>毛泽东思想活的灵魂是实事求是、群众路线、独立自主。</li><li>实事求是是毛泽东思想的精髓。</li><li>排除“解放思想”“与时俱进”等后世的表述。</li><li>结论：实事求是、群众路线、独立自主。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把毛泽东思想等同于毛泽东个人的全部思想。</li><li>把「活的灵魂」与「三大法宝」混淆。</li><li>漏写三个词中的任意一个。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>腿姐</b>keywords：活的灵魂三个词成组背，选择题少一个就排除。</span><span class="t-item"><b>徐涛</b>用「实事求是是根、群众路线是路、独立自主是骨」帮助记忆。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>新民主主义革命理论</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">新民主主义革命总路线：无产阶级领导的，人民大众的，反对帝国主义、封建主义和官僚资本主义的革命。<strong>三大法宝</strong>：统一战线、武装斗争、党的建设。中国革命道路是农村包围城市、武装夺取政权。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">总路线：无产阶级领导 + 人民大众 + 反三座大山</span><span class="f-note">领导权是核心问题</span></div><div class="f-row"><span class="f-tex">三大法宝：统一战线 · 武装斗争 · 党的建设</span><span class="f-note">与「活的灵魂」区分</span></div><div class="f-row"><span class="f-tex">革命道路：农村包围城市 · 武装夺取政权</span><span class="f-note">不是先城市后农村</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 毛中特选择题</div><p class="exam-q">新民主主义革命的三大法宝是（ ）。</p><div class="exam-ans"><b>要点</b> 统一战线、武装斗争、党的建设。三者相互联系，统一战线和武装斗争是战胜敌人的两个基本武器，党的建设是中心环节。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>三大法宝是统一战线、武装斗争、党的建设。</li><li>统一战线和武装斗争是战胜敌人的两个基本武器。</li><li>党的建设是中心环节。</li><li>结论：三者相互联系、不可分割。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把三大法宝与活的灵魂、三大作风混淆。</li><li>认为新民主主义革命的领导权属于资产阶级。</li><li>把革命道路记成「城市中心论」。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>腿姐</b>keywords：法宝=统一战线/武装斗争/党建；灵魂=实事求是/群众路线/独立自主，两组绝不混。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>社会主义改造理论</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">过渡时期总路线是「一化三改」：逐步实现社会主义工业化，逐步实现对农业、手工业和资本主义工商业的社会主义改造。1956 年底三大改造基本完成，标志着社会主义基本制度在我国确立。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">一化三改 = 工业化 + 三大改造</span><span class="f-note">一体两翼，工业化是主体</span></div><div class="f-row"><span class="f-tex">农业、手工业：互助组 → 初级社 → 高级社</span><span class="f-note">逐步过渡</span></div><div class="f-row"><span class="f-tex">资本主义工商业：和平赎买</span><span class="f-note">中国独创，区别于剥夺</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 毛中特选择题</div><p class="exam-q">我国对资本主义工商业进行社会主义改造采取的政策是（ ）。</p><div class="exam-ans"><b>要点</b> 和平赎买。通过国家资本主义形式，逐步把资本主义私有制改造为社会主义公有制。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>政策是和平赎买。</li><li>形式是国家资本主义，由低级到高级逐步过渡。</li><li>把资本主义私有制改造为社会主义公有制。</li><li>结论：和平赎买。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把「一化三改」中的「一化」记成农业合作化。</li><li>认为三大改造完成标志着进入社会主义初级阶段（进入的是社会主义社会；初级阶段是后来才明确的判断）。</li><li>混淆互助组、初级社、高级社的次序。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>徐涛</b>用「一体两翼」讲总路线：工业化是主体，三大改造是两翼。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>社会主义建设道路的初步探索</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">《论十大关系》（1956）提出以苏为鉴，探索适合中国国情的社会主义建设道路。《关于正确处理人民内部矛盾的问题》（1957）提出两类不同性质的社会矛盾，人民内部矛盾要用民主的、说服教育的方法解决。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">《论十大关系》1956 → 以苏为鉴、走自己的路</span><span class="f-note">探索开端</span></div><div class="f-row"><span class="f-tex">两类矛盾：敌我矛盾（专政）+ 人民内部矛盾（民主）</span><span class="f-note">处理方法不能互换</span></div><div class="f-row"><span class="f-tex">「百花齐放、百家争鸣」→ 文化领域</span><span class="f-note">常与两类矛盾一起考</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 毛中特选择题</div><p class="exam-q">毛泽东提出「以苏为鉴，走自己的路」的著作是（ ）。</p><div class="exam-ans"><b>要点</b> 《论十大关系》。它标志着党探索适合中国国情的社会主义建设道路的开始。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>著作是《论十大关系》。</li><li>它标志着党探索适合中国国情的社会主义建设道路的开始。</li><li>排除《实践论》《矛盾论》等哲学著作。</li><li>结论：《论十大关系》。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把《论十大关系》与《关于正确处理人民内部矛盾的问题》的主题混淆。</li><li>认为人民内部矛盾也用专政方法解决。</li><li>忽略这两篇著作在「初步探索」中的地位。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>腿姐</b>著作—主题一一对应：《十大关系》= 走自己的路；《正确处理》= 两类矛盾。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>邓小平理论</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">邓小平理论围绕「什么是社会主义、怎样建设社会主义」展开。社会主义本质是解放生产力、发展生产力，消灭剥削、消除两极分化，最终达到共同富裕。社会主义初级阶段理论、社会主义市场经济理论、改革开放理论、「一国两制」构成其核心内容。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">社会主义本质：解放/发展生产力 + 消灭剥削/消除两极分化 + 共同富裕</span><span class="f-note">三句话不能漏</span></div><div class="f-row"><span class="f-tex">社会主义初级阶段：十三大系统阐述</span><span class="f-note">最大国情、最长时期</span></div><div class="f-row"><span class="f-tex">基本路线：一个中心、两个基本点</span><span class="f-note">经济建设为中心；四项基本原则 + 改革开放</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 毛中特分析题</div><p class="exam-q">为什么说社会主义的本质是解放和发展生产力？</p><div class="exam-ans"><b>要点</b> 生产力是社会发展最终决定力量；社会主义要体现优越性，必须创造出比资本主义更高的劳动生产率。解放和发展生产力是社会主义本质的首要内容，也是实现共同富裕的物质基础。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>生产力是社会发展的最终决定力量。</li><li>社会主义优越性最终要体现在更高的劳动生产率上。</li><li>解放和发展生产力是社会主义本质的首要内容，是实现共同富裕的物质基础。</li><li>结论：所以社会主义本质包含解放和发展生产力。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>漏掉「最终达到共同富裕」，只写解放和发展生产力。</li><li>把「一个中心」记成改革开放。</li><li>认为社会主义初级阶段是泛指任何国家的社会主义起始阶段。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>徐涛</b>用「本质三句、路线一句、阶段一个」收口邓论，先框架后细节。</span><span class="t-item"><b>腿姐</b>keywords：本质题必须出现「共同富裕」，否则不完整。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>「三个代表」重要思想</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">中国共产党必须始终代表中国先进生产力的发展要求，代表中国先进文化的前进方向，代表中国最广大人民的根本利益。「三个代表」进一步回答了「建设什么样的党、怎样建设党」的问题。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">三代表：先进生产力 + 先进文化 + 最广大人民根本利益</span><span class="f-note">三个「代表」缺一不可</span></div><div class="f-row"><span class="f-tex">回答的问题：建设什么样的党、怎样建设党</span><span class="f-note">与邓论的「什么是社会主义」区分</span></div><div class="f-row"><span class="f-tex">十六大写入党章（2002）</span><span class="f-note">时间点常考</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 毛中特选择题</div><p class="exam-q">「三个代表」重要思想创造性回答的核心问题是（ ）。</p><div class="exam-ans"><b>要点</b> 建设什么样的党、怎样建设党。它深化了对中国特色社会主义的认识，是加强和改进党的建设的强大理论武器。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>“三个代表”创造性回答的核心问题是建设什么样的党、怎样建设党。</li><li>排除“什么是社会主义、怎样建设社会主义”，那是邓小平理论的核心问题。</li><li>它深化了对中国特色社会主义的认识，是党建理论。</li><li>结论：建设什么样的党、怎样建设党。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把「三个代表」回答的问题与邓小平理论回答的问题混淆。</li><li>记错写入党章的时间。</li><li>把三个「代表」的主体写成「人民」而非「党」。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>腿姐</b>对应关系：邓论—什么是社会主义；三个代表—建设什么样的党；科学发展观—实现什么样的发展。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>科学发展观</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">科学发展观的第一要义是发展，核心立场是以人为本，基本要求是全面协调可持续，根本方法是统筹兼顾。它回答了「实现什么样的发展、怎样发展」的问题。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">第一要义：发展</span><span class="f-note">不是「以人为本」</span></div><div class="f-row"><span class="f-tex">核心：以人为本</span><span class="f-note">常与第一要义对调设错</span></div><div class="f-row"><span class="f-tex">基本要求：全面协调可持续；根本方法：统筹兼顾</span><span class="f-note">四个定位各就各位</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 毛中特选择题</div><p class="exam-q">科学发展观的核心立场是（ ）。</p><div class="exam-ans"><b>要点</b> 以人为本。第一要义是发展，基本要求是全面协调可持续，根本方法是统筹兼顾。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>科学发展观的核心立场是以人为本。</li><li>第一要义是发展，基本要求是全面协调可持续，根本方法是统筹兼顾。</li><li>注意题干问的是“核心立场”，不要与“第一要义”混淆。</li><li>结论：以人为本。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把「第一要义」与「核心」互换。</li><li>把「根本方法」记成「基本要求」。</li><li>认为科学发展观只讲经济，忽略全面协调可持续。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>腿姐</b>四句口诀：发展是第一要义、以人为本是核心、全面协调可持续是基本要求、统筹兼顾是根本方法。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-08">
+  <span class="anchor">[[K-kp-08]]</span>
+  <div class="kp-head">
+    <span class="kp-no">08</span>
+    <h2>中国特色社会主义理论体系与初级阶段</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">中国特色社会主义理论体系包括邓小平理论、「三个代表」重要思想、科学发展观、习近平新时代中国特色社会主义思想。<strong>毛泽东思想不属于这个体系</strong>。社会主义初级阶段是我国最大的国情，基本路线是「一个中心、两个基本点」。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">体系四成员：邓论 + 三个代表 + 科学发展观 + 新思想</span><span class="f-note">不含毛泽东思想</span></div><div class="f-row"><span class="f-tex">最大国情：社会主义初级阶段</span><span class="f-note">不是「初级阶段」泛指</span></div><div class="f-row"><span class="f-tex">基本路线：一个中心（经济建设）+ 两个基本点（四项基本原则、改革开放）</span><span class="f-note">二者统一于实践</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 毛中特选择题</div><p class="exam-q">中国特色社会主义理论体系包括毛泽东思想吗？</p><div class="exam-ans"><b>要点</b> 不包括。毛泽东思想是马克思列宁主义在中国的运用和发展，为中国特色社会主义理论体系提供了理论基础，但不属于该体系。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>中国特色社会主义理论体系不包括毛泽东思想。</li><li>它包括邓小平理论、“三个代表”重要思想、科学发展观、习近平新时代中国特色社会主义思想。</li><li>毛泽东思想是理论基础，但不属于该体系。</li><li>结论：不包括。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把毛泽东思想纳入中国特色社会主义理论体系。</li><li>把「一个中心」理解为以改革开放为中心。</li><li>认为初级阶段很快会结束，忽视其长期性。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>徐涛</b>画体系图：马列—毛泽东思想—中特理论体系（邓、三、科、新），箭头关系一眼看清。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>毛中特时间轴：会议、著作与理论成果</h2>
+  </div>
+  <p class="t-why">毛中特的失分大多是「张冠李戴」：把十九大的判断安到十八大，把《论十大关系》安到《正确处理人民内部矛盾》。一条时间轴能解决大部分记忆型选择题。</p>
+  
+  <ol class="method"><li>先立四个锚点：1945 七大（毛泽东思想写入党章）、1956 八大/三大改造完成、1978 十一届三中全会、2012 十八大。</li><li>每个锚点只挂三件事：会议名称、核心判断、对应理论成果。</li><li>著作单独一列：《论十大关系》1956、《关于正确处理人民内部矛盾的问题》1957。</li><li>理论成果一列：毛泽东思想—邓小平理论—三个代表—科学发展观—新思想，按写入党章时间排序。</li><li>考前用空白纸默写时间轴，只补写不出的节点。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>把「社会主义初级阶段理论系统阐述」与「社会主义市场经济体制改革目标确立」分别归到哪次大会？</p><p class="t-ans"><b>解</b> 前者是 1987 年十三大；后者是 1992 年十四大。二者常被互换设错。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要只背年份，要背「会议—判断—成果」三件套。只背年份，题干一换表述就认不出来。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>毛中特选择题关键词对应表</h2>
+  </div>
+  <p class="t-why">毛中特选择题大量考「根本、核心、本质、首要、标志、前提」这类定位词。它们无法靠理解推出，只能靠成组记忆；整理成表后，复习成本最低。</p>
+  
+  <ol class="method"><li>按「根本/核心/本质/首要/标志/前提/基础」七类分组，每组只收高频项。</li><li>每个关键词配一个最短判别句，不写完整定义。</li><li>把易混项放在同一行对比，如「第一要义 vs 核心」「三大法宝 vs 活的灵魂」。</li><li>每天用 10 分钟遮住右列自测，错的做标记。</li><li>考前三天只看错题标记项。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>「科学发展观的第一要义」与「核心立场」分别是什么？</p><p class="t-ans"><b>解</b> 第一要义是发展，核心立场是以人为本。二者最容易被互换，必须成对记。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要用「理解」代替「记忆」：这类题考的是教材固定表述，理解得再透，词写错也不给分。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>毛泽东思想活的灵魂三个词</li><li>新民主主义革命总路线与三大法宝</li><li>一化三改与和平赎买</li><li>《论十大关系》《正确处理人民内部矛盾》的主题</li><li>邓小平理论社会主义本质三句话</li><li>科学发展观四个定位</li><li>中特理论体系四个成员（不含毛泽东思想）</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>各时期具体政策的数字细节</li><li>人物生平与著作版本的考据</li><li>低频会议的具体决议条文</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否默写毛中特时间轴八个锚点</li><li>能否区分三大法宝与活的灵魂</li><li>能否完整说出社会主义本质</li><li>能否把「第一要义/核心/基本要求/根本方法」对号入座</li><li>能否解释毛泽东思想为何不属于中特理论体系</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

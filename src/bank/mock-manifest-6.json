@@ -1,0 +1,62 @@
+{
+ "set": "2025 张宇四套卷（数一）",
+ "index": 6,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 1,
+   "pdfEnd": 4,
+   "title": "2025 张宇四套卷（数一）（第1套）",
+   "chapter": "math-mock-6-1",
+   "sourcePdf": "bank/张宇/2025年/25张宇4套卷「公众号：考研资料直通车」/数一/25张宇4套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock6/p01.png",
+    "content/math-pages/mock6/p02.png",
+    "content/math-pages/mock6/p03.png",
+    "content/math-pages/mock6/p04.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 5,
+   "pdfEnd": 8,
+   "title": "2025 张宇四套卷（数一）（第2套）",
+   "chapter": "math-mock-6-2",
+   "sourcePdf": "bank/张宇/2025年/25张宇4套卷「公众号：考研资料直通车」/数一/25张宇4套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock6/p05.png",
+    "content/math-pages/mock6/p06.png",
+    "content/math-pages/mock6/p07.png",
+    "content/math-pages/mock6/p08.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 9,
+   "pdfEnd": 12,
+   "title": "2025 张宇四套卷（数一）（第3套）",
+   "chapter": "math-mock-6-3",
+   "sourcePdf": "bank/张宇/2025年/25张宇4套卷「公众号：考研资料直通车」/数一/25张宇4套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock6/p09.png",
+    "content/math-pages/mock6/p10.png",
+    "content/math-pages/mock6/p11.png",
+    "content/math-pages/mock6/p12.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 13,
+   "pdfEnd": 16,
+   "title": "2025 张宇四套卷（数一）（第4套）",
+   "chapter": "math-mock-6-4",
+   "sourcePdf": "bank/张宇/2025年/25张宇4套卷「公众号：考研资料直通车」/数一/25张宇4套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "images": [
+    "content/math-pages/mock6/p13.png",
+    "content/math-pages/mock6/p14.png",
+    "content/math-pages/mock6/p15.png",
+    "content/math-pages/mock6/p16.png"
+   ]
+  }
+ ]
+}

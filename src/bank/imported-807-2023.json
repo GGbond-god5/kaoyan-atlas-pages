@@ -1,0 +1,262 @@
+{
+ "items": [
+  {
+   "id": "807-2023-1",
+   "subject": "mechanics",
+   "chapter": "mech-807-2023",
+   "chapterTitle": "华南理工 807 · 2023 真题",
+   "kp": "",
+   "kpName": "第1题",
+   "kind": "计算题",
+   "year": "2023",
+   "source": "华工 807 2023（回忆版）",
+   "isReal": true,
+   "text": "刚性折杆 ABC：AB 竖直段长 2m，BC 水平段长 1.5m；CD 为弹性杆，长 2m，测得应变 ε_CD=1×10⁻³；ABC 在 B 处由铆钉连接，A 端受水平力 F。已知各杆弹性模量 E、横截面积 A。求：(1) A 点水平位移；(2) F 的大小；(3) 已知铆钉许用切应力 [τ]，求 B 处铆钉最小直径。",
+   "answer": "(1) Δ_A=2.67 mm；(2) F=7.5×10⁻⁴ EA；(3) d_min=√(3.75×10⁻³ EA/(π[τ]))。",
+   "steps": [
+    "CD 杆应变已知，先求伸长：\\(\\Delta L_{CD}=\\varepsilon L_{CD}=1\\times10^{-3}\\times2\\,\\mathrm{m}=2\\,\\mathrm{mm}\\)。",
+    "把 ABC 视为刚性整体，B 处铆钉相当于固定铰；CD 伸长使 C 点下移 2 mm，整体绕 B 转动：\\(\\theta=\\Delta L_{CD}/L_{BC}=2/1500=1.333\\times10^{-3}\\,\\mathrm{rad}\\)。",
+    "A 点到 B 的距离为 2 m，故 A 点水平位移 \\(\\Delta_A=\\theta L_{AB}=1.333\\times10^{-3}\\times2000=2.67\\,\\mathrm{mm}\\)，方向与 F 相同。",
+    "CD 杆轴力由胡克定律：\\(N_{CD}=EA\\varepsilon=1.0\\times10^{-3}EA\\)。",
+    "对 B 点取矩：水平力 F 的力臂 2 m，CD 轴力的力臂 1.5 m，\\(\\sum M_B=0\\Rightarrow 2F=1.5N_{CD}\\)，得 \\(F=0.75N_{CD}=7.5\\times10^{-4}EA\\)。",
+    "铆钉承受 AB、BC 两段传力的合力：水平分量 F、竖向分量 \\(N_{CD}\\)，故 \\(V=\\sqrt{F^2+N_{CD}^2}=1.25N_{CD}=9.375\\times10^{-4}EA\\)。",
+    "单剪铆钉：\\(\\tau=V/(\\pi d^2/4)\\le[\\tau]\\)，解得 \\(d_{\\min}=\\sqrt{4V/(\\pi[\\tau])}=\\sqrt{3.75\\times10^{-3}EA/(\\pi[\\tau])}\\)。",
+    "校核：若取 E、A、[τ] 的具体值，代入上式即可；注意 E 用 Pa、A 用 m²、[τ] 用 Pa，d 的单位为 m。"
+   ],
+   "figures": [
+    "q807-2023-1.png"
+   ],
+   "sourcePdf": "bank/mech-zhenti/oO3TEpvNpPKJ0GXkG8dWwdJ8sE2oJgXu.pdf",
+   "sourcePage": 1,
+   "pageImage": "content/bank-pages/2023-hi-p1.png",
+   "topicChapter": "mech-13",
+   "topicTitle": "连接件的剪切与挤压"
+  },
+  {
+   "id": "807-2023-2",
+   "subject": "mechanics",
+   "chapter": "mech-807-2023",
+   "chapterTitle": "华南理工 807 · 2023 真题",
+   "kp": "",
+   "kpName": "第2题",
+   "kind": "计算题",
+   "year": "2023",
+   "source": "华工 807 2023（回忆版）",
+   "isReal": true,
+   "text": "对称桁架：C 为顶部固定节点，D、E 为两侧固定铰，A 为底部节点，B 为 A 上方节点；杆 1=A-D、2=A-E、3=A-B、4=C-D、5=C-E、6=B-C（竖杆）；A 处 AD、AE 与 AB 的夹角均为 45°，C 处 CD、CE 与水平线夹角均为 30°；B 点作用两个竖直向下的 F/2。各杆 E、A 相同，3 杆长 l。求各杆轴力。",
+   "answer": "共 6 根杆；由对称性 N1=N2、N4=N5，联立节点平衡与变形协调可解 N3、N6、N1、N4（N6−N3=F）。",
+   "steps": [
+    "几何：AB=3 杆=l；AD、AE 与 AB 成 45°，故 \\(L_1=L_2=\\sqrt2 l\\)；CD、CE 与水平成 30°，水平投影为 l，故 \\(L_4=L_5=l/\\cos30^\\circ=2l/\\sqrt3\\)。",
+    "结构和载荷左右对称，故 \\(N_1=N_2\\)、\\(N_4=N_5\\)，A、B 点无水平位移。",
+    "节点 B：两个 F/2 合成为竖直向下的 F；若 B-C 为竖杆（轴力 N6），则 \\(N_6-N_3=F\\)（拉力为正）。",
+    "节点 A：竖向 \\((N_1+N_2)\\cos45^\\circ+N_3=0\\)，水平 \\((N_1-N_2)\\sin45^\\circ=0\\)，得 \\(N_1=N_2=-N_3/\\sqrt2\\)。",
+    "节点 C：竖向 \\((N_4+N_5)\\sin30^\\circ+N_6=0\\)，得 \\(N_4=N_5=-N_6\\)。",
+    "变形协调：A、B 的竖向位移由三根杆的伸长共同决定；设 A 下沉 \\(v_A\\)、B 下沉 \\(v_B\\)，则 \\(\\Delta L_1=-v_A\\cos45^\\circ\\)、\\(\\Delta L_3=v_A-v_B\\)、\\(\\Delta L_4=(v_B-v_C)\\sin30^\\circ\\)（C 固定）。",
+    "物理关系 \\(\\Delta L_i=N_iL_i/(EA)\\)，代入后与平衡方程联立，即可解出 \\(N_3,N_6,N_1,N_4\\)；B-C 竖杆为第 6 根杆，轴力 N6 不能省略。",
+    "说明：原图 B 与 C 之间有实线竖杆，故按 6 根杆解；若误按 5 根杆，会少一个竖向传力路径。"
+   ],
+   "figures": [
+    "q807-2023-2.png"
+   ],
+   "sourcePdf": "bank/mech-zhenti/oO3TEpvNpPKJ0GXkG8dWwdJ8sE2oJgXu.pdf",
+   "sourcePage": 1,
+   "pageImage": "content/bank-pages/2023-hi-p1.png",
+   "topicChapter": "mech-02",
+   "topicTitle": "轴向拉压"
+  },
+  {
+   "id": "807-2023-3",
+   "subject": "mechanics",
+   "chapter": "mech-807-2023",
+   "chapterTitle": "华南理工 807 · 2023 真题",
+   "kp": "",
+   "kpName": "第3题",
+   "kind": "计算题",
+   "year": "2023",
+   "source": "华工 807 2023（回忆版）",
+   "isReal": true,
+   "text": "圆形实心阶梯轴：A、C 两端固定，AB 段长 a、直径 d1，BC 段长 b、直径 d2，B 截面受外力偶 m。 (1) 求 AB、BC 段的扭矩；(2) 已知许用切应力 [τ]，求用料最省时的 d1、d2（两段同时达到许用切应力）。",
+   "answer": "(1) \\(T_{AB}=m a^3/(a^3+b^3)\\)、\\(T_{BC}=m b^3/(a^3+b^3)\\)；(2) \\(d_1=[16T_{AB}/(\\pi[\\tau])]^{1/3}\\)、\\(d_2=[16T_{BC}/(\\pi[\\tau])]^{1/3}\\)，且 \\(d_1:d_2=a:b\\)。",
+   "steps": [
+    "两端固定、B 受扭，属一次超静定。设 A、C 端反力偶为 \\(T_A,T_C\\)，平衡：\\(T_A+T_C=m\\)。",
+    "变形协调：B 截面相对 A、C 的转角相同，\\(\\varphi_{AB}=\\varphi_{BC}\\)，即 \\(T_A a/(GI_{p1})=T_C b/(GI_{p2})\\)。",
+    "实心圆轴 \\(I_{p1}=\\pi d_1^4/32\\)、\\(I_{p2}=\\pi d_2^4/32\\)，代入得 \\(T_A/T_C=(b/a)(d_1/d_2)^4\\)。",
+    "用料最省要求两段同时达到许用切应力：\\(T_A/W_{p1}=T_C/W_{p2}=[\\tau]\\)，而 \\(W_p=\\pi d^3/16\\)，故 \\(T_A/T_C=(d_1/d_2)^3\\)。",
+    "两式联立：\\((d_1/d_2)^3=(b/a)(d_1/d_2)^4\\Rightarrow d_1/d_2=a/b\\)。",
+    "代回平衡：\\(T_A=m a^3/(a^3+b^3)\\)、\\(T_C=m b^3/(a^3+b^3)\\)。",
+    "由强度条件：\\(d_1=[16T_A/(\\pi[\\tau])]^{1/3}\\)、\\(d_2=[16T_C/(\\pi[\\tau])]^{1/3}\\)。"
+   ],
+   "figures": [
+    "q807-2023-3.png"
+   ],
+   "sourcePdf": "bank/mech-zhenti/oO3TEpvNpPKJ0GXkG8dWwdJ8sE2oJgXu.pdf",
+   "sourcePage": 2,
+   "pageImage": "content/bank-pages/2023-hi-p2.png",
+   "topicChapter": "mech-03",
+   "topicTitle": "扭转"
+  },
+  {
+   "id": "807-2023-4",
+   "subject": "mechanics",
+   "chapter": "mech-807-2023",
+   "chapterTitle": "华南理工 807 · 2023 真题",
+   "kp": "",
+   "kpName": "第4题",
+   "kind": "计算题",
+   "year": "2023",
+   "source": "华工 807 2023（回忆版）",
+   "isReal": true,
+   "text": "悬臂梁 A 端固定，AB 段长 2a，受均布载荷 q（图示箭头由下向上，取 q 向上）；B 处作用逆时针力偶 3qa²；BC 悬臂段长 a，C 端作用向下集中力 2qa。梁为 T 形截面：总高 240mm，翼缘宽 b、厚 50mm，腹板高 190mm、厚 50mm。已知最大拉应力与最大压应力之比 σ_tmax/σ_cmax=1/2。 (1) 求翼缘宽度 b；(2) 取 a=1m、q=50kN/m，求最大拉、压应力。",
+   "answer": "b≈224.5mm，I_z≈1.05×10⁸mm⁴；σ_tmax≈38.1MPa，σ_cmax≈76.2MPa（按 q 向上计）。",
+   "steps": [
+    "按图示方向取力：q 的箭头由下向上，故 q 向上；2qa 在 C 端向下；3qa² 为逆时针力偶。规定使梁上缘受拉的弯矩为正（悬臂梁的 hogging 为正）。",
+    "对固定端 A 求弯矩：q 向上产生 \\(-q(2a)(a)=-2qa^2\\)；C 端 2qa 向下产生 \\(+2qa(3a)=+6qa^2\\)；逆时针力偶产生 \\(-3qa^2\\)。故 \\(M_A=(-2+6-3)qa^2=qa^2>0\\)，为上缘受拉的 hogging 弯矩。",
+    "T 形截面总高 240mm：翼缘 50mm×b，腹板 190mm×50mm。面积 \\(A=50b+9500\\)。",
+    "设形心距上缘 \\(\\bar y\\)：\\(50b\\times25+9500\\times(50+95)=(50b+9500)\\bar y\\)，即 \\(\\bar y=(1250b+1.3775\\times10^6)/(50b+9500)\\)。",
+    "上缘受拉、下缘受压，且 σ_t/σ_c=1/2，故 \\(\\bar y/(240-\\bar y)=1/2\\)，解得 \\(\\bar y=80\\,\\mathrm{mm}\\)。",
+    "代回形心式：\\(80(50b+9500)=1250b+1.3775\\times10^6\\)，解得 \\(b\\approx224.5\\,\\mathrm{mm}\\)。",
+    "惯性矩：\\(I_z=[b\\cdot50^3/12+50b(80-25)^2]+[50\\cdot190^3/12+9500(145-80)^2]\\approx1.05\\times10^8\\,\\mathrm{mm^4}\\)。",
+    "取 a=1m、q=50kN/m：\\(M_A=qa^2=50\\,\\mathrm{kN\\cdot m}=5.0\\times10^7\\,\\mathrm{N\\cdot mm}\\)。",
+    "\\(\\sigma_t=M\\bar y/I_z\\approx38.1\\,\\mathrm{MPa}\\)，\\(\\sigma_c=M(240-\\bar y)/I_z\\approx76.2\\,\\mathrm{MPa}\\)，比值 1/2。",
+    "若把 q 误读为向下，则 \\(M_A=(2+6-3)qa^2=5qa^2=250\\,\\mathrm{kN\\cdot m}\\)，应力变为约 190.4/380.9MPa；但图中 q 箭头由下向上，应以 38.1/76.2MPa 为准。"
+   ],
+   "figures": [
+    "q807-2023-4.png"
+   ],
+   "sourcePdf": "bank/mech-zhenti/oO3TEpvNpPKJ0GXkG8dWwdJ8sE2oJgXu.pdf",
+   "sourcePage": 2,
+   "pageImage": "content/bank-pages/2023-hi-p2.png",
+   "topicChapter": "mech-04",
+   "topicTitle": "弯曲内力"
+  },
+  {
+   "id": "807-2023-5",
+   "subject": "mechanics",
+   "chapter": "mech-807-2023",
+   "chapterTitle": "华南理工 807 · 2023 真题",
+   "kp": "",
+   "kpName": "第5题",
+   "kind": "计算题",
+   "year": "2023",
+   "source": "华工 807 2023（回忆版）",
+   "isReal": true,
+   "text": "简支梁 AB 长 l，受均布载荷 q；AB 中点下方 δ 处有一支座 C。已知 EI，问 δ 为何值时，C 点最大负弯矩与 AC、BC 段最大正弯矩数值相同？",
+   "answer": "\\(R_C=(2-\\sqrt2)ql\\)，\\(\\delta=(8\\sqrt2-11)ql^4/(384EI)\\approx8.17\\times10^{-4}ql^4/(EI)\\)。",
+   "steps": [
+    "设 C 支座反力为 R（向上）。简支梁在 q 与 R 共同作用下，C 点挠度等于间隙 δ：\\(\\delta=5ql^4/(384EI)-Rl^3/(48EI)\\)。",
+    "C 点负弯矩：\\(M_C=ql^2/8-Rl/4\\)（取绝对值）。",
+    "AC 段剪力为零处出现最大正弯矩：\\(R_A=ql/2-R/2\\)，\\(M_{\\max}=R_A^2/(2q)\\)。",
+    "令 \\(|M_C|=M_{\\max}\\)：\\(Rl/4-ql^2/8=(ql/2-R/2)^2/(2q)\\)。",
+    "令 \\(r=R/(ql)\\)，化为 \\(r/4-1/8=(1-r)^2/8\\)，即 \\(r^2-4r+2=0\\)，取 \\(r=2-\\sqrt2\\approx0.5858\\)。",
+    "故 \\(R=(2-\\sqrt2)ql\\)，\\(|M_C|=M_{\\max}=(3-2\\sqrt2)ql^2/2\\)。",
+    "代回挠度式：\\(\\delta=5ql^4/(384EI)-(2-\\sqrt2)ql^4/(48EI)=(8\\sqrt2-11)ql^4/(384EI)\\approx8.17\\times10^{-4}ql^4/(EI)\\)。",
+    "校核：δ>0，说明 C 确实在中点下方；R<ql，A、B 反力为正，梁不脱空。"
+   ],
+   "figures": [
+    "q807-2023-5.png"
+   ],
+   "sourcePdf": "bank/mech-zhenti/oO3TEpvNpPKJ0GXkG8dWwdJ8sE2oJgXu.pdf",
+   "sourcePage": 2,
+   "pageImage": "content/bank-pages/2023-hi-p2.png",
+   "topicChapter": "mech-04",
+   "topicTitle": "弯曲内力"
+  },
+  {
+   "id": "807-2023-6",
+   "subject": "mechanics",
+   "chapter": "mech-807-2023",
+   "chapterTitle": "华南理工 807 · 2023 真题",
+   "kp": "",
+   "kpName": "第6题",
+   "kind": "计算题",
+   "year": "2023",
+   "source": "华工 807 2023（回忆版）",
+   "isReal": true,
+   "text": "两端封闭薄壁内压圆筒：内径 d=80mm，壁厚 δ=2mm，总长 l=1m，内压 p=10MPa；两端受拉力 F 与扭矩 Me=640π N·m。E=200GPa，μ=0.25，[σ]=200MPa。 (1) 用第三强度理论计算许用拉力 [F]；(2) 计算轴向伸长量 Δl 与直径伸长量 Δd。",
+   "answer": "按题面数据，环向应力 200MPa 已达 [σ]，叠加扭转切应力 100MPa 后第三强度理论无论 F 取何值都超限：不存在正的许用拉力（F≤0 也不能使 σ1<200MPa）；只能降低内压或提高 [σ]，或核对 Me 是否应为 64π N·m。",
+   "steps": [
+    "薄壁圆筒环向应力：\\(\\sigma_\\theta=pd/(2\\delta)=10\\times80/(2\\times2)=200\\,\\mathrm{MPa}\\)。",
+    "轴向应力（封闭端内压）：\\(\\sigma_z'=pd/(4\\delta)=100\\,\\mathrm{MPa}\\)；外拉力再叠加 \\(\\sigma_z=F/(\\pi d\\delta)\\)，故 \\(\\sigma_z=100+F/(\\pi d\\delta)\\)（MPa，F 以 N 计）。",
+    "薄壁闭口圆管扭转切应力：\\(\\tau=T/(2\\pi R^2\\delta)\\)，R=40mm，\\(T=640\\pi\\,\\mathrm{N\\cdot m}=6.4\\pi\\times10^5\\,\\mathrm{N\\cdot mm}\\)，得 \\(\\tau=100\\,\\mathrm{MPa}\\)。",
+    "平面应力主应力：\\(\\sigma_{1,2}=(\\sigma_\\theta+\\sigma_z)/2\\pm\\sqrt{[(\\sigma_\\theta-\\sigma_z)/2]^2+\\tau^2}\\)，第三强度理论 \\(\\sigma_{eq}=\\sigma_1\\le[\\sigma]\\)（σ3=0）。",
+    "取 F=0：σ_z=100MPa，σ1=150+√(50²+100²)=261.8MPa>200MPa；增加拉力只会增大 σ1。",
+    "取 F 为压力也只能让 σ1 渐近于 200MPa，不能低于 200MPa；因此不存在满足第三强度理论的有限 F，题目数据需核对（Me 或 [σ]）。",
+    "因此按题面 Me=640π N·m、[σ]=200MPa，第三强度理论无正解；请核对扭矩是否应为 64π N·m 或 [σ] 是否更大。",
+    "结论：不要给出正的 [F]；应按题面明确回答“无正解/需降低内压”，并建议核对 Me 或 [σ]。"
+   ],
+   "figures": [
+    "q807-2023-6.png"
+   ],
+   "sourcePdf": "bank/mech-zhenti/oO3TEpvNpPKJ0GXkG8dWwdJ8sE2oJgXu.pdf",
+   "sourcePage": 3,
+   "pageImage": "content/bank-pages/2023-hi-p3.png",
+   "topicChapter": "mech-07",
+   "topicTitle": "应力状态与强度理论"
+  },
+  {
+   "id": "807-2023-7",
+   "subject": "mechanics",
+   "chapter": "mech-807-2023",
+   "chapterTitle": "华南理工 807 · 2023 真题",
+   "kp": "",
+   "kpName": "第7题",
+   "kind": "计算题",
+   "year": "2023",
+   "source": "华工 807 2023（回忆版）",
+   "isReal": true,
+   "text": "正方形结构：四边 AB、AD、BC、CD 均为刚性杆，对角线 AC、BD 为弹性杆（实心圆截面），直径 d=20mm，正方形边长 l=550mm；两杆材料相同，σp=200MPa，σs=240MPa，E=200GPa，α=12.5×10⁻⁶/℃。单独加热 AC 杆，求最大温度增量 ΔT。",
+   "answer": "按边长 l=550mm 计，AC 为压杆，屈曲控制：λ≈155.6，σcr≈81.4MPa，ΔT_max≈32.6℃（σcr<σp，欧拉公式适用）。",
+   "steps": [
+    "四边刚性，正方形不变形，故对角线长度不变；单独加热 AC 杆，热伸长被约束，产生压缩应力 \\(\\sigma=E\\alpha\\Delta T\\)。",
+    "AC 为两端铰支压杆（节点 A、C），计算长度 \\(L=\\sqrt2 l=1.414\\times550=777.8\\,\\mathrm{mm}\\)。",
+    "圆截面惯性半径 \\(i=d/4=5\\,\\mathrm{mm}\\)，柔度 \\(\\lambda=L/i=155.6\\)。",
+    "欧拉临界应力 \\(\\sigma_{cr}=\\pi^2E/\\lambda^2=\\pi^2\\times200000/155.6^2\\approx81.4\\,\\mathrm{MPa}\\)。",
+    "校核：σcr=81.4MPa<σp=200MPa，欧拉公式适用；也远小于 σs=240MPa，故由屈曲控制而不是屈服。",
+    "令热应力等于临界应力：\\(E\\alpha\\Delta T=\\sigma_{cr}\\)，得 \\(\\Delta T_{\\max}=81.4/(200000\\times12.5\\times10^{-6})\\approx32.6^\\circ\\mathrm{C}\\)。",
+    "若把 l=550mm 理解为对角线长度，则 λ=110、σcr≈163MPa、ΔT≈65.2℃；本题按“边长”理解。",
+    "BD 杆未加热，且正方形刚性，BD 长度不变，不产生温度应力。"
+   ],
+   "figures": [
+    "q807-2023-7.png"
+   ],
+   "sourcePdf": "bank/mech-zhenti/oO3TEpvNpPKJ0GXkG8dWwdJ8sE2oJgXu.pdf",
+   "sourcePage": 3,
+   "pageImage": "content/bank-pages/2023-hi-p3.png",
+   "topicChapter": "mech-01",
+   "topicTitle": "绪论与力学简图"
+  },
+  {
+   "id": "807-2023-8",
+   "subject": "mechanics",
+   "chapter": "mech-807-2023",
+   "chapterTitle": "华南理工 807 · 2023 真题",
+   "kp": "",
+   "kpName": "第8题",
+   "kind": "计算题",
+   "year": "2023",
+   "source": "华工 807 2023（回忆版）",
+   "isReal": true,
+   "text": "刚架 A-D-E-B-C：A 为固定铰，B 为辊轴支座；AD、DE、EB、BC 各段长均为 a，各杆抗弯刚度 EI；AD 段受均布载荷 q，C 端受竖向力 F，且 q=F/a。用能量法求：(1) C 点竖向位移；(2) B 点水平位移。",
+   "answer": "先求支座反力，分段写弯矩，再用单位载荷法积分：Δ_C=∫Mm_C/(EI)ds，Δ_B=∫Mm_B/(EI)ds（各段积分见步骤）。",
+   "steps": [
+    "坐标：A(0,0)、D(a,0)、E(a,a)、B(2a,a)、C(3a,a)；q 竖直向下作用于 AD，F 竖直向下作用于 C。",
+    "整体平衡：\\(A_x=0\\)，\\(B_y=qa/4+1.5F\\)，\\(A_y=0.75qa-0.5F\\)。",
+    "实际弯矩（下侧受拉为正）：AD 段 \\(M=A_yx-qx^2/2\\)；DE 段 \\(M=0.25qa^2-0.5Fa\\)；EB 段 \\(M=0.25qa^2-0.25qax-0.5Fa-0.5Fx\\)；BC 段 \\(M=F(x-a)\\)（x 从 B 量起）。",
+    "求 C 竖向位移：在 C 加竖向单位力（与 F 同向），令 q=0、F=1，得 \\(m_{AD}=-0.5x\\)、\\(m_{DE}=-0.5a\\)、\\(m_{EB}=-0.5(a+x)\\)、\\(m_{BC}=x-a\\)。",
+    "\\(\\Delta_C=\\frac{1}{EI}[\\int_0^a M_{AD}m_{AD}dx+\\int_0^a M_{DE}m_{DE}dy+\\int_0^a M_{EB}m_{EB}dx+\\int_0^a M_{BC}m_{BC}dx]\\)。",
+    "求 B 水平位移：在 B 加水平单位力，A 点水平反力 -1，得 \\(m_{AD}=0\\)、\\(m_{DE}=y\\)、\\(m_{EB}=a\\)、\\(m_{BC}=a\\)。",
+    "\\(\\Delta_B=\\frac{1}{EI}[\\int_0^a M_{DE}\\,y\\,dy+\\int_0^a M_{EB}\\,a\\,dx+\\int_0^a M_{BC}\\,a\\,dx]\\)。",
+    "代入 q=F/a 后逐段积分，即可得 Δ_C、Δ_B 的闭合表达式；若只求数值，取 a、EI 的具体值代入。",
+    "校核：单位载荷法的单位力必须与实际位移同向；各段弯矩正负号要统一。"
+   ],
+   "figures": [
+    "q807-2023-8.png"
+   ],
+   "sourcePdf": "bank/mech-zhenti/oO3TEpvNpPKJ0GXkG8dWwdJ8sE2oJgXu.pdf",
+   "sourcePage": 3,
+   "pageImage": "content/bank-pages/2023-hi-p3.png",
+   "topicChapter": "mech-10",
+   "topicTitle": "能量法"
+  }
+ ]
+}

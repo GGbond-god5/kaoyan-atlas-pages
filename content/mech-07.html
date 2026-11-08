@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>807 材料力学 · 应力状态与强度理论</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#8A4B2A;--accent-soft:#F2E9E1;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MECH · 07</span><span>MECHANICS OF MATERIALS</span></div>
+    <h1>应力状态与强度理论</h1>
+    <p class="cover-sub">从“一个截面上的应力”走向“一点处的应力”。807 常把它与扭转、弯曲、组合变形捆成一道 25 分综合题。</p>
+    <div class="cover-meta"><span class="meta-pill acc">S 级 · 必须拿下</span><span class="meta-pill">每年 20–25 分</span><span class="meta-pill">综合题核心</span><span class="meta-pill">第三/第四强度理论</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>一点的应力状态与主应力</li><li>二向应力状态的解析法</li><li>应力圆（图解法）</li><li>三向应力状态与最大切应力</li><li>广义胡克定律</li><li>四种常用强度理论及其适用条件</li><li>强度理论在组合变形中的应用</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>一点的应力状态与主应力</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">一点的应力状态由过该点的所有截面上的应力共同描述。主平面是切应力为零的平面，其上的正应力为主应力。主应力按代数值排序 \(\sigma_1\ge\sigma_2\ge\sigma_3\)，这个排序在强度理论中必须严格遵守，不能按大小绝对值排。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma_1\ge\sigma_2\ge\sigma_3\)</span><span class="f-note">按代数值排序，拉为正</span></div><div class="f-row"><span class="f-tex">\(\tau=0\)</span><span class="f-note">主平面上切应力为零</span></div><div class="f-row"><span class="f-tex">\(\sigma_1+\sigma_2+\sigma_3=\sigma_x+\sigma_y+\sigma_z\)</span><span class="f-note">第一不变量，可用于校核</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 高频题型</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="莫尔圆">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="sub" x="24" y="24">应力状态与莫尔圆：主应力、最大切应力一图读出</text>
+  <line class="ink" x1="80" y1="150" x2="430" y2="150"/><path class="ink" d="M424 146 l10 4 l-10 4"/>
+  <line class="ink" x1="110" y1="240" x2="110" y2="50"/><path class="ink" d="M106 56 l4 -10 l4 10"/>
+  <text class="sub" x="436" y="154">σ</text><text class="sub" x="102" y="48">τ</text>
+  <circle class="acc" cx="255" cy="150" r="95"/>
+  <circle cx="255" cy="150" r="2.5" fill="#2A2723"/>
+  <line class="dash" x1="255" y1="150" x2="290" y2="88"/>
+  <circle cx="290" cy="88" r="2.5" fill="#A8342A"/><text class="sub" x="296" y="84">D(σ_x, τ_xy)</text>
+  <line class="dash" x1="255" y1="150" x2="220" y2="212"/>
+  <circle cx="220" cy="212" r="2.5" fill="#A8342A"/><text class="sub" x="180" y="228">D′(σ_y, −τ_xy)</text>
+  <line class="thin" x1="160" y1="150" x2="160" y2="156"/><text class="sub" x="146" y="172">σ₂</text>
+  <line class="thin" x1="350" y1="150" x2="350" y2="156"/><text class="sub" x="344" y="172">σ₁</text>
+  <line class="dash" x1="255" y1="150" x2="255" y2="55"/><text class="sub" x="260" y="72">τ_max</text>
+  <text class="fml" x="470" y="90">σ₁,₂=(σ_x+σ_y)/2 ± R</text>
+  <text class="fml" x="470" y="118">R=√[((σ_x−σ_y)/2)²+τ_xy²]</text>
+  <text class="fml" x="470" y="146">τ_max=R</text>
+  <text class="sub" x="470" y="176">主平面：τ=0，角度 2α 从 D 转到 σ 轴</text>
+  <text class="sub" x="470" y="200">主应力排序 σ₁≥σ₂≥σ₃；第三/第四强度理论用 σ₁、σ₃。</text>
+</svg><figcaption>莫尔圆与主应力</figcaption></figure><p class="exam-q">已知一点的应力分量，求主应力并排序，指出最大切应力所在平面。</p><div class="exam-ans"><b>要点</b> 先由解析法或应力圆求两个面内主应力，再补上 \(\sigma_z=0\)（平面应力）参与排序；最大切应力在 \(\sigma_1\) 与 \(\sigma_3\) 之间，值为 \((\sigma_1-\sigma_3)/2\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>由应力分量求面内主应力：\(\sigma_{1,2}=\frac{\sigma_x+\sigma_y}{2}\pm\sqrt{(\frac{\sigma_x-\sigma_y}{2})^2+\tau_{xy}^2}\)。</li><li>平面应力状态补 \(\sigma_z=0\)，把三个主应力按代数值排序。</li><li>最大切应力 \(\tau_{\max}=(\sigma_1-\sigma_3)/2\)。</li><li>最大切应力作用面与 \(\sigma_1\)、\(\sigma_3\) 主平面各成 45°。</li><li>结论：排序时不要漏掉零主应力。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>按绝对值排序，导致 \(\sigma_3\) 取错。</li><li>平面应力状态漏掉 \(\sigma_z=0\) 这个主应力。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>主应力排序是强度理论的入口；做完题先写 \(\sigma_1,\sigma_2,\sigma_3\) 三个数，再套公式。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>二向应力状态解析法</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">已知 \(\sigma_x,\sigma_y,\tau_{xy}\)，任意斜截面上的应力由二倍角公式给出。主应力与主方向也可直接由公式求出。解析法适合精确计算，应力圆适合判断方位与最大切应力。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma_\alpha=\dfrac{\sigma_x+\sigma_y}{2}+\dfrac{\sigma_x-\sigma_y}{2}\cos2\alpha-\tau_{xy}\sin2\alpha\)</span><span class="f-note">α 自 x 轴逆时针为正</span></div><div class="f-row"><span class="f-tex">\(\tau_\alpha=\dfrac{\sigma_x-\sigma_y}{2}\sin2\alpha+\tau_{xy}\cos2\alpha\)</span><span class="f-note">切应力正负按约定</span></div><div class="f-row"><span class="f-tex">\(\sigma_{\max,\min}=\dfrac{\sigma_x+\sigma_y}{2}\pm\sqrt{\left(\dfrac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2}\)</span><span class="f-note">两个主应力</span></div><div class="f-row"><span class="f-tex">\(\tan2\alpha_0=-\dfrac{2\tau_{xy}}{\sigma_x-\sigma_y}\)</span><span class="f-note">主平面方位</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 高频题型</div><p class="exam-q">已知 \(\sigma_x=80\) MPa、\(\sigma_y=-40\) MPa、\(\tau_{xy}=30\) MPa，求主应力与主方向。</p><div class="exam-ans"><b>要点</b> 圆心 20 MPa，半径 \(\sqrt{60^2+30^2}=67.1\) MPa，主应力 87.1 MPa 与 −47.1 MPa；\(\tan2\alpha_0=-60/120=-0.5\)，得主方向。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>圆心 \(\sigma_c=(\sigma_x+\sigma_y)/2=(80-40)/2=20\) MPa。</li><li>半径 \(R=\sqrt{((80+40)/2)^2+30^2}=\sqrt{60^2+30^2}=67.1\) MPa。</li><li>主应力 \(\sigma_1=20+67.1=87.1\) MPa，\(\sigma_2=20-67.1=-47.1\) MPa。</li><li>\(\tan2\alpha=2\tau_{xy}/(\sigma_x-\sigma_y)=60/120=0.5\)，得 \(2\alpha=26.6^\circ,\ \alpha=13.3^\circ\)。</li><li>最大切应力 \(\tau_{\max}=(\sigma_1-\sigma_2)/2=67.1\) MPa。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>二倍角公式中 \(\tau_{xy}\) 的符号取错。</li><li>把 \(\alpha\) 与 \(2\alpha\) 混淆，主方向差 90°。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>解析法只背两个主应力公式，其余用应力圆判断，减少符号错误。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>应力圆图解法</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">在 \(\sigma-\tau\) 平面上，一点应力状态对应一个圆：圆心 \(((\sigma_x+\sigma_y)/2,0)\)，半径 \(R=\sqrt{((\sigma_x-\sigma_y)/2)^2+\tau_{xy}^2}\)。圆上各点对应不同方位的截面，横轴交点为两个主应力，最高/最低点的纵坐标为最大切应力。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(C=\left(\dfrac{\sigma_x+\sigma_y}{2},0\right)\)</span><span class="f-note">圆心在横轴上</span></div><div class="f-row"><span class="f-tex">\(R=\sqrt{\left(\dfrac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2}\)</span><span class="f-note">半径</span></div><div class="f-row"><span class="f-tex">\(\tau_{\max}=R\)</span><span class="f-note">面内最大切应力</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 题</div><p class="exam-q">用应力圆求主应力、主方向与最大切应力，并与解析法结果对照。</p><div class="exam-ans"><b>要点</b> 按比例作圆，量出横轴截距与最高点纵坐标；主方向由圆上代表 x 面的点与主应力点的圆心角确定，注意图上角度是实际角度的两倍。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>在 \(\sigma-\tau\) 平面按比例取 \(A(\sigma_x,\tau_{xy})\)、\(B(\sigma_y,-\tau_{xy})\)。</li><li>以 AB 为直径作圆，圆心在横轴上、半径 \(R\)。</li><li>圆与横轴两交点即 \(\sigma_1,\sigma_2\)，最高点纵坐标为 \(\tau_{\max}\)。</li><li>代表 x 面的点与主应力点的圆心角是实际角度的两倍。</li><li>用解析法结果对照，检查圆心、半径与角度。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>圆心位置算错（忘记除以 2）。</li><li>图上角度与实际角度不换算 2 倍关系。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>应力圆用来“看”，解析法用来“算”；考场先画圆定方位，再用公式出数。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>三向应力状态与最大切应力</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">三向应力状态可用三个主应力表示。最大切应力作用在 \(\sigma_1\) 与 \(\sigma_3\) 之间的主平面上，值为 \((\sigma_1-\sigma_3)/2\)，<strong>不是</strong> \((\sigma_1-\sigma_2)/2\)。平面应力状态下若两个面内主应力同号，则第三主应力为零，最大切应力仍按 \(\sigma_1-\sigma_3\) 计算。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\tau_{\max}=\dfrac{\sigma_1-\sigma_3}{2}\)</span><span class="f-note">三向应力状态</span></div><div class="f-row"><span class="f-tex">\(\sigma_m=\dfrac{\sigma_1+\sigma_2+\sigma_3}{3}\)</span><span class="f-note">平均应力</span></div><div class="f-row"><span class="f-tex">\(\tau_{\text{oct}}=\dfrac{1}{3}\sqrt{(\sigma_1-\sigma_2)^2+(\sigma_2-\sigma_3)^2+(\sigma_3-\sigma_1)^2}\)</span><span class="f-note">八面体切应力，第四强度理论基础</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 题</div><p class="exam-q">已知三向应力状态的主应力，求最大切应力并指出所在平面。</p><div class="exam-ans"><b>要点</b> 先排序 \(\sigma_1\ge\sigma_2\ge\sigma_3\)，最大切应力 \((\sigma_1-\sigma_3)/2\)，作用在与 \(\sigma_2\) 平行、与 \(\sigma_1\) 和 \(\sigma_3\) 成 45° 的平面上。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先按代数值排序 \(\sigma_1\ge\sigma_2\ge\sigma_3\)，包括零主应力。</li><li>最大切应力 \(\tau_{\max}=(\sigma_1-\sigma_3)/2\)。</li><li>作用面与 \(\sigma_1\) 主平面和 \(\sigma_3\) 主平面各成 45°。</li><li>若为平面应力，最大切应力可能不在该平面内。</li><li>结论：三向应力状态必须用最大与最小主应力。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>用 \(\sigma_1-\sigma_2\) 计算最大切应力。</li><li>平面应力同号主应力时忘记 \(\sigma_3=0\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>最大切应力永远看“最大减最小”，排序后再减。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>广义胡克定律</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">三向应力状态下，每一方向的应变由三个主应力共同贡献：\(\varepsilon_1=[\sigma_1-\nu(\sigma_2+\sigma_3)]/E\)。切应变只与该方向的切应力有关：\(\gamma_{xy}=\tau_{xy}/G\)。广义胡克定律是电测法反算应力、组合变形应变分析的基础。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\varepsilon_1=\dfrac{1}{E}[\sigma_1-\nu(\sigma_2+\sigma_3)]\)</span><span class="f-note">三向应力状态</span></div><div class="f-row"><span class="f-tex">\(\gamma_{xy}=\dfrac{\tau_{xy}}{G}\)</span><span class="f-note">切应变</span></div><div class="f-row"><span class="f-tex">\(G=\dfrac{E}{2(1+\nu)}\)</span><span class="f-note">各向同性材料</span></div><div class="f-row"><span class="f-tex">\(\theta=\dfrac{1-2\nu}{E}(\sigma_1+\sigma_2+\sigma_3)\)</span><span class="f-note">体积应变</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark">真题</span> 2025 · 807 计算（25 分）</div><p class="exam-q">实心圆轴表面贴应变片，已知测点应变，要求反算应力并用第三强度理论校核。</p><div class="exam-ans"><b>要点</b> 由 \(\varepsilon\) 与广义胡克定律（平面应力）求 \(\sigma_x,\sigma_y,\tau_{xy}\)；再求主应力并代入第三强度理论；若测点方向已知，可直接用 \(\sigma_1-\sigma_3\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>由应变花或测点应变得到 \(\varepsilon_x,\varepsilon_y,\gamma_{xy}\)。</li><li>平面应力广义胡克定律：\(\sigma_x=\frac{E}{1-\nu^2}(\varepsilon_x+\nu\varepsilon_y)\)，\(\sigma_y=\frac{E}{1-\nu^2}(\varepsilon_y+\nu\varepsilon_x)\)，\(\tau_{xy}=G\gamma_{xy}\)。</li><li>求主应力 \(\sigma_1,\sigma_2\)，补 \(\sigma_3=0\) 并排序。</li><li>第三强度理论 \(\sigma_{r3}=\sigma_1-\sigma_3\)。</li><li>与许用应力比较，给出安全结论。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>只考虑单轴胡克定律，忽略泊松效应对另两个方向的影响。</li><li>把 \(G\) 与 \(E\) 的关系记错（分母是 \(2(1+\nu)\)）。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>单轴 \(\varepsilon=\sigma/E\) 是三向公式的特例；先写通式再代。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>四种常用强度理论</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">第一强度理论（最大拉应力）适用于脆性材料受拉；第二强度理论（最大伸长线应变）适用于脆性材料，工程上少用；第三强度理论（最大切应力）适用于塑性材料；第四强度理论（畸变能）适用于塑性材料，更接近实验。强度理论的选择要看材料（塑性/脆性）与应力状态（拉压/三向）。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma_{r1}=\sigma_1\le[\sigma]\)</span><span class="f-note">第一，最大拉应力</span></div><div class="f-row"><span class="f-tex">\(\sigma_{r2}=\sigma_1-\nu(\sigma_2+\sigma_3)\le[\sigma]\)</span><span class="f-note">第二，最大伸长线应变</span></div><div class="f-row"><span class="f-tex">\(\sigma_{r3}=\sigma_1-\sigma_3\le[\sigma]\)</span><span class="f-note">第三，最大切应力</span></div><div class="f-row"><span class="f-tex">\(\sigma_{r4}=\sqrt{\dfrac{1}{2}\left[(\sigma_1-\sigma_2)^2+(\sigma_2-\sigma_3)^2+(\sigma_3-\sigma_1)^2\right]}\le[\sigma]\)</span><span class="f-note">第四，畸变能</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark">真题</span> 2025 · 807 计算（25 分）</div><p class="exam-q">实心圆轴受弯扭组合，要求用第三强度理论写出相当应力并校核。</p><div class="exam-ans"><b>要点</b> 圆轴 \(\sigma=M/W\)、\(\tau=T/W_p\)，且 \(W_p=2W\)；第三强度理论 \(\sigma_{r3}=\sqrt{\sigma^2+4\tau^2}=\sqrt{M^2+T^2}/W\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>圆轴弯曲正应力 \(\sigma=M/W\)，扭转切应力 \(\tau=T/W_p\)。</li><li>实心圆轴 \(W_p=2W\)，故 \(\tau=T/(2W)\)。</li><li>第三强度理论 \(\sigma_{r3}=\sqrt{\sigma^2+4\tau^2}\)。</li><li>代入得 \(\sigma_{r3}=\sqrt{M^2+T^2}/W\)。</li><li>与 \([\sigma]\) 比较；若用第四强度理论，则 \(\sigma_{r4}=\sqrt{M^2+0.75T^2}/W\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>第三与第四强度理论的系数记反（第三是 4τ²，第四是 3τ²）。</li><li>对脆性材料误用第三/第四强度理论。</li><li>主应力未排序就直接代入 \(\sigma_1-\sigma_3\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>塑性材料记“三、四”，脆性材料记“一、二”；圆轴弯扭组合直接背 \(\sqrt{M^2+T^2}/W\)。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>强度理论的选择与相当应力</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">相当应力是把复杂应力状态折算成单轴拉伸的等效应力。选择强度理论的原则：塑性材料优先第三/第四；脆性材料优先第一/第二；三向等拉时脆性材料也会屈服，需按塑性处理；三向等压时材料不易破坏。807 的圆轴题几乎固定用第三强度理论。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma_{r3}=\sqrt{\sigma^2+4\tau^2}\)</span><span class="f-note">平面应力，第三</span></div><div class="f-row"><span class="f-tex">\(\sigma_{r4}=\sqrt{\sigma^2+3\tau^2}\)</span><span class="f-note">平面应力，第四</span></div><div class="f-row"><span class="f-tex">\(\sigma_{r3}=\dfrac{\sqrt{M^2+T^2}}{W}\)</span><span class="f-note">圆轴弯扭组合，第三</span></div><div class="f-row"><span class="f-tex">\(\sigma_{r4}=\dfrac{\sqrt{M^2+0.75T^2}}{W}\)</span><span class="f-note">圆轴弯扭组合，第四</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 高频题型</div><p class="exam-q">钢制圆轴同时受弯矩与扭矩，已知 M、T、W，要求按第三强度理论校核。</p><div class="exam-ans"><b>要点</b> 直接用 \(\sigma_{r3}=\sqrt{M^2+T^2}/W\le[\sigma]\)；若题目要求第四强度理论，则用 \(\sqrt{M^2+0.75T^2}/W\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>分别计算危险截面的 \(M\) 与 \(T\)。</li><li>\(\sigma=M/W\)，\(\tau=T/W_p=T/(2W)\)。</li><li>第三强度理论 \(\sigma_{r3}=\sqrt{\sigma^2+4\tau^2}=\sqrt{M^2+T^2}/W\)。</li><li>第四强度理论 \(\sigma_{r4}=\sqrt{\sigma^2+3\tau^2}=\sqrt{M^2+0.75T^2}/W\)。</li><li>取相应许用应力校核，注意弯扭同相位与截面选择。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把相当应力与某个方向的实际应力混为一谈。</li><li>圆轴弯扭组合忘记 \(W_p=2W\) 导致系数错。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>圆轴弯扭组合是 807 的高频模板题，两个公式默写到条件反射。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>应力圆五步作图法</h2>
+  </div>
+  <p class="t-why">应力圆的符号与角度最容易出错，但它是判断主方向、最大切应力最快的方法。807 的应力状态题往往要求“求主应力并画应力圆”。</p>
+  
+  <ol class="method"><li>建立 \(\sigma-\tau\) 坐标系，横轴正应力、纵轴切应力。</li><li>标出代表 x 面的点 \((\sigma_x,\tau_{xy})\) 与代表 y 面的点 \((\sigma_y,-\tau_{xy})\)。</li><li>连接两点，与横轴交点即圆心，半径为该距离的一半。</li><li>圆与横轴两交点为两个主应力，最高/最低点纵坐标为最大切应力。</li><li>由 x 面点到主应力点的圆心角除以 2，得主平面实际方位。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>σx=60 MPa，σy=0，τxy=40 MPa，作应力圆并求主应力。</p><p class="t-ans"><b>解</b> 圆心 (30,0)，半径 \(\sqrt{30^2+40^2}=50\)，主应力 80 MPa 与 −20 MPa；最大切应力 50 MPa。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 应力圆上两点夹角是实际截面夹角的两倍；求主方向时一定要除以 2。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>强度理论选择：从材料到公式</h2>
+  </div>
+  <p class="t-why">807 的强度理论题常把“选哪个理论”和“怎么算”分开给分。选错理论，后面全错；选对但公式系数错，仍丢结果分。</p>
+  
+  <ol class="method"><li>判断材料：塑性（钢、铝）还是脆性（铸铁、混凝土）。</li><li>判断应力状态：单轴、平面还是三向；是否有拉有压。</li><li>塑性材料选第三或第四；脆性材料选第一或第二；三向等拉按塑性处理。</li><li>求主应力并严格排序。</li><li>代入相应相当应力公式，与许用应力比较。</li><li>写出结论：强度足够/不足，由哪个理论控制。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>铸铁圆轴受扭，为什么不能直接用第三强度理论？</p><p class="t-ans"><b>解</b> 铸铁为脆性材料，扭转时最大拉应力控制破坏，应按第一强度理论（最大拉应力）校核；第三强度理论适用于塑性屈服。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要只看“轴”就默认用第三理论；材料是铸铁时结论相反。</div>
+</section>
+<section class="topic" id="topic-03">
+  <span class="anchor">[[T-topic-03]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 03</span>
+    <h2>推导：主应力公式与莫尔圆</h2>
+  </div>
+  <p class="t-why">主应力、最大切应力、主平面方向是应力状态与组合变形强度校核的核心。会用莫尔圆，比死记三个公式更抗变式。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-label="莫尔圆">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 3}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="sub" x="24" y="24">应力状态与莫尔圆：主应力、最大切应力一图读出</text>
+  <line class="ink" x1="80" y1="150" x2="430" y2="150"/><path class="ink" d="M424 146 l10 4 l-10 4"/>
+  <line class="ink" x1="110" y1="240" x2="110" y2="50"/><path class="ink" d="M106 56 l4 -10 l4 10"/>
+  <text class="sub" x="436" y="154">σ</text><text class="sub" x="102" y="48">τ</text>
+  <circle class="acc" cx="255" cy="150" r="95"/>
+  <circle cx="255" cy="150" r="2.5" fill="#2A2723"/>
+  <line class="dash" x1="255" y1="150" x2="290" y2="88"/>
+  <circle cx="290" cy="88" r="2.5" fill="#A8342A"/><text class="sub" x="296" y="84">D(σ_x, τ_xy)</text>
+  <line class="dash" x1="255" y1="150" x2="220" y2="212"/>
+  <circle cx="220" cy="212" r="2.5" fill="#A8342A"/><text class="sub" x="180" y="228">D′(σ_y, −τ_xy)</text>
+  <line class="thin" x1="160" y1="150" x2="160" y2="156"/><text class="sub" x="146" y="172">σ₂</text>
+  <line class="thin" x1="350" y1="150" x2="350" y2="156"/><text class="sub" x="344" y="172">σ₁</text>
+  <line class="dash" x1="255" y1="150" x2="255" y2="55"/><text class="sub" x="260" y="72">τ_max</text>
+  <text class="fml" x="470" y="90">σ₁,₂=(σ_x+σ_y)/2 ± R</text>
+  <text class="fml" x="470" y="118">R=√[((σ_x−σ_y)/2)²+τ_xy²]</text>
+  <text class="fml" x="470" y="146">τ_max=R</text>
+  <text class="sub" x="470" y="176">主平面：τ=0，角度 2α 从 D 转到 σ 轴</text>
+  <text class="sub" x="470" y="200">主应力排序 σ₁≥σ₂≥σ₃；第三/第四强度理论用 σ₁、σ₃。</text>
+</svg><figcaption>莫尔圆与主应力</figcaption></figure>
+  <ol class="method"><li>斜截面应力：\(\sigma_\alpha=\dfrac{\sigma_x+\sigma_y}{2}+\dfrac{\sigma_x-\sigma_y}{2}\cos2\alpha-\tau_{xy}\sin2\alpha\)，\(\tau_\alpha=\dfrac{\sigma_x-\sigma_y}{2}\sin2\alpha+\tau_{xy}\cos2\alpha\)。</li><li>主平面：令 \(d\sigma_\alpha/d\alpha=0\)，得 \(\tan2\alpha_0=-\dfrac{2\tau_{xy}}{\sigma_x-\sigma_y}\)；该平面上 \(\tau_\alpha=0\)。</li><li>把 \(\alpha_0\) 代回正应力式，消去 \(2\alpha\)，得 \(\sigma_{1,2}=\dfrac{\sigma_x+\sigma_y}{2}\pm\sqrt{\left(\dfrac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2}\)。</li><li>莫尔圆：圆心 \(\left(\dfrac{\sigma_x+\sigma_y}{2},0\right)\)，半径 \(R=\sqrt{\left(\dfrac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2}\)；点 \(D(\sigma_x,\tau_{xy})\) 与 \(D'(\sigma_y,-\tau_{xy})\) 是直径两端。</li><li>最大切应力：\(\tau_{\max}=R\)，出现在与主平面成 \(45^\circ\) 的平面；该面上正应力为圆心值 \(\dfrac{\sigma_x+\sigma_y}{2}\)。</li><li>平面应力有一个主应力为 0，排序时按代数值取 \(\sigma_1\ge\sigma_2\ge\sigma_3\)，强度理论用 \(\sigma_1,\sigma_3\)。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>已知 \(\sigma_x=80\,\text{MPa}\)、\(\sigma_y=-40\,\text{MPa}\)、\(\tau_{xy}=40\,\text{MPa}\)，求主应力、最大切应力与主平面方向。</p><p class="t-ans"><b>解</b> 平均应力 \(20\,\text{MPa}\)，\(R=\sqrt{60^2+40^2}=72.1\,\text{MPa}\)，故 \(\sigma_1=92.1\,\text{MPa}\)、\(\sigma_2=-52.1\,\text{MPa}\)、\(\tau_{\max}=72.1\,\text{MPa}\)；\(\tan2\alpha_0=-80/120\)，\(\alpha_0\approx-16.8^\circ\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 主平面与最大切应力平面相差 \(45^\circ\)；平面应力不要忘记第三个主应力为 0；\(\tau_{xy}\) 的正负会影响主平面方向。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>主应力定义与排序</li><li>二向应力解析法两个主应力公式</li><li>应力圆圆心、半径与主方向</li><li>最大切应力 \((\sigma_1-\sigma_3)/2\)</li><li>广义胡克定律</li><li>四种强度理论公式与适用材料</li><li>圆轴弯扭组合的相当应力</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>三向应力圆（莫尔圆）的完整作图</li><li>八面体应力的推导</li><li>莫尔强度理论的深入应用</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否 2 分钟求出一组主应力并排序</li><li>能否画出应力圆并读出最大切应力</li><li>能否说清第三与第四理论的差别</li><li>能否默写圆轴弯扭组合两个公式</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

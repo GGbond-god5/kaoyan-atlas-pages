@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>数学一 · 大数定律与中心极限定理</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#1F3A5F;--accent-soft:#E7ECF3;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MATH · 18</span><span>MATHEMATICS I</span></div>
+    <h1>大数定律与中心极限定理</h1>
+    <p class="cover-sub">概率论的宏观层。一个告诉你频率会稳定，一个告诉你误差服从正态；数一通常只考一道选填或一道小解答。</p>
+    <div class="cover-meta"><span class="meta-pill acc">B 级 · 覆盖即可</span><span class="meta-pill">约 4–10 分</span><span class="meta-pill">选填为主</span><span class="meta-pill">套公式得分</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>切比雪夫不等式</li><li>依概率收敛</li><li>切比雪夫大数定律、伯努利大数定律、辛钦大数定律</li><li>列维-林德伯格中心极限定理</li><li>棣莫弗-拉普拉斯定理</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>切比雪夫不等式</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">在只知道期望和方差时，切比雪夫不等式给出偏离均值的概率上界：\(P(|X-EX|\ge\varepsilon)\le D(X)/\varepsilon^2\)。它给出的是<strong>保守估计</strong>，不是精确值；题目问“至少”“不超过”时优先想它。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(P(|X-E X|\ge\varepsilon)\le\dfrac{D(X)}{\varepsilon^2}\)</span><span class="f-note">偏离上界</span></div><div class="f-row"><span class="f-tex">\(P(|X-E X|&lt;\varepsilon)\ge1-\dfrac{D(X)}{\varepsilon^2}\)</span><span class="f-note">落在邻域内的下界</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">已知 \(E(X)=\mu,D(X)=\sigma^2\)，估计 \(P(|X-\mu|&lt;3\sigma)\) 的下界。</p><div class="exam-ans"><b>要点</b> \(1-\frac{\sigma^2}{9\sigma^2}=\frac89\)。这是下界，真实概率可能更高；若题目给正态分布则应改用 \(\Phi\) 精确计算。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>切比雪夫不等式：\(P(|X-EX|\ge\varepsilon)\le D(X)/\varepsilon^2\)。</li><li>取 \(\varepsilon=3\sigma\)，得 \(P(|X-\mu|\ge3\sigma)\le\frac{\sigma^2}{9\sigma^2}=\frac19\)。</li><li>取对立事件：\(P(|X-\mu|&lt;3\sigma)\ge1-\frac19=\frac89\)。</li><li>这是下界；若已知正态，精确值为 \(0.9973\)，说明不等式保守。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把不等式方向写反；</li><li>把它当成精确概率；</li><li>忘记 \(\varepsilon\) 与方差同量纲。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>切比雪夫只用于信息不足的估计题；一旦给了分布，改用精确方法。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>依概率收敛</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-low ">低频</span></span>
+  </div>
+  <p class="kp-core">\(X_n\xrightarrow{P}X\) 指对任意 \(\varepsilon&gt;0\)，\(P(|X_n-X|\ge\varepsilon)\to0\)。它比几乎处处收敛弱，但在大数定律里足够用。考试只需会判断“样本均值依概率收敛到总体均值”。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(X_n\xrightarrow{P}X\iff\forall\varepsilon&gt;0,\ P(|X_n-X|\ge\varepsilon)\to0\)</span><span class="f-note">定义</span></div><div class="f-row"><span class="f-tex">\(\bar X_n\xrightarrow{P}\mu\)</span><span class="f-note">辛钦大数定律的结论</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">判断 \(\bar X_n\) 是否依概率收敛于 \(\mu\)，需要什么条件？</p><div class="exam-ans"><b>要点</b> 独立同分布且 \(E(X_i)=\mu\) 存在即可，不要求方差存在。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>辛钦大数定律：若 \(X_i\) 独立同分布且 \(E(X_i)=\mu\) 存在，则 \(\bar X_n\xrightarrow{P}\mu\)。</li><li>定理只要求一阶矩存在，不要求方差存在。</li><li>若方差存在，也可用切比雪夫不等式给出证明。</li><li>检验：若期望不存在（如柯西分布），结论不成立。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把依概率收敛与分布收敛混为一谈；</li><li>误以为必须方差有限。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>记样本均值稳定到总体均值，条件只有 iid 与均值存在。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>三个大数定律</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">切比雪夫大数定律要求独立、方差一致有界；伯努利大数定律是频率稳定于概率的特例；辛钦大数定律只要求独立同分布、均值存在，条件最弱。考试常考“哪个定律适用”的辨析。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\dfrac1n\sum_{i=1}^n X_i\xrightarrow{P}E(X)\)</span><span class="f-note">辛钦，iid，均值存在</span></div><div class="f-row"><span class="f-tex">\(\dfrac{n_A}{n}\xrightarrow{P}p\)</span><span class="f-note">伯努利，频率稳定于概率</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">掷硬币 n 次，用大数定律说明正面频率为何稳定于 1/2。</p><div class="exam-ans"><b>要点</b> 设 \(X_i\) 为第 i 次是否正面，iid 且 \(E(X_i)=1/2\)，由辛钦大数定律频率趋近 1/2。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>设 \(X_i=1\) 表示第 \(i\) 次正面，\(0\) 表示反面；\(X_i\) 独立同分布，\(E(X_i)=1/2\)。</li><li>正面频率 \(\bar X_n=\frac1n\sum X_i\)。</li><li>由辛钦大数定律，\(\bar X_n\xrightarrow{P}1/2\)。</li><li>这解释了频率的稳定性；误差大小需再用中心极限定理。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>辛钦定律误加方差存在；</li><li>切比雪夫定律的条件记成同分布。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>三条定律按条件强弱记：切比雪夫、伯努利、辛钦。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>列维-林德伯格中心极限定理</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">独立同分布、均值与方差存在时，无论原分布是什么，样本均值经标准化后近似标准正态。这是“正态无处不在”的来源，也是用正态近似计算和的概率的依据。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\dfrac{\sum X_i-n\mu}{\sqrt{n}\sigma}\xrightarrow{d}N(0,1)\)</span><span class="f-note">和的标准化</span></div><div class="f-row"><span class="f-tex">\(\dfrac{\bar X-\mu}{\sigma/\sqrt n}\xrightarrow{d}N(0,1)\)</span><span class="f-note">均值的标准化</span></div><div class="f-row"><span class="f-tex">\(\sum X_i\ \dot\sim\ N(n\mu,n\sigma^2)\)</span><span class="f-note">近似写法</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">某设备由 100 个独立部件组成，每个部件寿命均值 10、方差 4，求总寿命超过 1040 的概率近似值。</p><div class="exam-ans"><b>要点</b> 总和近似 \(N(1000,400)\)，\(z=\frac{1040-1000}{20}=2\)，概率 \(1-\Phi(2)\approx0.0228\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>设第 \(i\) 个部件寿命为 \(X_i\)，独立同分布，\(\mu=10,\sigma^2=4,n=100\)。</li><li>总和 \(S=\sum X_i\)，\(E(S)=1000\)，\(D(S)=400\)，\(\sigma_S=20\)。</li><li>由中心极限定理，\(S\) 近似服从 \(N(1000,400)\)。</li><li>\(P(S&gt;1040)=P\!\left(Z&gt;\frac{1040-1000}{20}=2\right)=1-\Phi(2)\approx0.0228\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>方差写成 \(n\sigma\) 而不是 \(n\sigma^2\)；</li><li>标准化分母漏 \(\sqrt n\)；</li><li>离散情形忘记连续性修正。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>CLT 三步：求和、标准化、查表；先写 \(n\mu,n\sigma^2\) 再动笔。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>棣莫弗-拉普拉斯定理</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">二项分布 \(B(n,p)\) 在 n 大时近似正态 \(N(np,np(1-p))\)。这是 CLT 的离散特例。离散转连续时，边界要加<strong>连续性修正</strong> \(\pm0.5\)。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(X\sim B(n,p)\Rightarrow X\ \dot\sim\ N(np,np(1-p))\)</span><span class="f-note">n 大、p 不接近 0 或 1</span></div><div class="f-row"><span class="f-tex">\(P(a\le X\le b)\approx\Phi(\frac{b+0.5-np}{\sqrt{np(1-p)}})-\Phi(\frac{a-0.5-np}{\sqrt{np(1-p)}}\)\)</span><span class="f-note">连续性修正</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">掷均匀硬币 400 次，求正面次数在 190 到 210 之间的概率近似值。</p><div class="exam-ans"><b>要点</b> \(np=200,np(1-p)=100\)；修正后 \(z=\pm\frac{10.5}{10}=\pm1.05\)，概率约 \(2\Phi(1.05)-1\approx0.706\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>\(X\sim B(400,0.5)\)，\(np=200\)，\(np(1-p)=100\)，\(\sigma=10\)。</li><li>用正态近似并做连续性修正：\(P(190\le X\le210)\approx P(189.5&lt;X&lt;210.5)\)。</li><li>标准化：\(z_1=\frac{189.5-200}{10}=-1.05\)，\(z_2=\frac{210.5-200}{10}=1.05\)。</li><li>概率 \(\approx2\Phi(1.05)-1\approx0.706\)；区间关于均值对称，接近 0.7 合理。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>忘记连续性修正；</li><li>方差用 \(np\) 而不是 \(np(1-p)\)；</li><li>p 接近 0 或 1 时仍用正态近似。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>二项近似正态，先算 np 与 np(1-p)，再决定是否修正。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>用中心极限定理确定样本量</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">样本量确定是 CLT 的逆用：给定置信水平与允许误差，把标准化不等式反解出 n。σ 未知时用样本标准差或预调查估计；比例情形取 p=0.5 最保守，因为此时 p(1-p) 最大。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(n\ge\left(\dfrac{z_{\alpha/2}\sigma}{\delta}\right)^2\)</span><span class="f-note">均值估计，δ 为允许误差</span></div><div class="f-row"><span class="f-tex">\(n\ge\dfrac{z_{\alpha/2}^2p(1-p)}{\delta^2}\)</span><span class="f-note">比例估计，p=0.5 最保守</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">某调查要求 95% 置信水平下误差不超过 0.05，比例 p 未知，求最少样本量（\(z_{0.025}=1.96\)）。</p><div class="exam-ans"><b>要点</b> 取 p=0.5：\(n\ge1.96^2\times0.25/0.0025=384.16\)，向上取整为 385。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>比例估计的误差限 \(e=z_{\alpha/2}\sqrt{\frac{p(1-p)}{n}}\)。</li><li>解出 \(n\ge\frac{z^2p(1-p)}{e^2}\)。</li><li>\(p\) 未知取最保守的 \(p=0.5\)，\(z=1.96,e=0.05\)：\(n\ge\frac{1.96^2\times0.25}{0.0025}=384.16\)。</li><li>样本量向上取整，最少 \(n=385\)；检验 \(n\) 必须是不小于计算值的整数。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>算出小数不向上取整；</li><li>p 未知时随意取 0.1，1 导致样本量偏小；</li><li>把 σ 与 σ² 混用。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>样本量题一律“代公式、向上取整”；比例未知直接写 0.5。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>中心极限定理标准化三步</h2>
+  </div>
+  <p class="t-why">这是本章唯一稳定得分的题型，也是数一概率里最模板化的 10 分。失分几乎都在方差与分母。</p>
+  
+  <ol class="method"><li>识别：题目出现 n 个独立变量之和或平均，且 n 较大，先想 CLT。</li><li>求和：写出 \(S_n=\sum X_i\) 的均值 \(n\mu\) 与方差 \(n\sigma^2\)。</li><li>标准化：\(Z=(S_n-n\mu)/(\sqrt n\sigma)\)，或均值形式 \((\bar X-\mu)/(\sigma/\sqrt n)\)。</li><li>修正：离散分布加 \(\pm0.5\) 连续性修正。</li><li>查表：化为 \(\Phi\) 值，负号用 \(\Phi(-z)=1-\Phi(z)\)。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>1000 个独立同分布 \(U(0,1)\) 变量之和超过 520 的概率近似值。</p><p class="t-ans"><b>解</b> \(\mu=1/2,\sigma^2=1/12\)；总和近似 \(N(500,1000/12)\)；\(z\approx2.19\)，概率 \(1-\Phi(2.19)\approx0.014\)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 和的方差是 \(n\sigma^2\)，不是 \(n\sigma\)；标准化分母是 \(\sqrt{n}\sigma\)，少一个根号整题作废。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>切比雪夫不等式的两个方向</li><li>辛钦大数定律的条件与结论</li><li>CLT 的标准化公式</li><li>二项正态近似与连续性修正</li><li>样本均值与和的均值方差</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>林德伯格条件的验证</li><li>大数定律的证明</li><li>非独立情形的极限定理</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否区分三个大数定律的适用条件</li><li>能否写出和的方差与标准化分母</li><li>能否对二项分布做连续性修正</li><li>能否用切比雪夫给出概率下界</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

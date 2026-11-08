@@ -1,0 +1,156 @@
+{
+ "set": "2026 合工大超越（数一）",
+ "index": 14,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 1,
+   "pdfEnd": 5,
+   "title": "2026 合工大超越（数一）（第1套）",
+   "chapter": "math-mock-14-1",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p01.png",
+    "content/math-pages/mock14/p02.png",
+    "content/math-pages/mock14/p03.png",
+    "content/math-pages/mock14/p04.png",
+    "content/math-pages/mock14/p05.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 6,
+   "pdfEnd": 10,
+   "title": "2026 合工大超越（数一）（第2套）",
+   "chapter": "math-mock-14-2",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p06.png",
+    "content/math-pages/mock14/p07.png",
+    "content/math-pages/mock14/p08.png",
+    "content/math-pages/mock14/p09.png",
+    "content/math-pages/mock14/p10.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 11,
+   "pdfEnd": 15,
+   "title": "2026 合工大超越（数一）（第3套）",
+   "chapter": "math-mock-14-3",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p11.png",
+    "content/math-pages/mock14/p12.png",
+    "content/math-pages/mock14/p13.png",
+    "content/math-pages/mock14/p14.png",
+    "content/math-pages/mock14/p15.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 16,
+   "pdfEnd": 20,
+   "title": "2026 合工大超越（数一）（第4套）",
+   "chapter": "math-mock-14-4",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p16.png",
+    "content/math-pages/mock14/p17.png",
+    "content/math-pages/mock14/p18.png",
+    "content/math-pages/mock14/p19.png",
+    "content/math-pages/mock14/p20.png"
+   ]
+  },
+  {
+   "n": 5,
+   "pdfStart": 21,
+   "pdfEnd": 25,
+   "title": "2026 合工大超越（数一）（第5套）",
+   "chapter": "math-mock-14-5",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p21.png",
+    "content/math-pages/mock14/p22.png",
+    "content/math-pages/mock14/p23.png",
+    "content/math-pages/mock14/p24.png",
+    "content/math-pages/mock14/p25.png"
+   ]
+  },
+  {
+   "n": 6,
+   "pdfStart": 26,
+   "pdfEnd": 30,
+   "title": "2026 合工大超越（数一）（第6套）",
+   "chapter": "math-mock-14-6",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p26.png",
+    "content/math-pages/mock14/p27.png",
+    "content/math-pages/mock14/p28.png",
+    "content/math-pages/mock14/p29.png",
+    "content/math-pages/mock14/p30.png"
+   ]
+  },
+  {
+   "n": 7,
+   "pdfStart": 31,
+   "pdfEnd": 35,
+   "title": "2026 合工大超越（数一）（第7套）",
+   "chapter": "math-mock-14-7",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p31.png",
+    "content/math-pages/mock14/p32.png",
+    "content/math-pages/mock14/p33.png",
+    "content/math-pages/mock14/p34.png",
+    "content/math-pages/mock14/p35.png"
+   ]
+  },
+  {
+   "n": 8,
+   "pdfStart": 36,
+   "pdfEnd": 40,
+   "title": "2026 合工大超越（数一）（第8套）",
+   "chapter": "math-mock-14-8",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p36.png",
+    "content/math-pages/mock14/p37.png",
+    "content/math-pages/mock14/p38.png",
+    "content/math-pages/mock14/p39.png",
+    "content/math-pages/mock14/p40.png"
+   ]
+  },
+  {
+   "n": 9,
+   "pdfStart": 41,
+   "pdfEnd": 45,
+   "title": "2026 合工大超越（数一）（第9套）",
+   "chapter": "math-mock-14-9",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p41.png",
+    "content/math-pages/mock14/p42.png",
+    "content/math-pages/mock14/p43.png",
+    "content/math-pages/mock14/p44.png",
+    "content/math-pages/mock14/p45.png"
+   ]
+  },
+  {
+   "n": 10,
+   "pdfStart": 46,
+   "pdfEnd": 50,
+   "title": "2026 合工大超越（数一）（第10套）",
+   "chapter": "math-mock-14-10",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "images": [
+    "content/math-pages/mock14/p46.png",
+    "content/math-pages/mock14/p47.png",
+    "content/math-pages/mock14/p48.png",
+    "content/math-pages/mock14/p49.png",
+    "content/math-pages/mock14/p50.png"
+   ]
+  }
+ ]
+}

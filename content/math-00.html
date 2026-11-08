@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>数学一 · 数学一 · 学科总览</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#1F3A5F;--accent-soft:#E7ECF3;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MATH · 00</span><span>MATHEMATICS I</span></div>
+    <h1>数学一 · 学科总览</h1>
+    <p class="cover-sub">150 分、22 题、180 分钟。最后六周不是重学一遍，而是把会做的题在考场上稳稳拿满。</p>
+    <div class="cover-meta"><span class="meta-pill acc">S 级 · 必须拿下</span><span class="meta-pill">150 分 / 180 分钟</span><span class="meta-pill">10 选择 + 6 填空 + 6 解答</span><span class="meta-pill">2027 大纲 · 2026-09 发布</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>高等数学约 56%</li><li>线性代数约 22%</li><li>概率论与数理统计约 22%</li><li>选择题 10 道，每题 5 分</li><li>填空题 6 道，每题 5 分</li><li>解答题 6 道，共 70 分</li><li>2027 大纲结构不变，强调泰勒公式、二重积分换限、曲线/曲面积分适用条件、极大似然估计边界与假设检验两类错误</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>试卷结构与时间分配</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">数一 22 题、150 分、180 分钟。选择与填空共 80 分，是总分的地基；解答题 70 分，决定能否上 120。合理节奏：选填 55–60 分钟，解答 110–115 分钟，留 10 分钟检查。<strong>选填超过 3 分钟没有思路就跳过</strong>，不要在一道 5 分题上赌掉一道 12 分大题。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">选填 80 分 ≈ 55–60 min</span><span class="f-note">平均 3.5 分钟/题</span></div><div class="f-row"><span class="f-tex">解答 70 分 ≈ 110–115 min</span><span class="f-note">平均 18 分钟/题</span></div><div class="f-row"><span class="f-tex">检查 10 min</span><span class="f-note">优先查选填与计算题符号</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">很多考生的实际分布是：选填写了 90 分钟，最后两道大题只剩 20 分钟。结果选填错 3 道、大题空 1.5 道。</p><div class="exam-ans"><b>要点</b> 纠正方法：平时套卷就用计时器分段，选填到 60 分钟必须停；先拿满线性代数和概率的解答题，再回头攻高数压轴。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先记录最近两套卷的分段用时：选填、线代解答、概率解答、高数解答各用了多少分钟，确认失分是“不会”还是“没时间”。</li><li>设定硬时限：选填 60 分钟，到点无论剩几题都转解答题；解答题按“线代 → 概率 → 高数”顺序，先拿结构固定的分。</li><li>选填内部再分两轮：第一轮只做会做的，第二轮用特值、排除、几何直观处理犹豫题，单题不超过 4 分钟。</li><li>每周两套整卷计时训练，把 60 分钟节点写进草稿纸；训练后只统计“超时题”和“会而不对题”。</li><li>考前两周固定这套节奏，不再按题号从头死磕。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>按题号顺序死磕，被一道选择题拖垮全局。</li><li>把检查时间压到零，计算题符号错无人发现。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>强化阶段就强调“选填是基本盘”，用限时训练把速度固定下来。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>2016 年后的命题变化</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">2016 年后的数一有三个明显倾向：<strong>概念辨析更细</strong>（连续、可导、可微、可积的关系）、<strong>计算量更大</strong>（多元积分与级数）、<strong>证明题更灵活</strong>（中值定理与数列）。你已做完 2005–2015，正好需要用 2016 年后的卷子校正手感，不能把老卷的难度当标准。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">概念题：先举反例，再证</span><span class="f-note">选择题常用</span></div><div class="f-row"><span class="f-tex">证明题：先找辅助函数</span><span class="f-note">中值定理题的第一动作</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">给出一个分段函数，判断在分界点处连续、可导、可微、可积中哪几个成立。</p><div class="exam-ans"><b>要点</b> 按定义逐项验证：连续看左右极限，可导看左右导数，可微在一元情形等价于可导，可积看有界与间断点；不要用“可导必连续”反推。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先看分界点 \(x_0\)：分别求左极限 \(\lim_{x\to x_0^-}f(x)\) 与右极限 \(\lim_{x\to x_0^+}f(x)\)，并比较是否等于 \(f(x_0)\)。</li><li>若左右极限存在且相等，再验证是否等于函数值；三者一致才连续。</li><li>可导性必须回到定义：分别算 \(\lim_{h\to0^-}\frac{f(x_0+h)-f(x_0)}{h}\) 与右导数，二者存在且相等才可导。</li><li>一元情形下可微与可导等价；若只证可微，可直接说明“可导即得可微”，不要反过来用。</li><li>可积性看有界与间断点：区间上有界且只有有限个第一类间断点（或单调）即可积；最后按“连续 ⇐ 可导 ⇔ 可微”排序结论。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>用 2010 年前的套路评估现在的计算量。</li><li>概念题凭感觉，不回到定义。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>用“概念题三问：定义是什么、反例是什么、条件能否减弱”训练辨析。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>最后六周冲刺路线</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">第一阶段（11/06–11/20）：用 2016–2020 真题限时套卷，暴露问题；第二阶段（11/21–12/07）：按专题补漏，重点高数多元积分、级数、线代二次型、概率参数估计；第三阶段（12/08–12/19）：2021–2025 真题与错题回炉，<strong>不再开新资料</strong>。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">11/06–11/20：真题 16–20</span><span class="f-note">每 2 天 1 套，限时 180 分钟</span></div><div class="f-row"><span class="f-tex">11/21–12/07：专题补漏</span><span class="f-note">按错题类型集中突破</span></div><div class="f-row"><span class="f-tex">12/08–12/19：真题 21–25 + 错题</span><span class="f-note">保持手感，调作息</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 备考经验</div><p class="exam-q">冲刺期最常见的错误是把“看视频”当成复习，结果六周过去，卷子仍没限时做过。</p><div class="exam-ans"><b>要点</b> 每天至少 2 小时纯做题、1 小时订正；视频只在某个专题连续错 3 题时看，且只看该专题。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先做一次诊断：拿一套真题限时做，统计“看视频能懂、独立做不出”的题，确认问题在输出而不是输入。</li><li>把每天时间分成 2 小时纯做题 + 1 小时订正；视频只在同一专题连续错 3 题时看，且只看该专题的 20–30 分钟。</li><li>做题必须写完整步骤并计时，选填 3 分钟内、解答 18 分钟内没有思路就标记跳过。</li><li>每周日只复盘错题本，按“概念、方法、计算、审题”四类统计，下一周只补最大的一类。</li><li>以“能否独立复现真题关键步骤”为唯一验收标准，不以看了多少小时视频为标准。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把真题留到最后一周，来不及消化。</li><li>每天换老师、换资料，缺少连续反馈。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>真题一网打尽按题型分层，适合冲刺期限时刷后按错题回看对应题型。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>真题使用方法</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">真题要做三遍但目的不同：第一遍限时找漏洞，第二遍按题型归类，第三遍只看错题与标记题。<strong>第二遍最关键</strong>：把同一考点的题放在一起，你会看到命题人反复用的那三四种设问方式。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">一刷：限时 180 min</span><span class="f-note">模拟考场，不查书</span></div><div class="f-row"><span class="f-tex">二刷：按题型归类</span><span class="f-note">同一考点横向对比</span></div><div class="f-row"><span class="f-tex">三刷：只做错题</span><span class="f-note">考前 10 天</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">同一道二重积分题，第一次做错是因为积分区域画错；第二次做对但换了坐标系后又错。说明问题不是“不会”，而是“换元不熟”。</p><div class="exam-ans"><b>要点</b> 把该考点近 10 年题目集中重做，专练区域描述与换元顺序，而不是再刷一套新卷。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>把错题的二重积分区域重新画一遍，标出边界曲线、交点与区域所在象限，先不写积分。</li><li>用不等式写出区域的 \(x\) 型与 \(y\) 型描述，比较哪种描述分段更少；换序的关键是“先画后换”。</li><li>若用极坐标，写出 \(r,\theta\) 的边界（圆、射线、圆心不在原点时要配成 \(r=2a\cos\theta\) 等形式）。</li><li>定限后先算内层再算外层；用面积或对称性做量纲检查，必要时用“区域面积 × 被积函数估值”估算结果。</li><li>把该考点近 10 年题目集中重做，只练“区域描述—换序—定限”三步，不再开新题册。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>只对答案不写错因，错题本变成抄题本。</li><li>二刷仍按年份做，没有横向归纳。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>提倡“错题三问”：错在哪一步、为什么错、下次如何识别。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>名师与资料取舍</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">冲刺期只保留一套主线：<strong>武忠祥强化讲义 + 近 10 年真题 + 自己的错题本</strong>。张宇的数列与中值定理专题可作为薄弱点补充；没咋了的 880 题分类与选填速解适合碎片时间。不要再开新的 1000 题。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">主线：武忠祥强化 + 真题</span><span class="f-note">覆盖 90% 常考题型</span></div><div class="f-row"><span class="f-tex">补丁：张宇专题 / 没咋了题型课</span><span class="f-note">只补薄弱点</span></div><div class="f-row"><span class="f-tex">禁用：新习题册</span><span class="f-note">最后六周内做不完</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 备考经验</div><p class="exam-q">冲刺期同时跟三位老师，笔记三套、题册三本，结果每本都只做了前几章。</p><div class="exam-ans"><b>要点</b> 选一位老师的主线跟到底，其他老师只取一个专题；以“能否独立做出真题”为唯一验收标准。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先列出当前三套资料的重复章节，按“基础、强化、冲刺”定位，只保留一套作为主线（如武忠祥强化讲义）。</li><li>把最近 5 套真题的错题按考点归类，找出 2–3 个真正的薄弱点，其他老师的资料只取对应专题。</li><li>规定每天固定时段跟主线，其他资料只在薄弱点连续错 3 题时使用，避免三线并行。</li><li>每周用一套真题验收：能独立做出即为掌握，不以“看完课程”作为进度。</li><li>考前一个月冻结资料，只做真题与错题本。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把老师的名气当成自己的掌握程度。</li><li>收集资料的时间超过做题时间。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>专题课适合已经有一轮基础、需要突破数列与中值定理的考生。</span><span class="t-item"><b>没咋了</b>选填速解与线代救命系列适合冲刺期限时提分。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>考场策略与常见失分</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">数一最大的失分不是不会，而是<strong>会而不对</strong>：符号、量纲、积分上下限、矩阵初等变换方向、分布参数写错。解答题要写关键步骤，哪怕最后结果错，方法分仍在。遇到陌生题，先写出相关定义与公式，往往能拿到 2–3 分。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">先易后难，先熟后生</span><span class="f-note">不按题号死磕</span></div><div class="f-row"><span class="f-tex">解答题写“解、由、得”</span><span class="f-note">步骤分</span></div><div class="f-row"><span class="f-tex">结果代回检验</span><span class="f-note">方程、积分、概率归一化</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">概率解答题求出密度函数后没有验证积分为 1，导致系数错；整题 12 分只拿 4 分。</p><div class="exam-ans"><b>要点</b> 任何密度、分布函数、特征值问题，最后都用“归一化/特征方程/代回原式”检查一遍。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>求出密度函数后，先检查非负性，再算 \(\int_{-\infty}^{+\infty}f(x)\,dx\)，令其等于 1 定出待定系数。</li><li>若求分布函数，检查 \(F(-\infty)=0,\ F(+\infty)=1\) 且单调不减；分段点处取极限核对。</li><li>求期望、方差时用定义或已知分布的数字特征，最后用量纲与合理性（如方差非负）检查。</li><li>线代题把特征值代回特征方程、把解代回原方程组；任何结果都做一次“代回原式”校验。</li><li>把这类校验写成考场检查清单：归一化、特征方程、代回原式、符号与范围。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>草稿太乱，抄错符号。</li><li>解答题只写答案，不写关键方程。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>反复强调“基本概念、基本理论、基本方法”，考场先保三基分。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>2027 大纲核对与新增关注</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">2027 数学一大纲（2026-09 发布）结构不变：150 分、22 题、180 分钟；高数约 56%（部分口径 60%）、线代约 22%、概率约 22%。变化不在题型，而在<strong>能力指向</strong>：泰勒公式的应用、二重积分的几何识别与积分限转换、曲线/曲面积分公式的适用条件与方向、极大似然估计的定义域边界、假设检验两类错误。冲刺期把这几处当作“必查项”，不要被旧笔记的表述带偏。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">150 = 10×5 + 6×5 + 6 题（70 分）</span><span class="f-note">2027 结构不变</span></div><div class="f-row"><span class="f-tex">高数 ≈ 56%–60%，线代 ≈ 22%，概率 ≈ 22%</span><span class="f-note">不同口径略有差异，以大纲为准</span></div><div class="f-row"><span class="f-tex">曲线/曲面积分：先验条件，再定方向</span><span class="f-note">格林、高斯、斯托克斯公式</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 2027 大纲</div><p class="exam-q">给出 2027 大纲强调的五处能力点，要求判断冲刺期应优先补哪两块，并说明理由。</p><div class="exam-ans"><b>要点</b> 优先补“二重积分换限”和“曲线/曲面积分方向性”；这两处既是高频计算，也是选填与大题的分水岭。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>先按“分值 × 当前错误率”排序：二重积分与曲线曲面积分在高数解答题中占比高，且你的错题集中在区域描述与方向判断。</li><li>二重积分：专练“画区域—写不等式—换序/换极坐标—定限”四步，每天 2 题，连续 5 天。</li><li>曲线/曲面积分：先写公式适用条件（单连通、偏导连续、外侧/正向），再判断方向符号，最后才代入计算。</li><li>泰勒公式与 MLE 边界作为第二优先级：泰勒练“展开到足够阶”，MLE 练“参数空间边界与似然单调”。</li><li>假设检验两类错误放在最后，用 3 道选择题把定义与拒绝域对应清楚即可。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把 2026 或更早的机构讲义表述当成 2027 大纲原文。</li><li>只记“结构不变”就忽略能力指向的变化。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>强化阶段强调“三基”，大纲微调时优先回看基本概念与适用条件。</span><span class="t-item"><b>张宇</b>用“条件—方向—符号”三问处理曲线曲面积分。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>三遍真题法：从找漏洞到形成条件反射</h2>
+  </div>
+  <p class="t-why">你已做完 2005–2015，但 2016 年后的卷子才是当前难度。冲刺期真题不是“做完”，而是“做透”。</p>
+  
+  <ol class="method"><li>第一遍：严格 180 分钟，答题卡式书写，不查书、不跳步。</li><li>当天订正：每道错题写“错因类型”，只分四类——概念不清、方法不会、计算失误、审题错误。</li><li>第二遍：把近 10 年同考点题集中做，比较设问方式与陷阱。</li><li>第三遍：考前 10 天只看错题与标记题，遮住答案重做。</li><li>每套卷留 10 分钟检查，把检查项固定为：符号、上下限、归一化、特值。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>一套卷错 8 道选填，如何判断该补什么？</p><p class="t-ans"><b>解</b> 先按四类错因统计：若 5 道是计算失误，补的是草稿与检查习惯；若 5 道是概念不清，回到对应章节的 kp，而不是再刷一套卷。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要把“看懂了答案”当成“会做”；合上答案能独立复现关键步骤，才算过关。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>选填 60 分钟保底策略</h2>
+  </div>
+  <p class="t-why">选填 80 分，是数一最稳定的得分区。很多人大题拿不到分，是因为选填耗光了时间。</p>
+  
+  <ol class="method"><li>开考先扫一遍 16 道选填，按“会/可能/不会”三档标记。</li><li>第一轮只做“会”，控制在 35 分钟内。</li><li>第二轮做“可能”，用特值、排除、几何直观，单题不超过 4 分钟。</li><li>到 60 分钟无论剩几道，转入解答题；不会的选填先猜一个并标记。</li><li>解答题做完后，若还有时间再回补标记题。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>一道抽象函数选择题，直接推导要 6 分钟，怎么办？</p><p class="t-ans"><b>解</b> 先取满足条件的特殊函数（如 f(x)=x²）代入验证，30 秒排除错误项；只有在特值失效时才回到一般推导。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 特值法要验证“满足题设全部条件”，否则会选出反例型的错误答案。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>选填 60 分钟内完成</li><li>近 10 年真题至少两遍</li><li>高数多元积分与级数的固定套路</li><li>线代秩、方程组、相似、二次型四条主线</li><li>概率二维分布、数字特征、参数估计三类大题</li><li>错题按四类错因归档</li><li>考场先易后难，解答题写步骤</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>偏难怪的竞赛型技巧</li><li>超纲的数分内容</li><li>新的习题册与全程班</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否在 60 分钟内做完一套选填并保证 90% 正确率</li><li>能否不看书说出数一三大部分的分值占比</li><li>能否列出自己最常错的三个考点</li><li>是否已完成 2016 年后至少 3 套限时真题</li><li>是否有一本按错因分类的错题本</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

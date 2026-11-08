@@ -1,0 +1,81 @@
+{
+ "set": "2023 合工大超越（数一）",
+ "index": 10,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 1,
+   "pdfEnd": 5,
+   "title": "2023 合工大超越（数一）（第1套）",
+   "chapter": "math-mock-10-1",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/（数一）2023合工大超越试题.pdf",
+   "images": [
+    "content/math-pages/mock10/p01.png",
+    "content/math-pages/mock10/p02.png",
+    "content/math-pages/mock10/p03.png",
+    "content/math-pages/mock10/p04.png",
+    "content/math-pages/mock10/p05.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 6,
+   "pdfEnd": 10,
+   "title": "2023 合工大超越（数一）（第2套）",
+   "chapter": "math-mock-10-2",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/（数一）2023合工大超越试题.pdf",
+   "images": [
+    "content/math-pages/mock10/p06.png",
+    "content/math-pages/mock10/p07.png",
+    "content/math-pages/mock10/p08.png",
+    "content/math-pages/mock10/p09.png",
+    "content/math-pages/mock10/p10.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 11,
+   "pdfEnd": 15,
+   "title": "2023 合工大超越（数一）（第3套）",
+   "chapter": "math-mock-10-3",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/（数一）2023合工大超越试题.pdf",
+   "images": [
+    "content/math-pages/mock10/p11.png",
+    "content/math-pages/mock10/p12.png",
+    "content/math-pages/mock10/p13.png",
+    "content/math-pages/mock10/p14.png",
+    "content/math-pages/mock10/p15.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 16,
+   "pdfEnd": 20,
+   "title": "2023 合工大超越（数一）（第4套）",
+   "chapter": "math-mock-10-4",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/（数一）2023合工大超越试题.pdf",
+   "images": [
+    "content/math-pages/mock10/p16.png",
+    "content/math-pages/mock10/p17.png",
+    "content/math-pages/mock10/p18.png",
+    "content/math-pages/mock10/p19.png",
+    "content/math-pages/mock10/p20.png"
+   ]
+  },
+  {
+   "n": 5,
+   "pdfStart": 21,
+   "pdfEnd": 25,
+   "title": "2023 合工大超越（数一）（第5套）",
+   "chapter": "math-mock-10-5",
+   "sourcePdf": "bank/_分类/模拟题/数学一/合工大超越/（数一）2023合工大超越试题.pdf",
+   "images": [
+    "content/math-pages/mock10/p21.png",
+    "content/math-pages/mock10/p22.png",
+    "content/math-pages/mock10/p23.png",
+    "content/math-pages/mock10/p24.png",
+    "content/math-pages/mock10/p25.png"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>807 材料力学 · 提高与拓展：非线性、塑性极限与超纲预警</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#8A4B2A;--accent-soft:#F2E9E1;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MECH · 15</span><span>MECHANICS OF MATERIALS</span></div>
+    <h1>提高与拓展：非线性、塑性极限与超纲预警</h1>
+    <p class="cover-sub">807 正卷通常不直接考非线性；理解它能解释小变形假设的边界，但不要挤占超静定、能量法与稳定的时间。</p>
+    <div class="cover-meta"><span class="meta-pill acc">B 级 · 覆盖即可</span><span class="meta-pill">拓展 · 807 正卷低频</span><span class="meta-pill">理解为主</span><span class="meta-pill">不背复杂公式</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>材料非线性：屈服、塑性铰、极限载荷</li><li>几何非线性：大变形与二阶效应</li><li>稳定非线性：初弯曲、初偏心对临界力的影响</li><li>非线性问题的识别与考试取舍</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>材料非线性：从屈服到塑性铰</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">拓展</span><span class="tag tag-low ">低频</span></span>
+  </div>
+  <p class="kp-core">理想弹塑性模型把 σ-ε 简化为两段：屈服前线弹性，屈服后应力保持 σ_s、应变继续增加。截面边缘先屈服，塑性区向内部扩展；当整个截面屈服时形成塑性铰，截面还能转动但弯矩不再增加。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(M_e=\sigma_s W=\sigma_s\dfrac{bh^2}{6}\)</span><span class="f-note">边缘屈服弯矩</span></div><div class="f-row"><span class="f-tex">\(M_u=\sigma_s\dfrac{bh^2}{4}\)</span><span class="f-note">全截面屈服（矩形）</span></div><div class="f-row"><span class="f-tex">\(M_u/M_e=1.5\)</span><span class="f-note">形状系数</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 拓展题</div><p class="exam-q">矩形截面梁宽 \(b\)、高 \(h\)，材料理想弹塑性，屈服极限 \(\sigma_s\)。求边缘屈服弯矩 \(M_e\) 与极限弯矩 \(M_u\)。</p><div class="exam-ans"><b>要点</b> \(M_e=\sigma_s bh^2/6\)，\(M_u=\sigma_s bh^2/4\)，\(M_u/M_e=1.5\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>弹性阶段：\(\sigma_{\max}=M/W\le\sigma_s\)，故 \(M_e=\sigma_s W=\sigma_s bh^2/6\)。</li><li>塑性极限：全截面受拉/受压区应力均达到 \(\sigma_s\)，合力 \(C=T=\sigma_s bh/2\)。</li><li>拉压合力作用线相距 \(h/2\)，故 \(M_u=C\cdot h/2=\sigma_s bh^2/4\)。</li><li>两式相比得形状系数 \(M_u/M_e=1.5\)。</li><li>结论：从边缘屈服到全截面屈服还有 50% 的弯矩储备；形成塑性铰后弯矩不再增加。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把 \(M_u\) 当成屈服弯矩，直接用于正常使用极限状态。</li><li>忽略塑性铰形成后结构仍可继续变形。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>拓展内容只记“边缘屈服→全截面屈服→塑性铰”的物理过程与 1.5 倍储备。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>塑性铰与极限载荷</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">拓展</span><span class="tag tag-low ">低频</span></span>
+  </div>
+  <p class="kp-core">塑性铰出现在弯矩最大的截面。静定结构形成一个塑性铰即成机构；超静定结构要形成足够多的塑性铰才失去承载能力。极限载荷用机构法（虚功）或静力法求。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(P_u\delta=\sum M_u\theta_i\)</span><span class="f-note">机构法虚功</span></div><div class="f-row"><span class="f-tex">\(P_u=\dfrac{6M_u}{l}\)</span><span class="f-note">一端固定一端简支、跨中集中力</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 拓展题</div><p class="exam-q">一端固定、一端简支的梁长 \(l\)，跨中受集中力 \(P\)，截面极限弯矩 \(M_u\)。求极限载荷 \(P_u\)。</p><div class="exam-ans"><b>要点</b> \(P_u=6M_u/l\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>破坏机构：固定端 A 与跨中 C 各形成塑性铰。</li><li>设跨中虚位移 \(\delta\)，则 A 端转角 \(\theta_A=\delta/(l/2)=2\delta/l\)。</li><li>C 点左右两段相对转角 \(\theta_C=4\delta/l\)。</li><li>虚功：\(P_u\delta=M_u\theta_A+M_u\theta_C=M_u(2\delta/l+4\delta/l)\)。</li><li>约去 \(\delta\) 得 \(P_u=6M_u/l\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>只设一个塑性铰就判定破坏；超静定结构需要足够多的铰。</li><li>虚功中漏掉相对转角。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>机构法只数“铰的转角”，别把力臂和转角混在一起。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>几何非线性：大变形与二阶效应</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">拓展</span><span class="tag tag-low ">低频</span></span>
+  </div>
+  <p class="kp-core">当变形大到改变受力路径时，平衡必须按变形后的位置建立。典型是压杆/柱的 P-Δ 效应：竖向力在横向位移上产生附加弯矩，使位移和内力放大，叠加原理失效。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(M=Hl+P\delta\)</span><span class="f-note">悬臂柱底弯矩（二阶）</span></div><div class="f-row"><span class="f-tex">\(\delta\approx\dfrac{\delta_0}{1-P/P_{cr}}\)</span><span class="f-note">一阶位移的放大</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 拓展题</div><p class="exam-q">悬臂柱高 \(l\)，柱顶受竖向力 \(P\) 与水平力 \(H\)。说明二阶效应如何改变柱底弯矩，并写出一阶与二阶的差别。</p><div class="exam-ans"><b>要点</b> 一阶 \(M=Hl\)；二阶 \(M=Hl+P\delta\)，\(\delta\) 又被 \(P\) 放大，需迭代或放大系数求解。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>一阶分析：按变形前位置，柱底弯矩 \(M_1=Hl\)。</li><li>柱顶产生水平位移 \(\delta\) 后，竖向力 \(P\) 对柱底产生附加弯矩 \(P\delta\)。</li><li>附加弯矩又使 \(\delta\) 增大，形成 \(M\leftrightarrow\delta\) 的耦合。</li><li>线弹性小变形下可用放大系数 \(\delta\approx\delta_0/(1-P/P_{cr})\) 近似。</li><li>结论：\(P\) 接近临界力时位移与弯矩急剧放大，线性叠加失效。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>仍按变形前几何列平衡，低估内力。</li><li>把一阶与二阶结果直接相加而不考虑耦合。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>看到“竖向力 + 横向位移”就想到 P-Δ 附加弯矩。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>稳定非线性：初弯曲与初偏心</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">拓展</span><span class="tag tag-low ">低频</span></span>
+  </div>
+  <p class="kp-core">实际压杆存在初弯曲、初偏心、残余应力等缺陷。缺陷使杆件从一开始就受弯，挠度被 \(1/(1-P/P_E)\) 放大，临界力低于理想欧拉值；缺陷越敏感，折减越大。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(y_{\text{总}}=\dfrac{y_0}{1-P/P_E}\)</span><span class="f-note">初弯曲的放大</span></div><div class="f-row"><span class="f-tex">\(P_E=\dfrac{\pi^2EI}{(\mu l)^2}\)</span><span class="f-note">理想欧拉临界力</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 拓展题</div><p class="exam-q">压杆有初弯曲 \(y_0=a\sin(\pi x/l)\)，说明为什么实际临界力低于欧拉临界力。</p><div class="exam-ans"><b>要点</b> 初弯曲产生初始弯矩，挠度按 \(1/(1-P/P_E)\) 放大；\(P\to P_E\) 时挠度发散，实际杆在更低载荷下因屈服或过大变形失效。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>设初弯曲 \(y_0=a\sin(\pi x/l)\)，加载后总挠度 \(y=y_0+y_1\)。</li><li>变形后弯矩 \(M=P(y_0+y_1)\)，比理想直杆多出 \(Py_0\)。</li><li>代入挠曲线方程并令 \(P_E=\pi^2EI/l^2\)，解得 \(y_1=y_0\dfrac{P/P_E}{1-P/P_E}\)。</li><li>总挠度 \(y=y_0/(1-P/P_E)\)，当 \(P\to P_E\) 时发散。</li><li>实际杆在远低于 \(P_E\) 时已因边缘屈服或变形过大失效，故实测临界力偏低。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把欧拉临界力当成实际压杆的承载上限。</li><li>认为初弯曲只影响变形、不影响承载力。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>缺陷敏感是稳定问题的本质之一；807 只需理解“为什么折减”。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>非线性问题的识别与考试取舍</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">拓展</span><span class="tag tag-low ">低频</span></span>
+  </div>
+  <p class="kp-core">判断能否用线弹性小变形：看变形/尺寸、应力/屈服极限、荷载/临界力三个比值。807 正卷几乎不考非线性数值，时间应优先给超静定、能量法、稳定与组合变形。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\delta/l\ll1,\quad \sigma&lt;\sigma_s,\quad P&lt;0.2P_{cr}\)</span><span class="f-note">线弹性小变形的常用判据</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 拓展题</div><p class="exam-q">给出三类问题：细长压杆、短粗受压块、薄壁圆环高速旋转。判断哪些必须考虑非线性，哪些可按线弹性处理。</p><div class="exam-ans"><b>要点</b> 细长压杆需考虑稳定/几何非线性；短粗受压块按强度；高速圆环需考虑惯性力与环向应力，但材料仍可在线弹性范围。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>细长压杆：\(P\) 接近 \(P_{cr}\)，变形改变受力路径，需稳定/二阶分析。</li><li>短粗受压块：以压应力为主，按强度条件校核，线弹性足够。</li><li>高速圆环：惯性力是主要载荷，按 \(\sigma=\rho v^2\) 计算；若应力低于屈服，仍属线弹性。</li><li>结论：非线性与否看“变形是否改变受力”，不只看构件形状。</li><li>考试取舍：807 正卷优先超静定、能量法、稳定与组合变形；非线性只留概念。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把“非线性”等同于“超纲”，完全不理解小变形假设的边界。</li><li>在正卷中花时间做非线性数值迭代。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>拓展章只做“识别 + 结论”，不展开数值方法。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>旋转圆环的惯性力（拓展，807 不考）</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">拓展</span><span class="tag tag-low ">低频</span></span>
+  </div>
+  <p class="kp-core">薄圆环匀速转动时，取 dθ 微元，径向惯性力由两侧环向拉力平衡，得环向拉应力 σ=ρR²ω²=ρv²，与截面积无关。注意：2026 明确不考动载荷中的加速/转动情形，这一节只作理解，不要占超静定/能量法/稳定的时间。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(dF=\rho A R\omega^2\,d\theta\)</span><span class="f-note">微元惯性力</span></div><div class="f-row"><span class="f-tex">\(\sigma=\rho R^2\omega^2=\rho v^2\)</span><span class="f-note">环向拉应力，与 A 无关</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 拓展 · 807 不考</div><p class="exam-q">薄圆环平均半径 R、截面积 A、密度 ρ，以角速度 ω 匀速转动。求环向拉应力，并说明加厚是否有效。</p><div class="exam-ans"><b>要点</b> \(\sigma=\rho R^2\omega^2=\rho v^2\)；与 A 无关，加厚无效。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>取 dθ 微元，质量 \(dm=\rho A R\,d\theta\)，向心加速度 \(R\omega^2\)。</li><li>惯性力 \(dF=dm\,R\omega^2=\rho A R^2\omega^2d\theta\)。</li><li>两端环向拉力 T 的径向分量平衡惯性力：\(2T\sin(d\theta/2)=dF\)。</li><li>小角近似得 \(T=\rho A R^2\omega^2\)，故 \(\sigma=T/A=\rho R^2\omega^2=\rho v^2\)。</li><li>结论：与 A 无关，只能降转速或减小半径；807 不考转动动载荷，本节只作理解。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把本节当 807 重点；2026 明确不考加速/转动动载荷。</li><li>认为加厚能降低环向应力。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>拓展内容只记结论与“加厚无效”，不要挤占超静定/能量法时间。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>理想弹塑性矩形截面梁：Me、Mp 与形状系数</h2>
+  </div>
+  <p class="t-why">塑性极限分析是理解“强度储备”的最好例子；807 正卷不常考，但简答/拓展题可能问 1.5 倍的来源。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-label="非线性问题示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">非线性问题：叠加原理失效，平衡按变形后的位置建立</text>
+  <text class="sub" x="24" y="44">807 正卷不常直接考，但理解它能解释“为什么小变形假设如此重要”。</text>
+
+  <!-- panel 1 -->
+  <text class="lbl" x="70" y="76">材料非线性（弹塑性）</text>
+  <line class="thin" x1="70" y1="250" x2="330" y2="250"/>
+  <line class="thin" x1="70" y1="250" x2="70" y2="90"/>
+  <path class="acc" d="M70 250 L180 130 L300 130"/>
+  <line class="dash" x1="180" y1="130" x2="180" y2="250"/>
+  <text class="sub" x="182" y="120">σ_s</text>
+  <text class="sub" x="306" y="126">ε</text>
+  <text class="sub" x="60" y="84">σ</text>
+  <text class="sub" x="120" y="272">弹性段 + 屈服平台</text>
+
+  <!-- panel 2 -->
+  <text class="lbl" x="410" y="76">几何/稳定非线性</text>
+  <line class="thin" x1="410" y1="250" x2="680" y2="250"/>
+  <line class="thin" x1="410" y1="250" x2="410" y2="90"/>
+  <path class="acc" d="M410 250 C470 170 530 110 570 108 C610 106 640 150 660 190"/>
+  <circle cx="570" cy="108" r="3" fill="#A8342A"/>
+  <line class="dash" x1="570" y1="108" x2="570" y2="250"/>
+  <text class="sub" x="548" y="100">极限点</text>
+  <text class="sub" x="662" y="208">跳跃</text>
+  <text class="sub" x="402" y="84">P</text>
+  <text class="sub" x="684" y="264">Δ</text>
+
+  <text class="sub" x="70" y="300">判断：材料非线性看 σ-ε 是否偏离直线；几何非线性看变形是否已改变受力路径。</text>
+</svg><figcaption>材料非线性与稳定非线性：叠加原理失效</figcaption></figure>
+  <ol class="method"><li>弹性阶段：边缘应力达到 σ_s 时 \(M_e=\sigma_s W\)。</li><li>塑性阶段：塑性区向中性轴扩展，弹性核逐渐减小。</li><li>极限状态：全截面应力均为 σ_s，拉压合力各 \(σ_s bh/2\)。</li><li>力臂 \(h/2\)，故 \(M_u=\sigma_s bh^2/4\)。</li><li>形状系数 \(M_u/M_e=1.5\)，表示从屈服到破坏的弯矩储备。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>为什么矩形截面的形状系数恰好是 1.5？</p><p class="t-ans"><b>解</b> 弹性时 \(W=bh^2/6\)，塑性时力臂为 \(h/2\)、合力为 \(σ_s bh/2\)，两者相除即 1.5；本质是塑性把应力从三角形分布变成矩形分布。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要把 \(M_u\) 用于正常使用极限状态；塑性铰形成后变形很大，通常已不满足使用要求。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>初弯曲压杆：欧拉临界力为什么偏高</h2>
+  </div>
+  <p class="t-why">实际压杆都有缺陷，欧拉公式是理想上限。理解这一点，才能解释稳定安全系数与折减系数的来源。</p>
+  
+  <ol class="method"><li>设初弯曲 \(y_0=a\sin(\pi x/l)\)。</li><li>加载后总挠度 \(y=y_0+y_1\)，弯矩 \(M=P(y_0+y_1)\)。</li><li>代入挠曲线方程，令 \(P_E=\pi^2EI/l^2\)。</li><li>解得总挠度 \(y=y_0/(1-P/P_E)\)。</li><li>\(P\to P_E\) 时挠度发散；实际杆在更低载荷下因屈服或变形过大失效。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>初偏心与初弯曲对临界力的影响有何共同点？</p><p class="t-ans"><b>解</b> 两者都使杆件一开始就受弯，产生附加弯矩，挠度被 \(1/(1-P/P_E)\) 放大；缺陷越大，实际承载力越低。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要以为“没有初弯曲就一定能达到欧拉临界力”；初偏心、残余应力同样会折减。</div>
+</section>
+<section class="topic" id="topic-03">
+  <span class="anchor">[[T-topic-03]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 03</span>
+    <h2>旋转构件的惯性力：仅作理解</h2>
+  </div>
+  <p class="t-why">旋转圆环是“惯性力”最干净的模型，能解释为什么高速飞轮/叶片要限速；但 2026 明确不考转动动载荷，所以只作理解。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img" aria-label="旋转圆环惯性力示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .soft{fill:rgba(138,75,42,.08);stroke:#8A4B2A;stroke-width:1.2}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:13px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">旋转薄圆环：惯性力产生的环向拉应力</text>
+  <text class="sub" x="24" y="44">转速越高，应力按 v² 增长；与截面积 A 无关，不能靠加厚解决。</text>
+
+  <!-- ring -->
+  <circle class="ink" cx="250" cy="180" r="104"/>
+  <circle class="ink" cx="250" cy="180" r="82"/>
+  <line class="thin" x1="250" y1="180" x2="354" y2="180"/>
+  <text class="sub" x="296" y="176">R</text>
+  <line class="thin" x1="330" y1="150" x2="330" y2="164"/>
+  <text class="sub" x="336" y="162">t</text>
+  <path class="acc" d="M250 180 m74 -74 a104 104 0 0 1 0 148"/>
+  <path class="acc" d="M318 240 l-8 6 l10 4"/>
+  <text class="lbl" x="336" y="212">ω</text>
+
+  <!-- element highlight at top -->
+  <path class="soft" d="M232 76 A104 104 0 0 1 268 76 L262 98 A82 82 0 0 0 238 98 Z"/>
+  <line class="acc" x1="250" y1="76" x2="250" y2="58"/>
+  <path class="acc" d="M245 64 l5 -8 l5 8"/>
+  <text class="sub" x="256" y="58">dF</text>
+  <text class="sub" x="196" y="102">dθ</text>
+
+  <!-- inset element -->
+  <line class="thin" x1="420" y1="70" x2="680" y2="70" stroke="#DAD2C3"/>
+  <text class="sub" x="430" y="60">取 dθ 微元</text>
+  <path class="ink" d="M470 150 q40 -34 80 0"/>
+  <line class="acc" x1="470" y1="150" x2="448" y2="150"/>
+  <path class="acc" d="M456 145 l-8 5 l8 5"/>
+  <text class="lbl" x="426" y="154">T</text>
+  <line class="acc" x1="550" y1="150" x2="572" y2="150"/>
+  <path class="acc" d="M564 145 l8 5 l-8 5"/>
+  <text class="lbl" x="578" y="154">T</text>
+  <line class="acc" x1="510" y1="118" x2="510" y2="96"/>
+  <path class="acc" d="M505 102 l5 -8 l5 8"/>
+  <text class="lbl" x="518" y="108">dF</text>
+  <text class="sub" x="466" y="178">dθ 很小时：2T·(dθ/2) = dF</text>
+
+  <text class="fml" x="424" y="232">dF = ρ A R ω² dθ</text>
+  <text class="fml" x="424" y="258">σ = T / A = ρ R² ω² = ρ v²</text>
+  <text class="sub" x="424" y="282">v = ωR；环向拉应力，沿圆周均匀。</text>
+  <text class="sub" x="424" y="304">要降应力，只能降转速或减小直径；加厚 A 不改变 σ。</text>
+</svg><figcaption>旋转薄圆环的环向拉应力：仅作拓展理解</figcaption></figure>
+  <ol class="method"><li>取 dθ 微元，写惯性力 dF=ρARω²dθ。</li><li>两端环向拉力的径向分量平衡惯性力。</li><li>小角近似得 T=ρAR²ω²。</li><li>除以面积得 σ=ρv²，与 A 无关。</li><li>结论：限速或减小半径，加厚无效。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>同样的材料，圆环直径减半、转速不变，应力变为多少？</p><p class="t-ans"><b>解</b> σ∝R²，直径减半则应力变为原来的 1/4；但 807 不考这类转动动载荷，知道结论即可。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要把这节当 807 重点；2026 明确不考加速/转动动载荷。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>边缘屈服弯矩与极限弯矩的区别</li><li>矩形截面形状系数 1.5 的来源</li><li>塑性铰与机构的概念</li><li>P-Δ 二阶效应的物理含义</li><li>初弯曲使临界力折减的原因</li><li>807 正卷的取舍：非线性只留概念</li><li>旋转圆环 σ=ρv²（仅作理解，807 不考转动动载荷）</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>复杂塑性极限分析的上限/下限定理</li><li>非线性有限元的迭代格式</li><li>任意截面形状系数推导</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否说出 Me 与 Mu 的公式并解释 1.5 倍</li><li>能否判断一个结构需要几个塑性铰才成为机构</li><li>能否用 P-Δ 解释二阶效应</li><li>能否解释初弯曲为何降低临界力</li><li>是否明确正卷优先做超静定/能量法/稳定</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

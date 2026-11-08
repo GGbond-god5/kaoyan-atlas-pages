@@ -1,0 +1,21 @@
+{
+ "set": "欧几里得万人模考·11月（数一）",
+ "index": 12,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 1,
+   "pdfEnd": 5,
+   "title": "欧几里得万人模考·11月（数一）（第1套）",
+   "chapter": "math-mock-12-1",
+   "sourcePdf": "bank/_分类/模拟题/数学一/欧几里得/欧几里得万人模考11月试卷数一.pdf",
+   "images": [
+    "content/math-pages/mock12/p01.png",
+    "content/math-pages/mock12/p02.png",
+    "content/math-pages/mock12/p03.png",
+    "content/math-pages/mock12/p04.png",
+    "content/math-pages/mock12/p05.png"
+   ]
+  }
+ ]
+}

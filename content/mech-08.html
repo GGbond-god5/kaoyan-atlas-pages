@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>807 材料力学 · 组合变形</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#8A4B2A;--accent-soft:#F2E9E1;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MECH · 08</span><span>MECHANICS OF MATERIALS</span></div>
+    <h1>组合变形</h1>
+    <p class="cover-sub">把拉压、弯曲、扭转拆开算，再在同一危险点叠加。807 的综合大题多半在这里收口。</p>
+    <div class="cover-meta"><span class="meta-pill acc">S 级 · 必须拿下</span><span class="meta-pill">每年 20–25 分</span><span class="meta-pill">弯扭组合高频</span><span class="meta-pill">强度理论联考</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>组合变形的概念与叠加原理</li><li>斜弯曲</li><li>拉伸（压缩）与弯曲的组合</li><li>偏心压缩与截面核心</li><li>弯曲与扭转的组合</li><li>组合变形杆件的强度计算</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>组合变形的分类与叠加</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">组合变形是两种或多种基本变形同时存在。处理原则：<strong>先分解、再分别计算、最后在同一危险点叠加</strong>。分解的依据是外力对轴线的位置与方向；叠加的前提是线弹性、小变形。常见组合：斜弯曲、拉弯、偏压、弯扭。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma=\sigma_1+\sigma_2+\cdots\)</span><span class="f-note">同一点同方向的正应力代数相加</span></div><div class="f-row"><span class="f-tex">\(\tau=\tau_1+\tau_2+\cdots\)</span><span class="f-note">同一点同方向的切应力代数相加</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 高频题型</div><p class="exam-q">给出几种受力构件，要求判断组合变形类型并说明分解方式。</p><div class="exam-ans"><b>要点</b> 偏心拉力 = 轴向拉 + 弯曲；横向力 + 扭矩 = 弯曲 + 扭转；斜向力 = 两个方向的弯曲（斜弯曲）。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>偏心拉力：把力向形心简化，得轴力 \(F\) 与弯矩 \(M=Fe\)。</li><li>横向力 + 扭矩：分解为弯曲与扭转。</li><li>斜向力：分解为两个主平面内的分力，得到两个方向弯矩（斜弯曲）。</li><li>判断危险点：各基本变形产生的同种应力在同一点代数相加。</li><li>结论：先简化，再分解，最后叠加。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把不同点的应力直接相加。</li><li>把不同方向的应力（正应力与切应力）直接代数相加。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>组合变形先画“分解图”：把外力拆成沿轴线、横向、扭转三组，再逐组算。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>斜弯曲</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">横向力不通过截面主惯性轴时，梁在两个主平面内同时弯曲，称为斜弯曲。任一点正应力为两个方向弯曲正应力的代数和：\(\sigma=M_z y/I_z+M_y z/I_y\)。中性轴不再水平，而是过形心的一条斜线；最大应力在离中性轴最远的角点。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma=\dfrac{M_z y}{I_z}+\dfrac{M_y z}{I_y}\)</span><span class="f-note">两个方向弯矩的叠加</span></div><div class="f-row"><span class="f-tex">\(\tan\varphi=\dfrac{M_y I_z}{M_z I_y}\)</span><span class="f-note">中性轴方位</span></div><div class="f-row"><span class="f-tex">\(\sigma_{\max}=\dfrac{M_z}{W_z}+\dfrac{M_y}{W_y}\)</span><span class="f-note">矩形截面角点</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 题</div><p class="exam-q">矩形截面悬臂梁受斜向集中力，求固定端最大正应力。</p><div class="exam-ans"><b>要点</b> 把力分解为两个主平面内的分力，分别求固定端弯矩；两个方向的最大应力在同一个角点同号相加，取该角点计算。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>把斜向力分解为沿两个主惯性轴的分力 \(P_y,P_z\)。</li><li>固定端弯矩 \(M_z=P_y l\)、\(M_y=P_z l\)（按右手定则定正负）。</li><li>任一点应力 \(\sigma=M_y z/I_y+M_z y/I_z\)。</li><li>最大应力在四个角点之一，比较同号相加的角点。</li><li>中性轴满足 \(\sigma=0\)，为一条过形心的直线，据此判断拉压区。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把两个方向的弯矩直接求矢量和后除以一个 W。</li><li>最大应力角点选错（应取两个方向应力同号的角点）。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>斜弯曲找“同号角点”：两个方向都产生拉应力的那个角，才是危险点。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>拉（压）弯组合</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">轴向力与横向力同时作用时，横截面上正应力为轴力引起的均匀应力与弯矩引起的线性应力之和。危险点在弯曲应力与轴力同号的一侧；若轴力为压，另一侧可能出现拉应力，脆性材料要分别校核。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma=\dfrac{F_N}{A}\pm\dfrac{M}{W}\)</span><span class="f-note">拉弯或压弯组合</span></div><div class="f-row"><span class="f-tex">\(\sigma_{\max}=\dfrac{F_N}{A}+\dfrac{M}{W}\le[\sigma_t]\)</span><span class="f-note">受拉侧</span></div><div class="f-row"><span class="f-tex">\(\sigma_{\min}=\dfrac{F_N}{A}-\dfrac{M}{W}\ge-[\sigma_c]\)</span><span class="f-note">受压侧</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 高频题型</div><p class="exam-q">矩形截面杆受偏心拉力，求最大拉应力与最大压应力。</p><div class="exam-ans"><b>要点</b> 偏心拉力可分解为轴心拉力与弯矩；\(\sigma=F/A\pm Fe/W\)，一侧相加、一侧相减，分别与许用拉/压应力比较。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>偏心拉力向形心简化：轴力 \(F\) 与弯矩 \(M=Fe\)。</li><li>截面应力 \(\sigma=F/A\pm Fe/W\)。</li><li>靠近偏心一侧为拉应力叠加，另一侧为拉压相减。</li><li>分别求最大拉应力与最大压应力（或最小拉应力）。</li><li>与许用拉、压应力分别比较；脆性材料尤其注意压应力。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>漏掉轴力项，只算弯曲。</li><li>压弯构件只校核压应力，忽略另一侧可能出现的拉应力。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>拉弯组合先画应力分布图：一条水平线（轴力）加一条斜线（弯矩），叠加后一眼看出危险侧。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>偏心压缩与截面核心</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">偏心压力可分解为轴心压力与两个方向弯矩。当偏心距较小时，整个截面仍受压；偏心距增大到某一临界值时，中性轴开始穿过截面，出现拉应力。<strong>截面核心</strong>是使中性轴不穿过截面的偏心压力作用区域；矩形截面的核心是菱形，对角线长度分别为 \(b/3\) 与 \(h/3\)。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma=-\dfrac{F}{A}\pm\dfrac{F e_y y}{I_z}\pm\dfrac{F e_z z}{I_y}\)</span><span class="f-note">偏心压缩</span></div><div class="f-row"><span class="f-tex">\(\dfrac{e_y y_0}{i_z^2}+\dfrac{e_z z_0}{i_y^2}=1\)</span><span class="f-note">中性轴方程</span></div><div class="f-row"><span class="f-tex">\(e\le\dfrac{h}{6}\)</span><span class="f-note">矩形截面单向偏心时核心边界</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 题</div><p class="exam-q">矩形截面短柱受偏心压力，问偏心距多大时截面开始出现拉应力。</p><div class="exam-ans"><b>要点</b> 令最小应力为零：\(F/A-Fe/W=0\)，得 \(e=W/A=h/6\)；超过此值截面出现拉应力。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>令截面最小应力为零：\(\sigma_{\min}=F/A-Fe/W=0\)。</li><li>得 \(e=W/A\)。</li><li>矩形截面 \(W=bh^2/6,\ A=bh\)，故 \(e=h/6\)。</li><li>\(e\le h/6\) 时全截面受压；超过则出现拉应力。</li><li>结论：这个范围称为截面核心。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把截面核心与形心混淆。</li><li>双向偏心时只考虑一个方向的 \(e/W\)。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>矩形核心记“h/6、b/6”，圆形核心是直径的 1/4；这是常考结论。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>弯曲与扭转的组合</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">圆轴同时受弯矩与扭矩时，危险点同时有正应力与切应力，处于平面应力状态。按第三或第四强度理论折算：\(\sigma_{r3}=\sqrt{\sigma^2+4\tau^2}\)，\(\sigma_{r4}=\sqrt{\sigma^2+3\tau^2}\)。圆轴中 \(W_p=2W\)，可化为只含 \(M,T,W\) 的形式。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sigma=\dfrac{M}{W},\quad \tau=\dfrac{T}{W_p}\)</span><span class="f-note">圆轴危险点</span></div><div class="f-row"><span class="f-tex">\(\sigma_{r3}=\dfrac{\sqrt{M^2+T^2}}{W}\)</span><span class="f-note">第三强度理论</span></div><div class="f-row"><span class="f-tex">\(\sigma_{r4}=\dfrac{\sqrt{M^2+0.75T^2}}{W}\)</span><span class="f-note">第四强度理论</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark">真题</span> 2025 · 807 计算（25 分）</div><p class="exam-q">实心圆轴受弯扭组合，表面测点应变已知，要求按第三强度理论校核。</p><div class="exam-ans"><b>要点</b> 先由应变求正应力与切应力（或由 M、T 直接算），再代入 \(\sqrt{\sigma^2+4\tau^2}\le[\sigma]\)；注意 \(\tau=T/W_p\)，不是 \(T/W\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>由测点应变用广义胡克定律求 \(\sigma,\tau\)，或直接由 \(M,T\) 计算。</li><li>圆轴 \(\sigma=M/W\)，\(\tau=T/W_p=T/(2W)\)。</li><li>主应力 \(\sigma_{1,2}=\frac{\sigma}{2}\pm\sqrt{(\frac{\sigma}{2})^2+\tau^2}\)。</li><li>第三强度理论 \(\sigma_{r3}=\sqrt{\sigma^2+4\tau^2}\)。</li><li>与许用应力比较并给出结论。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>切应力用 \(W\) 而不是 \(W_p\)。</li><li>第三与第四强度理论的系数用反。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>圆轴弯扭组合是送分模板：先写 \(\sigma=M/W\)、\(\tau=T/(2W)\)，再套 \(\sqrt{\sigma^2+4\tau^2}\)。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>组合变形强度计算流程</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">固定五步：分解外力 → 画内力图（各基本变形分别画）→ 确定危险截面 → 确定危险点 → 按应力状态选择强度理论校核。每一步都要写清楚，807 的过程分主要在这里。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">分解 → 内力图 → 危险截面 → 危险点 → 强度理论</span><span class="f-note">固定流程，按顺序写步骤</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 高频题型</div><p class="exam-q">给出弯扭组合轴，要求完整写出强度校核过程。</p><div class="exam-ans"><b>要点</b> 分解为弯曲与扭转；分别画 M 图、T 图；取 M、T 同时较大的截面；危险点在截面边缘；按第三强度理论写相当应力并比较。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>把载荷分解为弯曲与扭转，分别画 \(M\) 图、\(T\) 图。</li><li>选 \(M\)、\(T\) 同时较大的截面为危险截面。</li><li>危险点在圆截面边缘，正应力与切应力同时最大。</li><li>按第三或第四强度理论写相当应力。</li><li>与许用应力比较；若不合格，调整直径或材料。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>危险截面只按 M 最大取，忽略 T 也较大的截面。</li><li>危险点取在中性轴（切应力最大但正应力为零），没有按强度理论综合判断。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>组合变形的答案要像流程图一样写，阅卷老师能顺着步骤给分。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>斜弯曲：空间弯矩的分解与叠加</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">进阶</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">斜向力不过主轴时，先向形心简化，分解为两个主平面内的分力，分别产生 \(M_z\)、\(M_y\)；任一点正应力为两项代数和，最大应力在角点。中性轴仍过形心，但不一定与主轴重合。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img" aria-label="空间弯矩分解示意">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.6}
+    .soft{fill:rgba(138,75,42,.08);stroke:#8A4B2A;stroke-width:1.2}
+    .dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:13px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+    .ttl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#17161A;font-weight:600}
+  </style>
+  <text class="ttl" x="24" y="24">空间受力：力向截面形心简化，分解为 M_y、M_z</text>
+  <text class="sub" x="24" y="44">斜弯曲/双向弯曲的关键：先分解，再分别算应力，最后在点处代数叠加。</text>
+
+  <!-- side view -->
+  <path class="thin" d="M80 100 h8 M80 112 h8 M80 124 h8 M80 136 h8 M80 148 h8 M80 160 h8 M80 172 h8 M80 184 h8" stroke="#6B6357"/>
+  <line class="ink" x1="88" y1="100" x2="88" y2="190"/>
+  <path class="soft" d="M88 110 L330 140 L330 180 L88 150 Z"/>
+  <path class="ink" d="M330 140 L362 128 L362 168 L330 180"/>
+  <path class="ink" d="M88 110 L330 140"/>
+  <path class="ink" d="M88 150 L330 180"/>
+  <path class="thin" d="M330 160 L362 150" stroke-dasharray="3 3"/>
+
+  <!-- force P offset -->
+  <circle cx="352" cy="148" r="2.6" fill="#A8342A"/>
+  <line class="acc" x1="352" y1="120" x2="352" y2="166"/>
+  <path class="acc" d="M345 158 l7 9 l7 -9"/>
+  <text class="lbl" x="360" y="128">P</text>
+  <line class="dash" x1="345" y1="148" x2="352" y2="148"/>
+  <text class="sub" x="346" y="142">e</text>
+  <text class="sub" x="300" y="196">偏心距 e 产生附加弯矩</text>
+
+  <!-- axes triad -->
+  <line class="ink" x1="70" y1="290" x2="130" y2="290"/><path class="ink" d="M124 286 l8 4 l-8 4"/>
+  <text class="sub" x="134" y="294">x</text>
+  <line class="ink" x1="70" y1="290" x2="70" y2="236"/><path class="ink" d="M66 242 l4 -8 l4 8"/>
+  <text class="sub" x="62" y="232">y</text>
+  <line class="ink" x1="70" y1="290" x2="34" y2="308"/><path class="ink" d="M40 302 l-7 5 l8 3"/>
+  <text class="sub" x="22" y="318">z</text>
+
+  <!-- cross section -->
+  <text class="sub" x="430" y="78">危险截面（形心 O）</text>
+  <rect class="soft" x="470" y="96" width="150" height="120"/>
+  <line class="thin" x1="545" y1="88" x2="545" y2="224" stroke-dasharray="3 3"/>
+  <line class="thin" x1="462" y1="156" x2="628" y2="156" stroke-dasharray="3 3"/>
+  <text class="sub" x="548" y="88">y</text>
+  <text class="sub" x="628" y="154">z</text>
+  <circle cx="470" cy="96" r="2.5" fill="#2A2723"/><text class="sub" x="448" y="94">1</text>
+  <circle cx="620" cy="96" r="2.5" fill="#2A2723"/><text class="sub" x="626" y="94">2</text>
+  <circle cx="620" cy="216" r="2.5" fill="#2A2723"/><text class="sub" x="626" y="228">3</text>
+  <circle cx="470" cy="216" r="2.5" fill="#2A2723"/><text class="sub" x="448" y="228">4</text>
+
+  <line class="acc" x1="470" y1="96" x2="470" y2="76"/><path class="acc" d="M466 82 l4 -7 l4 7"/>
+  <line class="acc" x1="620" y1="216" x2="620" y2="238"/><path class="acc" d="M616 232 l4 7 l4 -7"/>
+  <text class="sub" x="430" y="252">受拉</text>
+  <text class="sub" x="596" y="260">受压</text>
+
+  <!-- neutral axis -->
+  <line class="dash" x1="470" y1="156" x2="620" y2="156"/>
+  <text class="sub" x="500" y="172">中性轴</text>
+
+  <text class="fml" x="424" y="292">σ = M_y z / I_y + M_z y / I_z</text>
+  <text class="sub" x="424" y="314">先定各弯矩正负，再按点的 y、z 坐标叠加；最大应力在角点。</text>
+</svg><figcaption>力向形心简化，分解为 M_y、M_z；危险点在角点</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(M_z=Pl\cos\theta,\quad M_y=Pl\sin\theta\)</span><span class="f-note">悬臂梁固定端</span></div><div class="f-row"><span class="f-tex">\(\sigma=\dfrac{M_z y}{I_z}+\dfrac{M_y z}{I_y}\)</span><span class="f-note">任一点，注意正负</span></div><div class="f-row"><span class="f-tex">\(\sigma_{\max}=\dfrac{M_z}{W_z}+\dfrac{M_y}{W_y}\)</span><span class="f-note">角点同号相加</span></div><div class="f-row"><span class="f-tex">\(\tan\beta=\dfrac{M_y I_z}{M_z I_y}\)</span><span class="f-note">中性轴斜率（按坐标约定取符号）</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 807 题</div><p class="exam-q">矩形截面悬臂梁宽 \(b\)、高 \(h\)、长 \(l\)，自由端作用斜向力 \(P\)，与 \(y\) 轴夹角 \(\theta\)，求固定端最大正应力与中性轴位置。</p><div class="exam-ans"><b>要点</b> \(\sigma_{\max}=\dfrac{6Pl\cos\theta}{bh^2}+\dfrac{6Pl\sin\theta}{hb^2}\)，中性轴过形心，斜率由 \(\tan\beta=\dfrac{M_yI_z}{M_zI_y}\) 确定。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>把 \(P\) 分解为 \(P_y=P\cos\theta\)、\(P_z=P\sin\theta\)。</li><li>固定端弯矩 \(M_z=P_y l=Pl\cos\theta\)，\(M_y=P_z l=Pl\sin\theta\)。</li><li>截面系数 \(W_z=bh^2/6\)、\(W_y=hb^2/6\)；角点应力 \(M_z/W_z+M_y/W_y\)。</li><li>取两项同号的角点为危险点，得 \(\sigma_{\max}\)。</li><li>令 \(\sigma=0\) 得中性轴方程，过形心；据此判断拉压区并校核。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>分别算出两个方向的最大应力后取较大者，而不是在同一点相加。</li><li>把 \(I_y\) 与 \(I_z\)、\(W_y\) 与 \(W_z\) 对调，导致长边/短边方向错误。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>瞌睡哥</b>空间弯矩先分解到两个主平面，再找四个角点中同号叠加的那个。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>圆轴弯扭组合：从内力到相当应力</h2>
+  </div>
+  <p class="t-why">这是 807 出现频率最高的综合题型之一，2025 年以 25 分出现。公式少，但危险点、截面系数、强度理论三处都可能设坑。</p>
+  
+  <ol class="method"><li>把外力分解为产生弯矩与产生扭矩的两组。</li><li>分别画弯矩图与扭矩图，找 M、T 同时较大的截面。</li><li>在危险截面取边缘点：\(\sigma=M/W\)，\(\tau=T/W_p=T/(2W)\)。</li><li>按材料选第三或第四强度理论。</li><li>写相当应力并与许用应力比较，注明控制因素。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>实心圆轴 d=60 mm，M=3 kN·m，T=4 kN·m，[σ]=160 MPa，按第三强度理论校核。</p><p class="t-ans"><b>解</b> \(W=\pi d^3/32=2.12\times10^4\ \text{mm}^3\)，\(\sigma_{r3}=\sqrt{3^2+4^2}\times10^6/2.12\times10^4\approx235\ \text{MPa}&gt;160\)，不安全。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 弯矩单位 kN·m 换成 N·mm 要乘 10⁶，不是 10³；这一步错会导致结果差 1000 倍。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>偏心压缩与截面核心</h2>
+  </div>
+  <p class="t-why">偏心压缩是“拉弯组合”的典型应用，截面核心是概念题与计算题的交汇点，砌体、混凝土柱设计常用。</p>
+  
+  <ol class="method"><li>把偏心压力平移到形心，得到轴力与两个弯矩。</li><li>写任一点应力表达式，注意拉压符号。</li><li>令最小应力为零，求中性轴恰好过截面边缘的偏心距。</li><li>单向偏心时核心边界为 \(e=h/6\)；双向偏心按中性轴方程求。</li><li>判断偏心距是否在核心内：在核心内全截面受压。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>矩形截面柱 b×h，偏心压力作用在 h 方向，求截面不出现拉应力的最大偏心距。</p><p class="t-ans"><b>解</b> \(\sigma_{\min}=-F/(bh)+Fe/(bh^2/6)=0\)，得 \(e=h/6\)；这就是矩形截面单向偏心的核心边界。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 截面核心是“压力作用点”的区域，不是截面内的某个面积；不要把核心面积与截面面积混淆。</div>
+</section>
+<section class="topic" id="topic-03">
+  <span class="anchor">[[T-topic-03]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 03</span>
+    <h2>空间弯矩分解与斜弯曲</h2>
+  </div>
+  <p class="t-why">807 组合变形常把“斜向力/偏心”与“弯扭组合”放在一起。空间弯矩的难点不是公式，而是分解方向与正负号。</p>
+  
+  <ol class="method"><li>把力向截面形心简化，得到轴力、剪力、扭矩与两个弯矩。</li><li>选主惯性轴 \(y,z\)，把弯矩分解为 \(M_y\)、\(M_z\)。</li><li>分别写 \(\sigma=M_yz/I_y\) 与 \(\sigma=M_zy/I_z\)。</li><li>在四个角点中找两项同号的点，求最大应力。</li><li>令 \(\sigma=0\) 求中性轴，判断拉压区与危险点。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>斜弯曲的中性轴为什么一定过形心？</p><p class="t-ans"><b>解</b> 应力表达式是 \(y,z\) 的齐次线性式，\(y=z=0\) 时 \(\sigma=0\)，故中性轴过形心；其方向由两向弯矩与惯性矩之比决定。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 不要把“两个方向的最大应力”分别算完取大；最大应力发生在同一点两项同号相加处。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>组合变形分解与叠加原则</li><li>斜弯曲的中性轴与危险角点</li><li>拉弯组合的应力叠加</li><li>偏心压缩与 h/6 核心边界</li><li>圆轴弯扭组合两个相当应力公式</li><li>组合变形五步流程</li><li>斜弯曲：两向弯矩在同一点相加</li><li>中性轴过形心</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>双向偏心核心的复杂推导</li><li>非圆截面弯扭组合</li><li>塑性阶段的组合变形</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否判断一个构件属于哪几种基本变形</li><li>能否找到斜弯曲的危险角点</li><li>能否默写弯扭组合第三/第四公式</li><li>能否说清截面核心的含义</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>数学一 · 数理统计基本概念与抽样分布</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>
+:root{--paper:#F7F3EA;--paper2:#FCFAF5;--ink:#17161A;--ink2:#49453E;--ink3:#8B857A;
+--rule:#D8D0C1;--rule2:#E8E2D6;--accent:#1F3A5F;--accent-soft:#E7ECF3;--vermilion:#A8342A}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--paper);color:var(--ink);
+font-family:"Noto Sans SC","Source Han Sans CN","Microsoft YaHei",sans-serif;
+font-size:9.6pt;line-height:1.72;letter-spacing:.01em}
+@page{size:A4;margin:20mm 16mm 16mm}
+.serif{font-family:"Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif}
+
+main{padding-bottom:2mm}
+
+/* cover */
+.cover{padding:2mm 0 7mm;border-bottom:1.2pt solid var(--ink);margin-bottom:3mm}
+.cover-top{display:flex;justify-content:space-between;align-items:baseline;font-size:7pt;
+letter-spacing:.22em;color:var(--ink3);text-transform:uppercase}
+.cover-top .c-code{color:var(--accent);font-weight:600}
+.cover h1{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:30pt;font-weight:700;
+line-height:1.18;margin:4mm 0 2mm;letter-spacing:.02em}
+.cover-sub{font-size:10pt;color:var(--ink2);margin:0 0 4mm;max-width:150mm}
+.cover-meta{display:flex;gap:3mm;flex-wrap:wrap;margin-bottom:4mm}
+.meta-pill{font-size:7.4pt;letter-spacing:.06em;border:.6pt solid var(--rule);border-radius:999px;
+padding:1.4mm 3.4mm;color:var(--ink2)}
+.meta-pill b{color:var(--ink)}
+.meta-pill.acc{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.syllabus{background:var(--paper2);border-left:2.2pt solid var(--accent);padding:3.4mm 4mm;
+font-size:8.6pt;color:var(--ink2)}
+.syllabus .sl-label{display:block;font-size:6.8pt;letter-spacing:.2em;color:var(--accent);
+margin-bottom:1.4mm;font-weight:600}
+.syllabus ul{margin:0;padding-left:4.2mm;column-count:2;column-gap:7mm}
+.syllabus li{margin:0 0 .8mm;break-inside:avoid}
+.disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
+.kfig{margin:3mm 0;break-inside:avoid}
+.kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
+
+/* section kicker */
+.section-kicker{display:block;font-size:7pt;letter-spacing:.24em;color:var(--ink3);margin-bottom:1mm}
+
+/* knowledge point */
+.kp{padding:6mm 0 5mm;border-bottom:.6pt solid var(--rule2)}
+.kp-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;break-after:avoid;break-inside:avoid}
+.kp-no{font-family:"Noto Serif SC",serif;font-size:11pt;color:var(--accent);font-weight:700;
+letter-spacing:.02em;min-width:8mm}
+.kp-head h2{font-family:"Noto Serif SC","Source Han Serif SC",STSong,serif;font-size:15.5pt;
+font-weight:700;margin:0;line-height:1.35;flex:1}
+.kp-tags{display:flex;gap:1.4mm;flex-wrap:wrap}
+.tag{font-size:6.6pt;letter-spacing:.08em;padding:.9mm 2.2mm;border-radius:2mm;
+border:.5pt solid var(--rule);color:var(--ink3);white-space:nowrap}
+.tag-hot{background:var(--vermilion);border-color:var(--vermilion);color:#fff}
+.tag-core{background:#1F1B16;border-color:#1F1B16;color:#fff}
+.tag-mid{background:var(--accent-soft);border-color:#D9C3B2;color:var(--accent)}
+.kp-core{margin:0 0 2.4mm;color:var(--ink2)}
+.kp-core strong{color:var(--ink)}
+
+.formulas{background:var(--paper2);border:.5pt solid var(--rule2);padding:2.6mm 3.4mm;margin:0 0 3mm}
+.f-row{display:flex;gap:4mm;align-items:baseline;padding:1.1mm 0}
+.f-row+.f-row{border-top:.4pt dotted var(--rule)}
+.f-tex{font-family:"Latin Modern Math",Cambria Math,"Times New Roman",serif;font-size:10.4pt;
+color:#111;min-width:62mm}
+.f-note{font-size:7.8pt;color:var(--ink3)}
+
+.exam{border-left:2.2pt solid var(--vermilion);background:#FCF7F3;padding:2.6mm 3.6mm 3mm;
+margin:0 0 2.6mm;break-inside:avoid}
+.exam-label{font-size:6.8pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1.2mm;
+display:flex;align-items:center;gap:2mm}
+.exam-mark{background:var(--vermilion);color:#fff;padding:.5mm 1.8mm;border-radius:1mm;
+letter-spacing:.08em}
+.exam-mark.alt{background:var(--ink3)}
+.exam-q{margin:0 0 1.4mm;font-size:9.2pt}
+.exam-ans{font-size:8.4pt;color:var(--ink2)}
+.exam-ans b{color:var(--vermilion);font-weight:600;margin-right:1.4mm}
+.exam .kfig{margin:1.2mm 0 2.2mm}
+.exam-sol{margin-top:1.8mm;padding-top:1.6mm;border-top:.4pt dashed rgba(168,52,42,.3)}
+.sol-label{font-size:6.4pt;letter-spacing:.16em;color:var(--vermilion);margin-bottom:1mm}
+.exam-steps{margin:0;padding-left:4.2mm;font-size:8.4pt;line-height:1.75;color:var(--ink2)}
+.exam-steps li{margin-bottom:1mm}
+.exam-steps li::marker{color:var(--vermilion)}
+
+.side-label{display:inline-block;font-size:6.6pt;letter-spacing:.14em;color:var(--ink3);
+border:.5pt solid var(--rule);padding:.5mm 1.8mm;border-radius:1mm;margin-right:2.4mm;
+vertical-align:2pt}
+.pitfall{margin:0 0 2mm;font-size:8.6pt;color:var(--ink2)}
+.pitfall ul{margin:0;padding-left:4mm;display:inline}
+.pitfall li{margin-bottom:.6mm}
+.teacher{font-size:8.2pt;color:var(--ink3)}
+.t-list{display:inline-flex;flex-direction:column;gap:.8mm;vertical-align:top;width:calc(100% - 18mm)}
+.t-item b{color:var(--ink2);font-weight:600;margin-right:1.8mm}
+
+/* topic */
+.topic{padding:7mm 0 5mm;border-bottom:.6pt solid var(--rule2);break-inside:avoid}
+.topic-head{display:flex;align-items:baseline;gap:3.4mm;margin-bottom:2.4mm}
+.topic-kicker{font-size:7pt;letter-spacing:.18em;color:#fff;background:var(--accent);
+padding:1mm 2.6mm;border-radius:1mm;white-space:nowrap}
+.topic-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0;line-height:1.35}
+.t-why{margin:0 0 3mm;color:var(--ink2)}
+.method{margin:0 0 3mm;padding-left:5mm;font-size:8.8pt}
+.method li{margin-bottom:1.2mm}
+.t-example{background:var(--paper2);border:.5pt solid var(--rule);padding:3mm 3.6mm;margin-bottom:2.4mm}
+.t-example-label{font-size:6.6pt;letter-spacing:.2em;color:var(--accent);margin-bottom:1mm}
+.t-example p{margin:0 0 1.4mm;font-size:8.8pt}
+.t-ans{color:var(--ink2)}
+.t-ans b{color:var(--accent)}
+.t-trap{font-size:8.4pt;color:var(--ink2);border-top:.4pt dotted var(--rule);padding-top:2mm}
+.t-trap b{color:var(--vermilion);margin-right:1.6mm}
+
+/* summary */
+.summary{padding:7mm 0 2mm;break-inside:avoid}
+.summary-head{display:flex;align-items:baseline;gap:3mm;margin-bottom:3mm}
+.summary-head h2{font-family:"Noto Serif SC",serif;font-size:15pt;margin:0}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm}
+.sum-col h3{font-size:7pt;letter-spacing:.18em;color:var(--accent);margin:0 0 1.6mm;
+padding-bottom:1.2mm;border-bottom:.6pt solid var(--rule);font-weight:600}
+.sum-list{margin:0;padding-left:3.8mm;font-size:7.9pt;color:var(--ink2);line-height:1.6}
+.sum-list li{margin-bottom:1mm}
+.sum-list.check{list-style:none;padding-left:0}
+.sum-list.check li{padding-left:4.6mm;position:relative}
+.sum-list.check li:before{content:"";position:absolute;left:0;top:1.5mm;width:2.4mm;height:2.4mm;
+border:.6pt solid var(--ink3);border-radius:.4mm}
+
+/* misc */
+.anchor{font-size:1px;color:#F7F3EA;line-height:0;letter-spacing:0}
+.prio-band{display:flex;gap:0;margin:0 0 5mm;border:.5pt solid var(--rule)}
+.prio-band div{flex:1;padding:2.2mm 3mm;font-size:7.4pt;color:var(--ink3);line-height:1.5}
+.prio-band div+div{border-left:.5pt solid var(--rule)}
+.prio-band b{display:block;color:var(--ink);font-size:8pt;letter-spacing:.06em}
+</style>
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"
+ onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+</head>
+<body>
+<main>
+  <section class="cover">
+    <div class="cover-top"><span class="c-code">MATH · 19</span><span>MATHEMATICS I</span></div>
+    <h1>数理统计基本概念与抽样分布</h1>
+    <p class="cover-sub">统计推断的地基。样本均值、样本方差、三大分布与四条抽样定理，直接决定后面参数估计和假设检验能不能做。</p>
+    <div class="cover-meta"><span class="meta-pill acc">S 级 · 必须拿下</span><span class="meta-pill">选填必考</span><span class="meta-pill">10–12 分</span><span class="meta-pill">自由度是命门</span></div>
+    <div class="syllabus"><span class="sl-label">大纲要求 · SYLLABUS</span><ul><li>总体、样本、统计量</li><li>样本均值与样本方差</li><li>χ² 分布、t 分布、F 分布</li><li>正态总体的抽样分布定理</li><li>分位数</li></ul></div>
+    <p class="disclaimer">真题标注：标明年份与题号者为原卷原题；标「同型」者为同考点真题风格改编，用于对位训练。</p>
+  </section>
+  
+<article class="kp" id="kp-01">
+  <span class="anchor">[[K-kp-01]]</span>
+  <div class="kp-head">
+    <span class="kp-no">01</span>
+    <h2>总体、样本与统计量</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-mid ">中频</span></span>
+  </div>
+  <p class="kp-core">总体是研究对象的全体，样本是独立同分布且与总体同分布的观测值。统计量是<strong>不含未知参数</strong>的样本函数；一旦表达式里出现未知参数，就不是统计量。这是选填第一道辨析。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(X_1,\dots,X_n\) iid，与总体同分布</span><span class="f-note">简单随机样本</span></div><div class="f-row"><span class="f-tex">统计量 \(T=T(X_1,\dots,X_n)\) 不含未知参数</span><span class="f-note">判定标准</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">设总体 \(X\sim N(\mu,\sigma^2)\)，\(\mu\) 未知、\(\sigma^2\) 已知，判断 \(\bar X-\mu\) 与 \(\bar X\) 哪个是统计量。</p><div class="exam-ans"><b>要点</b> \(\bar X\) 是；\(\bar X-\mu\) 含未知参数 \(\mu\)，不是统计量。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>统计量是样本的函数，且不能含未知参数。</li><li>\(\bar X\) 只由样本决定，是统计量。</li><li>\(\bar X-\mu\) 含未知的 \(\mu\)，不是统计量；若 \(\mu\) 已知则可作统计量。</li><li>检验：统计量的分布应不依赖未知参数，或只依赖被估参数。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>把含未知参数的样本函数当统计量；</li><li>忽略样本的独立性要求。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>统计量的唯一标准：表达式里能不能出现未知参数，出现就不是。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-02">
+  <span class="anchor">[[K-kp-02]]</span>
+  <div class="kp-head">
+    <span class="kp-no">02</span>
+    <h2>样本均值与样本方差</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">样本均值 \(\bar X\) 是总体均值的无偏估计；样本方差 \(S^2\) 分母是 \(n-1\) 而不是 \(n\)，这正是为了无偏。正态总体下 \(\bar X\) 与 \(S^2\) 相互独立，这条独立性与抽样分布定理绑定，必须记牢。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\bar X=\dfrac1n\sum X_i,\quad E(\bar X)=\mu,\ D(\bar X)=\dfrac{\sigma^2}{n}\)</span><span class="f-note">均值</span></div><div class="f-row"><span class="f-tex">\(S^2=\dfrac1{n-1}\sum(X_i-\bar X)^2,\quad E(S^2)=\sigma^2\)</span><span class="f-note">分母 n-1 保证无偏</span></div><div class="f-row"><span class="f-tex">\(D(S^2)=\dfrac{2\sigma^4}{n-1}\)</span><span class="f-note">正态总体</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">总体 \(N(\mu,\sigma^2)\)，容量为 n 的样本，求 \(E(S^2)\) 与 \(D(S^2)\)。</p><div class="exam-ans"><b>要点</b> \(E(S^2)=\sigma^2\)，\(D(S^2)=2\sigma^4/(n-1)\)。若分母误用 n，期望会变成 \(\frac{n-1}{n}\sigma^2\) 而有偏。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>正态总体下 \(\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1)\)。</li><li>卡方期望为自由度 \(n-1\)，故 \(E(S^2)=\sigma^2\)。</li><li>卡方方差为 \(2(n-1)\)，故 \(D(S^2)=\frac{\sigma^4}{(n-1)^2}\cdot2(n-1)=\frac{2\sigma^4}{n-1}\)。</li><li>若分母用 \(n\)，期望变为 \(\frac{n-1}{n}\sigma^2\)，有偏；这正是 \(S^2\) 分母取 \(n-1\) 的原因。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>样本方差分母写 n；</li><li>认为 \(\bar X\) 与 \(S^2\) 总独立（仅正态总体）。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>记“分母 n-1 换无偏，正态下均值方差独立”，两句话覆盖本节。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-03">
+  <span class="anchor">[[K-kp-03]]</span>
+  <div class="kp-head">
+    <span class="kp-no">03</span>
+    <h2>χ² 分布</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">n 个独立标准正态的平方和服从 \(\chi^2(n)\)，自由度就是平方项的个数。可加性要求各 \(\chi^2\) 相互独立。期望等于自由度、方差等于二倍自由度，是选填速算的关键。</p>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" role="img" aria-label="抽样分布">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:10.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="20" y="22">三大抽样分布：χ²、t、F</text>
+  <text class="sub" x="20" y="40">正态总体下，样本均值、样本方差与它们的组合分别服从这三种分布。</text>
+
+  <text class="sub" x="30" y="68">χ²(n)：右偏，n 越大越接近正态</text>
+  <line class="thin" x1="30" y1="170" x2="240" y2="170"/>
+  <path class="acc" d="M40 170 C60 80 110 62 150 80 C200 104 230 150 240 168"/>
+  <text class="sub" x="40" y="188">0</text>
+  <text class="fml" x="30" y="212">χ² = Σ Z_i²</text>
+
+  <text class="sub" x="270" y="68">t(n)：对称，厚尾</text>
+  <line class="thin" x1="270" y1="170" x2="470" y2="170"/>
+  <line class="dash" x1="370" y1="80" x2="370" y2="170"/>
+  <path class="acc" d="M280 168 C310 166 330 90 370 88 C410 90 430 166 460 168"/>
+  <text class="sub" x="360" y="188">0</text>
+  <text class="fml" x="270" y="212">t = Z / √(χ²/n)</text>
+
+  <text class="sub" x="500" y="68">F(m,n)：右偏，两个 χ² 之比</text>
+  <line class="thin" x1="500" y1="170" x2="700" y2="170"/>
+  <path class="acc" d="M510 170 C520 90 540 78 570 100 C620 134 670 158 700 168"/>
+  <text class="sub" x="508" y="188">0</text>
+  <text class="fml" x="500" y="212">F = (χ²₁/m)/(χ²₂/n)</text>
+
+  <text class="sub" x="20" y="252">分位数查表：χ²_α(n)、t_α(n)、F_α(m,n)；t 与 F 的尾部方向要看题目。</text>
+  <text class="sub" x="20" y="272">正态总体：x̄~N(μ,σ²/n)，(n−1)S²/σ²~χ²(n−1)，且两者独立。</text>
+</svg><figcaption>三大抽样分布：χ²、t、F</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(Z_1^2+\cdots+Z_n^2\sim\chi^2(n)\)</span><span class="f-note">构造</span></div><div class="f-row"><span class="f-tex">\(E(\chi^2(n))=n,\quad D(\chi^2(n))=2n\)</span><span class="f-note">矩</span></div><div class="f-row"><span class="f-tex">\(\chi^2(n_1)+\chi^2(n_2)=\chi^2(n_1+n_2)\)</span><span class="f-note">独立时才可加</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" role="img" aria-label="抽样分布">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:1.3}.thin{stroke:#2A2723;fill:none;stroke-width:1}
+    .acc{stroke:#8A4B2A;fill:none;stroke-width:1.7}.dash{stroke:#A8342A;fill:none;stroke-width:1;stroke-dasharray:4 4}
+    .lbl{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:10.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .fml{font:12px "Cambria Math","Times New Roman",serif;fill:#8A4B2A}
+  </style>
+  <text class="lbl" x="20" y="22">三大抽样分布：χ²、t、F</text>
+  <text class="sub" x="20" y="40">正态总体下，样本均值、样本方差与它们的组合分别服从这三种分布。</text>
+
+  <text class="sub" x="30" y="68">χ²(n)：右偏，n 越大越接近正态</text>
+  <line class="thin" x1="30" y1="170" x2="240" y2="170"/>
+  <path class="acc" d="M40 170 C60 80 110 62 150 80 C200 104 230 150 240 168"/>
+  <text class="sub" x="40" y="188">0</text>
+  <text class="fml" x="30" y="212">χ² = Σ Z_i²</text>
+
+  <text class="sub" x="270" y="68">t(n)：对称，厚尾</text>
+  <line class="thin" x1="270" y1="170" x2="470" y2="170"/>
+  <line class="dash" x1="370" y1="80" x2="370" y2="170"/>
+  <path class="acc" d="M280 168 C310 166 330 90 370 88 C410 90 430 166 460 168"/>
+  <text class="sub" x="360" y="188">0</text>
+  <text class="fml" x="270" y="212">t = Z / √(χ²/n)</text>
+
+  <text class="sub" x="500" y="68">F(m,n)：右偏，两个 χ² 之比</text>
+  <line class="thin" x1="500" y1="170" x2="700" y2="170"/>
+  <path class="acc" d="M510 170 C520 90 540 78 570 100 C620 134 670 158 700 168"/>
+  <text class="sub" x="508" y="188">0</text>
+  <text class="fml" x="500" y="212">F = (χ²₁/m)/(χ²₂/n)</text>
+
+  <text class="sub" x="20" y="252">分位数查表：χ²_α(n)、t_α(n)、F_α(m,n)；t 与 F 的尾部方向要看题目。</text>
+  <text class="sub" x="20" y="272">正态总体：x̄~N(μ,σ²/n)，(n−1)S²/σ²~χ²(n−1)，且两者独立。</text>
+</svg><figcaption>三大抽样分布</figcaption></figure><p class="exam-q">设 \(X_1,\dots,X_6\) 独立同分布于 \(N(0,1)\)，判断 \(X_1^2+\cdots+X_6^2\) 的分布并求其期望。</p><div class="exam-ans"><b>要点</b> \(\chi^2(6)\)，期望 6、方差 12。自由度等于独立标准正态平方项的个数。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>\(X_i\sim N(0,1)\)，则 \(X_i^2\sim\chi^2(1)\)。</li><li>相互独立的卡方变量可加：\(\sum_{i=1}^6 X_i^2\sim\chi^2(6)\)。</li><li>卡方期望等于自由度 6，方差等于 \(2\times6=12\)。</li><li>检验：变量非负，且 \(E&lt;D\)，符合卡方右偏的特征。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>非标准正态平方和直接当 \(\chi^2\)；</li><li>自由度数错；</li><li>不独立仍用可加性。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>\(\chi^2\) 只看两件事：标准正态、平方和；自由度就是项数。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-04">
+  <span class="anchor">[[K-kp-04]]</span>
+  <div class="kp-head">
+    <span class="kp-no">04</span>
+    <h2>t 分布</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">\(t(n)=Z/\sqrt{Y/n}\)，其中 \(Z\sim N(0,1)\)、\(Y\sim\chi^2(n)\) 且相互独立。t 分布关于 0 对称，n 大时接近标准正态。它出现的典型场景是<strong>总体方差未知、用样本方差替代</strong>。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(T=\dfrac{Z}{\sqrt{Y/n}}\sim t(n)\)</span><span class="f-note">构造</span></div><div class="f-row"><span class="f-tex">\(E(T)=0\ (n&gt;1),\quad D(T)=\dfrac{n}{n-2}\ (n&gt;2)\)</span><span class="f-note">矩</span></div><div class="f-row"><span class="f-tex">\(t_{1-\alpha}(n)=-t_{\alpha}(n)\)</span><span class="f-note">对称性</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">总体 \(N(\mu,\sigma^2)\)，\(\sigma^2\) 未知，样本容量 n，写出 \((\bar X-\mu)/(S/\sqrt n)\) 的分布。</p><div class="exam-ans"><b>要点</b> 服从 \(t(n-1)\)。因为分子是标准正态、分母是 \(\sqrt{\chi^2(n-1)/(n-1)}\)，且二者独立。自由度是 n-1。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>分子 \(Z=\frac{\bar X-\mu}{\sigma/\sqrt n}\sim N(0,1)\)。</li><li>分母中的 \(U=\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1)\)。</li><li>正态抽样定理给出 \(Z\) 与 \(U\) 独立，构造 \(t=\frac{Z}{\sqrt{U/(n-1)}}\)。</li><li>化简得 \(\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1)\)；自由度来自 \(U\) 的 \(n-1\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>自由度写成 n；</li><li>方差已知仍用 t；</li><li>忽略分子分母的独立性。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>t 分布口诀：方差未知用 t，自由度 n-1；方差已知用 u。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-05">
+  <span class="anchor">[[K-kp-05]]</span>
+  <div class="kp-head">
+    <span class="kp-no">05</span>
+    <h2>F 分布</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">两个独立 \(\chi^2\) 各自除以自由度后的比值服从 F 分布。它主要用于比较两个正态总体的方差。记住倒数关系：若 \(F\sim F(n_1,n_2)\)，则 \(1/F\sim F(n_2,n_1)\)。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(F=\dfrac{\chi^2(n_1)/n_1}{\chi^2(n_2)/n_2}\sim F(n_1,n_2)\)</span><span class="f-note">构造，独立</span></div><div class="f-row"><span class="f-tex">\(F\sim F(n_1,n_2)\Rightarrow 1/F\sim F(n_2,n_1)\)</span><span class="f-note">倒数关系</span></div><div class="f-row"><span class="f-tex">\(F_{1-\alpha}(n_1,n_2)=\dfrac1{F_{\alpha}(n_2,n_1)}\)</span><span class="f-note">分位数换算</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">两个独立正态总体，样本容量分别为 \(n_1,n_2\)，样本方差为 \(S_1^2,S_2^2\)，写出 \(S_1^2/S_2^2\) 在 \(\sigma_1^2=\sigma_2^2\) 下的分布。</p><div class="exam-ans"><b>要点</b> \(S_1^2/S_2^2\sim F(n_1-1,n_2-1)\)。因为每个 \((n_i-1)S_i^2/\sigma_i^2\sim\chi^2(n_i-1)\) 且相互独立。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>对每个正态总体，\(\frac{(n_i-1)S_i^2}{\sigma_i^2}\sim\chi^2(n_i-1)\)。</li><li>两样本独立，故两个卡方变量独立。</li><li>在 \(\sigma_1^2=\sigma_2^2\) 下，\(\frac{S_1^2}{S_2^2}=\frac{\chi_1^2/(n_1-1)}{\chi_2^2/(n_2-1)}\)。</li><li>按 \(F\) 分布定义，\(\frac{S_1^2}{S_2^2}\sim F(n_1-1,n_2-1)\)。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>自由度写反；</li><li>忘记方差相等的前提；</li><li>分位数换算时倒数方向错。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>F 分布只用于方差比；先写两个 \(\chi^2\)，再各自除自由度。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-06">
+  <span class="anchor">[[K-kp-06]]</span>
+  <div class="kp-head">
+    <span class="kp-no">06</span>
+    <h2>正态总体的抽样分布定理</h2>
+    <span class="kp-tags"><span class="tag tag-core ">核心</span><span class="tag tag-hot ">必考</span></span>
+  </div>
+  <p class="kp-core">四条定理是一组：\(\bar X\) 正态；\((n-1)S^2/\sigma^2\sim\chi^2(n-1)\)；\(\bar X\) 与 \(S^2\) 独立；由此派生出 t 与 F。做题时先判断“方差已知还是未知”，再选 u、t、\(\chi^2\) 或 F。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\bar X\sim N(\mu,\sigma^2/n)\)</span><span class="f-note">均值分布</span></div><div class="f-row"><span class="f-tex">\(\dfrac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1)\)</span><span class="f-note">方差分布</span></div><div class="f-row"><span class="f-tex">\(\dfrac{\bar X-\mu}{S/\sqrt n}\sim t(n-1)\)</span><span class="f-note">方差未知</span></div><div class="f-row"><span class="f-tex">\(\dfrac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}\sim F(n_1-1,n_2-1)\)</span><span class="f-note">两方差比</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">总体 \(N(\mu,\sigma^2)\)，\(\mu,\sigma^2\) 均未知，样本容量 16，样本方差 \(S^2\)，求 \(P(S^2/\sigma^2&gt;c)\) 的表达式。</p><div class="exam-ans"><b>要点</b> 由 \(15S^2/\sigma^2\sim\chi^2(15)\)，事件等价于 \(\chi^2(15)&gt;15c\)，概率为上侧面积。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>正态总体下 \(\frac{15S^2}{\sigma^2}\sim\chi^2(15)\)（\(n=16\)）。</li><li>事件 \(\frac{S^2}{\sigma^2}&gt;c\) 等价于 \(\frac{15S^2}{\sigma^2}&gt;15c\)。</li><li>故概率为 \(P(\chi^2(15)&gt;15c)\)，即卡方分布的上侧面积。</li><li>检验：\(c\) 越大，上侧面积越小；\(c=1\) 时约为 0.5 附近。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>方差已知却用 t；</li><li>把 \(S^2\) 的分布写成 \(\chi^2(n)\)；</li><li>漏用 \(\bar X\) 与 \(S^2\) 独立。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>张宇</b>四条定理画依赖图：正态→均值→标准化；方差→\(\chi^2\)；独立→t；两方差→F。</span></div></div>
+  
+</article>
+<article class="kp" id="kp-07">
+  <span class="anchor">[[K-kp-07]]</span>
+  <div class="kp-head">
+    <span class="kp-no">07</span>
+    <h2>分位数</h2>
+    <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-hot ">高频</span></span>
+  </div>
+  <p class="kp-core">分位数是查表的入口：\(z_{\alpha}\) 满足 \(P(Z&gt;z_{\alpha})=\alpha\)，即上侧面积为 \(\alpha\)。标准正态与 t 分布对称，可用负号；\(\chi^2\) 与 F 不对称，只能换算。</p>
+  
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(P(Z&gt;z_{\alpha})=\alpha\)</span><span class="f-note">上侧分位数</span></div><div class="f-row"><span class="f-tex">\(z_{1-\alpha}=-z_{\alpha}\)</span><span class="f-note">标准正态对称</span></div><div class="f-row"><span class="f-tex">\(F_{1-\alpha}(n_1,n_2)=1/F_{\alpha}(n_2,n_1)\)</span><span class="f-note">F 分布换算</span></div></div>
+  <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">已知 \(z_{0.025}=1.96\)，求 \(z_{0.975}\) 与 \(P(|Z|&lt;1.96)\)。</p><div class="exam-ans"><b>要点</b> \(z_{0.975}=-1.96\)；\(P(|Z|&lt;1.96)=1-2\times0.025=0.95\)。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>标准正态分布关于 0 对称，分位数满足 \(z_{1-\alpha}=-z_\alpha\)。</li><li>\(z_{0.975}=z_{1-0.025}=-z_{0.025}=-1.96\)。</li><li>\(P(|Z|&lt;1.96)=P(-1.96&lt;Z&lt;1.96)\)。</li><li>\(=1-2\times0.025=0.95\)；两侧尾部各占 0.025。</li></ol></div></div>
+  <div class="pitfall"><span class="side-label">易错</span><ul><li>分位数方向与累积概率混淆；</li><li>对 \(\chi^2\) 使用负数对称；</li><li>查表时自由度用错。</li></ul></div>
+  <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>没咋了</b>分位数只记上侧面积，其余由对称性或换算公式推。</span></div></div>
+  
+</article>
+  <div class="topic-divider" id="topics"></div>
+  
+<section class="topic" id="topic-01">
+  <span class="anchor">[[T-topic-01]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 01</span>
+    <h2>三大分布的构造与自由度</h2>
+  </div>
+  <p class="t-why">数一选填常直接问服从什么分布、自由度是多少。构造不清就会把 n 与 n-1 用错，后面估计与检验全盘皆输。</p>
+  
+  <ol class="method"><li>\(\chi^2\)：数独立标准正态的平方项个数，约束掉一个参数就少一个自由度。</li><li>t：分子标准正态，分母是 \(\sqrt{\chi^2/df}\)，二者必须独立。</li><li>F：两个独立 \(\chi^2\) 各除自由度再相除，分子自由度在前。</li><li>看条件：方差已知用 u，未知用 t；比较方差用 F；方差本身用 \(\chi^2\)。</li><li>写结论：分布名与自由度都要写全。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>总体正态，n=10，\(\sigma^2\) 未知，判断 \((\bar X-\mu)/(S/\sqrt{10})\) 的分布。</p><p class="t-ans"><b>解</b> \(t(9)\)。分子 \((\bar X-\mu)/(\sigma/\sqrt{10})\sim N(0,1)\)，分母 \(S/\sigma=\sqrt{\chi^2(9)/9}\)，独立，故为 t(9)。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 自由度来自 \(S^2\) 的 \(n-1\)，不是样本容量 n；这是最高频失分点。</div>
+</section>
+<section class="topic" id="topic-02">
+  <span class="anchor">[[T-topic-02]]</span>
+  <div class="topic-head">
+    <span class="topic-kicker">专题 02</span>
+    <h2>抽样分布题的判断流程</h2>
+  </div>
+  <p class="t-why">这一章的题几乎不靠计算，靠选对统计量。流程固定，练熟后每题 30 秒定型。</p>
+  
+  <ol class="method"><li>第一步看问什么：均值、方差、方差比，还是单个观测。</li><li>第二步看已知：\(\sigma^2\) 已知用 u，未知用 t；两总体方差比用 F。</li><li>第三步看独立性：正态总体才有 \(\bar X\) 与 \(S^2\) 独立。</li><li>第四步写标准化：分子减均值、分母除标准误。</li><li>第五步定自由度并查表，注意单双侧。</li></ol>
+  <div class="t-example"><div class="t-example-label">例</div><p>两正态总体方差未知但相等，比较均值，应使用什么统计量？</p><p class="t-ans"><b>解</b> 合并方差 \(S_p^2\) 的 t 统计量，自由度 \(n_1+n_2-2\)。若方差不相等则不能用合并方差。</p></div>
+  <div class="t-trap"><b>踩坑点</b> 题目未说明正态总体时，t 与 F 的结论都不成立。</div>
+</section>
+  
+<section class="summary" id="summary">
+  <span class="anchor">[[S-summary]]</span>
+  <div class="summary-head"><span class="section-kicker">CHAPTER SUMMARY</span><h2>本章收口</h2></div>
+  <div class="sum-grid"><div class="sum-col"><h3>必须会</h3><ul class="sum-list"><li>统计量的判定</li><li>样本方差分母 n-1 与无偏性</li><li>\(\chi^2,t,F\) 的构造与自由度</li><li>四条正态总体抽样定理</li><li>分位数的上侧含义与对称性</li></ul></div><div class="sum-col"><h3>可暂缓</h3><ul class="sum-list"><li>非正态总体的精确抽样分布</li><li>\(\chi^2\) 密度的复杂积分</li><li>高阶矩推导</li></ul></div><div class="sum-col"><h3>自测清单</h3><ul class="sum-list check"><li>能否在 30 秒内判断用 u 还是 t</li><li>能否写出四个统计量及其自由度</li><li>能否解释样本方差为何除以 n-1</li><li>能否由 F 分位数求倒数分位数</li></ul></div></div>
+</section>
+</main>
+</body>
+</html>

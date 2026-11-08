@@ -1,0 +1,21 @@
+{
+ "set": "2026 Kira 模考卷三（数一）",
+ "index": 19,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 1,
+   "pdfEnd": 5,
+   "title": "2026 Kira 模考卷三（数一）（第1套）",
+   "chapter": "math-mock-19-1",
+   "sourcePdf": "bank/_分类/模拟题/数学一/kira/【Kira】26数学一模考卷3(试卷pdf).pdf",
+   "images": [
+    "content/math-pages/mock19/p01.png",
+    "content/math-pages/mock19/p02.png",
+    "content/math-pages/mock19/p03.png",
+    "content/math-pages/mock19/p04.png",
+    "content/math-pages/mock19/p05.png"
+   ]
+  }
+ ]
+}
