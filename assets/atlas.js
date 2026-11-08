@@ -748,7 +748,8 @@
       <span class="stat"><b>${SUBJECTS.length}</b>科目</span>
       <span class="stat"><b>${st.chapters}</b>章</span>
       <span class="stat"><b>${st.kps}</b>考点</span>
-      <span class="stat"><b>${st.exams}</b>题目</span>`;
+      <span class="stat"><b>${st.exams}</b>章节题</span>
+      <span class="stat"><b>${st.bank || 4662}</b>题库题</span>`;
     document.getElementById("legend").innerHTML = SUBJECTS.map(s =>
       `<span><i style="background:${s.accent}"></i>${esc(s.name)}</span>`).join("");
     const cd = document.getElementById("countdown");

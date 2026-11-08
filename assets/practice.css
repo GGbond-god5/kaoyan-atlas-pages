@@ -284,3 +284,27 @@ button.q-opt:hover{background:rgba(120,110,90,.06)}
 .ai-sec{margin-top:10px;padding-top:8px;border-top:1px dashed var(--rule2);font-size:12px;line-height:1.8;color:var(--ink2)}
 .ai-sec b{font-family:var(--serif);font-size:13px;color:var(--ink);margin-right:4px}
 .ai-revised{margin-top:6px;padding:10px 12px;background:#fbf8f2;border-left:2px solid var(--ink3);font-family:var(--serif);font-size:14px;line-height:1.85;color:var(--ink)}
+
+/* polished action bar */
+.paper-actions{display:flex;gap:10px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--rule2);flex-wrap:wrap}
+.paper-actions button{height:38px;padding:0 20px;border-radius:999px;font-family:var(--sans);font-size:12.5px;letter-spacing:.04em;line-height:1;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,background .12s ease,border-color .12s ease}
+.paper-actions button:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(40,35,25,.10)}
+.paper-actions button:active{transform:translateY(0);box-shadow:none}
+.paper-actions #prev,.paper-actions #next{background:#fff;border:1px solid var(--rule);color:var(--ink2)}
+.paper-actions #prev:hover,.paper-actions #next:hover{border-color:var(--ink3);color:var(--ink)}
+.paper-actions .reveal{background:var(--ink);border:1px solid var(--ink);color:#fff;font-weight:600}
+.paper-actions .reveal:hover{background:#2b2b2b}
+.paper-actions #aiAsk{background:#f6f8fb;border:1px solid #1F3A5F;color:#1F3A5F;font-weight:600}
+.paper-actions #aiAsk:hover{background:#1F3A5F;color:#fff}
+.paper-actions #prev:disabled,.paper-actions #next:disabled{opacity:.4;box-shadow:none;transform:none}
+@media(max-width:640px){
+  .paper-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .paper-actions button{width:100%;padding:0 10px}
+  .paper-actions .reveal{grid-column:1 / -1;order:-1}
+}
+@media(max-width:640px){
+  .paper-actions #prev{order:1}
+  .paper-actions #next{order:2}
+  .paper-actions #aiAsk{order:3;grid-column:1 / -1}
+  .paper-actions .reveal{order:0}
+}
