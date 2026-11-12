@@ -189,3 +189,25 @@ npx wrangler pages dev . --d1=DB \
 | `DASHSCOPE_API_KEY` | AI 评卷 |
 
 注意：门禁依赖同域 Cookie，所以 `assets/config.js` 的 `apiBase` 必须保持为空。
+
+## 十二、Git 连接版（自动部署）
+
+除了原来的直传项目，另有一个由 GitHub 推送自动构建的项目：
+
+| 项 | 值 |
+| --- | --- |
+| GitHub 仓库 | `GGbond-god5/kaoyan-atlas-pages`（私有） |
+| Cloudflare 项目 | `kaoyan-atlas-pages` |
+| 访问地址 | `https://kaoyan-atlas-pages.pages.dev` |
+| 构建命令 | `node scripts/build-pages.mjs` |
+| 输出目录 | `dist` |
+| 生产分支 | `master` |
+
+这个仓库额外跟踪了 `pdf/`、`content/math-pages/`、`content/x1000-pages/`，并用 `scripts/build-pages.mjs`
+只把公开页面与资源复制进 `dist/`，不会把 `server/`、`docs/`、`src/` 暴露出去。
+`bank/` 仍然只留在本地，不进入仓库。
+
+以后更新内容：改完 `src/` 并重新生成 `assets/`、`web/` 后，提交推送 `kaoyan-atlas-pages` 仓库的 `master`，
+Cloudflare 会自动构建部署。环境变量与 D1 绑定已在项目里配置好（与本指南第十一节的 6 个变量一致）。
+
+旧的直传项目 `kaoyan-atlas` 保持可用，但不会随 push 自动更新。
