@@ -76,6 +76,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-family: var(--sans); font-size: 9px; color: var(--ink-3);
   border: 1px solid var(--rule); border-radius: 2px; padding: 1px 4px; background: var(--paper);
 }
+.btn.auth-chip.signed { background: var(--ink); border-color: var(--ink); color: #F7F2E8; max-width: 120px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; line-height: 30px; }
 
 /* ---------- stage ---------- */
 .stage {

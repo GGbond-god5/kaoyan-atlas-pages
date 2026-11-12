@@ -1,0 +1,28 @@
+# Cloudflare Pages 部署时不上传的文件（wrangler.toml 里 pages_build_output_dir = "."）
+# 后端跑在阿里云 ECS / 自己的服务器上，不需要、也不能传到 Cloudflare。
+
+server/
+data/
+docs/
+bank/
+src/
+dist/
+.claude/
+node_modules/
+serve.py
+package.json
+package-lock.json
+wrangler.toml
+.wrangler/
+.assetsignore
+.git/
+.gitignore
+.tmp*/
+__pycache__/
+_ocr$y/
+_tmp_crops/
+tmp_crops/
+tmp_mock*/
+*.log
+.env
+.env.*

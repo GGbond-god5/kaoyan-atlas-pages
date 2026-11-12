@@ -1,0 +1,18 @@
+{
+  "name": "kaoyan-atlas-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "考研科目大观 · 登录注册与阿里云短信验证码服务",
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

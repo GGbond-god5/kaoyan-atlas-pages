@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>登录 · 考研科目大观</title>
+<meta name="description" content="登录考研科目大观，同步刷题记录、错题本与词汇进度。">
+<link rel="stylesheet" href="assets/auth.css?v=1">
+</head>
+<body>
+<div class="auth-wrap">
+
+  <aside class="auth-aside">
+    <a class="abrand" href="index.html">
+      <span class="amark">观</span>
+      <span><b>考研科目大观</b><small>KAOYAN ATLAS · 2027</small></span>
+    </a>
+
+    <div class="aquote">
+      <div class="akicker">ACCOUNT · 复习存档</div>
+      <h1>把每一天的复习，<br>都记成自己的图谱。</h1>
+      <p>登录后，刷题记录、错题标记与词汇进度会跟着你的手机号走；换一台设备也不用从头再来。</p>
+      <div class="aquote-rule"></div>
+    </div>
+
+    <div>
+      <div class="acount">
+        <span>距离 2027 考研初试</span>
+        <b id="examDays">—</b>
+        <span>天</span>
+      </div>
+      <div class="afoot">华南理工 · 085500 · 数学一 / 英语一 / 807 材料力学 / 政治</div>
+    </div>
+  </aside>
+
+  <main class="auth-main">
+    <div class="acard">
+
+      <!-- 未登录：登录表单 -->
+      <div id="viewForm">
+        <div class="ahead">
+          <div class="akicker">SIGN IN</div>
+          <h2>登录大观</h2>
+          <p>还没有账号？<a href="register.html">用手机号注册一个</a></p>
+        </div>
+
+        <div class="tabs" id="tabs">
+          <button type="button" data-tab="password" class="on">密码登录</button>
+          <button type="button" data-tab="code">验证码登录</button>
+        </div>
+
+        <div class="alert" id="alert"></div>
+
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="phone">手机号</label>
+            <input id="phone" name="phone" type="tel" inputmode="numeric" maxlength="11"
+                   autocomplete="tel" placeholder="11 位手机号" required>
+          </div>
+
+          <div class="field" id="groupPassword">
+            <label for="password">密码</label>
+            <input id="password" name="password" type="password" maxlength="32"
+                   autocomplete="current-password" placeholder="8–32 位，含字母与数字">
+          </div>
+
+          <div class="field" id="groupCode" hidden>
+            <label for="code">短信验证码</label>
+            <div class="ctrl">
+              <input id="code" class="code" name="code" type="text" inputmode="numeric" maxlength="6"
+                     autocomplete="one-time-code" placeholder="6 位数字">
+              <button class="send" id="sendBtn" type="button">获取验证码</button>
+            </div>
+            <div class="hint" id="codeHint">验证码 5 分钟内有效，60 秒后可重新获取</div>
+          </div>
+
+          <div class="row-between">
+            <span class="hint" style="margin:0">登录状态在这台设备保留 7 天</span>
+            <a class="link-mini" href="register.html">注册</a>
+          </div>
+
+          <button class="btn-main" id="submitBtn" type="submit">登录</button>
+
+          <div class="form-foot">
+            <b>隐私说明</b> · 本站只保存手机号、昵称与密码的加盐哈希值，不保存明文密码；
+            验证码仅用于确认手机号归属，不做其他用途。
+          </div>
+        </form>
+      </div>
+
+      <!-- 已登录：账号面板 -->
+      <div id="viewAccount" hidden>
+        <div class="ahead">
+          <div class="akicker">SIGNED IN</div>
+          <h2>你已登录</h2>
+          <p>同步状态正常，可以直接回到图谱继续复习。</p>
+        </div>
+
+        <div class="who">
+          <div class="avatar" id="avatar">观</div>
+          <div class="meta">
+            <b id="nickname">—</b>
+            <span id="maskedPhone">—</span>
+          </div>
+        </div>
+
+        <div class="kv"><span>注册时间</span><span id="createdAt">—</span></div>
+        <div class="kv"><span>最近登录</span><span id="lastLoginAt">—</span></div>
+
+        <button class="btn-main ver" id="goAtlas" style="margin-top:22px" type="button">进入图谱</button>
+        <button class="btn-ghost" id="logoutBtn" type="button">退出登录</button>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/config.js?v=2027-11-12"></script>
+<script src="assets/auth.js?v=4"></script>
+<script>
+(function () {
+  'use strict';
+  var A = window.AtlasAuth;
+
+  document.getElementById('examDays').textContent = A.examDays();
+
+  var viewForm = document.getElementById('viewForm');
+  var viewAccount = document.getElementById('viewAccount');
+  var alertEl = document.getElementById('alert');
+  var form = document.getElementById('loginForm');
+  var phone = document.getElementById('phone');
+  var password = document.getElementById('password');
+  var code = document.getElementById('code');
+  var groupPassword = document.getElementById('groupPassword');
+  var groupCode = document.getElementById('groupCode');
+  var submitBtn = document.getElementById('submitBtn');
+  var codeHint = document.getElementById('codeHint');
+  var sendBtn = document.getElementById('sendBtn');
+  var tab = 'password';
+
+  /* ---------- 已登录直接显示账号面板 ---------- */
+  A.me().then(function (user) {
+    if (!user) return;
+    viewForm.hidden = true;
+    viewAccount.hidden = false;
+    document.getElementById('nickname').textContent = user.nickname;
+    document.getElementById('avatar').textContent = user.nickname.slice(0, 1);
+    document.getElementById('maskedPhone').textContent = user.phone;
+    document.getElementById('createdAt').textContent = A.fmtDate(user.createdAt) || '—';
+    document.getElementById('lastLoginAt').textContent = user.lastLoginAt
+      ? A.fmtTime(user.lastLoginAt)
+      : '本次为首次登录';
+  });
+
+  /* ---------- 切换登录方式 ---------- */
+  var tabs = document.getElementById('tabs');
+  tabs.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-tab]');
+    if (!btn) return;
+    tab = btn.dataset.tab;
+    Array.prototype.forEach.call(tabs.children, function (b) {
+      b.classList.toggle('on', b === btn);
+    });
+    groupPassword.hidden = tab !== 'password';
+    groupCode.hidden = tab !== 'code';
+    submitBtn.textContent = tab === 'password' ? '登录' : '验证码登录';
+    A.alertBox(alertEl, '');
+    (tab === 'password' ? password : code).focus();
+  });
+
+  /* ---------- 获取验证码 ---------- */
+  var sender = A.bindSendCode({
+    btn: sendBtn,
+    phone: phone,
+    scene: 'login',
+    onSent: function (r) {
+      if (r.error) {
+        A.alertBox(alertEl, r.error);
+        codeHint.classList.add('err');
+        codeHint.textContent = r.error;
+        return;
+      }
+      codeHint.classList.remove('err');
+      A.alertBox(alertEl, '验证码已发送，请查看手机短信', 'ok');
+      codeHint.textContent = '已发送至 ' + phone.value.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
+      if (r.data && r.data.devCode) {
+        code.value = r.data.devCode;
+        codeHint.textContent += '（本地演示模式，已自动填入）';
+      }
+      code.focus();
+    }
+  });
+
+  phone.addEventListener('input', function () {
+    phone.value = phone.value.replace(/\D/g, '').slice(0, 11);
+  });
+  code.addEventListener('input', function () {
+    code.value = code.value.replace(/\D/g, '').slice(0, 6);
+  });
+
+  /* ---------- 提交 ---------- */
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    A.alertBox(alertEl, '');
+    codeHint.classList.remove('err');
+
+    var value = phone.value.trim();
+    if (!/^1[3-9]\d{9}$/.test(value)) {
+      A.shake(phone);
+      phone.focus();
+      return A.alertBox(alertEl, '请输入正确的 11 位手机号');
+    }
+
+    var body = { phone: value };
+    if (tab === 'password') {
+      if (!password.value) {
+        A.shake(password);
+        password.focus();
+        return A.alertBox(alertEl, '请输入密码');
+      }
+      body.password = password.value;
+    } else {
+      if (!/^\d{6}$/.test(code.value)) {
+        A.shake(code);
+        code.focus();
+        return A.alertBox(alertEl, '请输入 6 位数字验证码');
+      }
+      body.code = code.value;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '登录中…';
+    try {
+      var data = await A.post('/api/auth/login', body);
+      A.alertBox(alertEl, '登录成功，正在进入图谱…', 'ok');
+      setTimeout(function () {
+        location.href = 'index.html';
+      }, 500);
+      return data;
+    } catch (err) {
+      A.alertBox(alertEl, err.message);
+      if (err.status === 401) A.shake(password);
+      if (err.status === 404) A.shake(phone);
+      submitBtn.disabled = false;
+      submitBtn.textContent = tab === 'password' ? '登录' : '验证码登录';
+    }
+  });
+
+  /* ---------- 账号面板操作 ---------- */
+  document.getElementById('goAtlas').addEventListener('click', function () {
+    location.href = 'index.html';
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async function () {
+    await A.logout();
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>
