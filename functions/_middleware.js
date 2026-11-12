@@ -1,23 +1,41 @@
-// Optional site-wide Basic Auth: active only when SITE_PASS is configured.
-export async function onRequest(context) {
-  const { request, env, next } = context;
-  const pass = env.SITE_PASS || "";
-  if (!pass) return next();
+// 全站登录门禁：除登录/注册页及其必要资源外，未登录一律拦下。
+// 账号体系启用后不再使用 Basic Auth，避免两层密码。
+import { currentSession } from "./_lib/security.js";
 
-  const header = request.headers.get("Authorization") || "";
-  if (header.startsWith("Basic ")) {
-    try {
-      const decoded = atob(header.slice(6));
-      const idx = decoded.indexOf(":");
-      const user = decoded.slice(0, idx);
-      const pwd = decoded.slice(idx + 1);
-      if (user === (env.SITE_USER || "kaoyan") && pwd === pass) return next();
-    } catch (e) {
-      /* fall through */
-    }
+const PUBLIC = [
+  /^\/login(\.html)?$/,
+  /^\/register(\.html)?$/,
+  /^\/api\/auth\/(login|register|logout|me)$/,
+  /^\/api\/sms\/send$/,
+  /^\/api\/health$/,
+  /^\/assets\/(auth\.(js|css)|config\.js)$/,
+  /^\/favicon\.ico$/,
+];
+
+function isPublic(pathname) {
+  return PUBLIC.some((re) => re.test(pathname));
+}
+
+function wantsHtml(request) {
+  return (request.headers.get("Accept") || "").includes("text/html");
+}
+
+export async function onRequest({ request, env, next }) {
+  const url = new URL(request.url);
+  if (isPublic(url.pathname)) return next();
+
+  const session = await currentSession(request, env);
+  if (session) return next();
+
+  if (request.method === "GET" && wantsHtml(request)) {
+    const target = url.pathname + url.search;
+    const login = new URL("/login", url);
+    login.searchParams.set("next", target);
+    return Response.redirect(login.toString(), 302);
   }
-  return new Response("需要登录后访问", {
+
+  return new Response("请先登录", {
     status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="kaoyan-atlas", charset="UTF-8"' },
+    headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" },
   });
 }

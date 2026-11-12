@@ -138,6 +138,12 @@
   var sendBtn = document.getElementById('sendBtn');
   var tab = 'password';
 
+  /* ---------- 登录后回到被拦截的页面 ---------- */
+  function nextTarget() {
+    var n = new URLSearchParams(location.search).get('next') || '';
+    return /^\/(?!\/)/.test(n) ? n : 'index.html';
+  }
+
   /* ---------- 已登录直接显示账号面板 ---------- */
   A.me().then(function (user) {
     if (!user) return;
@@ -234,7 +240,7 @@
       var data = await A.post('/api/auth/login', body);
       A.alertBox(alertEl, '登录成功，正在进入图谱…', 'ok');
       setTimeout(function () {
-        location.href = 'index.html';
+        location.href = nextTarget();
       }, 500);
       return data;
     } catch (err) {
@@ -248,7 +254,7 @@
 
   /* ---------- 账号面板操作 ---------- */
   document.getElementById('goAtlas').addEventListener('click', function () {
-    location.href = 'index.html';
+    location.href = nextTarget();
   });
 
   document.getElementById('logoutBtn').addEventListener('click', async function () {
