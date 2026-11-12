@@ -170,9 +170,22 @@ npx wrangler pages dev . --d1=DB \
 `smsMode=mock` 时，`SMS_DEV_CODE=1` 会把验证码直接返回给页面并自动填入，方便注册登录全流程调试；
 **线上千万不要设置这个变量**。注册页、登录页与接口均已在此模式下端到端验证过。
 
-## 十一、如果站点还开着 Basic Auth
+## 十一、全站登录门禁（已启用）
 
-线上若仍配置了 `SITE_USER` / `SITE_PASS` 全站保护，登录功能可以正常工作：
-同域请求走 HttpOnly Cookie，浏览器会自动附带 Basic 认证，两者不冲突。
-**不要**在这种情况下把 `assets/config.js` 的 `apiBase` 填成跨域地址——那会改用 Bearer 令牌，
-覆盖 Basic 头并导致接口 401。等站点对访问者公开后，再考虑去掉 Basic Auth。
+`functions/_middleware.js` 现在默认要求账号登录：
+
+- 未登录访问任何页面 → 302 到 `/login?next=原地址`，登录后自动回到原页面。
+- 未登录访问静态资源或 `/api/grade` 等接口 → 401。
+- 登录页、注册页及其 `assets/auth.*`、`assets/config.js`、`/api/auth/*`、`/api/sms/send`、`/api/health` 放行。
+
+原先的 Basic Auth 已移除，Cloudflare 上的 `SITE_USER`、`SITE_PASS` 也已删除。现在生产环境只保留这 6 个变量：
+
+| 变量 | 用途 |
+| --- | --- |
+| `SESSION_SECRET` | 会话签名 |
+| `ALIYUN_ACCESS_KEY_ID` / `SECRET` | 阿里云短信 |
+| `ALIYUN_SMS_SIGN_NAME` | 赠送签名（恒创联众） |
+| `ALIYUN_SMS_LOGIN_TEMPLATE_CODE` | 登录/注册模板（100001） |
+| `DASHSCOPE_API_KEY` | AI 评卷 |
+
+注意：门禁依赖同域 Cookie，所以 `assets/config.js` 的 `apiBase` 必须保持为空。
