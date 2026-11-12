@@ -193,6 +193,7 @@ npx wrangler pages dev . --d1=DB \
 ## 十二、Git 连接版（自动部署）
 
 除了原来的直传项目，另有一个由 GitHub 推送自动构建的项目：
+（旧直传项目已于 2026-11-12 下线，现以本节项目为准。）
 
 | 项 | 值 |
 | --- | --- |
@@ -210,4 +211,8 @@ npx wrangler pages dev . --d1=DB \
 以后更新内容：改完 `src/` 并重新生成 `assets/`、`web/` 后，提交推送 `kaoyan-atlas-pages` 仓库的 `master`，
 Cloudflare 会自动构建部署。环境变量与 D1 绑定已在项目里配置好（与本指南第十一节的 6 个变量一致）。
 
-旧的直传项目 `kaoyan-atlas` 保持可用，但不会随 push 自动更新。
+旧的直传项目 `kaoyan-atlas` 已于 2026-11-12 下线，`kaoyan-atlas.pages.dev` 不再可用；
+唯一的线上地址是 `https://kaoyan-atlas-pages.pages.dev`。
+
+多台电脑或多个 AI 代理协作时，先阅读仓库根目录的 `AGENTS.md`：它规定了唯一开发源、分支流程、
+生成物提交要求和禁止提交的目录。
