@@ -1,5 +1,5 @@
-name = "kaoyan-atlas"
-pages_build_output_dir = "."
+name = "kaoyan-atlas-pages"
+pages_build_output_dir = "dist"
 compatibility_date = "2026-11-01"
 
 [[d1_databases]]
