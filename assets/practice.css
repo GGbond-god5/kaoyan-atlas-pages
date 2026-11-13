@@ -217,6 +217,7 @@ a{color:inherit;text-decoration:none}
   color: var(--ink2); white-space: pre-wrap; }
 .ai-result b { color: #1F3A5F; }
 .ai-result .score { font-family: var(--serif); font-size: 18px; color: #1F3A5F; margin-right: 8px; }
+.ai-result .ai-note { font-size: 11.5px; color: var(--ink-3, #6b6b6b); }
 
 /* confirm modal */
 .modal { position: fixed; inset: 0; z-index: 95; background: rgba(23,22,26,.38);

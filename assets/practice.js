@@ -731,22 +731,23 @@
         body: JSON.stringify({
           subject: q.subjectName, kp: q.kpName, kind: q.kind,
           question: (q.passage ? q.passage + "\n\n" : "") + q.text,
-          answer: q.answer, steps: q.steps,
+          answer: q.answer, steps: q.steps, maxScore: q.maxScore,
           selected: picks,
           work, image: photo || "",
         }),
       });
       const data = await r.json();
       if (!r.ok || data.error) throw new Error(data.error || `HTTP ${r.status}`);
-      const score = data.score != null ? `<span class="score">${data.score}</span>` : "";
+      const score = data.score != null ? `<span class="score">${data.score}${data.maxScore ? " / " + data.maxScore : ""}</span>` : "";
+      const assumed = data.maxScoreAssumed ? ` <span class="ai-note">（按默认满分 ${data.maxScore} 分估算）</span>` : "";
       const lvl = data.level ? `<b>${esc(data.level)}</b> · ` : "";
-      let html = score + lvl + esc(data.comments || "评核完成");
+      let html = score + assumed + lvl + esc(data.comments || "评核完成");
       if (data.missing) html += `<div class="ai-sec"><b>缺失/错误</b><br>${esc(data.missing).replace(/\n/g, "<br>")}</div>`;
       if (data.suggestions) html += `<div class="ai-sec"><b>修改建议</b><br>${esc(data.suggestions).replace(/\n/g, "<br>")}</div>`;
       if (data.revised) html += `<div class="ai-sec"><b>润色参考</b><div class="ai-revised">${esc(data.revised).replace(/\n/g, "<br>")}</div></div>`;
       box.innerHTML = html;
     } catch (e) {
-      box.textContent = `AI 评核失败：${e.message}。请确认本地 serve.py 已启动、已配置 DashScope Key。`;
+      box.textContent = `AI 评核失败：${e.message}。请确认已登录，且站点已配置 AI Key。`;
     } finally {
       btn.disabled = false; btn.textContent = old;
     }
