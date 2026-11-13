@@ -216,3 +216,24 @@ Cloudflare 会自动构建部署。环境变量与 D1 绑定已在项目里配�
 
 多台电脑或多个 AI 代理协作时，先阅读仓库根目录的 `AGENTS.md`：它规定了唯一开发源、分支流程、
 生成物提交要求和禁止提交的目录。
+
+## 十三、个人学习工具上线（2026-11-13）
+
+PR #1 已合并并部署，新增：
+
+- 个人资料与个人题库、资料上传与抽题、学习状态同步、套卷测评、作文/题目指导
+- 新接口：`/api/state/*`、`/api/attempts/*`、`/api/coach/*`、`/api/library/*`、`/api/personal/questions`
+- 所有新接口都要求登录，并按账号 `uid` 隔离数据；未登录由中间件统一拦截
+- `platform_*` 系列 D1 表在首次调用时自动创建
+
+**R2 尚未开通**：`wrangler.toml` 里的 `LIBRARY_FILES` 绑定暂时注释，资料上传接口返回
+「资料存储未配置」，其余功能正常。开通步骤：
+
+1. Cloudflare 控制台 → R2 → Enable R2
+2. 创建桶 `kaoyan-atlas-library`
+3. Pages 项目 `kaoyan-atlas-pages` → Settings → Bindings 添加 R2，变量名 `LIBRARY_FILES`
+4. 把 `wrangler.toml` 中注释掉的 `[[r2_buckets]]` 取消注释并 push
+
+AI 地址固定为阿里云官方 `https://dashscope.aliyuncs.com/compatible-mode/v1`，
+不要改成第三方中转，避免 `DASHSCOPE_API_KEY` 外泄。
+
