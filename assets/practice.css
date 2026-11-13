@@ -308,3 +308,7 @@ button.q-opt:hover{background:rgba(120,110,90,.06)}
   .paper-actions #aiAsk{order:3;grid-column:1 / -1}
   .paper-actions .reveal{order:0}
 }
+.rgrid button { min-width: 36px; min-height: 36px; border: 1px solid #cdbdae; background: #fffaf2; cursor: pointer; }
+.rgrid button.ok { background: #d9e9dc; } .rgrid button.wrong { background: #f2d7d2; }
+#mastery dialog, #atlasCoach { max-width: min(90vw, 680px); max-height: 80vh; overflow: auto; border: 1px solid #cbbba7; background: #fffaf2; color: #3e3028; padding: 24px; }
+#atlasCoach textarea { width: 100%; min-height: 110px; } .coach-log { white-space: pre-wrap; max-height: 40vh; overflow: auto; }

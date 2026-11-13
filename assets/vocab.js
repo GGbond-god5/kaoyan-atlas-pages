@@ -1,4 +1,4 @@
-(function () {
+(async function () {
   "use strict";
   const V = window.VOCAB;
   if (!V) return;
@@ -13,17 +13,24 @@
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   /* ---------------- state ---------------- */
-  function loadState() {
-    try {
-      const raw = JSON.parse(localStorage.getItem(KEY));
-      if (raw && raw.rec) return Object.assign({ rec: {}, star: {}, days: {}, tts: true }, raw);
-    } catch (e) { /* ignore */ }
-    return { rec: {}, star: {}, days: {}, tts: true };
+  const fallback = { rec: {}, star: {}, days: {}, tts: true };
+  let initial;
+  try { await window.AtlasUser.ready; initial = await window.AtlasUser.load("vocab", fallback); }
+  catch (e) { document.body.textContent = "词汇记录加载失败：" + e.message + "。请检查网络后刷新。"; return; }
+  const S = Object.assign({}, fallback, initial || {});
+  const legacy = localStorage.getItem(KEY);
+  if (legacy) {
+    const button = document.createElement("button"); button.className = "vghost"; button.textContent = "导入此浏览器的旧词汇记录";
+    document.querySelector(".vhero").appendChild(button);
+    button.addEventListener("click", async () => {
+      if (!confirm("旧记录没有账号归属。确认将其导入当前账号？")) return;
+      try { const data = JSON.parse(legacy); if (!data || !data.rec) throw Error("旧记录格式无效"); for (const key of ["rec", "star", "days"]) S[key] = Object.assign({}, data[key] || {}, S[key] || {}); await window.AtlasUser.save("vocab", S); button.remove(); init(); toast("旧记录已导入"); }
+      catch (e) { toast("导入失败：" + e.message); }
+    });
   }
-  const S = loadState();
   const DEFAULT_KEYS = { known: "ArrowLeft", fuzzy: " ", unknown: "ArrowRight", reveal: "Enter", speak: "s", next: "Enter" };
   S.keys = Object.assign({}, DEFAULT_KEYS, S.keys || {});
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }
+  function save() { window.AtlasUser.save("vocab", S).catch(e => toast("同步失败：" + e.message)); }
   const fmtDate = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   const today = () => fmtDate(new Date());
   const recOf = w => S.rec[lower(w)] || null;
@@ -89,11 +96,12 @@
   }
 
   /* ---------------- grade ---------------- */
-  function grade(word, level) {
+  function grade(word, level, assisted = false) {
     const k = lower(word);
     const r = S.rec[k] || { l: 0, d: 0, seen: 0, ok: 0, w: 0 };
     r.seen += 1;
-    if (level === "known") { r.ok += 1; r.l = Math.min(5, (r.l || 0) + 1); }
+    if (level === "known" && !assisted) { r.ok += 1; r.l = Math.min(5, (r.l || 0) + 1); }
+    else if (level === "known") { r.assisted = (r.assisted || 0) + 1; r.l = Math.max(1, r.l || 0); }
     else if (level === "fuzzy") { r.l = Math.max(1, r.l || 0); }
     else { r.l = 0; r.w = (r.w || 0) + 1; }
     const days = [0, 1, 2, 4, 7, 15][r.l] || 15;
@@ -296,7 +304,7 @@
   });
 
   /* ---------------- test ---------------- */
-  const T = { queue: [], i: 0, correct: 0, wrong: [], mode: "card", pool: "high", revealed: false, answered: false, current: null, started: false };
+  const T = { queue: [], i: 0, correct: 0, assisted: 0, wrong: [], mode: "card", pool: "high", revealed: false, answered: false, current: null, started: false };
   let mode = "card", count = 20;
 
   function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
@@ -350,7 +358,7 @@
   function startTest(pool, m, n, preset) {
     const queue = buildQueue(pool, n, preset);
     if (!queue.length) { toast("这个范围暂时没有词，换一个词库试试"); return; }
-    Object.assign(T, { queue, i: 0, correct: 0, wrong: [], mode: m, pool, revealed: false, answered: false, current: null, started: true });
+    Object.assign(T, { queue, i: 0, correct: 0, assisted: 0, wrong: [], mode: m, pool, revealed: false, answered: false, current: null, started: true });
     $("#vsetup").hidden = true;
     $("#vresult").hidden = true;
     $("#vrun").hidden = false;
@@ -369,7 +377,7 @@
   function renderCard() {
     const w = currentWord();
     if (!w) return finish();
-    T.current = w; T.revealed = false; T.answered = false; T.awaitNext = false;
+    T.current = w; T.hinted = false; $("#vhintText").hidden = true; $("#vhintText").textContent = ""; T.revealed = false; T.answered = false; T.awaitNext = false;
     const wordEl = $("#vword");
     wordEl.classList.toggle("meaning", T.mode === "spell" || T.mode === "listen");
     if (T.mode === "spell") {
@@ -391,7 +399,7 @@
     $("#vnext").hidden = true;
     $("#vactions").innerHTML = "";
     $("#vrunMeta").textContent = `${T.i + 1} / ${T.queue.length} · ${({ card: "卡片", choice: "选择", spell: "拼写", listen: "听音" })[T.mode]}`;
-    $("#vrunScore").textContent = `正确 ${T.correct}`;
+    $("#vrunScore").textContent = `独立正确 ${T.correct} · 提示后正确 ${T.assisted}`;
     $("#vbar").style.width = (T.i / T.queue.length * 100) + "%";
 
     if (T.mode === "card") {
@@ -432,6 +440,7 @@
   function reveal() {
     const w = T.current; if (!w) return;
     T.revealed = true;
+    if (!T.answered) T.hinted = true;
     $("#vreveal").hidden = false;
     $("#vreveal").innerHTML = `<div class="vmean">${esc(w.m)}</div>${w.ex ? `<div class="vex2">${esc(w.ex)}<small>${esc(w.exCn || "")}</small></div>` : ""}`;
   }
@@ -439,16 +448,16 @@
   function gradeCard(g) {
     if (!T.current || T.answered) return;
     T.answered = true;
-    grade(T.current.w, g);
+    grade(T.current.w, g, T.hinted);
     if (g === "known") {
-      T.correct += 1;
+      if (T.hinted) T.assisted += 1; else T.correct += 1;
       next();
       return;
     }
     if (g === "unknown") T.wrong.push({ w: T.current.w, m: T.current.m });
     reveal();
     T.awaitNext = true;
-    $("#vrunScore").textContent = `正确 ${T.correct}`;
+    $("#vrunScore").textContent = `独立正确 ${T.correct} · 提示后正确 ${T.assisted}`;
     $("#vnext").hidden = false;
     $("#vnext").textContent = "下一题 →";
     $$("#vactions [data-grade]").forEach(b => { b.disabled = true; b.classList.add("done"); });
@@ -487,10 +496,10 @@
       $("#vfeedback").textContent = ok ? `正确 · ${w.m}` : `正确单词：${w.w} · ${w.m}`;
     }
     $("#vfeedback").className = "vfeedback " + (ok ? "ok" : "no");
-    if (ok) T.correct += 1; else T.wrong.push({ w: w.w, m: w.m });
-    grade(w.w, ok ? "known" : "unknown");
+    if (ok) { if (T.hinted) T.assisted += 1; else T.correct += 1; } else T.wrong.push({ w: w.w, m: w.m });
+    grade(w.w, ok ? "known" : "unknown", T.hinted);
     $("#vnext").hidden = false;
-    $("#vrunScore").textContent = `正确 ${T.correct}`;
+    $("#vrunScore").textContent = `独立正确 ${T.correct} · 提示后正确 ${T.assisted}`;
   });
 
   function submitSpell() {
@@ -502,14 +511,15 @@
     const ok = val === lower(w.w);
     $("#vfeedback").className = "vfeedback " + (ok ? "ok" : "no");
     $("#vfeedback").textContent = ok ? "拼写正确" : `正确拼写：${w.w}`;
-    if (ok) T.correct += 1; else T.wrong.push({ w: w.w, m: w.m });
-    grade(w.w, ok ? "known" : "unknown");
+    if (ok) { if (T.hinted) T.assisted += 1; else T.correct += 1; } else T.wrong.push({ w: w.w, m: w.m });
+    grade(w.w, ok ? "known" : "unknown", T.hinted);
     $("#vnext").hidden = false;
-    $("#vrunScore").textContent = `正确 ${T.correct}`;
+    $("#vrunScore").textContent = `独立正确 ${T.correct} · 提示后正确 ${T.assisted}`;
   }
   $("#vspellSubmit").addEventListener("click", submitSpell);
   $("#vspell").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); submitSpell(); } });
 
+  $("#vhint").addEventListener("click", () => { if (!T.current || T.answered) return; T.hinted = true; $("#vhintText").textContent = T.current.w + " · " + T.current.m; $("#vhintText").hidden = false; });
   $("#vnext").addEventListener("click", next);
   $("#vcardSpeak").addEventListener("click", () => T.current && speak(T.current.w));
 
@@ -529,7 +539,7 @@
     $("#vresult").innerHTML = `
       <div class="vkicker">RESULT</div>
       <h2>本组完成</h2>
-      <div class="vscore">正确 ${T.correct} / ${n} · ${pct}%</div>
+      <div class="vscore">独立正确 ${T.correct} / ${n} · ${pct}% · 提示后正确 ${T.assisted}</div>
       ${T.wrong.length ? `<div class="vwronglist">${T.wrong.map(x => `<div><b>${esc(x.w)}</b><span>${esc(x.m)}</span></div>`).join("")}</div>` : `<p class="vscore">没有错词，继续保持。</p>`}
       <div class="va">
         ${T.wrong.length ? `<button class="vprimary" id="vretryWrong">再测错词</button>` : ""}
