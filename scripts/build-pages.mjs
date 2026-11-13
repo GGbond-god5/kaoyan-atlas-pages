@@ -1,5 +1,6 @@
 // 只把线上需要的静态文件复制到 dist/，避免把 server/、docs/、src/ 暴露出去
 import { cpSync, mkdirSync, rmSync } from "node:fs";
+import "./build-import-skill.mjs";
 
 const FILES = [
   "index.html",
@@ -9,6 +10,7 @@ const FILES = [
   "bank.html",
   "login.html",
   "register.html",
+  "library.html",
 ];
 
 const DIRS = ["assets", "web", "content", "pdf"];

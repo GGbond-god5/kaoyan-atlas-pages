@@ -5,51 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>登录 · 考研科目大观</title>
 <meta name="description" content="登录考研科目大观，同步刷题记录、错题本与词汇进度。">
-<link rel="stylesheet" href="assets/auth.css?v=1">
+<link rel="stylesheet" href="assets/auth.css?v=20261113">
 </head>
-<body>
+<body class="login-page">
 <div class="auth-wrap">
 
-  <aside class="auth-aside">
+  <header class="auth-header">
     <a class="abrand" href="index.html">
       <span class="amark">观</span>
       <span><b>考研科目大观</b><small>KAOYAN ATLAS · 2027</small></span>
     </a>
 
-    <div class="aquote">
-      <div class="akicker">ACCOUNT · 复习存档</div>
-      <h1>把每一天的复习，<br>都记成自己的图谱。</h1>
-      <p>登录后，刷题记录、错题标记与词汇进度会跟着你的手机号走；换一台设备也不用从头再来。</p>
-      <div class="aquote-rule"></div>
-    </div>
-
-    <div>
-      <div class="acount">
-        <span>距离 2027 考研初试</span>
-        <b id="examDays">—</b>
-        <span>天</span>
-      </div>
-      <div class="afoot">华南理工 · 085500 · 数学一 / 英语一 / 807 材料力学 / 政治</div>
-    </div>
-  </aside>
+    <a class="header-link" href="register.html">创建账号 <span aria-hidden="true">↗</span></a>
+  </header>
 
   <main class="auth-main">
+    <div class="auth-intro">
+      <h1>从这里，继续向前。</h1>
+      <p>回到你的考研图谱，接着学懂下一个知识点。</p>
+    </div>
     <div class="acard">
 
       <!-- 未登录：登录表单 -->
       <div id="viewForm">
         <div class="ahead">
-          <div class="akicker">SIGN IN</div>
-          <h2>登录大观</h2>
+          <h2>欢迎回到大观</h2>
           <p>还没有账号？<a href="register.html">用手机号注册一个</a></p>
         </div>
 
-        <div class="tabs" id="tabs">
-          <button type="button" data-tab="password" class="on">密码登录</button>
-          <button type="button" data-tab="code">验证码登录</button>
+        <div class="tabs" id="tabs" role="tablist" aria-label="登录方式" data-selected="password">
+          <button type="button" id="tabPassword" role="tab" data-tab="password" aria-selected="true" aria-controls="groupPassword" class="on">密码登录</button>
+          <button type="button" id="tabCode" role="tab" data-tab="code" aria-selected="false" aria-controls="groupCode" tabindex="-1">验证码登录</button>
         </div>
 
-        <div class="alert" id="alert"></div>
+        <div class="alert" id="alert" role="status" aria-live="polite" aria-atomic="true"></div>
 
         <form id="loginForm" novalidate>
           <div class="field">
@@ -58,13 +47,13 @@
                    autocomplete="tel" placeholder="11 位手机号" required>
           </div>
 
-          <div class="field" id="groupPassword">
+          <div class="field method-panel" id="groupPassword" role="tabpanel" aria-labelledby="tabPassword">
             <label for="password">密码</label>
             <input id="password" name="password" type="password" maxlength="32"
                    autocomplete="current-password" placeholder="8–32 位，含字母与数字">
           </div>
 
-          <div class="field" id="groupCode" hidden>
+          <div class="field method-panel" id="groupCode" role="tabpanel" aria-labelledby="tabCode" hidden>
             <label for="code">短信验证码</label>
             <div class="ctrl">
               <input id="code" class="code" name="code" type="text" inputmode="numeric" maxlength="6"
@@ -91,9 +80,8 @@
       <!-- 已登录：账号面板 -->
       <div id="viewAccount" hidden>
         <div class="ahead">
-          <div class="akicker">SIGNED IN</div>
           <h2>你已登录</h2>
-          <p>同步状态正常，可以直接回到图谱继续复习。</p>
+          <p>准备好了，回到图谱继续复习。</p>
         </div>
 
         <div class="who">
@@ -113,6 +101,10 @@
 
     </div>
   </main>
+  <footer class="auth-footer">
+    <p>数学一 / 英语一 / 807 材料力学 / 政治</p>
+    <p>距离 2027 考研初试 <b id="examDays">—</b> 天</p>
+  </footer>
 </div>
 
 <script src="assets/config.js?v=2027-11-12"></script>
@@ -160,18 +152,30 @@
 
   /* ---------- 切换登录方式 ---------- */
   var tabs = document.getElementById('tabs');
-  tabs.addEventListener('click', function (e) {
-    var btn = e.target.closest('button[data-tab]');
-    if (!btn) return;
+  function selectTab(btn) {
+    if (submitBtn.disabled) return;
     tab = btn.dataset.tab;
+    tabs.dataset.selected = tab;
     Array.prototype.forEach.call(tabs.children, function (b) {
       b.classList.toggle('on', b === btn);
+      b.setAttribute('aria-selected', String(b === btn));
+      b.tabIndex = b === btn ? 0 : -1;
     });
     groupPassword.hidden = tab !== 'password';
     groupCode.hidden = tab !== 'code';
     submitBtn.textContent = tab === 'password' ? '登录' : '验证码登录';
     A.alertBox(alertEl, '');
-    (tab === 'password' ? password : code).focus();
+  }
+  tabs.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-tab]');
+    if (btn) selectTab(btn);
+  });
+  tabs.addEventListener('keydown', function (e) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+    e.preventDefault();
+    var index = e.key === 'Home' ? 0 : e.key === 'End' ? 1 : tab === 'password' ? 1 : 0;
+    selectTab(tabs.children[index]);
+    tabs.children[index].focus();
   });
 
   /* ---------- 获取验证码 ---------- */
@@ -207,6 +211,7 @@
   /* ---------- 提交 ---------- */
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
+    if (submitBtn.disabled) return;
     A.alertBox(alertEl, '');
     codeHint.classList.remove('err');
 
@@ -235,6 +240,8 @@
     }
 
     submitBtn.disabled = true;
+    form.setAttribute('aria-busy', 'true');
+    Array.prototype.forEach.call(tabs.children, function (b) { b.disabled = true; });
     submitBtn.textContent = '登录中…';
     try {
       var data = await A.post('/api/auth/login', body);
@@ -248,6 +255,8 @@
       if (err.status === 401) A.shake(password);
       if (err.status === 404) A.shake(phone);
       submitBtn.disabled = false;
+      form.setAttribute('aria-busy', 'false');
+      Array.prototype.forEach.call(tabs.children, function (b) { b.disabled = false; });
       submitBtn.textContent = tab === 'password' ? '登录' : '验证码登录';
     }
   });

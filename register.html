@@ -5,43 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>注册 · 考研科目大观</title>
 <meta name="description" content="用手机号注册考研科目大观，保存刷题记录与复习进度。">
-<link rel="stylesheet" href="assets/auth.css?v=1">
+<link rel="stylesheet" href="assets/auth.css?v=20261113">
 </head>
-<body>
+<body class="register-page">
 <div class="auth-wrap">
 
-  <aside class="auth-aside">
+  <header class="auth-header">
     <a class="abrand" href="index.html">
       <span class="amark">观</span>
       <span><b>考研科目大观</b><small>KAOYAN ATLAS · 2027</small></span>
     </a>
 
-    <div class="aquote">
-      <div class="akicker">ACCOUNT · 从头开始</div>
-      <h1>一个手机号，<br>收起你所有的卷子。</h1>
-      <p>注册只需要 30 秒：验证手机号、起一个昵称、设置密码。之后刷过的题、标过的错，都会记在这个号码下面。</p>
-      <div class="aquote-rule"></div>
-    </div>
-
-    <div>
-      <div class="acount">
-        <span>距离 2027 考研初试</span>
-        <b id="examDays">—</b>
-        <span>天</span>
-      </div>
-      <div class="afoot">华南理工 · 085500 · 数学一 / 英语一 / 807 材料力学 / 政治</div>
-    </div>
-  </aside>
+    <a class="header-link" href="login.html">已有账号，登录 <span aria-hidden="true">↗</span></a>
+  </header>
 
   <main class="auth-main">
+    <div class="auth-intro">
+      <h1>让每一次积累，都有迹可循。</h1>
+      <p>创建你的大观账号，开启这一程复习。</p>
+    </div>
     <div class="acard">
       <div class="ahead">
-        <div class="akicker">CREATE ACCOUNT</div>
         <h2>注册账号</h2>
         <p>已有账号？<a href="login.html">直接登录</a></p>
       </div>
 
-      <div class="alert" id="alert"></div>
+      <div class="alert" id="alert" role="status" aria-live="polite" aria-atomic="true"></div>
 
       <form id="registerForm" novalidate>
         <div class="field">
@@ -93,6 +82,10 @@
       </form>
     </div>
   </main>
+  <footer class="auth-footer">
+    <p>数学一 / 英语一 / 807 材料力学 / 政治</p>
+    <p>距离 2027 考研初试 <b id="examDays">—</b> 天</p>
+  </footer>
 </div>
 
 <script src="assets/config.js?v=2027-11-12"></script>
@@ -162,6 +155,7 @@
   /* 提交注册 */
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
+    if (submitBtn.disabled) return;
     A.alertBox(alertEl, '');
 
     var p = phone.value.trim();
@@ -201,6 +195,7 @@
     }
 
     submitBtn.disabled = true;
+    form.setAttribute('aria-busy', 'true');
     submitBtn.textContent = '注册中…';
     try {
       await A.post('/api/auth/register', {
@@ -221,6 +216,7 @@
       }
       if (err.status === 409) A.shake(phone);
       submitBtn.disabled = false;
+      form.setAttribute('aria-busy', 'false');
       submitBtn.textContent = '注册并登录';
     }
   });

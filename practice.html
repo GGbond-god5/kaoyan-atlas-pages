@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
+<link rel="stylesheet" href="assets/site-tools.css">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>大观题库 · 考研科目大观</title>
@@ -29,7 +30,7 @@
 
     <div class="mode-tabs" id="modeTabs">
       <button data-mode="knowledge" class="on">按知识点刷</button>
-      <button data-mode="paper">按套卷刷</button>
+      <button data-mode="paper">按套卷刷</button><button data-mode="diagnostic">能力自测</button>
     </div>
 
     <div class="setup-panel">
@@ -39,7 +40,7 @@
       <div class="srow" id="rowDiff"><span class="slabel">难度</span><select id="fDiff">
         <option value="all">全部难度</option><option value="易">易</option><option value="中">中</option><option value="难">难</option>
       </select></div>
-      <div class="srow" id="rowSource"><span class="slabel">来源</span><select id="fSource">
+      <div class="srow"><span class="slabel">题库范围</span><select id="fBank"><option value="all">公共与个人</option><option value="public">公共题库</option><option value="private">个人题库</option></select></div><div class="srow" id="rowSource"><span class="slabel">来源</span><select id="fSource">
         <option value="all">全部</option><option value="real">真题</option><option value="same">同型题</option><option value="mock">模拟卷</option>
       </select></div>
       <div class="srow" id="countRow"><span class="slabel">题量</span><div class="seg" id="fCount">
@@ -52,6 +53,7 @@
       <span class="pool-count" id="pcount"></span>
       <a class="pool-count" id="paperSol" href="#" target="_blank" rel="noopener" hidden>打开解析 ↗</a>
     </div>
+    <p class="setup-note" id="structureInfo" aria-live="polite" hidden></p>
     <p class="setup-note" id="paperNote" hidden>「可刷题」= 已逐题录入，直接进入答题；「原卷」= 完整试卷 PDF，点开始答题打开原卷，解析 PDF 在右侧。</p>
   </section>
 
@@ -80,8 +82,10 @@
               <label for="work">作答 / 关键步骤</label>
               <textarea id="work" placeholder="在纸上演算；这里可记关键步骤，切题不会丢。"></textarea>
               <div class="photo-box" id="photoBox" hidden>
-                <input type="file" id="photoInput" accept="image/*" capture="environment" hidden>
-                <button class="photo-pick" id="photoPick" type="button">＋ 拍照 / 上传作答</button>
+                <input type="file" id="photoCamera" accept="image/*" capture="environment" hidden>
+                <input type="file" id="photoFile" accept="image/*" hidden>
+                <button class="photo-pick" id="photoTake" type="button">＋ 拍照</button>
+                <button class="photo-pick" id="photoPick" type="button">＋ 从相册或本地文件选择照片</button>
                 <button class="ai-grade" id="aiGrade" type="button" hidden>AI 评卷</button>
                 <div class="photo-preview" id="photoPreview" hidden>
                   <img id="photoImg" alt="作答照片">
@@ -135,6 +139,9 @@
 <script src="assets/questions.js?v=26"></script>
 <script src="assets/papers.js?v=3"></script>
 <script src="assets/config.js?v=2027-11-08"></script>
-<script src="assets/practice.js?v=31"></script>
+<script src="assets/user-state.js"></script>
+<script src="assets/assessment.js"></script>
+<script src="assets/practice.js?v=32"></script>
+<script src="assets/site-tools.js"></script>
 </body>
 </html>

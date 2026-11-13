@@ -257,12 +257,12 @@
    "year": "2013",
    "source": "华工 801 2013（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
-   "text": "八．题八图所示为万能铣床工作台，其升降丝杆的内径为 22 mm，螺距 \\(s=5\\,\\mathrm{mm}\\)。工作台升至最高位置时，\\(l=500\\,\\mathrm{mm}\\)。丝杆为钢材，弹性模量 \\(E=210\\,\\mathrm{GPa}\\)，屈服极限 \\(\\sigma_s=300\\,\\mathrm{MPa}\\)，比例极限 \\(\\sigma_p=260\\,\\mathrm{MPa}\\)。若伞齿轮的传动比为 \\(i=\\dfrac12\\)（即手轮旋转一周丝杆旋转半周），且手轮半径为 100 mm，手轮上作用的最大圆周力为 200 N，试校核丝杆的稳定性。",
+   "text": "八．题八图所示为万能铣床工作台，其升降丝杆的内径为 22 mm，螺距 \\(s=5\\,\\mathrm{mm}\\)。工作台升至最高位置时，\\(l=500\\,\\mathrm{mm}\\)。丝杆为钢材，弹性模量 \\(E=210\\,\\mathrm{GPa}\\)，屈服极限 \\(\\sigma_s=300\\,\\mathrm{MPa}\\)，比例极限 \\(\\sigma_p=260\\,\\mathrm{MPa}\\)。若伞齿轮的传动比为 \\(i=\\dfrac12\\)（即手轮旋转一周丝杆旋转半周），且手轮半径为 100 mm，手轮上作用的最大圆周力为 200 N，试求丝杆的工作安全因数。已知临界应力经验公式 \\(\\sigma_{cr}=a-b\\lambda\\)，其中 \\(a=461\\,\\mathrm{MPa}\\)，\\(b=2.568\\,\\mathrm{MPa}\\)。",
    "answer": "丝杆属**中柔度杆**：\\(\\lambda=63.6\\)、\\(\\lambda_1=89.2\\)、\\(\\lambda_2=62.7\\)，满足 \\(\\lambda_2<\\lambda<\\lambda_1\\)，用直线经验公式 \\(F_{cr}=(a-b\\lambda)A=113.1\\,\\mathrm{kN}\\)；轴向压力 \\(F=50.24\\,\\mathrm{kN}\\)，工作安全因数 \\(n=\\dfrac{113.1}{50.24}=2.25\\)。",
    "steps": [
     "手轮旋转一周，工作台上升的距离由螺距与传动比确定：\\(\\delta=\\dfrac{1}{2}s=\\dfrac{1}{2}\\times5=2.5\\,\\mathrm{mm}\\)。",
     "由能量守恒（手轮做的功＝工作台升高所需能量）求丝杆轴向压力：\\(F_t\\cdot2\\pi r=F\\delta\\)，即 \\(200\\times2\\pi\\times0.1=F\\times0.0025\\)，解得 \\(F=50.24\\,\\mathrm{kN}\\)。",
-    "惯性半径：\\(i=\\sqrt{\\dfrac{I}{A}}=\\dfrac{d}{4}\\)（实心圆截面）。",
+    "丝杆内径为螺纹小径，按该直径的实心圆截面计算，惯性半径 \\(i=\\sqrt{I/A}=d/4\\)。",
     "柔度：支承按一端固定一端铰支取 \\(\\mu=0.7\\)，\\(\\lambda=\\dfrac{\\mu l}{i}=\\dfrac{0.7\\times0.5\\times4}{0.022}=63.6\\)。",
     "两条临界柔度：\\(\\lambda_1=\\pi\\sqrt{\\dfrac{E}{\\sigma_p}}=3.14\\sqrt{\\dfrac{210\\times10^9}{260\\times10^6}}=89.2\\)；\\(\\lambda_2=\\dfrac{a-\\sigma_s}{b}=\\dfrac{461-300}{2.568}=62.7\\)。",
     "判据：\\(\\lambda_2<\\lambda<\\lambda_1\\)（62.7 < 63.6 < 89.2），故属**中柔度杆**，必须用直线经验公式，不能用欧拉公式。",
@@ -278,7 +278,20 @@
    "sourcePage": 46,
    "subjectName": "807 材料力学",
    "topicChapter": "mech-09",
-   "topicTitle": "压杆稳定"
+   "topicTitle": "压杆稳定",
+   "maxScore": 20,
+   "reviewStatus": "source_checked",
+   "review": {
+    "method": "original-page-and-calculation",
+    "date": "2026-11-13",
+    "reason": "对照原题图补齐临界应力经验公式及系数；将丝杆内径解释为螺纹小径，按原有稳定性计算。",
+    "sources": [
+     {
+      "source": "content/bank-pages/2013-hi-p4.png",
+      "type": "question_page"
+     }
+    ]
+   }
   },
   {
    "id": "807-2013-9",

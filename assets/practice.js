@@ -2,7 +2,7 @@
   "use strict";
   const DATA = window.QUESTIONS;
   if (!DATA) return;
-  const ITEMS = DATA.items || [];
+  const ITEMS = (DATA.items || []).map(q => ({...q, _bank:"public"}));
   const PAPERS = window.PAPERS || { real: [], mock: [] };
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
@@ -27,6 +27,7 @@
   }
   const OBJ_KINDS = ["选择题", "单选题", "多选题", "阅读", "完形", "新题型"];
   function answerLetters(q) {
+    if (["pending", "needs_review"].includes(q.reviewStatus)) return "";
     const a = String(q.answer || "");
     return /^[A-H]{1,4}$/.test(a) ? a : "";
   }
@@ -66,17 +67,14 @@
   const KEY = "atlas.practice.v1";
   const AI_ENDPOINT = (window.ATLAS_CONFIG && window.ATLAS_CONFIG.gradeEndpoint) || "";
 
-  const state = { mode: "knowledge", subject: "all", chapter: "all", paper: "all", diff: "all", source: "all", count: 10 };
+  const state = { mode: "knowledge", subject: "all", chapter: "all", kp: "", bank: "all", paper: "all", diff: "all", source: "all", count: 10 };
   let session = null;
   let timerId = null;
   let confirmCb = null;
+  let diagnosticPreview = [];
 
-  function loadRec() {
-    try { const r = JSON.parse(localStorage.getItem(KEY)); if (r && r.rec) return r; } catch (e) { /* ignore */ }
-    return { rec: {} };
-  }
-  const store = loadRec();
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* ignore */ } }
+  let store = {rec:{}};
+  function save() { window.AtlasUser.save("practice", store).catch(err => console.error(err)); }
   const recOf = id => store.rec[id] || null;
 
   function renderMath(el) {
@@ -89,14 +87,14 @@
     } catch (e) { /* ignore */ }
   }
 
-  const SUBJECT_NAMES = { math: "数学一", english: "英语一", mechanics: "807 材料力学", politics: "政治" };
+  const SUBJECT_NAMES = { math: "数学一", math2: "数学二", english: "英语一", english2: "英语二", mechanics: "807 材料力学", politics: "政治" };
   const SUBJECTS = Object.keys(SUBJECT_NAMES).map(id => ({
     id, name: SUBJECT_NAMES[id], count: ITEMS.filter(i => i.subject === id).length,
-  })).filter(s => s.count);
+  }));
 
   function populateSubjects() {
     $("#fSubject").innerHTML = `<option value="all">全部科目（${ITEMS.length}）</option>` +
-      SUBJECTS.map(s => `<option value="${s.id}">${esc(s.name)}（${s.count}）</option>`).join("");
+      SUBJECTS.map(s => `<option value="${s.id}">${esc(s.name)}（${ITEMS.filter(i => i.subject === s.id).length}）</option>`).join("");
   }
 
   function isPaperChapter(id) {
@@ -139,7 +137,7 @@
   function paperList() {
     const map = new Map();
     ITEMS.forEach(i => {
-      if (!isPaperChapter(i.chapter)) return;
+      if ((state.bank !== "all" && i._bank !== state.bank) || !isPaperChapter(i.chapter)) return;
       if (!map.has(i.chapter)) {
         map.set(i.chapter, {
           id: i.chapter, title: i.chapterTitle, count: 0,
@@ -210,13 +208,16 @@
   function currentPool() {
     if (state.mode === "paper") {
       if (state.paper === "all") return [];
-      return ITEMS.filter(i => i.chapter === state.paper &&
+      return ITEMS.filter(i => (state.bank === "all" || i._bank === state.bank) && i.chapter === state.paper &&
         (state.subject === "all" || i.subject === state.subject));
     }
     return ITEMS.filter(i => {
-      if (!inTopicMode(i)) return false;
+      if (state.bank !== "all" && i._bank !== state.bank) return false;
+      if (state.mode === "knowledge" && !inTopicMode(i)) return false;
+      if (state.mode === "diagnostic" && state.subject === "all") return false;
+      if (state.mode === "knowledge" && state.kp && i.kp !== state.kp) return false;
       if (state.subject !== "all" && i.subject !== state.subject) return false;
-      if (state.chapter !== "all" && topicOf(i) !== state.chapter) return false;
+      if (state.mode === "knowledge" && state.chapter !== "all" && topicOf(i) !== state.chapter) return false;
       if (state.diff !== "all" && (i.difficulty || "中") !== state.diff) return false;
       if (state.source === "real" && !i.isReal) return false;
       if (state.source === "same" && i.isReal) return false;
@@ -226,11 +227,15 @@
   }
 
   function updateCount() {
+    const info = $("#structureInfo"); info.hidden = true; info.textContent = "";
+    if ((state.mode === "paper" || state.mode === "diagnostic") && state.subject === "all") {
+      $("#pcount").textContent = "请先选择单一科目"; $("#pstart").disabled = true; $("#paperSol").hidden = true; return 0;
+    }
     const arc = state.mode === "paper" ? archiveOf(state.paper) : null;
     if (arc) {
       $("#pcount").textContent = `完整原卷 · ${arc.pages} 页${arc.solution ? " · 附解析" : ""}`;
       $("#pstart").disabled = false;
-      $("#paperSol").hidden = !arc.solution;
+      $("#paperSol").hidden = true;
       if (arc.solution) $("#paperSol").href = encodeURI(arc.solution);
       return arc.pages;
     }
@@ -241,6 +246,19 @@
       $("#pstart").disabled = true;
       return 0;
     }
+    const pool = currentPool();
+    if (state.mode === "diagnostic") {
+      const groups = diagnosticGroups(state.subject), selected = diagnosticPool(pool, state.subject);
+      diagnosticPreview = selected;
+      const counts = groups && groups.map(g => { const available = selected.filter(q => g.kinds.includes(q.kind)).length; return `${g.name} ${available}/${g.count}${available < g.count ? "（缺题）" : ""}`; });
+      const missing = selected.filter(q => !Number.isFinite(Number(q.maxScore)) || q.maxScore == null || Number(q.maxScore) <= 0).length;
+      const knownMax = selected.filter(q => q.maxScore != null && Number.isFinite(Number(q.maxScore)) && Number(q.maxScore) > 0).reduce((sum,q) => sum + Number(q.maxScore), 0);
+      const missingNo = selected.filter(q => paperNo(q) === 9999).length;
+      info.textContent = (counts ? `按试卷题型配额：${counts.join("；")}。${["english", "english2"].includes(state.subject) ? "完形、阅读、新题型按原文及完整题组抽取，英语一翻译按原卷题组抽取；原文或题目不全的不计入。" : ""}` : `材料力学未设统一题型配额，按可用原卷题号排序，${missingNo} 题题号待核并排在末尾，题量由下方选择。`) + `实际抽取 ${selected.length} 题，已知满分合计 ${knownMax} 分，其中 ${missing} 题满分待核；${counts ? "未列入的题型不计入自测。" : ""}`;
+      info.hidden = false; $("#pcount").textContent = `当前可组卷：${selected.length} 题`;
+      $("#pstart").disabled = !selected.length; return selected.length;
+    }
+    if (state.mode === "paper") { const missing = pool.filter(q => q.maxScore == null || !Number.isFinite(Number(q.maxScore)) || Number(q.maxScore) <= 0).length; const counts = {}; pool.forEach(q => { const kind = q.kind || "未分类"; counts[kind] = (counts[kind] || 0) + 1; }); const known = pool.filter(q => q.maxScore != null && Number.isFinite(Number(q.maxScore)) && Number(q.maxScore) > 0).reduce((sum,q) => sum + Number(q.maxScore),0); const no = pool.filter(q => paperNo(q) === 9999).length; info.textContent = `原卷录入 ${n} 题：${Object.entries(counts).map(([k,v]) => `${k} ${v} 题`).join("；")}。已知满分合计 ${known} 分，${missing} 题满分待核；${no} 题题号待核并排在末尾。`; info.hidden = false; }
     $("#pcount").textContent = state.mode === "paper" ? `本套卷：${n} 题` : `当前可组卷：${n} 题`;
     $("#pstart").disabled = n === 0;
     return n;
@@ -250,22 +268,68 @@
     state.mode = mode;
     $$("#modeTabs button").forEach(b => b.classList.toggle("on", b.dataset.mode === mode));
     const paper = mode === "paper";
-    $("#rowChapter").hidden = paper;
+    $("#rowChapter").hidden = paper || mode === "diagnostic";
     $("#rowPaper").hidden = !paper;
     $("#rowDiff").hidden = paper;
     $("#rowSource").hidden = paper;
-    $("#countRow").hidden = paper;
+    $("#countRow").hidden = paper || (mode === "diagnostic" && state.subject !== "mechanics");
     $("#paperNote").hidden = !paper;
     updateCount();
   }
 
   function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
   function paperNo(q) {
-    const m = /第(\d+)题/.exec(q.kpName || "");
-    return m ? Number(m[1]) : 9999;
+    const m = /第\s*(\d+)\s*题/.exec(q.kpName || "");
+    const value = q.questionNo || q.paperNo || (m && m[1]);
+    return Number(value) || 9999;
   }
 
+  function stratified(pool, count) {
+    const groups = new Map();
+    shuffle(pool.slice()).forEach(q => { const key = `${topicOf(q) || "未分类"}|${q.year || (q.isReal || q.isMock ? q.chapter : "知识点")}`; if (!groups.has(key)) groups.set(key, []); groups.get(key).push(q); });
+    const buckets = shuffle([...groups.values()]), out = [];
+    while (buckets.length && (!count || out.length < count)) for (let i = buckets.length - 1; i >= 0 && (!count || out.length < count); i--) { out.push(buckets[i].pop()); if (!buckets[i].length) buckets.splice(i, 1); }
+    return out;
+  }
+  function diagnosticGroups(subject) {
+    if (["math", "math2"].includes(subject)) return [
+      {name:"选择题", kinds:["选择题", "单选题"], count:10},
+      {name:"填空题", kinds:["填空题"], count:6},
+      {name:"解答题", kinds:["计算题", "证明题", "解答题"], count:6}
+    ];
+    if (["english", "english2"].includes(subject)) return [
+      {name:"完形", kinds:["完形"], count:20}, {name:"阅读", kinds:["阅读"], count:20},
+      {name:"新题型", kinds:["新题型"], count:5}, {name:"翻译", kinds:["翻译"], count:subject === "english" ? 5 : 1},
+      {name:"小作文", kinds:["小作文"], count:1}, {name:"大作文", kinds:["大作文"], count:1}
+    ];
+    if (subject === "politics") return [
+      {name:"单选", kinds:["单选题", "单项选择题"], count:16},
+      {name:"多选", kinds:["多选题", "多项选择题"], count:17},
+      {name:"分析", kinds:["分析题"], count:5}
+    ];
+    return null;
+  }
+  function diagnosticPool(pool, subject) {
+    const single = pool.filter(q => q.subject === subject), groups = diagnosticGroups(subject);
+    if (groups) return groups.flatMap(g => {
+      const candidates = single.filter(q => g.kinds.includes(q.kind));
+      if (!["english", "english2"].includes(subject) || !["完形", "阅读", "新题型", "翻译"].includes(g.name) || (g.name === "翻译" && subject === "english2")) return stratified(candidates, g.count);
+      const size = g.name === "完形" ? 20 : 5, sets = new Map();
+      candidates.forEach(q => {
+        const no = paperNo(q), start = g.name === "阅读" ? 21 + 5 * Math.floor((no - 21) / 5) : {"完形":1, "新题型":41, "翻译":46}[g.name];
+        if (no < start || no >= start + size || (g.name === "阅读" && (start < 21 || start > 36)) || !q.chapter || (g.name !== "翻译" && !q.passage)) return;
+        const key = `${q.chapter}|${start}|${g.name === "翻译" ? "" : q.passage}`;
+        if (!sets.has(key)) sets.set(key, []);
+        sets.get(key).push(q);
+      });
+      const complete = [...sets.values()].filter(set => set.length === size && new Set(set.map(paperNo)).size === size);
+      return shuffle(complete).slice(0, g.count / size).flatMap(set => set.sort((a,b) => paperNo(a) - paperNo(b)));
+    });
+    return stratified(single, state.count || 500).sort((a,b) => paperNo(a) - paperNo(b));
+  }
+  const sealed = () => session && session.mode !== "knowledge" && !session.ended;
   function start(poolOverride) {
+    if ((state.mode === "paper" || state.mode === "diagnostic") && state.subject === "all") return;
     if (state.mode === "paper") {
       const arc = archiveOf(state.paper);
       if (arc) {
@@ -277,10 +341,13 @@
     if (!pool.length) { $("#pcount").textContent = "没有符合条件的题目"; return; }
     if (!poolOverride && state.mode === "knowledge") pool = shuffle(pool.slice());
     if (!poolOverride && state.mode === "knowledge" && state.count > 0) pool = pool.slice(0, state.count);
+    if (!poolOverride && state.mode === "diagnostic") pool = diagnosticPreview.slice();
+    if (!pool.length || (state.mode !== "knowledge" && pool.some(q => q.subject !== state.subject))) { $("#pcount").textContent = "题型不足或科目不一致，无法组卷"; return; }
     if (!poolOverride && state.mode === "paper") pool = pool.slice().sort((a, b) => paperNo(a) - paperNo(b));
-    session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, startTime: Date.now(), ended: false, mode: state.mode };
+    $("#sideSubmit").hidden = false;
+    session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, startTime: Date.now(), ended: false, mode: state.mode, structure: $("#structureInfo").hidden ? "" : $("#structureInfo").textContent };
     const sub = SUBJECTS.find(s => s.id === state.subject);
-    const title = poolOverride ? "错题重练" : (state.mode === "paper" ? pool[0].chapterTitle
+    const title = poolOverride ? "错题重练" : (state.mode === "diagnostic" ? `${sub ? sub.name : state.subject} · 能力自测` : state.mode === "paper" ? pool[0].chapterTitle
       : (state.chapter !== "all" ? pool[0].chapterTitle
         : (sub ? sub.name : "全科综合")));
     $("#paperTitle").textContent = `${title} · ${pool.length} 题`;
@@ -381,8 +448,21 @@
     $("#aiResult").innerHTML = "";
     $("#gradebar").hidden = true;
     $$("#gradebar button").forEach(b => { b.disabled = false; b.classList.remove("on"); });
-    if (st) showSolution(true);
+    if (st && !sealed()) showSolution(true);
+    $("#reveal").hidden = !!sealed();
+    $("#aiAsk").hidden = !!sealed() || !AI_ENDPOINT;
+    $("#work").readOnly = session.ended;
+    $("#photoTake").hidden = session.ended;
+    $("#photoPick").hidden = session.ended;
+    $("#photoRemove").hidden = session.ended;
     if (session.ended && OBJ_KINDS.includes(q.kind)) paintObjective(q);
+    if (session.ended) {
+      showSolution(true);
+      const result = session.attempt && session.attempt.results && session.attempt.results[q.id];
+      if (result) { $("#aiResult").hidden = false; $("#aiResult").textContent = [result.comments, result.missing, result.suggestions, result.revised].filter(Boolean).join("\n\n"); }
+      $("#reveal").textContent = "返回结果";
+      if (["english", "english2"].includes(q.subject) && /翻译|作文/.test(q.kind)) { $("#aiAsk").hidden = false; $("#aiAsk").textContent = "AI 多轮指导"; }
+    } else $("#reveal").textContent = "显示解析（Space）";
     const readCh = q.topicChapter || (q.kp ? q.chapter : "");
     $("#pklink").hidden = !readCh;
     $("#pklink").href = `index.html#read=${encodeURIComponent(readCh)}` +
@@ -394,7 +474,7 @@
     } else {
       $("#psource").hidden = true;
     }
-    if (q.solutionPdf) {
+    if (q.solutionPdf && !sealed()) {
       $("#psol").href = encodeURI(q.solutionPdf) + "#page=" + (q.solutionPage || 1);
       $("#psol").hidden = false;
     } else {
@@ -406,21 +486,23 @@
   }
 
   function showSolution(alreadyGraded) {
-    const q = current(); if (!q) return;
+    const q = current(); if (!q || sealed()) return;
     const obj = OBJ_KINDS.includes(q.kind);
+    const unverified = ["pending", "needs_review"].includes(q.reviewStatus);
     // 客观题在交卷前不给答案，避免边做边对——交卷后统一揭示
-    const sealed = obj && !session.ended;
-    const ans = (!sealed && q.answer)
-      ? `<div class="slabel2">要点</div><div class="sans">${fmt(q.answer)}</div>` : "";
-    const steps = (!sealed && (q.steps || []).length)
+    const answerSealed = obj && !session.ended;
+    const ans = (!answerSealed && q.answer)
+      ? `<div class="slabel2">${unverified ? "待核参考" : "要点"}</div><div class="sans">${fmt(q.answer)}</div>` : "";
+    const steps = (!answerSealed && (q.steps || []).length)
       ? `<div class="slabel2" style="margin-top:10px">完整解答</div><ol class="ssteps">${q.steps.map(s => `<li>${fmt(s)}</li>`).join("")}</ol>` : "";
-    const hint = sealed
+    const hint = answerSealed
       ? `<div class="sans" style="color:var(--ink3)">客观题答案将在交卷后统一公布。先选好你的答案。</div>`
       : (!q.answer ? `<div class="sans" style="color:var(--ink3)">这题暂无已核对答案，可自评。</div>` : "");
-    $("#solution").innerHTML = ans + steps + hint;
+    const warning = !answerSealed && unverified ? `<div class="sans">答案与解析待核，不能作为确定的评分依据。${q.reviewReason ? ` ${esc(q.reviewReason)}` : ""}</div>` : "";
+    $("#solution").innerHTML = warning + ans + steps + hint;
     renderMath($("#solution"));
     $("#solution").hidden = false;
-    $("#gradebar").hidden = sealed || obj;
+    $("#gradebar").hidden = answerSealed || obj;
     if (alreadyGraded) {
       $$("#gradebar button").forEach(b => { b.disabled = true; });
       const st = session.status[q.id];
@@ -444,7 +526,7 @@
 
   function grade(kind) {
     const q = current();
-    if (!q || session.status[q.id]) return;
+    if (!q || sealed() || session.ended || session.status[q.id]) return;
     session.status[q.id] = kind;
     const r = store.rec[q.id] || { seen: 0, ok: 0, wrong: 0, last: 0 };
     r.seen += 1; r.last = Date.now();
@@ -480,71 +562,53 @@
 
   function requestSubmit() {
     if (!session || session.ended) return;
-    const left = session.queue.length - Object.keys(session.status).length;
+    const left = session.queue.filter(q => !(session.picks[q.id] || []).length && !session.notes[q.id]).length;
     askConfirm("交卷", left > 0
       ? `还有 ${left} 题未作答。检查完毕，确认交卷吗？`
       : "已检查完毕，确认交卷吗？", doSubmit);
   }
 
-  function doSubmit() {
-    session.queue.forEach(q => {
-      if (session.status[q.id]) return;          // 已自评过的保持原判
-      const ans = answerLetters(q);
-      const picks = session.picks[q.id] || [];
-      if (!ans || !picks.length) return;         // 无答案或未作答 → 不判分
-      session.status[q.id] = picks.slice().sort().join("") === ans.split("").sort().join("") ? "ok" : "wrong";
-      const r = store.rec[q.id] || { seen: 0, ok: 0, wrong: 0, last: 0 };
-      r.seen += 1; r.last = Date.now();
-      if (session.status[q.id] === "ok") r.ok += 1; else r.wrong += 1;
-      store.rec[q.id] = r;
-    });
-    save();
-    session.ended = true;
-    if (timerId) clearInterval(timerId);
-    $("#submitBtn").hidden = true;
-    $("#exitBtn").hidden = true;
-    $("#tocBtn").hidden = true;
-    $("#exam").hidden = true;
-    $("#result").hidden = false;
-    $("#bankLink").hidden = false;
-    document.body.classList.remove("paper-run");
-    const ok = session.queue.filter(q => session.status[q.id] === "ok").length;
-    const wrong = session.queue.filter(q => session.status[q.id] === "wrong").length;
-    const fuzzy = session.queue.filter(q => session.status[q.id] === "fuzzy").length;
-    const graded = ok + wrong + fuzzy;
-    // 「已作答但无已核对答案」的题既不判对也不判错，单独报出来，别让用户以为答了却没分
-    const answered = session.queue.filter(q => (session.picks[q.id] || []).length).length;
-    const pending = Math.max(0, answered - graded);
-    const rate = ok + wrong ? Math.round(ok / (ok + wrong) * 100) : 0;
-    const sec = Math.floor((Date.now() - session.startTime) / 1000);
-    const time = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
-    $("#result").innerHTML = `
-      <div class="ekicker">RESULT</div>
-      <h2>交卷完成</h2>
-      <div class="rsum">用时 ${time} · 已答 ${answered} / ${session.queue.length} 题 · 判分 ${graded} 题（对 ${ok} · 错 ${wrong}${fuzzy ? ` · 模糊 ${fuzzy}` : ""}）${pending ? ` · 待核对 ${pending} 题` : ""} · 正确率 ${rate}%</div>
-      ${pending ? `<p class="rsum" style="color:var(--ink3)">有 ${pending} 题暂无已核对答案（肖1000 解析册为扫描件），交卷后不对这些题判对错。</p>` : ""}
-      <div class="rgrid">${session.queue.map((q, i) => {
-        const st = session.status[q.id] || "";
-        return `<span class="${st}">${i + 1}</span>`;
-      }).join("")}</div>
-      ${wrong ? `<div class="rwrong">${session.queue.filter(q => session.status[q.id] === "wrong")
-        .map(q => `<div><b>${esc(q.kpName)}</b>${esc(q.text.slice(0, 100))}${q.text.length > 100 ? "…" : ""}</div>`).join("")}</div>` : `<p class="rsum">没有做错的题。</p>`}
-      <div class="racts">
-        ${wrong ? `<button id="retryWrong">重练错题</button>` : ""}
-        <button class="ghost" id="backSetup">再组一卷</button>
-      </div>`;
-    const retry = $("#retryWrong");
-    if (retry) retry.addEventListener("click", () => {
-      const pool = session.queue.filter(q => session.status[q.id] === "wrong");
-      $("#result").hidden = true;
-      start(pool);
-    });
-    $("#backSetup").addEventListener("click", () => {
-      $("#result").hidden = true;
-      $("#setup").hidden = false;
-      session = null;
-      updateCount();
-    });
+  async function doSubmit() {
+    if (session.submitting) return;
+    session.submitting = true;
+    if (session.mode === "knowledge") {
+      session.queue.forEach(q => { const ans = answerLetters(q), picks = session.picks[q.id] || []; if (!session.status[q.id] && ans && picks.length) { const kind = picks.slice().sort().join("") === ans.split("").sort().join("") ? "ok" : "wrong"; session.status[q.id] = kind; const r = store.rec[q.id] || {seen:0, ok:0, wrong:0, last:0}; r.seen++; r[kind]++; r.last = Date.now(); store.rec[q.id] = r; } }); save();
+      finishSubmit(); return;
+    }
+    const answers = {};
+    for (const q of session.queue) answers[q.id] = {work:session.notes[q.id] || "", selected:session.picks[q.id] || [], image:await photoGet(q.id) || ""};
+    const id = crypto.randomUUID();
+    try {
+      const data = await window.AtlasUser.json("/api/attempts", "POST", {id, subject:session.queue[0].subject, mode:session.mode, questions:session.queue, answers});
+      session.attempt = data.attempt; finishSubmit();
+      for (const q of session.queue) { if (!session || !session.attempt || session.attempt.id !== id) break; await gradeAttempt(q.id); }
+    } catch (err) { session.submitting = false; askConfirm("保存失败", `交卷未完成：${err.message}。请重试。`, () => {}); }
+  }
+  async function gradeAttempt(id) {
+    if (!session || !session.attempt || session.grading) return;
+    const active = session; session.grading = id; renderResult();
+    try { const data = await window.AtlasUser.json(`/api/attempts/${encodeURIComponent(session.attempt.id)}/grade`, "POST", {questionId:id}); if (session !== active) return; session.attempt = data.attempt; session.errors = session.errors || {}; delete session.errors[id]; }
+    catch (err) { if (session === active) { session.errors = session.errors || {}; session.errors[id] = err.message; } }
+    finally { if (session === active) { session.grading = null; renderResult(); } }
+  }
+  function finishSubmit() {
+    session.ended = true; if (timerId) clearInterval(timerId);
+    $("#submitBtn").hidden = true; $("#exitBtn").hidden = true; $("#tocBtn").hidden = true; $("#exam").hidden = true; $("#result").hidden = false; $("#bankLink").hidden = false; document.body.classList.remove("paper-run"); renderResult();
+  }
+  function renderResult() {
+    if (!session || $("#result").hidden) return;
+    const masteryWasOpen = !!$("#masteryDialog[open]");
+    const results = session.attempt && session.attempt.results || {};
+    let score = 0, max = 0, completed = 0, missingMax = 0;
+    session.queue.forEach(q => { const r = results[q.id]; if (!r || r.status !== "graded") { if (q.maxScore == null) missingMax++; return; } completed++; if (r.maxScore != null && Number.isFinite(Number(r.maxScore))) { max += Number(r.maxScore); score += Number(r.score) || 0; } else missingMax++; });
+    const status = q => { const r = results[q.id]; if (isObjective(q) && answerLetters(q) && (session.picks[q.id] || []).length) return (session.picks[q.id] || []).slice().sort().join("") === answerLetters(q).split("").sort().join("") ? "ok" : "wrong"; if (!r || r.status !== "graded") return session.status[q.id] || "pending"; return r.maxScore != null && Number(r.maxScore) > 0 && Number(r.score) >= Number(r.maxScore) ? "ok" : "fuzzy"; };
+    $("#result").innerHTML = `<div class="ekicker">RESULT</div><h2>交卷完成</h2><p class="rsum">${esc(session.structure)}</p><div class="rsum">已评分 ${completed} / ${session.queue.length} 题 · 已核分值范围 ${score} / ${max} 分 · ${missingMax} 题满分待核${session.grading ? " · 正在评分" : ""}</div><div class="rgrid">${session.queue.map((q,i) => `<button class="${status(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${status(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。</p>${Object.entries(session.errors || {}).map(([id,error]) => `<p>评分失败：${esc(error)} <button data-retry="${esc(id)}">重试该题</button></p>`).join("")}<div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
+    window.AtlasAssessment.renderMastery(document.getElementById("mastery"), session.queue, results);
+    if (masteryWasOpen) $("#masteryDialog").showModal();
+    $("#result").querySelectorAll("[data-review]").forEach(b => b.onclick = () => { $("#result").hidden = true; $("#exam").hidden = false; $("#sheet").hidden = false; $("#sideSubmit").hidden = true; session.i = Number(b.dataset.review); renderQuestion(); });
+    $("#result").querySelectorAll("[data-retry]").forEach(b => b.onclick = () => gradeAttempt(b.dataset.retry));
+    $("#backSetup").disabled = !!session.grading;
+    $("#backSetup").onclick = () => { $("#result").hidden = true; $("#setup").hidden = false; session = null; updateCount(); };
   }
 
   function requestExit() {
@@ -563,7 +627,7 @@
   }
 
   /* ---------- answer photo + AI grading ---------- */
-  const DB_NAME = "atlas-practice";
+  let DB_NAME;
   const DB_STORE = "photos";
   let dbPromise = null;
   function db() {
@@ -613,9 +677,9 @@
   }
   function isSubjective(q) {
     if (!q) return false;
-    if (q.subject === "math") return ["计算题", "证明题"].includes(q.kind);
+    if (["math", "math2"].includes(q.subject)) return ["计算题", "证明题"].includes(q.kind);
     if (q.subject === "mechanics") return ["计算题", "简答题"].includes(q.kind);
-    if (q.subject === "english") return ["翻译", "小作文", "大作文", "句式"].includes(q.kind);
+    if (["english", "english2"].includes(q.subject)) return ["翻译", "小作文", "大作文", "句式"].includes(q.kind);
     if (q.subject === "politics") return ["分析题"].includes(q.kind);
     return false;
   }
@@ -639,7 +703,7 @@
   function updateAIButton() {
     const q = current();
     const hasPhoto = !$("#photoPreview").hidden;
-    $("#aiGrade").hidden = !(q && isSubjective(q) && hasPhoto && AI_ENDPOINT);
+    $("#aiGrade").hidden = !!sealed() || !(q && isSubjective(q) && hasPhoto && AI_ENDPOINT);
   }
   function showPhoto(url) {
     const box = $("#photoPreview");
@@ -648,7 +712,7 @@
     updateAIButton();
   }
   async function aiGrade(photoOnly) {
-    const q = current(); if (!q || !AI_ENDPOINT) return;
+    const q = current(); if (!q || sealed() || !AI_ENDPOINT) return;
     const work = ($("#work").value || "").trim();
     const picks = (session && session.picks && session.picks[q.id] || []).join("");
     const photo = await photoGet(q.id) || (photoOnly ? $("#photoImg").src : "");
@@ -718,11 +782,13 @@
     const b = e.target.closest("[data-mode]"); if (b) setMode(b.dataset.mode);
   });
   $("#fSubject").addEventListener("change", e => {
-    state.subject = e.target.value;
+    state.subject = e.target.value; state.kp = "";
     if (state.mode === "paper") renderPaperOptions(); else renderChapterOptions();
+    $("#countRow").hidden = state.mode === "paper" || (state.mode === "diagnostic" && state.subject !== "mechanics");
     updateCount();
   });
-  $("#fChapter").addEventListener("change", e => { state.chapter = e.target.value; updateCount(); });
+  $("#fChapter").addEventListener("change", e => { state.chapter = e.target.value; state.kp = ""; updateCount(); });
+  $("#fBank").addEventListener("change", e => { state.bank = e.target.value; renderChapterOptions(); updateCount(); });
   $("#fPaper").addEventListener("change", e => { state.paper = e.target.value; updateCount(); });
   $("#fDiff").addEventListener("change", e => { state.diff = e.target.value; updateCount(); });
   $("#fSource").addEventListener("change", e => { state.source = e.target.value; updateCount(); });
@@ -730,11 +796,12 @@
     const b = e.target.closest("[data-n]"); if (!b) return;
     state.count = Number(b.dataset.n);
     $$("#fCount button").forEach(x => x.classList.toggle("on", x === b));
+    updateCount();
   });
   $("#pstart").addEventListener("click", () => start());
   $("#prev").addEventListener("click", () => go(session.i - 1));
   $("#next").addEventListener("click", () => go(session.i + 1));
-  $("#reveal").addEventListener("click", () => showSolution(false));
+  $("#reveal").addEventListener("click", () => { if (session.ended) { $("#exam").hidden = true; $("#result").hidden = false; renderResult(); } else showSolution(false); });
   $("#submitBtn").addEventListener("click", requestSubmit);
   $("#sideSubmit").addEventListener("click", requestSubmit);
   $("#exitBtn").addEventListener("click", requestExit);
@@ -768,15 +835,26 @@
     const b = e.target.closest("[data-grade]"); if (b && !b.disabled) grade(b.dataset.grade);
   });
   $("#work").addEventListener("input", e => { if (session) session.notes[current().id] = e.target.value; });
-  $("#aiAsk").addEventListener("click", () => aiGrade(false));
-  $("#photoPick").addEventListener("click", () => $("#photoInput").click());
-  $("#photoInput").addEventListener("change", async e => {
-    const f = e.target.files && e.target.files[0];
-    if (!f || !session) return;
-    const url = await fileToDataUrl(f);
-    if (url) { await photoPut(current().id, url); showPhoto(url); }
-    e.target.value = "";
-  });
+  $("#aiAsk").addEventListener("click", () => { const q = current(); if (session.ended && ["english", "english2"].includes(q.subject) && /翻译|作文/.test(q.kind)) window.AtlasCoach.open({subject:q.subject, question:q, work:session.notes[q.id] || "", attemptId:session.attempt && session.attempt.id}); else aiGrade(false); });
+  function choosePhoto(input) {
+    if (!session || session.ended) return;
+    input._target = { session, id: current().id };
+    input.click();
+  }
+  $("#photoTake").addEventListener("click", () => choosePhoto($("#photoCamera")));
+  $("#photoPick").addEventListener("click", () => choosePhoto($("#photoFile")));
+  async function onPhotoChange(e) {
+    const input = e.target, target = input._target;
+    const file = input.files && input.files[0];
+    input.value = ""; input._target = null;
+    if (!file || !target || session !== target.session || session.ended) return;
+    const url = await fileToDataUrl(file);
+    if (!url || session !== target.session || session.ended) return;
+    await photoPut(target.id, url);
+    if (session === target.session && !session.ended && current().id === target.id) showPhoto(url);
+  }
+  $("#photoCamera").addEventListener("change", onPhotoChange);
+  $("#photoFile").addEventListener("change", onPhotoChange);
   $("#photoRemove").addEventListener("click", async () => {
     if (!session) return;
     await photoDel(current().id); showPhoto(null);
@@ -787,7 +865,7 @@
     if (e.key === "Escape" && !$("#imgModal").hidden) { closeBigImage(); return; }
     if (!session || session.ended || $("#exam").hidden) return;
     if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
-    if (e.code === "Space") { e.preventDefault(); if ($("#solution").hidden) showSolution(false); return; }
+    if (e.code === "Space" && !sealed()) { e.preventDefault(); if ($("#solution").hidden) showSolution(false); return; }
     if (!$("#solution").hidden && !session.status[current().id]) {
       if (e.key === "1") { e.preventDefault(); grade("ok"); return; }
       if (e.key === "2") { e.preventDefault(); grade("wrong"); return; }
@@ -801,10 +879,21 @@
   function init() {
     $("#pintro").textContent = `共 ${ITEMS.length} 题：数学 ${ITEMS.filter(i => i.subject === "math").length}、英语 ${ITEMS.filter(i => i.subject === "english").length}、材力 ${ITEMS.filter(i => i.subject === "mechanics").length}、政治 ${ITEMS.filter(i => i.subject === "politics").length}。按知识点刷有答题卡目录；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷与 ${PAPERS.mock.length} 套模拟卷。`;
     populateSubjects();
-    renderChapterOptions();
+    const params = new URLSearchParams(location.search);
+    if (SUBJECTS.some(s => s.id === params.get("subject"))) state.subject = params.get("subject");
+    $("#fSubject").value = state.subject; renderChapterOptions();
+    if (params.get("chapter")) { state.chapter = params.get("chapter"); if (![...$("#fChapter").options].some(o => o.value === state.chapter)) $("#fChapter").add(new Option(state.chapter, state.chapter)); $("#fChapter").value = state.chapter; }
+    state.kp = params.get("kp") || "";
+    if ([...$("#fDiff").options].some(o => o.value === params.get("difficulty"))) { state.diff = params.get("difficulty"); $("#fDiff").value = state.diff; }
     updateCount();
     setMode("knowledge");
   }
 
-  init();
+  async function bootstrap() {
+    await window.AtlasUser.ready; DB_NAME = window.AtlasUser.key("atlas-practice-photos");
+    store = await window.AtlasUser.load("practice", {rec:{}}) || {rec:{}}; if (!store.rec) store.rec = {};
+    try { const data = await window.AtlasUser.json("/api/personal/questions", "GET"); ITEMS.push(...(data.items || []).map(q => ({...q, _bank:"private"}))); } catch (err) { console.error("个人题库加载失败", err); }
+    init();
+  }
+  bootstrap().catch(err => { $("#pintro").textContent = `加载失败：${err.message}`; $("#pstart").disabled = true; });
 })();

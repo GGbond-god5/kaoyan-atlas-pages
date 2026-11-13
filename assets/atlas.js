@@ -449,7 +449,7 @@
   }
 
   function wireBank() {
-    const base = (window.ATLAS_CONFIG || {}).bankBase;
+    const base = "practice.html";
     const links = [...readerArticle.querySelectorAll(".kp-bank")];
     if (!base) { links.forEach(a => a.remove()); return; }
     links.forEach(a => {
@@ -457,6 +457,8 @@
       u.searchParams.set("subject", a.dataset.bankSubject || "");
       u.searchParams.set("chapter", a.dataset.bankChapter || "");
       u.searchParams.set("kp", a.dataset.bankKp || "");
+      const difficulty = new URLSearchParams(location.search).get("difficulty");
+      if (difficulty) u.searchParams.set("difficulty", difficulty);
       a.href = u.toString();
       a.removeAttribute("hidden");
     });
@@ -474,6 +476,11 @@
     readerToc.innerHTML = readerTocHtml(ch);
     readerArticle.innerHTML = ch.html + readerNavHtml(ch);
     wireBank();
+    if (/^english(?:2)?-0[5678]$/.test(ch.id) && window.AtlasCoach) {
+      const coach = document.createElement("button"); coach.type = "button"; coach.textContent = "AI 写作与翻译指导";
+      coach.addEventListener("click", () => window.AtlasCoach.open({subject:ch.subject, chapter:ch.id, title:ch.title}));
+      readerArticle.prepend(coach);
+    }
     readerEl.scrollTop = 0;
     readerEl.classList.add("open");
     readerEl.setAttribute("aria-hidden", "false");
