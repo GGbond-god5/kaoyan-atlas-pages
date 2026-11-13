@@ -217,6 +217,20 @@ a{color:inherit;text-decoration:none}
   color: var(--ink2); white-space: pre-wrap; }
 .ai-result b { color: #1F3A5F; }
 .ai-result .score { font-family: var(--serif); font-size: 18px; color: #1F3A5F; margin-right: 8px; }
+.ai-result .ai-note { font-size: 11.5px; color: var(--ink-3, #6b6b6b); }
+.spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(31,58,95,.18);
+  border-top-color: #1F3A5F; border-radius: 50%; animation: atlas-spin .8s linear infinite;
+  vertical-align: -2px; margin-right: 6px; }
+@keyframes atlas-spin { to { transform: rotate(360deg); } }
+.rprogress { display: flex; align-items: center; gap: 10px; margin: 14px 0 4px; padding: 10px 14px;
+  border: 1px solid var(--rule); border-left: 3px solid #1F3A5F; background: #F4F7FB; border-radius: 2px;
+  font-size: 12.5px; color: var(--ink2); }
+.rprogress.done { border-left-color: #3f6b4a; background: #F3F7F3; }
+.rprogress .rbar { flex: 1; height: 4px; background: #dde5ef; border-radius: 2px; overflow: hidden; }
+.rprogress .rbar i { display: block; height: 100%; width: 0; background: #1F3A5F; transition: width .35s ease; }
+.rprogress.done .rbar i { background: #3f6b4a; }
+.rerr { margin: 6px 0; color: #8c2f26; font-size: 12.5px; }
+.rerr button { margin-left: 6px; }
 
 /* confirm modal */
 .modal { position: fixed; inset: 0; z-index: 95; background: rgba(23,22,26,.38);

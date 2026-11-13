@@ -580,35 +580,109 @@
     const id = crypto.randomUUID();
     try {
       const data = await window.AtlasUser.json("/api/attempts", "POST", {id, subject:session.queue[0].subject, mode:session.mode, questions:session.queue, answers});
-      session.attempt = data.attempt; finishSubmit();
-      for (const q of session.queue) { if (!session || !session.attempt || session.attempt.id !== id) break; await gradeAttempt(q.id); }
+      session.attempt = data.attempt;
+      session.gradeQueue = session.queue.map(q => q.id);
+      session.gradeTotal = session.gradeQueue.length;
+      session.gradeDone = 0;
+      finishSubmit();
+      await runGradeQueue(id);
     } catch (err) { session.submitting = false; askConfirm("保存失败", `交卷未完成：${err.message}。请重试。`, () => {}); }
   }
+  async function runGradeQueue(attemptId) {
+    const queue = (session && session.gradeQueue || []).slice();
+    let cursor = 0;
+    const worker = async () => {
+      while (session && session.attempt && session.attempt.id === attemptId) {
+        const id = queue[cursor++];
+        if (!id) return;
+        await gradeAttempt(id);
+        if (session && session.attempt && session.attempt.id === attemptId) {
+          session.gradeDone = Math.min((session.gradeDone || 0) + 1, session.gradeTotal || queue.length);
+          updateResultStatus();
+        }
+      }
+    };
+    await Promise.all([worker(), worker()]);
+    if (session && session.attempt && session.attempt.id === attemptId) {
+      session.gradeQueue = [];
+      session.gradeDone = session.gradeTotal;
+      updateResultStatus();
+      const host = document.getElementById("mastery");
+      if (host) window.AtlasAssessment.renderMastery(host, session.queue, session.attempt.results || {});
+    }
+  }
   async function gradeAttempt(id) {
-    if (!session || !session.attempt || session.grading) return;
-    const active = session; session.grading = id; renderResult();
-    try { const data = await window.AtlasUser.json(`/api/attempts/${encodeURIComponent(session.attempt.id)}/grade`, "POST", {questionId:id}); if (session !== active) return; session.attempt = data.attempt; session.errors = session.errors || {}; delete session.errors[id]; }
+    if (!session || !session.attempt) return;
+    const active = session; session.grading = id; updateResultStatus();
+    try {
+      const data = await window.AtlasUser.json(`/api/attempts/${encodeURIComponent(session.attempt.id)}/grade`, "POST", {questionId:id});
+      if (session !== active) return;
+      const prev = session.attempt && session.attempt.results || {};
+      session.attempt = Object.assign({}, data.attempt, {results:Object.assign({}, prev, data.attempt && data.attempt.results || {})});
+      session.errors = session.errors || {}; delete session.errors[id];
+    }
     catch (err) { if (session === active) { session.errors = session.errors || {}; session.errors[id] = err.message; } }
-    finally { if (session === active) { session.grading = null; renderResult(); } }
+    finally { if (session === active) { session.grading = null; updateResultStatus(); } }
   }
   function finishSubmit() {
     session.ended = true; if (timerId) clearInterval(timerId);
     $("#submitBtn").hidden = true; $("#exitBtn").hidden = true; $("#tocBtn").hidden = true; $("#exam").hidden = true; $("#result").hidden = false; $("#bankLink").hidden = false; document.body.classList.remove("paper-run"); renderResult();
   }
+  function qStatus(q) {
+    const results = session.attempt && session.attempt.results || {};
+    const r = results[q.id];
+    if (isObjective(q) && answerLetters(q) && (session.picks[q.id] || []).length) return (session.picks[q.id] || []).slice().sort().join("") === answerLetters(q).split("").sort().join("") ? "ok" : "wrong";
+    if (!r || r.status !== "graded") return session.status[q.id] || "pending";
+    return r.maxScore != null && Number(r.maxScore) > 0 && Number(r.score) >= Number(r.maxScore) ? "ok" : "fuzzy";
+  }
+  function resultTotals() {
+    const results = session.attempt && session.attempt.results || {};
+    let score = 0, max = 0, completed = 0, missingMax = 0;
+    session.queue.forEach(q => {
+      const r = results[q.id];
+      if (!r || r.status !== "graded") { if (q.maxScore == null) missingMax++; return; }
+      completed++;
+      if (r.maxScore != null && Number.isFinite(Number(r.maxScore))) { max += Number(r.maxScore); score += Number(r.score) || 0; }
+      else missingMax++;
+    });
+    return {score, max, completed, missingMax};
+  }
+  function updateResultStatus() {
+    if (!session || $("#result").hidden) return;
+    const {score, max, completed, missingMax} = resultTotals();
+    const total = session.gradeTotal || 0, done = Math.min(session.gradeDone || 0, total);
+    const running = (session.gradeQueue && session.gradeQueue.length) || session.grading;
+    const sum = $("#rsummary");
+    if (sum) sum.textContent = `已评分 ${completed} / ${session.queue.length} 题 · 已核分值范围 ${score} / ${max} 分 · ${missingMax} 题满分待核`;
+    const box = $("#rprogress");
+    if (box) {
+      box.hidden = !total;
+      box.classList.toggle("done", Boolean(total) && !running);
+      const txt = $("#rprogressText");
+      if (txt) txt.textContent = running ? `AI 正在评分 ${done} / ${total}` : `AI 评分完成 ${done} / ${total}`;
+      const bar = $("#rprogressBar");
+      if (bar) bar.style.width = total ? Math.round(done / total * 100) + "%" : "0%";
+    }
+    session.queue.forEach((q, i) => {
+      const b = $(`#result [data-review="${i}"]`);
+      if (b) b.className = qStatus(q);
+    });
+    const errBox = $("#rerrors");
+    if (errBox) errBox.innerHTML = Object.entries(session.errors || {}).map(([id, error]) => `<p class="rerr">评分失败：${esc(error)} <button type="button" data-retry="${esc(id)}">重试该题</button></p>`).join("");
+    errBox && errBox.querySelectorAll("[data-retry]").forEach(b => b.onclick = () => gradeAttempt(b.dataset.retry));
+    const back = $("#backSetup");
+    if (back) back.disabled = Boolean(running);
+  }
   function renderResult() {
     if (!session || $("#result").hidden) return;
     const masteryWasOpen = !!$("#masteryDialog[open]");
     const results = session.attempt && session.attempt.results || {};
-    let score = 0, max = 0, completed = 0, missingMax = 0;
-    session.queue.forEach(q => { const r = results[q.id]; if (!r || r.status !== "graded") { if (q.maxScore == null) missingMax++; return; } completed++; if (r.maxScore != null && Number.isFinite(Number(r.maxScore))) { max += Number(r.maxScore); score += Number(r.score) || 0; } else missingMax++; });
-    const status = q => { const r = results[q.id]; if (isObjective(q) && answerLetters(q) && (session.picks[q.id] || []).length) return (session.picks[q.id] || []).slice().sort().join("") === answerLetters(q).split("").sort().join("") ? "ok" : "wrong"; if (!r || r.status !== "graded") return session.status[q.id] || "pending"; return r.maxScore != null && Number(r.maxScore) > 0 && Number(r.score) >= Number(r.maxScore) ? "ok" : "fuzzy"; };
-    $("#result").innerHTML = `<div class="ekicker">RESULT</div><h2>交卷完成</h2><p class="rsum">${esc(session.structure)}</p><div class="rsum">已评分 ${completed} / ${session.queue.length} 题 · 已核分值范围 ${score} / ${max} 分 · ${missingMax} 题满分待核${session.grading ? " · 正在评分" : ""}</div><div class="rgrid">${session.queue.map((q,i) => `<button class="${status(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${status(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。</p>${Object.entries(session.errors || {}).map(([id,error]) => `<p>评分失败：${esc(error)} <button data-retry="${esc(id)}">重试该题</button></p>`).join("")}<div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
+    $("#result").innerHTML = `<div class="ekicker">RESULT</div><h2>交卷完成</h2><p class="rsum">${esc(session.structure)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
     window.AtlasAssessment.renderMastery(document.getElementById("mastery"), session.queue, results);
     if (masteryWasOpen) $("#masteryDialog").showModal();
     $("#result").querySelectorAll("[data-review]").forEach(b => b.onclick = () => { $("#result").hidden = true; $("#exam").hidden = false; $("#sheet").hidden = false; $("#sideSubmit").hidden = true; session.i = Number(b.dataset.review); renderQuestion(); });
-    $("#result").querySelectorAll("[data-retry]").forEach(b => b.onclick = () => gradeAttempt(b.dataset.retry));
-    $("#backSetup").disabled = !!session.grading;
     $("#backSetup").onclick = () => { $("#result").hidden = true; $("#setup").hidden = false; session = null; updateCount(); };
+    updateResultStatus();
   }
 
   function requestExit() {
@@ -724,29 +798,30 @@
     const btn = photoOnly ? $("#aiGrade") : $("#aiAsk");
     const old = btn.textContent;
     btn.disabled = true; btn.textContent = "AI 评核中…";
-    const box = $("#aiResult"); box.hidden = false; box.textContent = "正在评核…";
+    const box = $("#aiResult"); box.hidden = false; box.innerHTML = '<span class="spinner"></span> AI 正在识别作答并评分…';
     try {
       const r = await fetch(AI_ENDPOINT, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           subject: q.subjectName, kp: q.kpName, kind: q.kind,
           question: (q.passage ? q.passage + "\n\n" : "") + q.text,
-          answer: q.answer, steps: q.steps,
+          answer: q.answer, steps: q.steps, maxScore: q.maxScore,
           selected: picks,
           work, image: photo || "",
         }),
       });
       const data = await r.json();
       if (!r.ok || data.error) throw new Error(data.error || `HTTP ${r.status}`);
-      const score = data.score != null ? `<span class="score">${data.score}</span>` : "";
+      const score = data.score != null ? `<span class="score">${data.score}${data.maxScore ? " / " + data.maxScore : ""}</span>` : "";
+      const assumed = data.maxScoreAssumed ? ` <span class="ai-note">（按默认满分 ${data.maxScore} 分估算）</span>` : "";
       const lvl = data.level ? `<b>${esc(data.level)}</b> · ` : "";
-      let html = score + lvl + esc(data.comments || "评核完成");
+      let html = score + assumed + lvl + esc(data.comments || "评核完成");
       if (data.missing) html += `<div class="ai-sec"><b>缺失/错误</b><br>${esc(data.missing).replace(/\n/g, "<br>")}</div>`;
       if (data.suggestions) html += `<div class="ai-sec"><b>修改建议</b><br>${esc(data.suggestions).replace(/\n/g, "<br>")}</div>`;
       if (data.revised) html += `<div class="ai-sec"><b>润色参考</b><div class="ai-revised">${esc(data.revised).replace(/\n/g, "<br>")}</div></div>`;
       box.innerHTML = html;
     } catch (e) {
-      box.textContent = `AI 评核失败：${e.message}。请确认本地 serve.py 已启动、已配置 DashScope Key。`;
+      box.textContent = `AI 评核失败：${e.message}。请确认已登录，且站点已配置 AI Key。`;
     } finally {
       btn.disabled = false; btn.textContent = old;
     }
