@@ -35,7 +35,7 @@ async function database(env) {
 export async function ai(env, messages, jsonMode = false) {
   const key = env.AI_API_KEY || env.DASHSCOPE_API_KEY;
   if (!key) throw new Error('AI 服务未配置');
-  const base = (env.AI_BASE_URL || 'https://maas.qianwenaiapi.com/compatible-mode/v1').replace(/\/+$/, '');
+  const base = (env.AI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1').replace(/\/+$/, '');
   let res;
   try { res = await fetch(`${base}/chat/completions`, {method:'POST', headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'}, body:JSON.stringify({model:env.AI_MODEL || 'qwen3-vl-plus', messages, temperature:0.2, max_tokens:3000, ...(jsonMode ? {response_format:{type:'json_object'}} : {})})}); }
   catch { throw new Error('AI 服务连接失败'); }

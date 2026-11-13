@@ -7,10 +7,12 @@ binding = "DB"
 database_name = "kaoyan-atlas-accounts"
 database_id = "0e82bbde-a58e-40c5-a0e3-ebb6d67d1b4f"
 
-[[r2_buckets]]
-binding = "LIBRARY_FILES"
-bucket_name = "kaoyan-atlas-library"
+# R2 尚未在 Cloudflare 账号开通。绑定存在时 Pages 构建会直接失败，
+# 因此先保持注释；开通 R2 并创建 kaoyan-atlas-library 桶后再启用。
+# [[r2_buckets]]
+# binding = "LIBRARY_FILES"
+# bucket_name = "kaoyan-atlas-library"
 
 [vars]
-AI_BASE_URL = "https://maas.qianwenaiapi.com/compatible-mode/v1"
+AI_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 AI_MODEL = "qwen3-vl-plus"
