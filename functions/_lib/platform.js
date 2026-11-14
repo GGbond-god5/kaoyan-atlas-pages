@@ -2,7 +2,7 @@ import { currentSession } from './security.js';
 import { ok, fail, readJson } from './http.js';
 import { IMPORT_PROMPT } from './import-prompt.js';
 import { allocatePaper, questionScore } from './scoring.js';
-import { essaySystem, GENERIC_SYSTEM } from './prompts.js';
+import { gradeSystemFor, TRANSCRIBE_SYSTEM } from './prompts.js';
 
 const subjects = new Set(['math','math2','english','english2','mechanics','politics']);
 const schema = [
@@ -13,7 +13,8 @@ const schema = [
  `CREATE TABLE IF NOT EXISTS platform_state (uid TEXT NOT NULL, namespace TEXT NOT NULL, data TEXT NOT NULL, revision INTEGER NOT NULL, PRIMARY KEY(uid,namespace))`,
  `CREATE TABLE IF NOT EXISTS platform_attempts (uid TEXT NOT NULL, id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,id))`,
  `CREATE TABLE IF NOT EXISTS platform_results (uid TEXT NOT NULL, attempt_id TEXT NOT NULL, question_id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,attempt_id,question_id))`,
- `CREATE TABLE IF NOT EXISTS platform_coach (uid TEXT NOT NULL, id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,id))`
+ `CREATE TABLE IF NOT EXISTS platform_coach (uid TEXT NOT NULL, id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,id))`,
+  `CREATE TABLE IF NOT EXISTS platform_subjects (uid TEXT NOT NULL, id TEXT NOT NULL, name TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(uid,id))`
 ];
 const row = (db, sql, ...args) => db.prepare(sql).bind(...args).first();
 const run = (db, sql, ...args) => db.prepare(sql).bind(...args).run();
@@ -23,7 +24,10 @@ const id = () => crypto.randomUUID();
 const str = x => typeof x === 'string' ? x : '';
 const changes = result => result.meta?.changes ?? 0;
 const notFound = () => fail(404, '资源不存在');
-const fileOut = f => ({id:f.id,name:f.name,subject:f.subject,size:f.size,status:f.status,createdAt:f.created_at});
+const SUBJECT_NAMES = {math:'数学一', math2:'数学二', english:'英语一', english2:'英语二', mechanics:'材料力学', politics:'政治'};
+async function subjectAllowed(db, uid, s) { return subjects.has(s) || !!(await row(db, 'SELECT id FROM platform_subjects WHERE uid=? AND id=?', uid, s)); }
+async function subjectNameOf(db, uid, s) { if (SUBJECT_NAMES[s]) return SUBJECT_NAMES[s]; const r = await row(db, 'SELECT name FROM platform_subjects WHERE uid=? AND id=?', uid, s); return r ? r.name : s; }
+const fileOut = f => ({id:f.id,name:f.name,subject:f.subject,category:f.category || '',size:f.size,status:f.status,createdAt:f.created_at});
 
 export async function auth(request, env) {
   let session; try { session = await currentSession(request, env); } catch { return null; }
@@ -32,12 +36,15 @@ export async function auth(request, env) {
 async function database(env) {
   if (!env.DB) throw new Error('数据库未配置');
   await env.DB.batch(schema.map(s => env.DB.prepare(s)));
+  try { await env.DB.prepare('ALTER TABLE platform_files ADD COLUMN category TEXT').run(); } catch (_) { /* 列已存在 */ }
   return env.DB;
 }
 export async function ai(env, messages, jsonMode = false) {
   const key = env.AI_API_KEY || env.DASHSCOPE_API_KEY;
   if (!key) throw new Error('AI 服务未配置');
-  const base = (env.AI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1').replace(/\/+$/, '');
+  let base = (env.AI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1').replace(/\/+$/, '');
+  // AI_BASE_URL 只填了域名（没带路径）时，自动补上兼容模式路径，避免所有 AI 调用 404
+  try { if (new URL(base).pathname === '/') base += '/compatible-mode/v1'; } catch (_) {}
   const model = env.AI_MODEL || 'qwen3-vl-plus';
   const payload = {
     model,
@@ -116,52 +123,80 @@ async function digest(value) {
   return Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2, '0')).join('');
 }
 export async function grade(env, p) {
-  const givenMax = p.maxScore == null || p.maxScore === '' ? null : Number(p.maxScore);
-  if (givenMax !== null && (!Number.isFinite(givenMax) || givenMax <= 0)) throw new Error('满分必须是正数');
-  const essay = /^english/.test(str(p.subject)) && ['小作文', '大作文'].includes(p.kind);
-  let max = givenMax, maxAssumed = p.maxScoreAssumed === true;
-  if (max === null && (str(p.answer).trim() || essay)) { max = questionScore(p.subject, p.kind, p.difficulty); maxAssumed = true; }
-  if (!validImage(p.image)) throw new Error('作答照片格式异常或过大');
-  const selected = Array.isArray(p.selected) && p.selected.every(x => typeof x === 'string') ? p.selected.join('') : str(p.selected);
-  if (!str(p.work).trim() && !selected.trim() && !p.image) throw new Error('请先作答、勾选选项或上传照片');
-  if (!str(p.question).trim()) throw new Error('缺少题目');
-  const unverified = ['pending', 'needs_review'].includes(p.reviewStatus);
-  const canScore = max !== null && !unverified && (essay || !!str(p.answer).trim());
-  const objective = ['选择题','单选题','多选题','阅读','完形','新题型'].includes(p.kind);
-  const letters = value => /^[A-H](?:[A-H,，、\s]*[A-H])?$/i.test(value.trim()) ? [...new Set(value.toUpperCase().match(/[A-H]/g))].sort().join('') : '';
-  const expected = letters(str(p.answer)), chosen = letters(selected);
-  const content = [{type:'text',text:JSON.stringify({kind:p.kind,subject:p.subject,subjectName:p.subjectName||p.subject,difficulty:p.difficulty,kp:p.kp,question:p.question,referenceAnswer:p.answer,steps:p.steps,work:p.work,selected,maxScore:max,maxScoreAssumed:maxAssumed})}];
-  if (p.image) content.push({type:'image_url',image_url:{url:p.image}});
-  const SYSTEM = essay ? essaySystem(p.kind) : GENERIC_SYSTEM;
-  const messages = [{role:'system',content:SYSTEM},{role:'user',content}];
-  let out = await ai(env,messages,true);
-  if (canScore && (!out || typeof out !== 'object' || out.score == null || out.score === '')) {
-    out = await ai(env,[...messages,{role:'user',content:'请重新只返回 JSON，并给出 0 到 maxScore 之间的具体数字 score，不要返回 null。'}],true);
-  }
-  if (!out || typeof out !== 'object' || Array.isArray(out)) throw new Error('AI 评分格式无效');
-  const numeric = out.score == null || out.score === '' ? null : Number(out.score);
-  let score = canScore ? numeric : null;
-  if (score !== null && (!Number.isFinite(score) || score < 0 || score > max)) throw new Error('AI 分数超出范围');
-  let warning = canScore ? '' : '参考答案或满分尚待核查。';
-  if (canScore && score === null) warning = 'AI 未给出具体分数，请重试。';
-  if (canScore && objective && expected && chosen) {
-    const expectedScore = expected === chosen ? max : 0;
-    if (score !== null && score !== expectedScore) warning = 'AI 评分与参考答案不一致，已按参考答案记分。';
-    score = expectedScore;
-  }
-  return {
-    score, maxScore: max, maxScoreAssumed: maxAssumed,
-    level: str(out.level), comments: warning + str(out.comments),
-    missing: str(out.missing), suggestions: str(out.suggestions), revised: str(out.revised),
-    dimensions: out.dimensions && typeof out.dimensions === 'object' && !Array.isArray(out.dimensions) ? out.dimensions : {},
-    grammar: Array.isArray(out.grammar) ? out.grammar.slice(0, 8).map(x => ({
-      original: str(x && x.original), corrected: str(x && x.corrected), reason: str(x && x.reason),
-    })).filter(x => x.original) : [],
-    upgrades: Array.isArray(out.upgrades) ? out.upgrades.slice(0, 6).map(x => ({
-      original: str(x && x.original), upgraded: str(x && x.upgraded), note: str(x && x.note),
-    })).filter(x => x.original) : [],
-    status: score === null ? 'pending' : 'graded',
-  };
+const givenMax = p.maxScore == null || p.maxScore === ''? null: Number(p.maxScore);
+if (givenMax!== null && (!Number.isFinite(givenMax) || givenMax <= 0)) throw new Error('满分必须是正数');
+const essay = /^english/.test(str(p.subject)) && ['小作文', '大作文'].includes(p.kind);
+let max = givenMax, maxAssumed = p.maxScoreAssumed === true;
+if (max === null && (str(p.answer).trim() || essay)) { max = questionScore(p.subject, p.kind, p.difficulty); maxAssumed = true;}
+if (!validImage(p.image)) throw new Error('作答照片格式异常或过大');
+const selected = Array.isArray(p.selected) && p.selected.every(x => typeof x === 'string')? p.selected.join(''): '';
+if (!str(p.work).trim() &&!selected.trim() &&!p.image) throw new Error('请先作答、勾选选项或上传照片');
+if (!str(p.question).trim()) throw new Error('缺少题目');
+const unverified = ['pending', 'needs_review'].includes(p.reviewStatus);
+const canScore = max!== null &&!unverified && (essay ||!!str(p.answer).trim());
+const objective = ['选择题','单选题','多选题','阅读','完形','新题型'].includes(p.kind);
+const letters = value => /^[A-H](?:[A-H,，、\s]*[A-H])?$/i.test(value.trim())? [...new Set(value.toUpperCase().replace(/[^A-H]/g, '').split(''))].sort().join(''): null;
+const expected = letters(str(p.answer)), chosen = letters(selected);
+
+// 阶段一：照片先转写（只转写不评分）。客观题跳过，已有参考答案兜底。
+let transcript = '', illegible = [];
+if (p.image &&!objective) {
+try {
+const t = await ai(env, [
+{ role: 'system', content: TRANSCRIBE_SYSTEM},
+{ role: 'user', content: [
+{ type: 'text', text: '请转写这张学生作答照片。'},
+{ type: 'image_url', image_url: { url: p.image}},
+]},
+], true);
+if (t && typeof t === 'object' &&!Array.isArray(t)) {
+transcript = str(t.transcript);
+illegible = Array.isArray(t.illegible)? t.illegible.map(str).filter(Boolean).slice(0, 8): [];
+}
+} catch { /* 转写失败不阻断评分，下面仍会带图评分 */}
+}
+const workText = [str(p.work), transcript? '\n' + transcript: ''].filter(Boolean).join('\n');
+
+const content = [{ type: 'text', text: JSON.stringify({ kind: p.kind, subject: p.subject, subjectName: p.subjectName || p.subject, difficulty: p.difficulty, kp: p.kp, question: p.question, referenceAnswer: p.answer, steps: p.steps || [], work: workText, selected, maxScore: max, illegible})}];
+// 没有转写结果（客观题或转写失败）时按原样带图评分；转写有看不清处时也带图复核。
+if (p.image && (!transcript || illegible.length)) content.push({ type: 'image_url', image_url: { url: p.image}});
+const messages = [{ role: 'system', content: gradeSystemFor(p.subject, p.kind)}, { role: 'user', content}];
+let out = await ai(env, messages, true);
+if (canScore && (!out || typeof out!== 'object' || out.score == null || out.score === '')) {
+out = await ai(env, [...messages, { role: 'user', content: '请重新只返回 JSON，并给出 0 到 maxScore 之间的具体数字 score，不要返回 null。'}], true);
+}
+if (!out || typeof out!== 'object' || Array.isArray(out)) throw new Error('AI 评分格式无效');
+const numeric = out.score == null || out.score === ''? null: Number(out.score);
+let score = canScore? numeric: null;
+let warning = canScore? '': '参考答案或满分尚待核查。';
+if (score!== null &&!Number.isFinite(score)) score = null;
+if (canScore && score === null) warning = 'AI 未给出具体分数，请重试。';
+if (score!== null && (score < 0 || score > max)) { score = Math.max(0, Math.min(max, score)); warning = 'AI 给分越界，已按满分范围修正。';}
+if (canScore && objective && expected && chosen) {
+const expectedScore = expected === chosen? max: 0;
+if (score!== null && score!== expectedScore) warning = 'AI 评分与参考答案不一致，已按参考答案记分。';
+score = expectedScore;
+}
+const breakdown = Array.isArray(out.breakdown)? out.breakdown.slice(0, 12).map(x => ({
+point: str(x && x.point),
+max: x && Number.isFinite(Number(x.max))? Number(x.max): null,
+score: x && Number.isFinite(Number(x.score))? Number(x.score): null,
+comment: str(x && x.comment),
+})).filter(x => x.point): [];
+return {
+score, maxScore: max, maxScoreAssumed: maxAssumed,
+level: str(out.level), comments: warning + str(out.comments),
+missing: str(out.missing), suggestions: str(out.suggestions), revised: str(out.revised),
+transcript, breakdown,
+dimensions: out.dimensions && typeof out.dimensions === 'object' &&!Array.isArray(out.dimensions)? out.dimensions: {},
+grammar: Array.isArray(out.grammar)? out.grammar.slice(0, 8).map(x => ({
+original: str(x && x.original), corrected: str(x && x.corrected), reason: str(x && x.reason),
+})).filter(x => x.original): [],
+upgrades: Array.isArray(out.upgrades)? out.upgrades.slice(0, 6).map(x => ({
+original: str(x && x.original), upgraded: str(x && x.upgraded), note: str(x && x.note),
+})).filter(x => x.original): [],
+status: score === null? 'pending': 'graded',
+};
 }
 async function attempt(db, uid, aid) {
   const a = await row(db,'SELECT data FROM platform_attempts WHERE uid=? AND id=?',uid,aid);
@@ -186,17 +221,23 @@ async function dispatch(request,env,uid,action,params) {
   const method = request.method;
   const body = () => readJson(request);
   const fid = params.id;
+  if (action === 'subjects') {
+    if (method === 'GET') return ok({subjects:(await all(db,'SELECT id,name FROM platform_subjects WHERE uid=? ORDER BY created_at',uid))});
+    if (method === 'POST') { const b = await body(); const name = str(b && b.name).trim(); if (!name || name.length > 30) return fail(400,'科目名称无效（1–30 字）'); const sid = 'u-' + id().slice(0, 8); await run(db,'INSERT INTO platform_subjects VALUES (?,?,?,?)',uid,sid,name,new Date().toISOString()); return ok({subject:{id:sid,name}},201); }
+    if (method === 'DELETE') { const b = await body(); if (!b || !str(b.id)) return fail(400,'缺少科目 ID'); await run(db,'DELETE FROM platform_subjects WHERE uid=? AND id=?',uid,b.id); return ok({}); }
+    return fail(405,'方法不支持');
+  }
   if (action === 'library' && method === 'GET') return ok({files:(await all(db,'SELECT * FROM platform_files WHERE uid=? ORDER BY created_at DESC',uid)).map(fileOut)});
   if (action === 'library' && method === 'POST') {
     if (!env.LIBRARY_FILES) return fail(503,'资料存储未配置');
     let form; try { form = await request.formData(); } catch { return fail(400,'上传格式无效'); }
-    const f = form.get('file'), subject = form.get('subject'), name = str(form.get('name')).trim() || f?.name;
+    const f = form.get('file'), subject = form.get('subject'), name = str(form.get('name')).trim() || f?.name; const category = str(form.get('category')).trim().slice(0, 30);
     const ext = str(f?.name).split('.').pop().toLowerCase();
     const types = {pdf:'application/pdf',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',txt:'text/plain',md:'text/markdown',markdown:'text/markdown',json:'application/json'};
-    if (!f || typeof f.arrayBuffer !== 'function' || !types[ext] || !subjects.has(subject) || !name || name.length > 255 || !f.size || f.size > 20*1024*1024) return fail(400,'文件、科目或文件大小无效');
+    if (!f || typeof f.arrayBuffer !== 'function' || !types[ext] || !(await subjectAllowed(db, uid, subject)) || !name || name.length > 255 || !f.size || f.size > 20*1024*1024) return fail(400,'文件、科目或文件大小无效');
     const file = {id:id(),name,subject,size:f.size,status:'uploaded',createdAt:new Date().toISOString()}, key = `library/${uid}/${id()}`;
     await env.LIBRARY_FILES.put(key,await f.arrayBuffer(),{httpMetadata:{contentType:types[ext]}});
-    try { await run(db,'INSERT INTO platform_files VALUES (?,?,?,?,?,?,?,?,?)',file.id,uid,name,subject,f.size,types[ext],key,file.status,file.createdAt); }
+    try { await run(db,'INSERT INTO platform_files VALUES (?,?,?,?,?,?,?,?,?,?)',file.id,uid,name,subject,f.size,types[ext],key,file.status,file.createdAt,category); }
     catch(e) { await env.LIBRARY_FILES.delete(key); throw e; }
     return ok({file},201);
   }
@@ -251,7 +292,7 @@ async function dispatch(request,env,uid,action,params) {
       for (const q of b.items) {
         if (!q || typeof q.draftId !== 'string' || seen.has(q.draftId)) return fail(400,'草稿 ID 无效或重复'); seen.add(q.draftId);
         const saved = await row(db,'SELECT data FROM platform_drafts WHERE uid=? AND file_id=? AND id=?',uid,fid,q.draftId); if (!saved) return fail(400,'草稿不存在');
-        const original = parse(saved.data), item = {...original,...q,id:`personal-${q.draftId}`,draftId:q.draftId,subject:f.subject,sourcePage:original.sourcePage,reviewStatus:q.userVerified === true ? 'user_verified' : 'pending'};
+        const original = parse(saved.data), item = {...original,...q,id:`personal-${q.draftId}`,draftId:q.draftId,subject:f.subject,subjectName:await subjectNameOf(db, uid, f.subject),sourcePage:original.sourcePage,reviewStatus:q.userVerified === true ? 'user_verified' : 'pending'};
         if (!validQuestion(item)) return fail(400,'题目结构无效'); records.push(item);
       }
       let imported = 0, items = [];
@@ -272,7 +313,7 @@ async function dispatch(request,env,uid,action,params) {
   }
   if (action === 'attempts') {
     if (method === 'GET') {const rows=await all(db,'SELECT id FROM platform_attempts WHERE uid=?',uid); return ok({attempts:await Promise.all(rows.map(r=>attempt(db,uid,r.id)))});}
-    if (method === 'POST') {const b=await body(); if (!b || !subjects.has(b.subject) || !str(b.mode) || !Array.isArray(b.questions) || !b.questions.length || b.questions.length > 500 || !b.answers || typeof b.answers !== 'object' || Array.isArray(b.answers) || b.questions.some(q=>!q || typeof q.id !== 'string' || !q.id || q.subject !== b.subject) || new Set(b.questions.map(q=>q.id)).size !== b.questions.length) return fail(400,'试卷必须包含同一科目且题号唯一的题目');
+    if (method === 'POST') {const b=await body(); if (!b || !(await subjectAllowed(db, uid, b.subject)) || !str(b.mode) || !Array.isArray(b.questions) || !b.questions.length || b.questions.length > 500 || !b.answers || typeof b.answers !== 'object' || Array.isArray(b.answers) || b.questions.some(q=>!q || typeof q.id !== 'string' || !q.id || q.subject !== b.subject) || new Set(b.questions.map(q=>q.id)).size !== b.questions.length) return fail(400,'试卷必须包含同一科目且题号唯一的题目');
       if (Object.values(b.answers).some(a=>!a || typeof a !== 'object' || !validImage(a.image))) return fail(400,'作答格式无效');
       const scores = allocatePaper(b.subject, b.questions, b.mode);
       const questions = b.questions.map((q, i) => ({...q, maxScore: scores[i], ...(q.maxScore == null ? {maxScoreAssumed:true} : {})}));
