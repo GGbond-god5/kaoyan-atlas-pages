@@ -64,6 +64,8 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 首页 `assets/profile-boot.js` 先读档案再加载 `atlas.js`，按科目过滤导图、替换数学/英语名称、更新院校与倒计时
 - 不考数学就取消数学；专业课可取消内置 807，或添加任意自定义专业课（显示为占位章节，引导去资料库）
 - 新用户默认档案会在首次进入时弹出一次建档提示；不要把院校/专业写死在页面里
+- 共享院校专业目录：`functions/_lib/programs.js`，`GET /api/programs?q=`；档案弹窗可搜索并一键填入院校/专业/公共课
+- 目录条目只写能确认的公共课组合；专业课不确定时留空，让用户在档案里补
 
 ## 分值规则
 - 题目自带 `maxScore` 时一律以卷面分为准。
@@ -84,6 +86,7 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 转换：`node scripts/build-lazy-notes.mjs`，生成 `assets/lazy-index.js`、`assets/lazy/<章节>.json`、`assets/lazy-figs/`
 - 首页每个章节上的「笔记 N」徽标、顶栏「笔记库」入口都会打开笔记阅读器
 - 新增或修改笔记后重跑脚本，把源文件和生成物一起提交；Pages 构建会自动重跑转换
+- 2027 版英语作文模板/预测放在 `lazy-src/英一/2027*.md`，通过 `FILE_MAP` 挂到 english-06/07/08
 
 ## 已知限制
 
