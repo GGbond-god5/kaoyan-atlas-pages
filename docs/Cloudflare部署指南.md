@@ -234,6 +234,17 @@ PR #1 已合并并部署，新增：
 3. Pages 项目 `kaoyan-atlas-pages` → Settings → Bindings 添加 R2，变量名 `LIBRARY_FILES`
 4. 把 `wrangler.toml` 中注释掉的 `[[r2_buckets]]` 取消注释并 push
 
-AI 地址固定为阿里云官方 `https://dashscope.aliyuncs.com/compatible-mode/v1`，
-不要改成第三方中转，避免 `DASHSCOPE_API_KEY` 外泄。
+AI 地址使用千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
+（`platform.qianwenai.com` 的 OpenAI 兼容接口，Key 沿用 `DASHSCOPE_API_KEY`）；
+不要改到其他中转或陌生域名。
+
+## 十四、拍照评分与自动评分（2026-11-14）
+
+- 题库多数题目没有 `maxScore`。评分器现在按题型给保守默满分（选择 2、计算/证明/简答/分析/翻译 10、
+  小作文 10、大作文 20），响应里的 `maxScoreAssumed` 标明这是估算值，刷题页会显示「按默认满分估算」。
+- 套卷交卷后自动逐题评分，2 路并发；结果页显示「AI 正在评分 N / 总数」进度条，题号状态与总分实时更新，
+  不再为每题重建整页。失败题会列出「重试该题」。
+- 单题拍照评分会显示转圈提示；AI 对话窗口重做为气泡布局，带打字提示、Enter 发送与上下文标题
+  （`assets/coach.css`）。
+
 

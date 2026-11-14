@@ -63,6 +63,7 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 站点要求登录，未登录只能访问 `/login`、`/register` 及其必要资源
 - **R2 尚未开通**：`wrangler.toml` 里的 `LIBRARY_FILES` 绑定保持注释，资料上传接口返回 503；
   开通 R2 并创建 `kaoyan-atlas-library` 桶后再取消注释
-- **AI 端点固定阿里云官方** `https://dashscope.aliyuncs.com/compatible-mode/v1`；
-  不要把 `AI_BASE_URL` 改到第三方中转，`DASHSCOPE_API_KEY` 不能外发
+- **AI 端点使用千问平台** `https://maas.qianwenaiapi.com/compatible-mode/v1`
+  （`platform.qianwenai.com` 的 OpenAI 兼容接口，Key 沿用 `DASHSCOPE_API_KEY`）；
+  不要改到其他中转或陌生域名
 - `platform_*` 系列 D1 表由接口在首次调用时自动创建，不需要手工迁移
