@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>套卷分析 · 考研科目大观</title>
+<meta name="description" content="历年真题与模拟卷的错题、知识点与得分趋势分析。">
+<link rel="stylesheet" href="assets/analytics.css?v=1">
+</head>
+<body>
+<header class="etop">
+  <a class="eback" href="index.html">← 返回图谱</a>
+  <div class="ebrand"><span class="emark">观</span><div><b>套卷分析</b><small>PAPER ANALYTICS · 2027</small></div></div>
+  <a class="elink" href="practice.html">去刷套卷</a>
+</header>
+
+<main class="amain">
+  <div class="ahero">
+    <div class="akicker">大数据分析 · 真题与模拟卷</div>
+    <h1>错在哪里，一目了然。</h1>
+    <p>汇总你在套卷与能力自测里已经批改完的作答：每套卷的错题号、反复丢分的知识点、得分走势，并给出下一步的提升建议。</p>
+  </div>
+
+  <div class="tabs" id="subjectTabs" role="tablist" aria-label="科目筛选"></div>
+
+  <div class="alert" id="alert" role="status" aria-live="polite"></div>
+
+  <section id="overview" class="grid" hidden></section>
+
+  <section class="card" id="trendCard" hidden>
+    <h2>得分率走势</h2>
+    <p class="sub">按提交先后排列，只统计已批改的题。</p>
+    <div class="trend" id="trend"></div>
+  </section>
+
+  <section class="card" id="kpCard" hidden>
+    <h2>薄弱知识点</h2>
+    <p class="sub">按未满分率从高到低排。未满分 = 该题没有拿到满分（含部分得分）。</p>
+    <div id="kpList"></div>
+  </section>
+
+  <section class="card" id="kindCard" hidden>
+    <h2>题型得分率</h2>
+    <div id="kindList"></div>
+  </section>
+
+  <section class="card" id="papersCard" hidden>
+    <h2>每套卷明细</h2>
+    <p class="sub">错题号点开可定位考点；先看最近一套的错题，再回头看反复错的。</p>
+    <div id="paperList"></div>
+  </section>
+
+  <section class="card" id="adviceCard" hidden>
+    <h2>提升建议</h2>
+    <div id="adviceList"></div>
+    <div class="coach-row">
+      <button class="coach-btn" id="coachBtn" type="button">让 AI 教练结合数据再总结一份</button>
+      <span class="coach-note">会把上面的统计摘要发给教练，不发送作答照片。</span>
+    </div>
+    <div class="coach-reply" id="coachReply" hidden></div>
+  </section>
+
+  <section class="card" id="emptyCard" hidden>
+    <h2>还没有可分析的套卷</h2>
+    <p class="sub">去题库用「按套卷刷」或「能力自测」完整做一套并交卷批改，这里就会出现你的错题号、薄弱知识点和走势分析。</p>
+    <p><a class="coach-btn link" href="practice.html">去做一套卷</a></p>
+  </section>
+</main>
+
+<script src="assets/config.js?v=2027-11-08"></script>
+<script src="assets/user-state.js"></script>
+<script src="assets/analytics.js?v=1"></script>
+</body>
+</html>
