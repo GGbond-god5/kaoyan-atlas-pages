@@ -13,6 +13,8 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <title>考研科目大观 · 2027 · 华南理工 085500</title>
 <meta name="description" content="数学一、英语一、807 材料力学、政治：考点、真题与专题的交互式阅读图谱，支持页内阅读与 PDF 下载。">
 <link rel="stylesheet" href="assets/theme.css?v=1">
+<link rel="stylesheet" href="assets/onboarding.css?v=1">
+<link rel="stylesheet" href="assets/guide.css?v=1">
 <link rel="stylesheet" href="assets/atlas.css?v=18">
 <link rel="stylesheet" href="assets/web.css?v=15">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
@@ -35,6 +37,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
     <a class="btn ghost" href="analytics.html">套卷分析</a>
     <button class="btn ghost" id="lazyBtn" type="button">笔记库</button>
     <button class="btn ghost" id="profileBtn" type="button">档案</button>
+    <button class="btn ghost" id="tourBtn" type="button">功能引导</button>
     <a class="btn ghost auth-chip" href="login.html" id="authChip">登录</a>
     <button class="btn ghost" id="listBtn">目录</button>
     <button class="btn" id="searchBtn">搜索 <kbd>/</kbd></button>
@@ -126,5 +129,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
   else setTimeout(start, 1000);
 })();
 </script>
+<script src="assets/onboarding.js?v=1"></script>
+<script src="assets/guide.js?v=1"></script>
 </body>
 </html>
