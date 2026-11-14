@@ -1,0 +1,5 @@
+# 这个文件由 scripts/build-import-skill.mjs 生成，内容固定用 LF。
+# Windows 上若按 CRLF 检出，每次构建都会出现一行假改动。
+functions/_lib/import-prompt.js text eol=lf
+# 生成物把整篇 SKILL.md 写进字符串，源文件同样要按 LF 检出
+skills/import-questions/SKILL.md text eol=lf
