@@ -48,9 +48,20 @@ export async function ai(env, messages, jsonMode = false) {
   };
   // 推理型模型会把 token 花在思考上，额度小的时候 content 会是空的
   if (env.AI_REASONING_EFFORT) payload.reasoning_effort = env.AI_REASONING_EFFORT;
+  const send = () => fetch(`${base}/chat/completions`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
   let res;
-  try { res = await fetch(`${base}/chat/completions`, {method:'POST', headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'}, body:JSON.stringify(payload)}); }
+  try { res = await send(); }
   catch { throw new Error('AI 服务连接失败'); }
+  // 有的服务不认识 reasoning_effort，会直接 400；去掉它再试一次
+  if (!res.ok && res.status === 400 && payload.reasoning_effort) {
+    delete payload.reasoning_effort;
+    try { res = await send(); }
+    catch { throw new Error('AI 服务连接失败'); }
+  }
   if (!res.ok) throw new Error(`AI 服务返回 HTTP ${res.status}`);
   const body = await res.json();
   let content = body?.choices?.[0]?.message?.content;
