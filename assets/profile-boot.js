@@ -283,6 +283,37 @@
       .catch(() => null);
   }
 
+  async function showWelcome() {
+    let pending;
+    try { pending = localStorage.getItem("atlas.welcome.pending"); } catch (e) { return false; }
+    if (!pending) return false;
+    try {
+      const response = await fetch("/api/auth/me", { credentials: "include" });
+      if (!response.ok) return false;
+      const data = await response.json();
+      if (!data.user || data.user.id !== pending) return false;
+    } catch (e) { return false; }
+    const dialog = document.createElement("dialog");
+    dialog.id = "welcomeDialog";
+    dialog.className = "profile-dialog";
+    dialog.setAttribute("aria-labelledby", "welcomeTitle");
+    dialog.innerHTML = `<div class="profile-card"><header class="profile-head"><div><b id="welcomeTitle">欢迎来到考研大观</b><span>用几步熟悉你的学习空间</span></div></header>
+      <div class="profile-body"><ol class="welcome-steps">
+      <li><b>设置档案</b>：点击首页「档案」，填写目标院校与考试科目，生成适合你的知识图谱。</li>
+      <li><b>探索知识图谱</b>：选择科目、章节和知识点，阅读内容；点击知识点可进入相应练习并选择难度。</li>
+      <li><b>开始刷题</b>：在「刷题」选择知识点练习、套卷或能力自测；套卷交卷后查看解析、评估和错题。</li>
+      <li><b>积累资料</b>：通过「资料库」上传资料并整理个人题目，使用「笔记库」记录复习要点。</li>
+      <li><b>练习英语</b>：在「词汇」复习和自测；需要帮助时可使用提示及相关 AI 指导。</li>
+      </ol><p class="pf-hint">你可以随时返回首页继续学习，并通过反馈入口提出建议。</p></div>
+      <footer class="profile-foot"><button type="button" class="btn ghost" data-dismiss>我是老手</button><button type="button" class="btn" data-dismiss>开始学习</button></footer></div>`;
+    document.body.appendChild(dialog);
+    const dismiss = () => { try { localStorage.removeItem("atlas.welcome.pending"); } catch (e) {} };
+    dialog.addEventListener("close", dismiss);
+    dialog.querySelectorAll("[data-dismiss]").forEach(button => button.addEventListener("click", () => { dismiss(); dialog.close(); }));
+    dialog.showModal();
+    return true;
+  }
+
   async function boot() {
     const profile = await loadProfile();
     window.ATLAS_PROFILE = profile;
@@ -290,10 +321,11 @@
     if (profile) applyProfile(profile);
     renderButton(profile || {});
     loadAtlas();
+    const welcomeOpen = await showWelcome();
     if (profile && profile.isDefault) {
       showHint(profile);
       try {
-        if (!localStorage.getItem("atlas.profile.prompted")) {
+        if (!welcomeOpen && !localStorage.getItem("atlas.profile.prompted")) {
           localStorage.setItem("atlas.profile.prompted", "1");
           setTimeout(() => openDialog(profile), 700);
         }

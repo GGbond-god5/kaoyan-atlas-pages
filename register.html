@@ -200,12 +200,15 @@
     form.setAttribute('aria-busy', 'true');
     submitBtn.textContent = '注册中…';
     try {
-      await A.post('/api/auth/register', {
+      var registration = await A.post('/api/auth/register', {
         phone: p,
         code: code.value,
         nickname: nick,
         password: password.value,
       });
+      try {
+        if (registration.user && registration.user.id) localStorage.setItem('atlas.welcome.pending', registration.user.id);
+      } catch (e) { /* 不影响注册 */ }
       A.alertBox(alertEl, '注册成功，正在进入图谱…', 'ok');
       setTimeout(function () {
         location.href = 'index.html';

@@ -11,6 +11,8 @@ dialog.profile-dialog::backdrop { background: rgba(20, 18, 23, .45); backdrop-fi
 .profile-close { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; font-size: 20px; line-height: 1; color: var(--ink-2, #555); }
 .profile-close:hover { background: rgba(0, 0, 0, .06); }
 .profile-body { padding: 16px 18px 6px; overflow-y: auto; }
+.welcome-steps { margin: 0; padding: 4px 0 0 22px; line-height: 1.8; font-size: 14px; }
+.welcome-steps li { padding: 4px 0; }
 .pf-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; font-size: 12px; color: var(--ink-2, #4a4750); }
 .pf-field input, .pf-field select { padding: 8px 10px; border: 1px solid var(--rule, #d8cfc0); border-radius: 6px;
   background: #fffdf8; color: inherit; font: 13px/1.5 var(--sans, sans-serif); outline: none; }

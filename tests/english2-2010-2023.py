@@ -6,10 +6,14 @@ for year in range(2010,2024):
  q=json.loads(p.read_text(encoding='utf8'))['items']
  assert [x['id'] for x in q]==[f'eng2-{year}-{i}' for i in range(1,49)]
  assert sum(x['maxScore'] for x in q)==100
- if year not in (2017,2018,2019,2020,2021,2022,2023):
+ if year not in (2010,2017,2018,2019,2020,2021,2022,2023):
   assert all(x['reviewStatus']=='needs_review' for x in q)
   assert all(not x['steps'] for x in q)
- if year==2022:
+ if year==2010:
+  assert ''.join(x['answer'] for x in q[:25])=='DCBAA BDCBA CDDAC BDCAB DABCC'.replace(' ', '')
+  assert all(x['steps'] and x['reviewStatus']=='source_checked' for x in q[:25])
+  assert all(not x['answer'] and not x['steps'] and x['reviewStatus']=='needs_review' for x in q[25:])
+ elif year==2022:
   assert all(x['answer'] for x in q[:45]) and q[24]['answer']=='C'
   assert q[1]['answer']=='B' and q[7]['answer']=='C'
   assert all(x['steps'] and x['reviewStatus']=='source_checked' for x in q[:45])
