@@ -3,18 +3,40 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL('./pdfjs/pdf.worker.min.mjs', impo
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let selected = null, drafts = [];
+let mySubjects = {}; // id -> name（自建科目）
+let allFiles = [];
+const subjectLabel = v => mySubjects[v] || v;
 const message = s => { $('#status').textContent = s; };
 async function refresh() {
   const [files, questions] = await Promise.all([AtlasUser.json('/api/library'), AtlasUser.json('/api/personal/questions')]);
-  $('#files').innerHTML = files.files.length ? files.files.map(f => `<div class="file"><strong>${esc(f.name)}</strong><small>${esc(f.subject)} · ${(f.size/1048576).toFixed(2)} MiB · ${esc(f.status || '')}</small><div><a href="/api/library/${encodeURIComponent(f.id)}" target="_blank" rel="noopener">查看原文件</a><button data-id="${esc(f.id)}">选择并抽题</button></div></div>`).join('') : '<p>还没有上传资料。</p>';
-  $('#files').querySelectorAll('button').forEach(b => b.addEventListener('click', async () => { selected = files.files.find(f => String(f.id) === b.dataset.id); drafts = []; renderDrafts(); $('#extract').hidden = false; $('#selected').textContent = selected.name; $('#progress').textContent = '正在加载已保存草稿…'; $('#extract').scrollIntoView({behavior:'smooth'}); try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract'); drafts = out.items; renderDrafts(); $('#progress').textContent = `已加载 ${drafts.length} 道已保存草稿。`; } catch (err) { $('#progress').textContent = '草稿加载失败：' + err.message; } }));
-  $('#questions').innerHTML = questions.items.length ? questions.items.map(q => `<div class="question"><strong>${esc(q.subject || '')} · ${esc(q.kpName || q.chapterTitle || '个人题目')}</strong><p>${esc(q.text || '')}</p><small>来源页 ${esc(q.sourcePage || '待核')} · ${esc(q.reviewStatus || '待核')}</small></div>`).join('') : '<p>还没有导入题目。</p>';
+  allFiles = files.files;
+  const cats = [...new Set(allFiles.map(f => f.category).filter(Boolean))];
+  const dl = $('#categoryList'); if (dl) dl.innerHTML = cats.map(c => `<option value="${esc(c)}">`).join('');
+  const ff = $('#fileFilter'); if (ff) { const cur = ff.value; ff.innerHTML = '<option value="">全部分类</option>' + cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('') + '<option value="__none">未分类</option>'; ff.value = cur; }
+  renderFiles();
+  function renderFiles() {
+    const want = ff ? ff.value : '';
+    const list = allFiles.filter(f => !want || (want === '__none' ? !f.category : f.category === want));
+    $('#files').innerHTML = list.length ? list.map(f => `<div class="file"><strong>${esc(f.name)}</strong><small>${esc(subjectLabel(f.subject))}${f.category ? ' · ' + esc(f.category) : ''} · ${(f.size/1048576).toFixed(2)} MiB · ${esc(f.status || '')}</small><div><a href="/api/library/${encodeURIComponent(f.id)}" target="_blank" rel="noopener">查看原文件</a><button data-id="${esc(f.id)}">选择并抽题</button></div></div>`).join('') : '<p>该分类下还没有资料。</p>';
+    bindFileButtons();
+  }
+  if (ff) ff.onchange = renderFiles;
+  function bindFileButtons() {
+  $('#files').querySelectorAll('button').forEach(b => b.addEventListener('click', async () => { selected = allFiles.find(f => String(f.id) === b.dataset.id); drafts = []; renderDrafts(); $('#extract').hidden = false; $('#selected').textContent = selected.name; $('#progress').textContent = '正在加载已保存草稿…'; $('#extract').scrollIntoView({behavior:'smooth'}); try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract'); drafts = out.items; renderDrafts(); $('#progress').textContent = `已加载 ${drafts.length} 道已保存草稿。`; } catch (err) { $('#progress').textContent = '草稿加载失败：' + err.message; } }));
+  }
+  $('#questions').innerHTML = questions.items.length ? questions.items.map(q => `<div class="question"><strong>${esc(q.subjectName || subjectLabel(q.subject || ''))} · ${esc(q.kpName || q.chapterTitle || '个人题目')}</strong><p>${esc(q.text || '')}</p><small>来源页 ${esc(q.sourcePage || '待核')} · ${esc(q.reviewStatus || '待核')}</small></div>`).join('') : '<p>还没有导入题目。</p>';
 }
 $('#upload').addEventListener('submit', async e => {
   e.preventDefault(); const form = e.currentTarget, file = form.elements.file.files[0];
   if (!file || file.size > 20 * 1024 * 1024) { message('请选择不超过 20 MiB 的文件。'); return; }
   if (!/\.(pdf|png|jpe?g|webp|txt|md|markdown|json)$/i.test(file.name)) { message('不支持该文件类型。'); return; }
   const data = new FormData(form); if (!data.get('name').trim()) data.set('name', file.name);
+  if (data.get('subject') === '__new') {
+    const nm = (data.get('newSubject') || '').trim(); if (!nm) { message('请填写新科目名称。'); return; }
+    try { const out = await AtlasUser.json('/api/subjects', 'POST', {name: nm}); mySubjects[out.subject.id] = out.subject.name; addSubjectOption(out.subject); data.set('subject', out.subject.id); }
+    catch (err) { message('新建科目失败：' + err.message); return; }
+  }
+  data.delete('newSubject');
   const button = form.querySelector('button'); button.disabled = true; message('正在上传…');
   try { const r = await fetch('/api/library', {method:'POST',credentials:'include',body:data}); const j = await r.json(); if (!r.ok || j.ok === false) throw Error(j.error || '上传失败'); form.reset(); await refresh(); message('上传完成。'); } catch (err) { message(err.message); } finally { button.disabled = false; }
 });
@@ -61,4 +83,11 @@ $('#import').addEventListener('click', async () => {
   button.disabled = true;
   try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/import', 'POST', {items}); message(`导入完成：${out.imported} 道。`); await refresh(); } catch (err) { message(err.message); } finally { button.disabled = false; }
 });
-try { await AtlasUser.ready; await refresh(); } catch (err) { message(err.message); }
+function addSubjectOption(sub) {
+  const sel = document.querySelector('#upload select[name="subject"]'); if (!sel || sel.querySelector(`option[value="${sub.id}"]`)) return;
+  const opt = document.createElement('option'); opt.value = sub.id; opt.textContent = sub.name;
+  sel.insertBefore(opt, sel.querySelector('option[value="__new"]'));
+}
+document.querySelector('#upload select[name="subject"]').addEventListener('change', e => { $('#newSubjectRow').hidden = e.target.value !== '__new'; });
+try { await AtlasUser.ready; try { const out = await AtlasUser.json('/api/subjects'); (out.subjects || []).forEach(sub => { mySubjects[sub.id] = sub.name; addSubjectOption(sub); }); } catch (_) {}
+  await refresh(); } catch (err) { message(err.message); }
