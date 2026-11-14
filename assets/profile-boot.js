@@ -241,6 +241,17 @@
       });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      try {
+        const mineRes = await fetch("/api/subjects", { credentials: "include" });
+        const mine = await mineRes.json();
+        const names = new Set(((mine.subjects || [])).map(x => x.name));
+        for (const cs of payload.customSubjects) {
+          const nm = (cs.code ? cs.code + " " + cs.name : cs.name).slice(0, 30);
+          if (!names.has(nm) && !names.has(cs.name)) {
+            await fetch("/api/subjects", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ name: nm }) });
+          }
+        }
+      } catch (_) { /* 同步失败不影响档案保存 */ }
       location.reload();
     } catch (err) {
       error.textContent = `保存失败：${err.message}`;
