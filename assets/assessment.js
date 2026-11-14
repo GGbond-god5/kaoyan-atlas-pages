@@ -120,7 +120,8 @@
         const data = await window.AtlasUser.json("/api/coach", "POST", {conversationId, context, messages});
         conversationId = data.conversationId;
         messages.push({role: "assistant", content: data.reply});
-        typing.remove(); bubble(log, "assistant", data.reply);
+        const refs = Array.isArray(data.references) && data.references.length ? `\n\n参考：${data.references.join("、")}` : "";
+        typing.remove(); bubble(log, "assistant", data.reply + refs);
       } catch (err) {
         messages.pop(); typing.remove();
         bubble(log, "assistant", `发送失败：${err.message}。请稍后重试。`);

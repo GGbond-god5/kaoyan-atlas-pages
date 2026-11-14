@@ -459,7 +459,12 @@
     if (session.ended) {
       showSolution(true);
       const result = session.attempt && session.attempt.results && session.attempt.results[q.id];
-      if (result) { $("#aiResult").hidden = false; $("#aiResult").textContent = [result.comments, result.missing, result.suggestions, result.revised].filter(Boolean).join("\n\n"); }
+      if (result) {
+        const parts = [result.comments, result.missing, result.suggestions, result.revised];
+        if (Array.isArray(result.grammar) && result.grammar.length) parts.push("语法问题：\n" + result.grammar.map(g => `${g.original} → ${g.corrected}${g.reason ? `（${g.reason}）` : ""}`).join("\n"));
+        if (Array.isArray(result.upgrades) && result.upgrades.length) parts.push("句子升级：\n" + result.upgrades.map(u => `${u.original} → ${u.upgraded}${u.note ? `（${u.note}）` : ""}`).join("\n"));
+        $("#aiResult").hidden = false; $("#aiResult").textContent = parts.filter(Boolean).join("\n\n");
+      }
       $("#reveal").textContent = "返回结果";
       if (["english", "english2"].includes(q.subject) && /翻译|作文/.test(q.kind)) { $("#aiAsk").hidden = false; $("#aiAsk").textContent = "AI 多轮指导"; }
     } else $("#reveal").textContent = "显示解析（Space）";
@@ -822,6 +827,8 @@
       if (data.missing) html += `<div class="ai-sec"><b>缺失/错误</b><br>${esc(data.missing).replace(/\n/g, "<br>")}</div>`;
       if (data.suggestions) html += `<div class="ai-sec"><b>修改建议</b><br>${esc(data.suggestions).replace(/\n/g, "<br>")}</div>`;
       if (data.revised) html += `<div class="ai-sec"><b>润色参考</b><div class="ai-revised">${esc(data.revised).replace(/\n/g, "<br>")}</div></div>`;
+      if (Array.isArray(data.grammar) && data.grammar.length) html += `<div class="ai-sec"><b>语法问题</b><br>${data.grammar.map(g => `${esc(g.original)} → ${esc(g.corrected)}${g.reason ? `（${esc(g.reason)}）` : ""}`).join("<br>")}</div>`;
+      if (Array.isArray(data.upgrades) && data.upgrades.length) html += `<div class="ai-sec"><b>句子升级</b><br>${data.upgrades.map(u => `${esc(u.original)} → ${esc(u.upgraded)}${u.note ? `（${esc(u.note)}）` : ""}`).join("<br>")}</div>`;
       box.innerHTML = html;
     } catch (e) {
       box.textContent = `AI 评核失败：${e.message}。请确认已登录，且站点已配置 AI Key。`;
