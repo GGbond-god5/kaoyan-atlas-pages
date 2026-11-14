@@ -84,13 +84,14 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 
 - 动效只出现在首页与登录页；刷题、词汇、时间轴、资料库等页面保持朴素，不要再加背景动画
 - 首页背景：Remotion 组合 `AtlasVeil` 通过 `@remotion/player` 内嵌到 `#atlasField`，
-  节点跟随指针排斥、指针处亮起暖光；系统开启「减少动态效果」时默认不启动，`?motion=1` 强制播放
+  节点跟随指针排斥、指针处亮起暖光；动效**默认开启**，不跟随系统「减少动态效果」，
+  需要关闭时在地址后加 `?motion=0`（会给 `<html>` 加 `motion-off`，播放器、登录页视频、跨页过渡一起停）
 - 改完 `remotion/src/` 里首页用到的组件，必须重建播放器 bundle：
   `cd remotion && npm run build:player`，产物 `assets/remotion/atlas-player.js`（约 580K，首页 defer 加载）
 - 登录页仍用预渲染视频 `assets/remotion/atlas-field.mp4`（组合 `AtlasField`，1600×900，6 秒循环）
 - 重新渲染视频：`cd remotion && npx remotion render AtlasField ../assets/remotion/atlas-field.mp4 --codec=h264`
 - 跨页过渡在 `assets/transitions.css`：支持 View Transitions 的浏览器走原生导航过渡，
-  其余走淡入；同样可用 `?motion=1` 覆盖系统的减少动态效果设置
+  其余走淡入；同样受 `?motion=0` 控制
 - `functions/_middleware.js` 已放行 `/assets/remotion/`
 
 ## 笔记库（Lazy-Kaoyan-Library）

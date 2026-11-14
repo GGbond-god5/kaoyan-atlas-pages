@@ -1,6 +1,7 @@
 /* Cross-document page transitions.
    Native path: Chrome/Edge/Safari run the View Transitions API on navigation.
-   Fallback: pages fade up on arrival where the API is missing. */
+   Fallback: pages fade up on arrival where the API is missing.
+   Motion is on by default; ?motion=0 turns it off (html.motion-off). */
 
 @view-transition { navigation: auto; }
 
@@ -24,12 +25,6 @@
   body { animation: atlas-page-in .45s cubic-bezier(.16, 1, .3, 1) both; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) { animation: none; }
-  body { animation: none; }
-
-  html.motion-forced body { animation: atlas-page-in .45s cubic-bezier(.16, 1, .3, 1) both; }
-  html.motion-forced ::view-transition-old(root) { animation: atlas-page-out .3s cubic-bezier(.4, 0, .2, 1) both; }
-  html.motion-forced ::view-transition-new(root) { animation: atlas-page-in .45s cubic-bezier(.16, 1, .3, 1) both; }
-}
+html.motion-off ::view-transition-old(root),
+html.motion-off ::view-transition-new(root) { animation: none; }
+html.motion-off body { animation: none; }

@@ -6,10 +6,9 @@ import { pointer } from "./pointer";
 const host = document.getElementById("atlasField");
 
 if (host) {
-	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-	const forced = document.documentElement.classList.contains("motion-forced");
+	const disabled = document.documentElement.classList.contains("motion-off");
 
-	if (reducedMotion && !forced) {
+	if (disabled) {
 		host.classList.add("is-still");
 	} else {
 		const track = (event: PointerEvent) => {
