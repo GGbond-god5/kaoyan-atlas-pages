@@ -8,7 +8,7 @@
   const CACHE = {};
   let overlay, groupsEl, notesEl, contentEl, crumbEl, searchEl, currentGroup = null, currentNote = null;
   const USER = {};
-  let userLoaded = false, editorEl = null, editingId = null;
+  let userLoaded = false, editorEl = null, editingId = null, confirmEl = null, pendingDelete = null;
 
   function ensure() {
     if (overlay) return;
@@ -47,6 +47,13 @@
       selectGroup(b.dataset.group);
     });
     notesEl.addEventListener("click", e => {
+      const del = e.target.closest("[data-del-note]");
+      if (del) {
+        e.stopPropagation();
+        const note = (USER[del.dataset.group] || []).find(n => n.id === del.dataset.delNote);
+        if (note) confirmDelete(note, del.dataset.group);
+        return;
+      }
       const b = e.target.closest("[data-note]");
       if (!b) return;
       if (b.dataset.user === "1") openUserNote(b.dataset.group, b.dataset.note);
@@ -87,7 +94,10 @@
     const mine = (USER[groupId] || []).filter(match).map(n => ({ ...n, user: true }));
     const notes = builtin.concat(mine);
     notesEl.innerHTML = notes.length
-      ? notes.map(n => `<button type="button" class="lazy-note-item${n.id === currentNote ? " on" : ""}${n.user ? " mine" : ""}" data-group="${esc(groupId)}" data-note="${esc(n.id)}" data-user="${n.user ? 1 : 0}"><span>${esc(n.title)}</span><em>${n.user ? "我的 · " : ""}${esc(n.type)}</em></button>`).join("")
+      ? notes.map(n => `<div class="lazy-note-row${n.user ? " mine" : ""}">
+          <button type="button" class="lazy-note-item${n.id === currentNote ? " on" : ""}" data-group="${esc(groupId)}" data-note="${esc(n.id)}" data-user="${n.user ? 1 : 0}"><span>${esc(n.title)}</span><em>${n.user ? "我的 · " : "内置 · "}${esc(n.type)}</em></button>
+          ${n.user ? `<button type="button" class="lazy-note-del" data-del-note="${esc(n.id)}" data-group="${esc(groupId)}" title="删除这篇笔记" aria-label="删除 ${esc(n.title)}">×</button>` : ""}
+        </div>`).join("")
       : `<p class="lazy-empty">没有匹配的笔记。</p>`;
   }
 
@@ -177,7 +187,7 @@
       renderMath(contentEl);
       contentEl.parentElement.scrollTop = 0;
       contentEl.querySelector("[data-edit]").onclick = () => openEditor(note, groupId);
-      contentEl.querySelector("[data-del]").onclick = () => deleteUserNote(note.id, groupId);
+      contentEl.querySelector("[data-del]").onclick = () => confirmDelete(note, groupId);
     } catch (err) {
       contentEl.innerHTML = `<p class="lazy-empty">笔记加载失败：${esc(err.message)}</p>`;
     }
@@ -285,7 +295,7 @@
     editorEl.querySelector("#neError").textContent = "";
     const del = editorEl.querySelector(".ne-delete");
     del.hidden = !note;
-    del.onclick = note ? () => deleteUserNote(note.id, note.chapter) : null;
+    del.onclick = note ? () => confirmDelete(note, note.chapter) : null;
     if (!editorEl.open) editorEl.showModal();
     editorEl.querySelector("#neTitle").focus();
   }
@@ -319,8 +329,45 @@
     } catch (e) { err.textContent = `保存失败：${e.message}`; }
   }
 
+  function ensureConfirm() {
+    if (confirmEl) return confirmEl;
+    confirmEl = document.createElement("dialog");
+    confirmEl.className = "note-confirm";
+    confirmEl.id = "noteConfirm";
+    confirmEl.innerHTML = `<form class="note-confirm-card" method="dialog">
+      <b>删除这篇个人笔记？</b>
+      <p>「<span id="noteConfirmText"></span>」删除后无法恢复。</p>
+      <footer><button value="cancel" class="btn ghost">取消</button><button value="delete" class="nc-danger">删除</button></footer>
+    </form>`;
+    document.body.appendChild(confirmEl);
+    confirmEl.addEventListener("close", () => {
+      const remove = confirmEl.returnValue === "delete";
+      const task = pendingDelete;
+      pendingDelete = null;
+      if (remove && task) deleteUserNote(task.note.id, task.groupId);
+    });
+    return confirmEl;
+  }
+
+  function confirmDelete(note, groupId) {
+    if (!note) return;
+    ensureConfirm();
+    pendingDelete = { note, groupId };
+    confirmEl.querySelector("#noteConfirmText").textContent = note.title;
+    confirmEl.returnValue = "";
+    if (!confirmEl.open) confirmEl.showModal();
+  }
+
+  function toast(message) {
+    ensure();
+    const el = document.createElement("div");
+    el.className = "lazy-toast";
+    el.textContent = message;
+    overlay.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+
   async function deleteUserNote(id, groupId) {
-    if (!window.confirm("删除这篇个人笔记？此操作不可撤销。")) return;
     try {
       const res = await fetch(`/api/notes/${encodeURIComponent(id)}`, { method: "DELETE", credentials: "include" });
       const data = await res.json();
@@ -329,7 +376,10 @@
       userLoaded = false;
       await loadUserNotes(true);
       selectGroup(groupId);
-    } catch (e) { window.alert(`删除失败：${e.message}`); }
+      toast("笔记已删除");
+    } catch (e) {
+      toast(`删除失败：${e.message}`);
+    }
   }
 
   function renderMath(el) {
@@ -356,7 +406,7 @@
       const data = await loadGroup(groupId);
       const note = data.notes.find(n => n.id === noteId);
       if (!note) return;
-      contentEl.innerHTML = `<div class="lazy-note-meta"><span>${esc(note.type)}</span><b>${esc(note.title)}</b></div>${note.html}`;
+      contentEl.innerHTML = `<div class="lazy-note-meta"><span>内置 · ${esc(note.type)}</span><b>${esc(note.title)}</b></div>${note.html}`;
       renderMath(contentEl);
       contentEl.parentElement.scrollTop = 0;
     } catch (err) {
