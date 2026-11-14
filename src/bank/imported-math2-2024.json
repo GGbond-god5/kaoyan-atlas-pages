@@ -15,7 +15,15 @@
    "isReal": true,
    "text": "函数 \\( f(x) = |x|^{\\frac{1}{(1-x)(x-2)}} \\) 的第一类间断点的个数是（ ）\nA. 3 \n B. 2 \n C. 1 \n D. 0",
    "answer": "C",
-   "steps": [],
+   "steps": [
+    "考点：间断点分类——对每个可疑点 \\(x=0,1,2\\) 分别求左、右极限，两侧极限都有限（不论函数是否有定义）才是第一类。",
+    "取对数分析：\\(\\ln f(x)=\\dfrac{\\ln|x|}{(1-x)(x-2)}\\)（在 \\(x\\neq 0\\) 的邻域内）。",
+    "\\(x=1\\)：\\(x\\to 1\\) 时 \\(\\ln|x|\\sim x-1\\)，且 \\((1-x)(x-2)\\sim x-1\\)，故比值 \\(\\to 1\\)，\\(f(x)\\to \\mathrm{e}\\)，两侧极限相等且有限，\\(x=1\\) 是第一类间断点（可去间断点）。",
+    "\\(x=2\\)：\\(x\\to 2^{-}\\) 时分母 \\(\\to 0^{+}\\)，比值 \\(\\to +\\infty\\)，\\(f(x)\\to +\\infty\\)；\\(x\\to 2^{+}\\) 时 \\(f(x)\\to 0\\)。有一侧极限为无穷，\\(x=2\\) 是第二类间断点。",
+    "\\(x=0\\)：指数 \\(\\dfrac{1}{(1-x)(x-2)}\\to -\\dfrac{1}{2}\\)，故 \\(f(x)\\sim |x|^{-1/2}\\to +\\infty\\)，\\(x=0\\) 是第二类（无穷）间断点。",
+    "故第一类间断点只有 \\(1\\) 个，选 C，与参考答案一致。",
+    "易错：\\(x=1\\) 处函数无定义但极限存在，属于第一类间断点，容易误判为第二类。"
+   ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2024考研数学二真题.pdf",
    "sourcePage": 1
@@ -412,7 +420,15 @@
    "isReal": true,
    "text": "(本题满分 12 分)设 \\(t > 0\\)，平面有界区域 \\(D\\) 由曲线 \\(y = \\sqrt{x} e^{-x}\\) 与直线 \\(x = t\\)，\\(x = 2t\\) 及 \\(x\\) 轴围成，\\(D\\) 绕 \\(x\\) 轴旋转一周所得旋转体的体积为 \\(V(t)\\)，求 \\(V(t)\\) 的最大值。",
    "answer": "$\\dfrac{\\pi}{16}\\ln 2 + \\dfrac{3\\pi}{64}$",
-   "steps": [],
+   "steps": [
+    "考点：旋转体体积的圆盘法写出 \\(V(t)\\)，再对变限积分求导（莱布尼茨公式）找最大值点。",
+    "由圆盘法 \\(V(t)=\\pi\\int_{t}^{2t}\\left(\\sqrt{x}\\,\\mathrm{e}^{-x}\\right)^{2}\\mathrm{d}x=\\pi\\int_{t}^{2t}x\\mathrm{e}^{-2x}\\,\\mathrm{d}x\\)。",
+    "因 \\(\\int x\\mathrm{e}^{-2x}\\,\\mathrm{d}x=-\\dfrac{(2x+1)\\mathrm{e}^{-2x}}{4}+C\\)，可写出 \\(V(t)=\\dfrac{\\pi}{4}\\left[(2t+1)\\mathrm{e}^{-2t}-(4t+1)\\mathrm{e}^{-4t}\\right]\\)。",
+    "直接对变限积分求导：\\(V'(t)=\\pi\\left[2\\cdot(2t)\\mathrm{e}^{-4t}-t\\mathrm{e}^{-2t}\\right]=\\pi t\\mathrm{e}^{-4t}\\left(4-\\mathrm{e}^{2t}\\right)\\)。",
+    "令 \\(V'(t)=0\\)（\\(t>0\\)）得 \\(\\mathrm{e}^{2t}=4\\)，即 \\(t=\\ln 2\\)；当 \\(t<\\ln 2\\) 时 \\(V'>0\\)，当 \\(t>\\ln 2\\) 时 \\(V'<0\\)，故 \\(V\\) 在 \\(t=\\ln 2\\) 处取得最大值。",
+    "此时 \\(\\mathrm{e}^{-2t}=\\dfrac{1}{4}\\)，\\(\\mathrm{e}^{-4t}=\\dfrac{1}{16}\\)，代入得 \\(V(\\ln 2)=\\dfrac{\\pi}{4}\\left[\\dfrac{2\\ln 2+1}{4}-\\dfrac{4\\ln 2+1}{16}\\right]=\\dfrac{\\pi}{4}\\cdot\\dfrac{4\\ln 2+3}{16}\\)。",
+    "故 \\(V(t)\\) 的最大值为 \\(\\dfrac{\\pi}{16}\\ln 2+\\dfrac{3\\pi}{64}\\)，与参考答案一致。"
+   ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2024考研数学二真题.pdf",
    "sourcePage": 1
@@ -431,8 +447,20 @@
    "source": "2024 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "(本题满分 12 分)已知函数 \\(f(u, v)\\) 具有二阶连续偏导数，且函数 \\(g(x, y) = f(2x + y, 3x - y)\\) 满足 \\(\\frac{\\partial^2 g}{\\partial x^2} + \\frac{\\partial^2 g}{\\partial x \\partial y} - 6 \\frac{\\partial^2 g}{\\partial y^2} = 1\\)。I. 求 \\(\\frac{\\partial^2 f}{\\partial u \\partial v}\\)；II. 若 \\(\\frac{\\partial f(u, 0)}{\\partial u} = u e^{-u}\\)，且 \\(f(0, v) = \\frac{1}{50} v^2 - 1\\)，求 \\(f(u, v)\\) 的表达式。",
-   "answer": "（1）$\\displaystyle \\frac{\\partial^2 f}{\\partial u \\partial v} = \\frac{1}{4}\\left( \\frac{\\partial^2 g}{\\partial x^2} - 6\\frac{\\partial^2 g}{\\partial y^2} \\right)$；（2）$\\displaystyle f(u,v) = \\frac{1}{2}u^2 \\mathrm{e}^{-u} + \\frac{1}{50}v^2 - 1$",
-   "steps": [],
+   "answer": "（Ⅰ）$\\dfrac{\\partial^2 f}{\\partial u\\partial v}=\\dfrac{1}{25}$；（Ⅱ）$f(u,v)=\\dfrac{1}{25}uv-(u+1)e^{-u}+\\dfrac{1}{50}v^2$",
+   "steps": [
+    "考点：复合函数二阶偏导的链式法则——把 \\(g\\) 的二阶偏导用 \\(f\\) 的二阶偏导线性表出后代入方程；再由 \\(f_{uv}\\) 的值积分，并用定解条件确定 \\(f\\)。",
+    "（原参考答案存疑，见勘误）",
+    "记 \\(u=2x+y\\)，\\(v=3x-y\\)。链式法则给出 \\(g_x=2f_u+3f_v\\)，\\(g_y=f_u-f_v\\)。",
+    "继续求导（注意 \\(f_{uv}=f_{vu}\\)）：\\(g_{xx}=4f_{uu}+12f_{uv}+9f_{vv}\\)，\\(g_{xy}=2f_{uu}+f_{uv}-3f_{vv}\\)，\\(g_{yy}=f_{uu}-2f_{uv}+f_{vv}\\)。",
+    "代入所给方程：\\(g_{xx}+g_{xy}-6g_{yy}=(4+2-6)f_{uu}+(12+1+12)f_{uv}+(9-3-6)f_{vv}=25f_{uv}=1\\)。",
+    "I. 故 \\(\\dfrac{\\partial^2 f}{\\partial u\\partial v}=\\dfrac{1}{25}\\)（常数）。",
+    "II. 由 \\(f_{uv}=\\dfrac{1}{25}\\) 积分得 \\(f(u,v)=\\dfrac{1}{25}uv+\\varphi(u)+\\psi(v)\\)。",
+    "由条件 \\(\\dfrac{\\partial f(u,0)}{\\partial u}=ue^{-u}\\) 积分：\\(f(u,0)=\\int ue^{-u}\\,du=-(u+1)e^{-u}+C\\)；再由 \\(f(0,v)=\\dfrac{1}{50}v^2-1\\) 在 \\(v=0\\) 处得 \\(f(0,0)=-1\\)，定出 \\(C=0\\)，即 \\(f(u,0)=-(u+1)e^{-u}\\)。",
+    "取 \\(\\psi(0)=0\\)，则 \\(\\varphi(u)=-(u+1)e^{-u}\\)，\\(\\varphi(0)=-1\\)；再由 \\(f(0,v)=\\psi(v)+\\varphi(0)=\\dfrac{1}{50}v^2-1\\) 得 \\(\\psi(v)=\\dfrac{1}{50}v^2\\)。",
+    "故 \\(f(u,v)=\\dfrac{1}{25}uv-(u+1)e^{-u}+\\dfrac{1}{50}v^2\\)。",
+    "验算：\\(f(0,v)=\\dfrac{1}{50}v^2-1\\) 合；\\(f_u=\\dfrac{v}{25}+ue^{-u}\\)，\\(f_u(u,0)=ue^{-u}\\) 合；\\(f_{uv}=\\dfrac{1}{25}\\) 合。而原答案 (2) 中 \\(\\dfrac{1}{2}u^2e^{-u}\\) 一项会使 \\(f_{uv}=0\\) 且 \\(f_u(u,0)=ue^{-u}-\\dfrac{1}{2}u^2e^{-u}\\ne ue^{-u}\\)，与题设自相矛盾，应予纠正。"
+   ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2024考研数学二真题.pdf",
    "sourcePage": 1
