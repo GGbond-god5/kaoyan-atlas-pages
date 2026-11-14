@@ -226,13 +226,9 @@ PR #1 已合并并部署，新增：
 - 所有新接口都要求登录，并按账号 `uid` 隔离数据；未登录由中间件统一拦截
 - `platform_*` 系列 D1 表在首次调用时自动创建
 
-**R2 尚未开通**：`wrangler.toml` 里的 `LIBRARY_FILES` 绑定暂时注释，资料上传接口返回
-「资料存储未配置」，其余功能正常。开通步骤：
-
-1. Cloudflare 控制台 → R2 → Enable R2
-2. 创建桶 `kaoyan-atlas-library`
-3. Pages 项目 `kaoyan-atlas-pages` → Settings → Bindings 添加 R2，变量名 `LIBRARY_FILES`
-4. 把 `wrangler.toml` 中注释掉的 `[[r2_buckets]]` 取消注释并 push
+**R2 已开通（2026-11-14）**：`wrangler.toml` 绑定 `LIBRARY_FILES` → `kaoyan-atlas-library`，
+资料上传、列表、下载、AI 抽题和入库均已线上验证。`/api/health` 的 `bindings.R2` 会显示绑定状态。
+改绑定前先确认桶存在，否则 Pages 会在部署阶段失败。
 
 AI 地址使用千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
 （`platform.qianwenai.com` 的 OpenAI 兼容接口，Key 沿用 `DASHSCOPE_API_KEY`）；

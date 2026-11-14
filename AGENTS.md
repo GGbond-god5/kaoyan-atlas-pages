@@ -69,8 +69,8 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 单文件不超过 25 MiB，部署文件数不超过 20,000（当前约 2,100）
 - 免费版 Functions 单次 CPU 10ms 左右，PBKDF2 迭代不要调高
 - 站点要求登录，未登录只能访问 `/login`、`/register` 及其必要资源
-- **R2 尚未开通**：`wrangler.toml` 里的 `LIBRARY_FILES` 绑定保持注释，资料上传接口返回 503；
-  开通 R2 并创建 `kaoyan-atlas-library` 桶后再取消注释
+- **R2 已开通**：`wrangler.toml` 绑定 `LIBRARY_FILES` → `kaoyan-atlas-library`；
+  资料上传、下载与 AI 抽题可用。改绑定前先确认桶存在，否则 Pages 部署会失败。
 - **AI 端点使用千问平台** `https://maas.qianwenaiapi.com/compatible-mode/v1`
   （`platform.qianwenai.com` 的 OpenAI 兼容接口，Key 沿用 `DASHSCOPE_API_KEY`）；
   不要改到其他中转或陌生域名
