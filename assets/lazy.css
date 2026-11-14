@@ -105,6 +105,10 @@ dialog.note-editor::backdrop { background: rgba(20, 18, 23, .45); backdrop-filte
 .lazy-content mark { background: #f3e2b8; color: inherit; padding: 0 2px; }
 .lazy-content hr { border: 0; border-top: 1px solid var(--rule, #e2d8c8); margin: 20px 0; }
 .lazy-content .lazy-img { display: block; max-width: 100%; height: auto; margin: 12px auto; border: 1px solid var(--rule, #e2d8c8); border-radius: 4px; background: #fff; }
+.lazy-content .lazy-file { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; padding: 10px 12px;
+  border: 1px solid var(--rule, #e2d8c8); border-radius: 6px; background: #fffdf8; }
+.lazy-content .lazy-file a { color: var(--accent, #1F3A5F); font-size: 12.5px; word-break: break-all; }
+.lazy-content .lazy-pdf { width: 100%; height: 380px; border: 1px solid var(--rule, #e2d8c8); border-radius: 4px; background: #fff; }
 .lazy-content .note-ref { color: var(--accent, #1F3A5F); border-bottom: 1px dashed rgba(31, 58, 95, .4); cursor: pointer; }
 .lazy-content .note-ref:hover { background: rgba(31, 58, 95, .07); }
 .lazy-content .callout { margin: 14px 0; border: 1px solid var(--rule, #e2d8c8); border-left: 3px solid var(--accent, #1F3A5F);

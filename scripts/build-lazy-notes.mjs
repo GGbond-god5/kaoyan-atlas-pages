@@ -122,10 +122,39 @@ function joinParagraph(lines) {
 
 function mathPlaceholders(text) {
   const stash = [];
-  const save = (html) => { stash.push(html); return `\u0000M${stash.length - 1}\u0000`; };
-  let s = text.replace(/\$\$([\s\S]+?)\$\$/g, (_, expr) => save(`\\[${esc(expr.trim())}\\]`));
-  s = s.replace(/(^|[^\\$])\$([^$\n]+?)\$(?!\$)/g, (_, pre, expr) => `${pre}${save(`\\(${esc(expr.trim())}\\)`)}`);
-  return { text: s, stash };
+  let out = "", buf = "", state = "none", i = 0;
+  const push = kind => {
+    if (!buf.trim()) { buf = ""; return; }
+    stash.push(kind === "display" ? `\\[${esc(buf.trim())}\\]` : `\\(${esc(buf.trim())}\\)`);
+    out += `\u0000M${stash.length - 1}\u0000`;
+    buf = "";
+  };
+  while (i < text.length) {
+    if (text[i] !== "$") {
+      if (state === "none") out += text[i];
+      else buf += text[i];
+      i++;
+      continue;
+    }
+    let j = i;
+    while (j < text.length && text[j] === "$") j++;
+    let run = j - i;
+    while (run > 0) {
+      if (state === "none") {
+        if (run >= 2) { state = "display"; run -= 2; }
+        else { state = "inline"; run -= 1; }
+      } else if (state === "display") {
+        if (run >= 2) { push("display"); state = "none"; run -= 2; }
+        else { buf += "$"; run -= 1; }
+      } else {
+        push("inline"); state = "none"; run -= 1;
+      }
+    }
+    i = j;
+  }
+  if (state === "inline") out += `$${buf}`;
+  else if (state === "display") out += `$$${buf}`;
+  return { text: out, stash };
 }
 
 function restore(text, stash) {
@@ -217,14 +246,14 @@ function renderList(items, ctx) {
   return html;
 }
 
-function markdownToHtml(md, ctx) {
+function markdownToHtml(md, ctx, mathState) {
   const raw = md.replace(/\r\n/g, "\n");
-  const math = mathPlaceholders(raw);
-  const lines = math.text.split("\n");
+  const math = mathState || mathPlaceholders(raw);
+  const lines = (mathState ? raw : math.text).split("\n");
   const out = [];
   let i = 0;
   const isBlockStart = line =>
-    /^#{1,6}\s+/.test(line) || /^```/.test(line) || /^>\s?/.test(line) ||
+    /^#{1,6}\s+/.test(line) || /^```/.test(line) || /^\s*>\s?/.test(line) ||
     /^(\s*)([-*+]|\d+[.)])\s+/.test(line) || /^\|/.test(line) || /^(-{3,}|\*{3,})$/.test(line.trim());
 
   while (i < lines.length) {
@@ -251,18 +280,18 @@ function markdownToHtml(md, ctx) {
 
     if (/^(-{3,}|\*{3,})$/.test(line.trim())) { out.push("<hr>"); i++; continue; }
 
-    if (/^>\s?/.test(line)) {
+    if (/^\s*>\s?/.test(line)) {
       const buf = [];
-      while (i < lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ""));
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^\s*>\s?/, ""));
       const first = buf[0] || "";
       const call = /^\[!([A-Za-z]+)\]\s*(.*)$/.exec(first);
       if (call) {
         const type = call[1].toLowerCase();
         const title = call[2] || call[1];
-        const body = markdownToHtml(buf.slice(1).join("\n"), ctx);
-        out.push(`<div class="callout callout-${esc(type)}"><div class="callout-title">${esc(title)}</div><div class="callout-body">${body}</div></div>`);
+        const body = markdownToHtml(buf.slice(1).join("\n"), ctx, math);
+        out.push(`<div class="callout callout-${esc(type)}"><div class="callout-title">${inline(title, ctx)}</div><div class="callout-body">${body}</div></div>`);
       } else {
-        out.push(`<blockquote>${markdownToHtml(buf.join("\n"), ctx)}</blockquote>`);
+        out.push(`<blockquote>${markdownToHtml(buf.join("\n"), ctx, math)}</blockquote>`);
       }
       continue;
     }

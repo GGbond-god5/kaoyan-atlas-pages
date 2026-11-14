@@ -128,7 +128,12 @@
       .replace(/`([^`]+)`/g, "<code>$1</code>")
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>")
-      .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      .replace(/\[([^\]]+)\]\(((?:https?:|\/api\/notes\/file\/|assets\/)[^)]+)\)/g, (_, label, href) => {
+        if (/\.pdf(?:$|[?#])/i.test(href)) {
+          return `<div class="lazy-file"><a href="${href}" target="_blank" rel="noopener">${label}</a><iframe class="lazy-pdf" src="${href}" loading="lazy" title="${label}"></iframe></div>`;
+        }
+        return `<a class="lazy-file" href="${href}" target="_blank" rel="noopener">${label}</a>`;
+      });
     const lines = s.split("\n"), out = [];
     let i = 0;
     while (i < lines.length) {
