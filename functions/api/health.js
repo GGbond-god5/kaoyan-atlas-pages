@@ -2,6 +2,20 @@
 import { ok } from "../_lib/http.js";
 import { smsMode, missingConfig } from "../_lib/sms.js";
 
+async function probeSmtp() {
+  try {
+    const { connect } = await import("cloudflare:sockets");
+    const socket = connect({ hostname: "smtp.163.com", port: 465 });
+    const timer = new Promise((resolve) => setTimeout(() => resolve("timeout"), 2500));
+    const opened = socket.opened.then(() => "ok").catch((e) => String(e && e.message || e));
+    const result = await Promise.race([opened, timer]);
+    try { socket.close(); } catch (e) { /* ignore */ }
+    return result;
+  } catch (err) {
+    return String((err && err.message) || err);
+  }
+}
+
 export async function onRequestGet({ env }) {
   const mode = smsMode(env);
   return ok({
@@ -9,6 +23,7 @@ export async function onRequestGet({ env }) {
     time: new Date().toISOString(),
     smsMode: mode,
     smsMissing: missingConfig(env),
+    smtpTcp: await probeSmtp(),
     bindings: {
       D1: Boolean(env.DB),
       R2: Boolean(env.LIBRARY_FILES),
