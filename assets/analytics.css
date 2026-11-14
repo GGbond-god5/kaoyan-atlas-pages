@@ -1,21 +1,6 @@
-:root {
-  --paper: #F5F0E6; --card: #FCFAF5; --ink: #17161A; --rule: #DAD2C3;
-  --vermilion: #A8342A; --muted: #6E675C; --ok: #3E7A4E; --warn: #A86A12;
-  --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong, SimSun, serif;
-  --sans: "Noto Sans SC", "Source Han Sans CN", "Microsoft YaHei", system-ui, sans-serif;
-  --shadow: 0 1px 2px rgba(23,22,26,.04), 0 6px 18px -10px rgba(23,22,26,.18);
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); }
-.etop { display: flex; align-items: center; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--rule); background: var(--card); position: sticky; top: 0; z-index: 5; }
-.eback, .elink { color: var(--ink); text-decoration: none; font-size: 14px; }
-.elink { margin-left: auto; border: 1px solid var(--rule); padding: 6px 12px; border-radius: 999px; background: #fff; }
-.ebrand { display: flex; align-items: center; gap: 10px; }
-.emark { display: inline-flex; width: 34px; height: 34px; align-items: center; justify-content: center; background: var(--vermilion); color: #fff; font-family: var(--serif); font-size: 18px; border-radius: 8px; }
-.ebrand b { font-family: var(--serif); font-size: 16px; display: block; line-height: 1.1; }
-.ebrand small { color: var(--muted); font-size: 10px; letter-spacing: .12em; }
+/* 令牌、页眉、按钮、卡片基础来自 assets/theme.css；本文件只写套卷分析页的组件样式。 */
 .amain { max-width: 960px; margin: 0 auto; padding: 28px 18px 60px; }
-.akicker { color: var(--vermilion); letter-spacing: .18em; font-size: 12px; }
+
 .ahero h1 { font-family: var(--serif); font-size: 32px; margin: 8px 0; }
 .ahero p { color: var(--muted); margin: 0 0 8px; line-height: 1.7; }
 .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0 6px; }
