@@ -11,6 +11,7 @@ export async function onRequestGet({ env }) {
     smsMissing: missingConfig(env),
     bindings: {
       D1: Boolean(env.DB),
+      R2: Boolean(env.LIBRARY_FILES),
       SESSION_SECRET: Boolean(env.SESSION_SECRET),
       DASHSCOPE_API_KEY: Boolean(env.DASHSCOPE_API_KEY),
     },
