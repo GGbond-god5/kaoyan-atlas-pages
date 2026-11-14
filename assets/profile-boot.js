@@ -85,6 +85,8 @@
         <button type="button" class="profile-close" data-close aria-label="关闭">×</button>
       </header>
       <div class="profile-body">
+        <label class="pf-field"><span>院校专业目录</span><input id="programSearch" maxlength="40" placeholder="搜索院校、专业或代码，如 华南理工 085500" autocomplete="off"></label>
+        <div class="pf-programs" id="programResults" hidden></div>
         <label class="pf-field"><span>目标院校</span><input name="school" maxlength="40" placeholder="例如：华南理工大学"></label>
         <div class="pf-row">
           <label class="pf-field"><span>专业代码</span><input name="majorCode" maxlength="12" placeholder="085500"></label>
@@ -112,7 +114,60 @@
     dialog.querySelectorAll("[data-close]").forEach(b => b.onclick = () => dialog.close());
     dialog.querySelector("#addCustom").onclick = () => addCustomRow({});
     dialog.querySelector("#profileForm").addEventListener("submit", save);
+    bindProgramSearch(dialog);
     return dialog;
+  }
+
+  function bindProgramSearch(dialog) {
+    const input = dialog.querySelector("#programSearch");
+    const results = dialog.querySelector("#programResults");
+    let timer = null, programs = [];
+    function render() {
+      results.innerHTML = programs.length
+        ? programs.map((p, i) => `<button type="button" class="pf-program" data-program="${i}">
+            <b>${esc(p.school)} · ${esc(p.majorCode)} ${esc(p.majorName)}</b>
+            <span>${esc(p.college || "")} · ${esc(p.degreeType || "")} · ${p.year || ""}</span></button>`).join("")
+        : `<p class="pf-hint">没有匹配的目录项，可以直接手动填写。</p>`;
+      results.hidden = false;
+      results.querySelectorAll("[data-program]").forEach(b => {
+        b.onclick = () => { applyProgram(programs[Number(b.dataset.program)]); results.hidden = true; input.value = ""; };
+      });
+    }
+    input.addEventListener("input", () => {
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        const q = input.value.trim();
+        if (!q) { results.hidden = true; return; }
+        try {
+          const res = await fetch("/api/programs?q=" + encodeURIComponent(q), { credentials: "include" });
+          const data = await res.json();
+          programs = data.programs || [];
+          render();
+        } catch (e) { results.hidden = true; }
+      }, 200);
+    });
+  }
+
+  function applyProgram(program) {
+    if (!program) return;
+    const form = document.getElementById("profileForm");
+    form.school.value = program.school || "";
+    form.majorCode.value = program.majorCode || "";
+    form.majorName.value = program.majorName || "";
+    const subjects = program.subjects || [];
+    const kinds = new Set(subjects.map(s => s.kind));
+    const builtins = new Set(subjects.map(s => s.builtin).filter(Boolean));
+    form.querySelectorAll('input[name="subject"]').forEach(c => {
+      c.checked = kinds.has(c.value) || builtins.has(c.value);
+    });
+    const math = subjects.find(s => s.kind === "math");
+    if (math && math.variant) form.variantMath.value = math.variant;
+    const english = subjects.find(s => s.kind === "english");
+    if (english && english.variant) form.variantEnglish.value = english.variant;
+    const list = form.querySelector("#customList");
+    list.innerHTML = "";
+    subjects.filter(s => s.kind === "professional" && !s.builtin).forEach(s => addCustomRow({ name: s.name, code: s.code, fullScore: s.fullScore }));
+    document.getElementById("profileError").textContent = program.note || "";
   }
 
   function addCustomRow(item) {

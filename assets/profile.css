@@ -19,6 +19,15 @@ dialog.profile-dialog::backdrop { background: rgba(20, 18, 23, .45); backdrop-fi
 .pf-subjects { border: 1px solid var(--rule, #d8cfc0); border-radius: 7px; padding: 10px 12px 6px; margin: 2px 0 10px; }
 .pf-subjects legend { font-size: 11.5px; color: var(--ink-3, #6b6b6b); padding: 0 4px; }
 .pf-check { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 13px; color: var(--ink-2, #3a3840); }
+.pf-programs { margin: -4px 0 12px; max-height: 180px; overflow-y: auto; border: 1px solid var(--rule, #d8cfc0);
+  border-radius: 7px; background: #fffdf8; }
+.pf-program { display: flex; flex-direction: column; gap: 2px; width: 100%; text-align: left;
+  padding: 8px 10px; border-bottom: 1px solid rgba(216, 207, 192, .6); }
+.pf-program:last-child { border-bottom: 0; }
+.pf-program:hover { background: rgba(31, 58, 95, .06); }
+.pf-program b { font-size: 12.5px; font-weight: 600; color: var(--ink, #1b1a1f); }
+.pf-program span { font-size: 11px; color: var(--ink-3, #6b6b6b); }
+.pf-programs .pf-hint { padding: 8px 10px; margin: 0; }
 .pf-check input { accent-color: var(--accent, #1F3A5F); }
 .pf-check select { margin-left: auto; padding: 4px 6px; border: 1px solid var(--rule, #d8cfc0);
   border-radius: 4px; background: #fffdf8; color: inherit; font-size: 12px; outline: none; }
