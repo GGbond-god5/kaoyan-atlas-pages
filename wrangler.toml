@@ -14,5 +14,5 @@ database_id = "0e82bbde-a58e-40c5-a0e3-ebb6d67d1b4f"
 # bucket_name = "kaoyan-atlas-library"
 
 [vars]
-AI_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+AI_BASE_URL = "https://maas.qianwenaiapi.com/compatible-mode/v1"
 AI_MODEL = "qwen3-vl-plus"
