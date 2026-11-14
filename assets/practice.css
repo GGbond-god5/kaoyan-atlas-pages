@@ -12,6 +12,18 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
 
+/* ambient atlas field: pre-rendered by Remotion, sits under all content */
+.page-veil{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.page-veil video{display:block;width:100%;height:100%;object-fit:cover;opacity:.9}
+.page-veil::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(300px circle at var(--veil-x,-9999px) var(--veil-y,-9999px),
+    rgba(255,253,247,.85), rgba(255,246,229,.38) 46%, rgba(255,246,229,0) 74%)}
+.emain{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){
+  .page-veil{display:none}
+  html.motion-forced .page-veil{display:block}
+}
+
 .etop{position:sticky;top:0;z-index:30;height:60px;display:flex;align-items:center;gap:16px;padding:0 22px;
   background:rgba(243,238,228,.94);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule)}
 .eback{font-size:11px;color:var(--ink3);white-space:nowrap}
