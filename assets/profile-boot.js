@@ -36,6 +36,8 @@
       const code = cs.code || "专业课";
       A.subjects.push({
         id, name: cs.name, en: "PROFESSIONAL", accent, soft,
+        chapterCount: 1, kpCount: 0, examCount: 0,
+        blurb: "这门专业课的章节内容尚未录入，可先在资料库上传讲义或真题。",
         chapters: [{
           id: `${id}-intro`, no: "01", title: "内容建设中",
           subtitle: `${code} · ${cs.name}`,
@@ -59,7 +61,7 @@
     if (window.__atlasMapLoaded) return;
     window.__atlasMapLoaded = true;
     const script = document.createElement("script");
-    script.src = "assets/atlas.js?v=19";
+    script.src = "assets/atlas.js?v=20";
     script.onload = () => {
       if (window.AtlasProfile) window.AtlasProfile.afterMap();
     };

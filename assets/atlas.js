@@ -28,6 +28,28 @@
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   }
+  function profile() { return window.ATLAS_PROFILE || {}; }
+  function shortSchool(name) {
+    return String(name || "").trim().replace(/大学|学院|研究生院/g, "").slice(0, 6);
+  }
+  function examDateText(iso) { return String(iso || "").replace(/-/g, "."); }
+  function totals() {
+    let chapters = 0, kps = 0, exams = 0, topics = 0;
+    for (const s of SUBJECTS) {
+      chapters += s.chapterCount || s.chapters.length;
+      kps += s.kpCount || s.chapters.reduce((n, c) => n + c.kps.length, 0);
+      exams += s.examCount || s.chapters.reduce((n, c) => n + (c.examCount || 0), 0);
+      topics += s.chapters.reduce((n, c) => n + (c.topics || []).length, 0);
+    }
+    return { chapters, kps, exams, topics };
+  }
+  function baseTitle() {
+    const P = profile();
+    const year = String(P.examDate || DATA.examDate || "").slice(0, 4) || "2027";
+    const school = shortSchool(P.school) || "目标院校";
+    const major = [P.majorCode, P.majorName].filter(Boolean).join(" ") || "个人备考";
+    return `考研科目大观 · ${year} · ${school} ${major}`;
+  }
   function daysLeft() {
     const exam = new Date(DATA.examDate + "T00:00:00");
     const now = new Date();
@@ -100,10 +122,14 @@
     linkLayer.innerHTML = "";
 
     // root
+    const P = profile();
+    const year = String(P.examDate || DATA.examDate || "").slice(0, 4) || "2027";
+    const school = shortSchool(P.school) || "目标院校";
+    const major = [P.majorCode, P.majorName].filter(Boolean).join(" ") || "个人备考";
     const root = el("div", "node root", `
-      <div class="r-kicker">2027 KAOYAN ATLAS</div>
-      <div class="r-title">华南理工<br>085500 机械</div>
-      <div class="r-sub">数学一 · 英语一 · 807 · 政治</div>
+      <div class="r-kicker">${esc(year)} KAOYAN ATLAS</div>
+      <div class="r-title">${esc(school)}<br>${esc(major)}</div>
+      <div class="r-sub">${esc(SUBJECTS.map(s => s.name).join(" · "))}</div>
       <div class="r-days"><b>${daysLeft()}</b>天后初试</div>`);
     root.style.cssText = `left:${X.root}px;top:${layout.rootY - 52}px;width:${W.root}px`;
     nodesEl.appendChild(root);
@@ -180,18 +206,30 @@
 
     // right panel
     if (!state.subject) {
-      const stats = DATA.stats;
+      const st = totals();
+      const P = profile();
+      const names = SUBJECTS.map(s => s.name);
+      const hasMech = SUBJECTS.some(s => s.id === "mechanics");
+      const hasEnglish = SUBJECTS.some(s => s.id === "english");
+      const hasPolitics = SUBJECTS.some(s => s.id === "politics");
+      const school = shortSchool(P.school) || "目标院校";
+      const major = [P.majorCode, P.majorName].filter(Boolean).join(" ") || "个人备考";
+      const year = String(P.examDate || DATA.examDate || "").slice(0, 4) || "2027";
       const panel = el("div", "panel intro", `
-        <div class="kicker">SUBJECT ATLAS · 2027</div>
-        <h2>四科一体，<br>以<em>真题</em>为纲。</h2>
-        <p>数学一、英语一、807 材料力学、政治。每一章按「考点 → 真题 → 专题」组织，点开章节或考点即可在页内阅读，不再跳转 PDF。</p>
+        <div class="kicker">${esc(year)} SUBJECT ATLAS</div>
+        <h2>我的备考图谱，<br>以<em>真题</em>为纲。</h2>
+        <p>${esc(names.join("、"))}。每一章按「考点 → 真题 → 专题」组织，点开章节或考点即可在页内阅读，不再跳转 PDF。</p>
         <div class="row">
-          <div><b>${stats.chapters}</b>章讲义</div>
-          <div><b>${stats.kps}</b>个考点</div>
-          <div><b>${stats.exams}</b>道题目</div>
-          <div><b>${stats.topics}</b>个专题</div>
+          <div><b>${st.chapters}</b>章讲义</div>
+          <div><b>${st.kps}</b>个考点</div>
+          <div><b>${st.exams}</b>道题目</div>
+          <div><b>${st.topics}</b>个专题</div>
         </div>
-        <div class="note">点击左侧科目展开章节；点章节或考点进入网页阅读，顶部可「返回图谱」或下载 PDF 原版。<br><b>真题标注</b>：年份·题号为原卷原题；「同型」为同考点真题风格改编。内容按 <b>2027 考研大纲</b>（2026-09 发布）校对；807 以华工官方 2026 版 11 条为准（2027 新版截至 2026-11 未见公开）。</div>`);
+        <div class="intro-links">
+          ${hasEnglish ? '<a href="vocab.html">词汇自测 →</a>' : ""}
+          ${hasPolitics ? '<a href="timeline.html">政治时间轴 →</a>' : ""}
+        </div>
+        <div class="note">目标：${esc(school)} · ${esc(major)} · 初试 ${esc(examDateText(P.examDate || DATA.examDate))}。<br>点击左侧科目展开章节；点章节或考点进入网页阅读，顶部可「返回图谱」或下载 PDF 原版。<br><b>真题标注</b>：年份·题号为原卷原题；「同型」为同考点真题风格改编。内容按 <b>2027 考研大纲</b> 校对。${hasMech ? "<br>807 以华工官方 2026 版 11 条为准（2027 新版截至 2026-11 未见公开）。" : ""}</div>`);
       panel.style.cssText = `left:720px;top:${Math.max(20, layout.rootY - 190)}px;width:500px`;
       nodesEl.appendChild(panel);
     } else if (!selectedChapter) {
@@ -547,7 +585,7 @@
     document.body.classList.remove("reader-open");
     readerToc.classList.remove("open");
     readerChapter = null;
-    document.title = "考研科目大观 · 2027 · 华南理工 085500";
+    document.title = baseTitle();
     if (location.hash.indexOf("#read=") === 0) {
       history.replaceState(null, "", location.pathname + location.search);
     }
@@ -771,17 +809,20 @@
   }
 
   function fillStats() {
-    const st = DATA.stats;
-    document.getElementById("stats").innerHTML = `
-      <span class="stat"><b>${SUBJECTS.length}</b>科目</span>
-      <span class="stat"><b>${st.chapters}</b>章</span>
-      <span class="stat"><b>${st.kps}</b>考点</span>
-      <span class="stat"><b>${st.exams}</b>章节题</span>
-      <span class="stat"><b>${st.bank || 4662}</b>题库题</span>`;
+    const st = totals();
+    const statsEl = document.getElementById("stats");
+    if (statsEl) {
+      statsEl.innerHTML = `
+        <span class="stat"><b>${SUBJECTS.length}</b>科目</span>
+        <span class="stat"><b>${st.chapters}</b>章</span>
+        <span class="stat"><b>${st.kps}</b>考点</span>
+        <span class="stat"><b>${st.exams}</b>章节题</span>
+        <span class="stat"><b>${DATA.stats.bank || 4662}</b>题库题</span>`;
+    }
     document.getElementById("legend").innerHTML = SUBJECTS.map(s =>
       `<span><i style="background:${s.accent}"></i>${esc(s.name)}</span>`).join("");
     const cd = document.getElementById("countdown");
-    if (cd) cd.innerHTML = `距初试 <b>${daysLeft()}</b> 天 · 2026.12.19`;
+    if (cd) cd.innerHTML = `距初试 <b>${daysLeft()}</b> 天 · ${examDateText(profile().examDate || DATA.examDate)}`;
   }
 
   const params = new URLSearchParams(location.search);
@@ -791,6 +832,7 @@
     if (c0) state.chapter = c0;
   }
 
+  document.title = baseTitle();
   buildNav();
   render();
   if (params.get("view") === "list") {

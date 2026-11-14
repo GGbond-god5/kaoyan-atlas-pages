@@ -31,7 +31,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ---------- top bar ---------- */
 .topbar {
   position: fixed; inset: 0 0 auto 0; height: 64px; z-index: 40;
-  display: flex; align-items: center; gap: 32px; padding: 0 28px;
+  display: flex; align-items: center; gap: 20px; padding: 0 22px;
   background: rgba(245, 240, 230, .82);
   backdrop-filter: saturate(140%) blur(10px);
   border-bottom: 1px solid var(--rule);
@@ -64,9 +64,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .stat { display: flex; align-items: baseline; gap: 5px; font-size: 11px; color: var(--ink-3); white-space: nowrap; }
 .stat b { font-family: var(--serif); font-size: 16px; color: var(--ink); font-weight: 700; }
 
-.actions { display: flex; align-items: center; gap: 8px; flex: none; }
+.actions { display: flex; align-items: center; gap: 6px; flex: none; margin-left: auto; }
 .btn {
-  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px;
+  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 11px;
   border: 1px solid var(--rule); border-radius: 2px; background: var(--card);
   font-size: 12px; letter-spacing: .04em; transition: all .18s;
 }
@@ -199,6 +199,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .intro .row div { font-size: 9.5px; letter-spacing: .1em; color: var(--ink-3); }
 .intro .row b { display: block; font-family: var(--serif); font-size: 24px; color: var(--ink); letter-spacing: 0; margin-bottom: 3px; }
 .intro .note { margin-top: 20px; font-size: 10px; color: var(--ink-3); line-height: 1.8; }
+.intro-links { display: flex; gap: 16px; margin-top: 14px; font-size: 11px; }
+.intro-links a { color: var(--accent); border-bottom: 1px dashed currentColor; text-decoration: none; }
 
 .subject-panel { width: 430px; }
 .subject-panel .kicker { font-size: 9px; letter-spacing: .24em; color: var(--accent); }
