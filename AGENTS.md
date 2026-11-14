@@ -95,7 +95,11 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 
 ## 笔记库（Lazy-Kaoyan-Library）
 
-- 源文件在 `lazy-src/数一`、`lazy-src/英一`（Obsidian Markdown，含 LaTeX、双链、callout）
+- 源文件在 `lazy-src/数一`、`lazy-src/英一`、`lazy-src/政治`（Obsidian Markdown，含 LaTeX、双链、callout）
+- 政治笔记来自 [XColorful/Politics-Obsidian-Note](https://github.com/XColorful/Politics-Obsidian-Note)，
+  **CC BY-SA 4.0**：转载和改写都要保留署名与相同许可，笔记库里已按学科显示来源行，不要删除
+- 政治笔记按目录整体挂章节：`scripts/build-lazy-notes.mjs` 的 `PREFIX_MAP`（马原→pol-01/02、
+  毛中特→pol-03、新思想→pol-04、史纲→pol-05、思修→pol-06）；形势与政策（pol-07）暂无笔记
 - 转换：`node scripts/build-lazy-notes.mjs`，生成 `assets/lazy-index.js`、`assets/lazy/<章节>.json`、`assets/lazy-figs/`
 - 首页每个章节上的「笔记 N」徽标、顶栏「笔记库」入口都会打开笔记阅读器
 - 新增或修改笔记后重跑脚本，把源文件和生成物一起提交；Pages 构建会自动重跑转换

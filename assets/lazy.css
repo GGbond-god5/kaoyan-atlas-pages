@@ -14,6 +14,8 @@ body.lazy-open { overflow: hidden; }
 .lazy-head-title span { font-size: 12px; color: var(--ink-3, #6b6b6b); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lazy-close { margin-left: auto; width: 32px; height: 32px; border-radius: 50%; font-size: 22px; line-height: 1; color: var(--ink-2, #555); }
 .lazy-close:hover { background: rgba(0, 0, 0, .06); }
+.lazy-credit { flex: none; margin-right: 10px; font-size: 10px; color: var(--ink-3, #6b6b6b); }
+.lazy-credit a { color: inherit; border-bottom: 1px dotted currentColor; }
 .lazy-body { flex: 1; display: grid; grid-template-columns: 304px minmax(0, 1fr); min-height: 0; }
 .lazy-side { border-right: 1px solid var(--rule, #d8cfc0); display: flex; flex-direction: column; min-height: 0; min-width: 0;
   background: rgba(255, 255, 255, .32); }

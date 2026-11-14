@@ -6,7 +6,7 @@
 
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const CACHE = {};
-  let overlay, groupsEl, notesEl, contentEl, crumbEl, searchEl, currentGroup = null, currentNote = null;
+  let overlay, groupsEl, notesEl, contentEl, crumbEl, searchEl, currentGroup = null, currentNote = null, setCrumb = null;
   const USER = {};
   let userLoaded = false, editorEl = null, editingId = null, confirmEl = null, pendingDelete = null;
 
@@ -19,6 +19,7 @@
     overlay.innerHTML = `<div class="lazy-panel" role="dialog" aria-modal="true" aria-label="Lazy 笔记库">
       <header class="lazy-head">
         <div class="lazy-head-title"><b>Lazy 笔记</b><span id="lazyCrumb"></span></div>
+        <span id="lazyCredit" class="lazy-credit" hidden>内容来自 <a href="https://github.com/XColorful/Politics-Obsidian-Note" target="_blank" rel="noopener">XColorful/Politics-Obsidian-Note</a> · CC BY-SA 4.0</span>
         <button class="lazy-new" id="lazyNew" type="button">+ 新建笔记</button>
         <button class="lazy-close" id="lazyClose" type="button" aria-label="关闭">×</button>
       </header>
@@ -36,6 +37,11 @@
     notesEl = overlay.querySelector("#lazyNotes");
     contentEl = overlay.querySelector("#lazyContent");
     crumbEl = overlay.querySelector("#lazyCrumb");
+    const creditEl = overlay.querySelector("#lazyCredit");
+    setCrumb = text => {
+      crumbEl.textContent = text;
+      if (creditEl) creditEl.hidden = !String(text).startsWith("政治");
+    };
     searchEl = overlay.querySelector("#lazySearch");
     overlay.querySelector("#lazyClose").onclick = close;
     overlay.querySelector("#lazyNew").onclick = () => openEditor(null, currentGroup);
@@ -177,7 +183,7 @@
     if (!meta) return;
     currentGroup = groupId; currentNote = noteId;
     renderGroups(); renderNotes(groupId);
-    crumbEl.textContent = `${meta.subject} · ${meta.title}`;
+    setCrumb(`${meta.subject} · ${meta.title}`);
     try {
       const res = await fetch(`/api/notes/${encodeURIComponent(noteId)}`, { credentials: "include" });
       const data = await res.json();
@@ -399,7 +405,7 @@
     currentNote = noteId;
     renderGroups();
     renderNotes(groupId);
-    crumbEl.textContent = `${meta.subject} · ${meta.title}`;
+    setCrumb(`${meta.subject} · ${meta.title}`);
     const list = notesEl.querySelector(`[data-note="${noteId}"]`);
     if (list) list.classList.add("on");
     try {
@@ -419,7 +425,7 @@
     currentNote = null;
     renderGroups();
     renderNotes(groupId);
-    crumbEl.textContent = `${groupMeta(groupId).subject} · ${groupMeta(groupId).title}`;
+    setCrumb(`${groupMeta(groupId).subject} · ${groupMeta(groupId).title}`);
     if (searchEl.value.trim()) searchEl.value = "";
     const first = groupMeta(groupId).notes[0];
     const firstUser = (USER[groupId] || [])[0];
@@ -444,7 +450,7 @@
       }
       if (hits.length >= 120) break;
     }
-    crumbEl.textContent = `搜索：${query}`;
+    setCrumb(`搜索：${query}`);
     notesEl.innerHTML = hits.length
       ? hits.map(h => `<button type="button" class="lazy-note-item${h.user ? " mine" : ""}" data-group="${esc(h.group)}" data-note="${esc(h.id)}" data-user="${h.user ? 1 : 0}"><span>${esc(h.title)}</span><em>${h.user ? "我的 · " : ""}${esc(h.chapter)}</em></button>`).join("")
       : `<p class="lazy-empty">没有找到「${esc(query)}」。</p>`;
@@ -478,7 +484,7 @@
       currentGroup = null;
       renderGroups();
       notesEl.innerHTML = `<p class="lazy-empty">选择左侧章节，或直接搜索笔记标题。</p>`;
-      crumbEl.textContent = `共 ${Object.values(IDX.groups).reduce((n, g) => n + g.count, 0)} 篇内置笔记`;
+      setCrumb(`共 ${Object.values(IDX.groups).reduce((n, g) => n + g.count, 0)} 篇内置笔记`);
       contentEl.innerHTML = `<p class="lazy-empty">选择左侧的章节与笔记开始阅读。</p>`;
     }
   }

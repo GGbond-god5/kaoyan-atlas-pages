@@ -52,6 +52,28 @@ const FILE_MAP = {
   "英一/2027英一大小作文预测与检验.md": "english-08",
 };
 
+// 政治笔记按学科目录整体映射到章节，子目录沿用同一章
+const PREFIX_MAP = {
+  "政治/马原": "pol-01",
+  "政治/马原/b 马克思主义哲学": "pol-01",
+  "政治/马原/c 马克思主义政治经济学": "pol-02",
+  "政治/马原/d 科学社会主义": "pol-02",
+  "政治/毛中特": "pol-03",
+  "政治/新思想": "pol-04",
+  "政治/史纲": "pol-05",
+  "政治/思修": "pol-06",
+};
+
+function matchPrefix(dirRel) {
+  let best = null;
+  for (const key of Object.keys(PREFIX_MAP)) {
+    if (dirRel === key || dirRel.startsWith(`${key}/`)) {
+      if (!best || key.length > best.length) best = key;
+    }
+  }
+  return best ? PREFIX_MAP[best] : null;
+}
+
 const TYPE_ORDER = ["思维导图", "作文模板", "基础知识", "方法", "公式", "补充理解", "补充", "补充知识", "总结", "题目", "错题", "同类题目"];
 
 const esc = s => String(s == null ? "" : s)
@@ -360,7 +382,7 @@ function main() {
   for (const file of walk(SRC)) {
     const rel = relative(SRC, file).split("\\").join("/");
     const dirRel = dirname(rel);
-    const groupId = FILE_MAP[rel] || DIR_MAP[dirRel] || (dirRel.startsWith("数一/1 高数/0 汇总") ? "math-methods" : null);
+    const groupId = FILE_MAP[rel] || DIR_MAP[dirRel] || matchPrefix(dirRel) || (dirRel.startsWith("数一/1 高数/0 汇总") ? "math-methods" : null);
     if (!groupId) continue;
     const { meta, body } = parseFrontmatter(readFileSync(file, "utf8"));
     const title = cleanTitle(meta, file);
