@@ -39,8 +39,17 @@ export async function ai(env, messages, jsonMode = false) {
   if (!key) throw new Error('AI 服务未配置');
   const base = (env.AI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1').replace(/\/+$/, '');
   const model = env.AI_MODEL || 'qwen3-vl-plus';
+  const payload = {
+    model,
+    messages,
+    temperature: 0.2,
+    max_tokens: Number(env.AI_MAX_TOKENS || 3000),
+    ...(jsonMode ? {response_format:{type:'json_object'}} : {}),
+  };
+  // 推理型模型会把 token 花在思考上，额度小的时候 content 会是空的
+  if (env.AI_REASONING_EFFORT) payload.reasoning_effort = env.AI_REASONING_EFFORT;
   let res;
-  try { res = await fetch(`${base}/chat/completions`, {method:'POST', headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'}, body:JSON.stringify({model, messages, temperature:0.2, max_tokens:3000, ...(jsonMode ? {response_format:{type:'json_object'}} : {})})}); }
+  try { res = await fetch(`${base}/chat/completions`, {method:'POST', headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'}, body:JSON.stringify(payload)}); }
   catch { throw new Error('AI 服务连接失败'); }
   if (!res.ok) throw new Error(`AI 服务返回 HTTP ${res.status}`);
   const body = await res.json();

@@ -209,8 +209,10 @@ npx wrangler pages dev . --d1=DB --r2=LIBRARY_FILES \
 | `AI_BASE_URL` | 接口地址，默认 `https://dashscope.aliyuncs.com/compatible-mode/v1` |
 | `AI_API_KEY` | 密钥（旧部署的 `DASHSCOPE_API_KEY` 仍然兼容） |
 | `AI_MODEL` | 模型名，默认 `qwen3-vl-plus` |
+| `AI_MAX_TOKENS` | 单次输出上限，默认 3000；推理型模型建议调到 6000 以上 |
+| `AI_REASONING_EFFORT` | 可选，推理型模型传 `low`/`high`/`max`；不填则不下发该参数 |
 
-换服务只改这三个变量，不用动代码。`/api/health` 的 `bindings.AI` 可以确认是否配置成功。
+推理型模型（如 DeepSeek V4）会把 token 先花在思考上，`max_tokens` 偏小时 `content` 会是空的，表现为「AI 返回为空」。遇到就把 `AI_MAX_TOKENS` 调大，并把 `AI_REASONING_EFFORT` 设成 `low`。
 
 ### 意见反馈发信
 
