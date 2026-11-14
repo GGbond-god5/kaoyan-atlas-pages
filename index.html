@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/transitions.css?v=1">
+<script>if(/[?&]motion=1/.test(location.search))document.documentElement.classList.add("motion-forced");</script>
 <title>考研科目大观 · 2027 · 华南理工 085500</title>
 <meta name="description" content="数学一、英语一、807 材料力学、政治：考点、真题与专题的交互式阅读图谱，支持页内阅读与 PDF 下载。">
-<link rel="stylesheet" href="assets/atlas.css?v=17">
+<link rel="stylesheet" href="assets/atlas.css?v=18">
 <link rel="stylesheet" href="assets/web.css?v=15">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 <link rel="stylesheet" href="assets/site-tools.css">
@@ -34,6 +36,7 @@
 
 <main class="stage" id="stage">
   <div class="stage-bg" aria-hidden="true">
+    <div id="atlasField"></div>
     <div class="watermark">2027</div>
     <div class="meta-mark">SCUT · 085500</div>
   </div>
@@ -102,8 +105,8 @@
 <script src="assets/assessment.js?v=6"></script>
 <script src="assets/profile-boot.js?v=6"></script>
 <script src="assets/lazy.js?v=6"></script>
-<script src="assets/particles.js"></script>
 <script src="assets/auth-nav.js?v=2"></script>
 <script src="assets/site-tools.js"></script>
+<script defer src="assets/remotion/atlas-player.js?v=1"></script>
 </body>
 </html>

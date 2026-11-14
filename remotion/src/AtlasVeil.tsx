@@ -6,12 +6,14 @@ import {
 	useVideoConfig,
 	random,
 } from "remotion";
+import { pointer as sharedPointer } from "./pointer";
 
 const PAPER = "#F3EEE4";
 const INK = "23, 22, 26";
 const VERMILION = "168, 52, 42";
 const NODE_COUNT = 104;
 const LINK_DISTANCE = 172;
+const REACH = 264;
 
 type Node = {
 	x: number;
@@ -19,29 +21,52 @@ type Node = {
 	r: number;
 	warm: boolean;
 	depth: number;
+	near: number;
 };
 
-export const AtlasVeil: React.FC = () => {
+type AtlasVeilSceneProps = {
+	pointer?: { x: number; y: number };
+};
+
+export const AtlasVeilScene: React.FC<AtlasVeilSceneProps> = ({ pointer }) => {
 	const frame = useCurrentFrame();
 	const { width, height, durationInFrames } = useVideoConfig();
 	const t = (frame / durationInFrames) * Math.PI * 2;
 
+	const cursor = pointer ?? sharedPointer;
+	const active = cursor.x > -1000;
+
 	const nodes: Node[] = Array.from({ length: NODE_COUNT }, (_, i) => {
 		const depth = random(`depth-${i}`);
 		const speed = i % 3 === 0 ? 2 : 1;
-		const driftX = 14 + depth * 46;
-		const driftY = 12 + depth * 38;
 		const phase = random(`phase-${i}`) * Math.PI * 2;
+		const baseX = random(`x-${i}`) * width;
+		const baseY = random(`y-${i}`) * height;
+		const x = baseX + (14 + depth * 46) * Math.sin(t * speed + phase);
+		const y = baseY + (12 + depth * 38) * Math.cos(t * speed + phase * 1.37);
+
+		let pushedX = x;
+		let pushedY = y;
+		let near = 0;
+		if (active) {
+			const dx = x - cursor.x;
+			const dy = y - cursor.y;
+			const dist = Math.sqrt(dx * dx + dy * dy);
+			if (dist < REACH && dist > 0.001) {
+				near = 1 - dist / REACH;
+				const push = near * near * 96;
+				pushedX = x + (dx / dist) * push;
+				pushedY = y + (dy / dist) * push;
+			}
+		}
+
 		return {
-			x:
-				random(`x-${i}`) * width +
-				driftX * Math.sin(t * speed + phase),
-			y:
-				random(`y-${i}`) * height +
-				driftY * Math.cos(t * speed + phase * 1.37),
+			x: pushedX,
+			y: pushedY,
 			r: 0.8 + depth * 1.9,
 			warm: random(`warm-${i}`) < 0.14,
 			depth,
+			near,
 		};
 	});
 
@@ -54,8 +79,10 @@ export const AtlasVeil: React.FC = () => {
 			const dy = a.y - b.y;
 			const d = Math.sqrt(dx * dx + dy * dy);
 			if (d > LINK_DISTANCE) continue;
-			const near = 1 - d / LINK_DISTANCE;
-			const alpha = near * near * 0.34 * (0.45 + ((a.depth + b.depth) / 2) * 0.55);
+			const closeness = 1 - d / LINK_DISTANCE;
+			const lift = Math.max(a.near, b.near) * 0.22;
+			const alpha =
+				closeness * closeness * (0.34 + lift) * (0.45 + ((a.depth + b.depth) / 2) * 0.55);
 			links.push(
 				<line
 					key={`l-${i}-${j}`}
@@ -68,7 +95,7 @@ export const AtlasVeil: React.FC = () => {
 							? `rgba(${VERMILION}, ${alpha})`
 							: `rgba(${INK}, ${alpha})`
 					}
-					strokeWidth={0.5 + near * 0.4}
+					strokeWidth={0.5 + closeness * 0.4}
 				/>,
 			);
 		}
@@ -78,7 +105,6 @@ export const AtlasVeil: React.FC = () => {
 	const washY = height * (0.28 + 0.06 * Math.cos(t * 2));
 	const orbitX = width * 0.79;
 	const orbitY = height * 0.19;
-	const orbitSpin = Math.sin(t) * 6;
 
 	return (
 		<AbsoluteFill style={{ backgroundColor: PAPER, overflow: "hidden" }}>
@@ -96,18 +122,22 @@ export const AtlasVeil: React.FC = () => {
 					background: `radial-gradient(760px 520px at ${width * 0.92}px ${height * 0.88}px, rgba(${VERMILION}, .07), rgba(255,255,255,0) 70%)`,
 				}}
 			/>
+			{active ? (
+				<div
+					style={{
+						position: "absolute",
+						inset: 0,
+						background: `radial-gradient(300px circle at ${cursor.x}px ${cursor.y}px, rgba(255,252,243,.62), rgba(255,246,229,.18) 46%, rgba(255,246,229,0) 72%)`,
+					}}
+				/>
+			) : null}
 
 			<svg
 				width={width}
 				height={height}
 				style={{ position: "absolute", inset: 0 }}
 			>
-				<g
-					opacity={0.5}
-					style={{
-						rotate: `${orbitSpin}deg`,
-					}}
-				>
+				<g opacity={0.5} style={{ rotate: `${Math.sin(t) * 6}deg` }}>
 					{[248, 336, 438].map((radius, i) => (
 						<circle
 							key={`orbit-${radius}`}
@@ -144,11 +174,11 @@ export const AtlasVeil: React.FC = () => {
 						key={`n-${i}`}
 						cx={n.x}
 						cy={n.y}
-						r={n.r}
+						r={n.r + n.near * 1.6}
 						fill={
 							n.warm
-								? `rgba(${VERMILION}, ${0.34 + n.depth * 0.34})`
-								: `rgba(${INK}, ${0.28 + n.depth * 0.32})`
+								? `rgba(${VERMILION}, ${0.34 + n.depth * 0.34 + n.near * 0.2})`
+								: `rgba(${INK}, ${0.28 + n.depth * 0.32 + n.near * 0.2})`
 						}
 					/>
 				))}
@@ -177,7 +207,8 @@ export const AtlasVeilComposition: React.FC = () => {
 	return (
 		<Composition
 			id="AtlasVeil"
-			component={AtlasVeil}
+			component={AtlasVeilScene}
+			defaultProps={{}}
 			durationInFrames={240}
 			fps={30}
 			width={1600}

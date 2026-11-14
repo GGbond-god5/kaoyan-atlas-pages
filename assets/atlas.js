@@ -228,6 +228,7 @@
         <div class="intro-links">
           ${hasEnglish ? '<a href="vocab.html">词汇自测 →</a>' : ""}
           ${hasPolitics ? '<a href="timeline.html">政治时间轴 →</a>' : ""}
+          <button type="button" data-open-lazy>笔记库 →</button>
         </div>
         <div class="note">目标：${esc(school)} · ${esc(major)} · 初试 ${esc(examDateText(P.examDate || DATA.examDate))}。<br>点击左侧科目展开章节；点章节或考点进入网页阅读，顶部可「返回图谱」或下载 PDF 原版。<br><b>真题标注</b>：年份·题号为原卷原题；「同型」为同考点真题风格改编。内容按 <b>2027 考研大纲</b> 校对。${hasMech ? "<br>807 以华工官方 2026 版 11 条为准（2027 新版截至 2026-11 未见公开）。" : ""}</div>`);
       panel.style.cssText = `left:720px;top:${Math.max(20, layout.rootY - 190)}px;width:500px`;
@@ -306,6 +307,14 @@
 
   /* ---------------- events ---------------- */
   nodesEl.addEventListener("click", e => {
+    const lazyEntry = e.target.closest("[data-open-lazy]");
+    if (lazyEntry) {
+      e.stopPropagation();
+      if (window.AtlasLazy) window.AtlasLazy.open();
+      return;
+    }
+    const anchor = e.target.closest("a[href]");
+    if (anchor && !anchor.dataset.read && !anchor.dataset.pdf) return;
     const read = e.target.closest("[data-read]");
     if (read) {
       e.stopPropagation();
