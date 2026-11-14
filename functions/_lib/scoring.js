@@ -104,10 +104,11 @@ export function allocatePaper(subject, questions, mode) {
     const subjective = missing.filter(i => !OBJECTIVE.has(list[i].kind));
     const objectiveSum = objective.reduce((sum, i) => sum + 5, 0);
     const subTarget = roundScore(target - objectiveSum);
-    if (subjective.length && subTarget >= 10 * subjective.length && subTarget <= 12 * subjective.length) {
+    const subHi = subjective.length <= 6 ? 15 : 12; // 现行结构：解答题 6 题共 70 分，含 15 分题；题多时回到 10–12 区间
+    if (subjective.length && subTarget >= 10 * subjective.length && subTarget <= subHi * subjective.length) {
       objective.forEach(i => { scores[i] = 5; });
       const items = subjective.map(i => ({ index: i, weight: difficultyWeight(list[i]) }));
-      const values = distribute(subTarget, items, 10, 12, 1);
+      const values = distribute(subTarget, items, 10, subHi, 1);
       items.forEach((x, k) => { scores[x.index] = values[k]; });
     }
     return scores;

@@ -172,8 +172,13 @@ let warning = canScore? '': '参考答案或满分尚待核查。';
 if (score!== null &&!Number.isFinite(score)) score = null;
 if (canScore && score === null) warning = 'AI 未给出具体分数，请重试。';
 if (score!== null && (score < 0 || score > max)) { score = Math.max(0, Math.min(max, score)); warning = 'AI 给分越界，已按满分范围修正。';}
+if (score!== null) score = Math.max(0, Math.min(max, Math.round(score * 2) / 2)); // 给分粒度 0.5 分，对齐阅卷规范
 if (canScore && objective && expected && chosen) {
-const expectedScore = expected === chosen? max: 0;
+// 客观题按考研阅卷口径复核：选择类只认选项字母集合（顺序、空格、大小写不影响），全对满分、错漏 0 分（多选漏选亦 0 分，与政治多选规则一致）；其余按文本相等。
+const lettersOf = (v) => { const m = String(v).toUpperCase().match(/[A-E]/g); return m ? [...new Set(m)].sort().join('') : ''; };
+const le = lettersOf(expected), lc = lettersOf(chosen);
+const same = (le && lc) ? le === lc : String(expected).trim() === String(chosen).trim();
+const expectedScore = same? max: 0;
 if (score!== null && score!== expectedScore) warning = 'AI 评分与参考答案不一致，已按参考答案记分。';
 score = expectedScore;
 }

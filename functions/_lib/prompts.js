@@ -128,12 +128,12 @@ ${OUTPUT_CONTRACT}`;
 /** 按科目与题型选用评分提示词：grade() 用它替换原来的二选一逻辑 */
 export function gradeSystemFor(subject, kind) {
   const s = String(subject || "");
-  if (/^english/.test(s) && ["小作文", "大作文"].includes(kind)) return essaySystem(kind);
-  if (s === "mechanics") return MECHANICS_SYSTEM;
-  if (s === "math" || s === "math2") return MATH_SYSTEM;
-  if (s === "politics") return POLITICS_SYSTEM;
-  if (/^english/.test(s)) return ENGLISH_SYSTEM;
-  return GENERIC_SYSTEM;
+  if (/^english/.test(s) && ["小作文", "大作文"].includes(kind)) return essaySystem(kind) + RUBRIC_NORM;
+  if (s === "mechanics") return MECHANICS_SYSTEM + RUBRIC_NORM;
+  if (s === "math" || s === "math2") return MATH_SYSTEM + RUBRIC_NORM;
+  if (s === "politics") return POLITICS_SYSTEM + RUBRIC_NORM;
+  if (/^english/.test(s)) return ENGLISH_SYSTEM + RUBRIC_NORM;
+  return GENERIC_SYSTEM + RUBRIC_NORM;
 }
 
 // ---------- 解析生成（给题目生成/补全 steps 时使用） ----------
@@ -148,6 +148,18 @@ export const SOLUTION_SYSTEM = `你是考研题目解析编写老师。材料均
 7. 只用考研大纲内的方法，不超纲；难度表述与输入的 difficulty 保持一致。
 只返回 JSON：{"steps": ["..."], "pitfall": "", "note": ""}。`;
 
+// 改卷规范总则（对齐考研统考与自命题阅卷通行规则），由 gradeSystemFor 统一附加到各科评分系统之后。
+export const RUBRIC_NORM = `
+
+【改卷规范（与考研正式阅卷口径一致，必须执行）】
+1. 按步给分（踩点给分）：过程分与结果分分离。方法正确但某一步计算失误，只扣该步的结果分；后续步骤沿用该结果但方法正确，照常给过程分，禁止对同一错误重复扣分。
+2. 等价方法同分：解法与参考解析不同但正确无误的，按同一给分点足额给分，不因路径不同扣分。
+3. 概念性错误与笔误分开：概念/原理/协调关系写错，该步及直接依赖它的结论不给分；抄写、符号、正负号类笔误只扣结果分。
+4. 证明题：关键引理或关键一步缺失，即使结论形式正确，该题得分不超过满分的 60%；只有结论、没有任何推导过程的，最多给满分的 30%。
+5. 政治分析题采点与采意结合：答出要点且术语准确给该点满分；要点正确但未结合材料、展开不足，给该点一半；要点齐全但逻辑混乱酌扣 1 分；完全偏离设问的，该题封顶 1 分；多答不扣分，按最优采点计。
+6. 英语翻译按意群切分计分：每个意群译对给分，漏译的意群记 0 分，译错按程度扣该意群分；全句不通顺另扣流畅分。英语作文按分档 rubric 执行（见作文系统）。
+7. 材料力学按标答步骤点给分：平衡方程、变形协调方程、物理关系、数值结果与单位量纲各为独立给分点；协调方程错误按概念错误处理，该问封顶 40%；数值数量级错误只扣结果分。
+8. 给分粒度 0.5 分；breakdown 每一项的给分必须与评语对应，各小问得分之和等于该题总分；单位、书写格式不规范不扣分（题目明确要求除外）。`;
 // 首页 AI 向导系统提示词：双职责——站内功能引导 + 解题答疑。与批改口径保持一致（逐步、考点先行、力学先协调）。
 export const GUIDE_SYSTEM = `你是「小观」，考研科目大观（KAOYAN ATLAS）站内的 AI 向导，同时是学生的解题老师，服务对象是备考 2027 年研究生入学考试的学生。
 
