@@ -134,6 +134,7 @@
           <span class="c-no">${esc(ch.no)}</span>
           <span class="c-title">${esc(ch.title)}</span>
           ${ch.priority ? `<span class="c-pri" data-p="${esc(ch.priority)}">${esc(ch.priority)}</span>` : ""}
+          ${window.LAZY_INDEX && window.LAZY_INDEX.groups[ch.id] ? `<span class="c-lazy" data-lazy="${esc(ch.id)}" title="打开 Lazy 笔记">笔记 ${window.LAZY_INDEX.groups[ch.id].count}</span>` : ""}
           <button class="c-expand" data-expand="1" aria-label="展开考点" title="展开考点">›</button>
           <span class="c-pdf" data-pdf="${esc(ch.pdf)}" data-page="1">PDF</span>`);
         chapNode.style.cssText = `left:${X.chapter}px;top:${cy}px;width:${W.chapter}px;--accent:${s.accent}`;
@@ -296,6 +297,11 @@
       updateCrumb();
     } else if (node.dataset.type === "chapter") {
       const cid = node.dataset.id;
+      if (e.target.closest("[data-lazy]")) {
+        e.stopPropagation();
+        if (window.AtlasLazy) window.AtlasLazy.open(cid);
+        return;
+      }
       if (e.target.closest("[data-expand]")) {
         state.chapter = state.chapter === cid ? null : cid;
         render();

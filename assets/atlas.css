@@ -157,6 +157,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .chapter .c-pri[data-p="A"] { background: var(--accent); }
 .chapter .c-pri[data-p="B"] { background: var(--ink-3); }
+.chapter .c-lazy {
+  font-size: 8px; letter-spacing: .04em; color: var(--accent); border: 1px solid currentColor;
+  border-radius: 1px; padding: 2px 5px; flex: none; cursor: pointer; opacity: .75; transition: opacity .16s, background .16s, color .16s;
+}
+.chapter .c-lazy:hover { opacity: 1; background: var(--accent); color: #fff; }
 .chapter .c-pdf {
   font-size: 8px; letter-spacing: .1em; color: var(--accent); border: 1px solid currentColor;
   border-radius: 1px; padding: 2px 5px; flex: none; opacity: .38; transition: opacity .16s;

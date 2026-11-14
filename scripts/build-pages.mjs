@@ -1,6 +1,7 @@
 // 只把线上需要的静态文件复制到 dist/，避免把 server/、docs/、src/ 暴露出去
 import { cpSync, mkdirSync, rmSync } from "node:fs";
 import "./build-import-skill.mjs";
+import "./build-lazy-notes.mjs";
 
 const FILES = [
   "index.html",
