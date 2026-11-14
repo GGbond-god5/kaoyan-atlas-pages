@@ -2,6 +2,7 @@
 import { ok, fail, readJson, clientIp } from "../../_lib/http.js";
 import { getDb } from "../../_lib/db.js";
 import { currentSession } from "../../_lib/security.js";
+import { sendMail } from "../../_lib/smtp.js";
 
 const TYPES = new Set(["功能建议", "内容勘误", "使用问题", "其他"]);
 const MAX_MESSAGE = 4000;
@@ -20,9 +21,6 @@ async function rateLimited(env, ip) {
 }
 
 async function deliver(env, { type, message, contact, uid, ip, at }) {
-  const key = env.RESEND_API_KEY;
-  if (!key) return { mailed: false, reason: "未配置发信服务" };
-
   const lines = [
     `类型：${type}`,
     `内容：${message}`,
@@ -31,6 +29,33 @@ async function deliver(env, { type, message, contact, uid, ip, at }) {
     `来源 IP：${ip}`,
     `时间：${new Date(at).toISOString()}`,
   ];
+  const subject = `考研大观反馈：${type}`;
+  const text = lines.join("\n");
+  const to = env.FEEDBACK_TO || DEFAULT_TO;
+
+  // 首选：用自己的邮箱 SMTP 直发（163 授权码），和 KPL 项目同一套做法
+  if (env.SMTP_USER && env.SMTP_PASS) {
+    try {
+      await sendMail({
+        host: env.SMTP_HOST || "smtp.163.com",
+        port: Number(env.SMTP_PORT || 465),
+        user: env.SMTP_USER,
+        pass: env.SMTP_PASS,
+        from: env.SMTP_FROM || env.SMTP_USER,
+        to,
+        subject,
+        text,
+      });
+      return { mailed: true };
+    } catch (err) {
+      console.error("[feedback] SMTP 发送失败", err && err.message);
+      return { mailed: false, reason: "邮件发送失败" };
+    }
+  }
+
+  // 次选：HTTP 发信服务
+  const key = env.RESEND_API_KEY;
+  if (!key) return { mailed: false, reason: "未配置发信服务" };
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -41,9 +66,9 @@ async function deliver(env, { type, message, contact, uid, ip, at }) {
       },
       body: JSON.stringify({
         from: env.FEEDBACK_FROM || "考研大观 <onboarding@resend.dev>",
-        to: [env.FEEDBACK_TO || DEFAULT_TO],
-        subject: `考研大观反馈：${type}`,
-        text: lines.join("\n"),
+        to: [to],
+        subject,
+        text,
       }),
     });
     if (!res.ok) {

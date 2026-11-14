@@ -195,22 +195,26 @@ npx wrangler pages dev . --d1=DB --r2=LIBRARY_FILES \
 ## 八、部署
 
 1. 提交并推送 `master` → Cloudflare Pages 自动执行 `node scripts/build-pages.mjs` 并发布 `dist/`
-2. 生产环境变量只在 Cloudflare 控制台维护：`SESSION_SECRET`、`ALIYUN_ACCESS_KEY_ID`、`ALIYUN_ACCESS_KEY_SECRET`、`ALIYUN_SMS_SIGN_NAME`、`ALIYUN_SMS_LOGIN_TEMPLATE_CODE`、`DASHSCOPE_API_KEY`；可选 `RESEND_API_KEY`（意见反馈发信）、`FEEDBACK_TO`、`FEEDBACK_FROM`
+2. 生产环境变量只在 Cloudflare 控制台维护：`SESSION_SECRET`、`ALIYUN_ACCESS_KEY_ID`、`ALIYUN_ACCESS_KEY_SECRET`、`ALIYUN_SMS_SIGN_NAME`、`ALIYUN_SMS_LOGIN_TEMPLATE_CODE`、`DASHSCOPE_API_KEY`；可选 `SMTP_USER`/`SMTP_PASS`（意见反馈直发）、`RESEND_API_KEY`、`FEEDBACK_TO`
 3. **不要**用 `wrangler pages deploy` 直传，也不要改控制台里的项目设置
 
 上线前至少确认：未登录访问 `/` 跳登录、受保护资源 401、`/api/health` 各项为 true、套卷交卷能跑完自动评分、笔记与档案正常。
 
 ### 意见反馈发信
 
-页面右上「意见反馈」点「发送」会 POST 到 `/api/feedback`：内容始终写入 D1 表 `feedback`；若配置了 `RESEND_API_KEY`，还会通过 Resend 直接把邮件发到 `FEEDBACK_TO`（默认 `15398831795@163.com`）。
+页面右上「意见反馈」点「发送」会 POST 到 `/api/feedback`：内容始终写入 D1 表 `feedback`，然后按下面的优先级发信。
+
+1. **SMTP（首选，和 KPL BP 模拟器同一套做法）**：配置 `SMTP_USER` + `SMTP_PASS` 后，`functions/_lib/smtp.js` 会用隐式 TLS 连 `smtp.163.com:465`，`AUTH LOGIN` 认证后直接寄到 `FEEDBACK_TO`。`SMTP_PASS` 填网易邮箱的 **SMTP 授权码**（163 网页版 → 设置 → POP3/SMTP/IMAP → 开启 SMTP 服务后生成），不是登录密码
+2. **HTTP 发信服务**：没配 SMTP 时，若设置了 `RESEND_API_KEY` 就走 Resend
+3. 两者都没有：只存库，弹窗提示「内容已留存」
 
 一次性配置：
 
-1. 用 `15398831795@163.com` 注册 <https://resend.com>，创建一个 API Key
-2. Cloudflare Pages 项目 → Settings → Environment variables，添加 `RESEND_API_KEY`（设为密文）
+1. Cloudflare Pages 项目 → Settings → Environment variables
+2. 添加 `SMTP_USER`（邮箱地址）与 `SMTP_PASS`（授权码），类型都选密文；可选 `SMTP_HOST`、`SMTP_PORT`、`SMTP_FROM`、`FEEDBACK_TO`
 3. 等下次部署生效
 
-没配 Key 时按钮照常可用，会提示「内容已留存」，`/api/health` 的 `bindings.RESEND_API_KEY` 可以确认是否生效。发信失败时内容也不会丢，仍留在 `feedback` 表里。
+`/api/health` 的 `bindings.SMTP` 可以确认是否生效。发信失败时内容也不会丢，仍留在 `feedback` 表里。`/api/feedback` 每小时每 IP 限 5 条。
 
 ---
 
