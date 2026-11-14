@@ -1184,9 +1184,10 @@
    "isReal": true,
    "text": "(46) AI c an also be used t0 identi fy the lifestyle choices 0f customers regarding their hobbies ， favourite celebrit ies ， mu si c choices and fashions tO provide unique c ontent in marketing messages put out through social media. At the s ame time AI can also be used tO generate c ontent for social medi a posts and chat sites · AI C an also provide a bridge between the need of the brand t0 c ommunic ate emotionally with the customer and identi fying their rapidly changing needs. The 1 al n disadvantage Of using AI tO re spond tO customers is that there are C onc erns abO ut tru sting personal interactions tO machines ， which c ould lead not only tO the subsequent loss Of interpersonal connections ， but also tO a decrease in marketing personnel.",
    "passage": "",
-   "answer": "",
+   "answer": "人工智能还可用于识别顾客在爱好、喜爱的名人、音乐品味和时尚等方面的生活方式选择，从而在通过社交媒体发布的营销信息中提供独具针对性的内容。",
    "steps": [
-    "参考译文见原解析 PDF。"
+    "采分意群：主干为 AI can also be used to identify the lifestyle choices of customers；to provide unique content 为目的状语，是第二个采分意群。",
+    "难点处理：regarding 引导的长后置定语列举生活方式选择的方面，宜处理为插入性说明“在……等方面”；put out through social media 为过去分词短语修饰 marketing messages，译为“通过社交媒体发布的”；unique content 结合语境译为“独具针对性的内容”。"
    ],
    "sourcePdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf",
    "solutionPdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf",
@@ -1207,9 +1208,10 @@
    "isReal": true,
    "text": "(47) Some believe that AI is negatively impacting on th e marketer S role by reducing creativity and removing jObs, but they are aw are that it is a way Of reducing costs and creating new information · By allowing Al tO dev el op content some b rand marketers m ay find that they are losing c ontrol over the brand narrative ·",
    "passage": "",
-   "answer": "",
+   "answer": "一些人认为，人工智能通过削减创造力、淘汰工作岗位，对营销人员的角色产生了负面影响，但他们也意识到，人工智能是降低成本、创造新信息的一种方式。",
    "steps": [
-    "参考译文见原解析 PDF。"
+    "采分意群：but 前后构成转折，两部分各为一意群：is negatively impacting on the marketer's role 与 it is a way of reducing costs and creating new information。",
+    "难点处理：by reducing creativity and removing jobs 为方式状语，译为“通过削减创造力、淘汰工作岗位”；be aware that 引导宾语从句，译为“意识到”。"
    ],
    "sourcePdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf",
    "solutionPdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf",
@@ -1230,9 +1232,10 @@
    "isReal": true,
    "text": "(48) Algorithms that are used t0 simulate hum an interactlons are creating many Of these concerns ， especially as no-one IS quite sure what th e outcomes Of using AI tO interact with customers will be. For AI to be successful ， data needs t0 be accessible ， but the use 0f personal data is becoming more regulated and the automated sharing Of data is bec oming more difficult.",
    "passage": "",
-   "answer": "",
+   "answer": "用于模拟人类互动的算法正在引发其中许多担忧，尤其是因为没有人能确切知道，使用人工智能与客户互动将会产生什么样的结果。",
    "steps": [
-    "参考译文见原解析 PDF。"
+    "采分意群：主干为 Algorithms...are creating many of these concerns；especially as 引导的原因部分为第二个意群。",
+    "长难句结构：what the outcomes of using AI to interact with customers will be 为宾语从句，语序须调整为“使用人工智能与客户互动将会产生什么样的结果”；主语前的分词短语 that are used to simulate human interactions 前置译为“用于模拟人类互动的”。"
    ],
    "sourcePdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf",
    "solutionPdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf",
@@ -1253,9 +1256,10 @@
    "isReal": true,
    "text": "(49) If cusl omers are not willing t0 share data ， AI will be starved 0f e s senti al information and will not be able to function effectively or employ machine learning tO improve itS marketing C ontent and communication. Therefore ， unless customers are prepared tO Sign release agreements ， the use Of AI may become somewhat restricted in the future. Not onl y can AI help t0 create the marketing c ontent ， but it C an also provide a non-intrusive way Of delivering the content tO the target cugtomers · Data C an be gathered on where the cu stomer can be engaged ， such as location ， devices used ， website interactions ， and sites visited ， to display marketing messages in appropriate forms ， including email s social media posts ， pop-up adverti sements ， and banners at an appropnate frequency ·",
    "passage": "",
-   "answer": "",
+   "answer": "如果顾客不愿意分享数据，人工智能将缺乏必不可少的信息，无法有效运转，也无法运用机器学习来改进其营销内容和传播效果。",
    "steps": [
-    "参考译文见原解析 PDF。"
+    "采分意群：If 条件句主干为 AI will be starved of essential information；and 后的 will not be able to function effectively 与 employ machine learning to improve... 为并列意群，需完整译出。",
+    "难点处理：be starved of 为被动形象表达，译为“缺乏、得不到”；employ 此处译为“运用、采用”，不可译为“雇用”。"
    ],
    "sourcePdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf",
    "solutionPdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf",
@@ -1276,9 +1280,10 @@
    "isReal": true,
    "text": "(50) The non-intrusive delivery of the marketing messages in a way that is sensitive tO the needs Of the target customer is one Of the critical challenge s t0 the digital marketer. Section 瞓 Writing Part A 51 · Directions ： Write a notice tO recruit a student for Prof. Smith' s research project on campus sports activities · Specify the duties and requirements Of the jOb. You should write about 100 words on the ANSWER SHEET. instead. （ 10 use your own name in the notice · l_Jse “ Li Ming Do not points ） Part B 52 · Directions ． Write an essay of 160 一 200 words based on the picture below. ln your essay ， you should 1 ） describe the picture briefly ， 2 ） interpret the implied meaning ， and 3 ） give your comments · You should write ne atly on the ANSWER SI-EET. 真 好 啊 ！ （ 20 points ） 咱 们 村 的 龙 舟 赛 越 来 越 热 闹 了 。",
    "passage": "",
-   "answer": "",
+   "answer": "以体察目标顾客需求的方式、毫不打扰地传递营销信息，是数字营销人员面临的关键挑战之一。",
    "steps": [
-    "参考译文见原解析 PDF。"
+    "采分意群：主干为 The non-intrusive delivery...is one of the critical challenges to the digital marketer，主语较长是本句的采分核心。",
+    "长难句结构：in a way that is sensitive to the needs of the target customer 为方式状语后置定语，宜提到主语核心词之前译为“以体察目标顾客需求的方式”；non-intrusive 译为“毫不打扰的、非侵扰式的”。"
    ],
    "sourcePdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf",
    "solutionPdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf",
@@ -1299,9 +1304,11 @@
    "isReal": true,
    "text": "Part A 51 · Directions ： Write a notice tO recruit a student for Prof. Smith' s research project on campus sports activities · Specify the duties and requirements Of the jOb. You should write about 100 words on the ANSWER SHEET. instead. （ 10 use your own name in the notice · l_Jse “ Li Ming Do not points ）",
    "passage": "",
-   "answer": "",
+   "answer": "Notice\n\nDecember 24, 2022\n\nA student assistant is wanted for Professor Smith's research project on campus sports activities. The assistant will be responsible for distributing and collecting questionnaires, interviewing students about their exercise habits, and entering and sorting out the data collected.\n\nApplicants are expected to be outgoing, careful and responsible, with good communication skills and a strong interest in sports activities. Those with relevant research experience are preferred. The project will last for one semester, and a certificate will be issued upon its completion. If you are interested in the position, please send your resume to liming@edu.cn before December 30, 2022.\n\nLi Ming",
    "steps": [
-    "参考范文见原解析 PDF。"
+    "结构要点：通知采用“标题 Notice—日期—正文—落款”的格式；正文依次写明招聘事由、工作职责、应聘要求、报名方式与截止时间。",
+    "内容要点：职责（duties）与要求（requirements）是题目硬性要求，必须分别写清：职责如发放回收问卷、访谈、整理数据；要求如性格、沟通能力、责任心等，切忌遗漏。",
+    "格式要点：落款按要求用 Li Ming，不用真名；全文约100词。"
    ],
    "sourcePdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf",
    "solutionPdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf",
@@ -1322,9 +1329,11 @@
    "isReal": true,
    "text": "Part B 52 · Directions ． Write an essay of 160 一 200 words based on the picture below. ln your essay ， you should 1 ） describe the picture briefly ， 2 ） interpret the implied meaning ， and 3 ） give your comments · You should write ne atly on the ANSWER SI-EET. 真 好 啊 ！ （ 20 points ） 咱 们 村 的 龙 舟 赛 越 来 越 热 闹 了 。",
    "passage": "",
-   "answer": "",
+   "answer": "Unfolded in the picture is a lively scene in a village: several young men are racing dragon boats on the river with great enthusiasm, while a large crowd of villagers are watching excitedly on the bank. One elderly villager exclaims with delight, “Wonderful! The dragon boat race in our village is becoming more and more exciting.”\n\nWhat the picture conveys goes far beyond a festive sports event. It vividly reflects the revival of traditional culture in the Chinese countryside. The dragon boat race, a folk custom with a history of over two thousand years, used to fade away in many villages; today, however, it has regained its vitality, bringing villagers together and enriching their cultural life. Behind this change lie the remarkable achievements of rural revitalization, which has improved not only villagers' material life but also their spiritual pursuits.\n\nIn my opinion, such a phenomenon deserves our applause. We should protect and promote fine traditional customs, so that they continue to nourish our cultural confidence and add color to rural life in the new era.",
    "steps": [
-    "参考范文见原解析 PDF。"
+    "结构要点：三段式——第一段描图（龙舟竞渡、村民围观、图中老人的感叹），第二段由表及里阐释寓意，第三段评论总结。",
+    "内容要点：立意锁定“传统文化的复兴与乡村振兴”：龙舟赛这一传统民俗重现活力，既丰富村民精神生活，也体现乡村振兴的成果与文化自信。",
+    "语言要点：描图时直接引用图中台词增强现场感；阐释段注意由现象到本质的过渡；全文控制在160–200词。"
    ],
    "sourcePdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf",
    "solutionPdf": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf",
