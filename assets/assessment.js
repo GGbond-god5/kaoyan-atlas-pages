@@ -29,12 +29,30 @@
       const x = 100 + 80*Math.cos(angle), y = 100 + 80*Math.sin(angle);
       return `<line x1="100" y1="100" x2="${x}" y2="${y}" stroke="#cbbba7"/>`;
     }).join("");
-    const positions = dimensions.map((d,i) => { const angle = Math.PI * 2 * i / 6 - Math.PI / 2; const radius = d.max ? 80 * Math.max(0, Math.min(1,d.score/d.max)) : 0; return [100+radius*Math.cos(angle),100+radius*Math.sin(angle)]; });
-    const polygon = dimensions.every(d => d.max) ? `<polygon points="${positions.map(p=>p.join(",")).join(" ")}" fill="#ad493d55" stroke="#a53b30"/>` : "";
-    const dots = positions.map(([x,y],i) => dimensions[i].max ? `<circle cx="${x}" cy="${y}" r="3" fill="#a53b30"/>` : "").join("");
+    const ratioOf = d => d.max ? Math.max(0, Math.min(1, d.score / d.max)) : 0;
+    const covered = dimensions.filter(d => d.max).length;
+    const short = ["客观", "理解", "翻译", "写作", "计算", "论证"];
+    const angleOf = i => Math.PI * 2 * i / 6 - Math.PI / 2;
+    const positions = dimensions.map((d, i) => {
+      const angle = angleOf(i), radius = 80 * ratioOf(d);
+      return [100 + radius * Math.cos(angle), 100 + radius * Math.sin(angle)];
+    });
+    const polygon = covered >= 3 ? `<polygon points="${positions.map(p => p.join(",")).join(" ")}" fill="#ad493d55" stroke="#a53b30"/>` : "";
+    const sectors = covered > 0 && covered < 3 ? dimensions.map((d, i) => {
+      const ratio = ratioOf(d); if (!ratio) return "";
+      const angle = angleOf(i), a0 = angle - Math.PI / 6, a1 = angle + Math.PI / 6, r = Math.max(10, 80 * ratio);
+      const x0 = 100 + r * Math.cos(a0), y0 = 100 + r * Math.sin(a0);
+      const x1 = 100 + r * Math.cos(a1), y1 = 100 + r * Math.sin(a1);
+      return `<path d="M100,100 L${x0.toFixed(1)},${y0.toFixed(1)} A${r.toFixed(1)},${r.toFixed(1)} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="#ad493d55" stroke="#a53b30"/>`;
+    }).join("") : "";
+    const dots = covered >= 3 ? positions.map(([x, y], i) => dimensions[i].max ? `<circle cx="${x}" cy="${y}" r="3" fill="#a53b30"/>` : "").join("") : "";
+    const labels = dimensions.map((d, i) => {
+      const angle = angleOf(i), x = 100 + 90 * Math.cos(angle), y = 100 + 90 * Math.sin(angle);
+      return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="7.5" text-anchor="middle" dominant-baseline="middle" fill="#8a7d6b">${short[i]}</text>`;
+    }).join("");
     const basis = v => v.max ? `已评分 ${v.graded} 题，${v.score} / ${v.max} 分（${Math.round(v.score/v.max*100)}%）` : "待评估（没有可计分结果）";
     const list = [...topics.entries()];
-    host.innerHTML = `<h3>能力与知识点覆盖</h3><button type="button" id="masteryOpen">查看能力与知识点图</button><dialog id="masteryDialog"><h3>能力与知识点依据</h3><p>按题型归入六个能力侧面，数值为已评分题的得分比例，并非独立能力测量。无数据的轴不绘点；六项均有数据时才绘制面积。实际覆盖 ${questions.length} 题。</p><svg viewBox="0 0 200 200" width="180" height="180" role="img" aria-label="按下列顺序排列的六个具名能力侧面，详细题数与得分见文字"><polygon points="100,20 169,60 169,140 100,180 31,140 31,60" fill="none" stroke="#cbbba7"/>${axes}${polygon}${dots}</svg><ol>${dimensions.map(d => `<li><b>${esc(d.name)}</b>（${esc(d.kinds.join("、"))}）：覆盖 ${d.count} 题；${basis(d)}</li>`).join("")}</ol><h3>知识点掌握</h3><ul>${list.map(([name,v]) => `<li>${esc(name)}：覆盖 ${v.count} 题；${basis(v)}${v.max ? `<div role="img" aria-label="得分比例 ${Math.round(v.score/v.max*100)}%" style="height:6px;max-width:220px;background:#eadfd1"><div style="height:100%;width:${Math.max(0,Math.min(100,v.score/v.max*100))}%;background:#a53b30"></div></div>` : ""}</li>`).join("")}</ul><button type="button" id="masteryClose">关闭</button></dialog>`;
+    host.innerHTML = `<h3>能力与知识点覆盖</h3><button type="button" id="masteryOpen">查看能力与知识点图</button><dialog id="masteryDialog"><h3>能力与知识点依据</h3><p>按题型归入六个能力侧面，数值为已评分题的得分比例，并非独立能力测量。面积越大表示该维度得分比例越高；至少 3 个维度有已评分数据时画雷达面积，不足时用扇形面积展示。实际覆盖 ${questions.length} 题。</p><svg viewBox="0 0 200 200" width="180" height="180" role="img" aria-label="按下列顺序排列的六个具名能力侧面，详细题数与得分见文字"><polygon points="100,20 169,60 169,140 100,180 31,140 31,60" fill="none" stroke="#cbbba7"/>${axes}${sectors}${polygon}${dots}${labels}</svg><ol>${dimensions.map(d => `<li><b>${esc(d.name)}</b>（${esc(d.kinds.join("、"))}）：覆盖 ${d.count} 题；${basis(d)}</li>`).join("")}</ol><h3>知识点掌握</h3><ul>${list.map(([name,v]) => `<li>${esc(name)}：覆盖 ${v.count} 题；${basis(v)}${v.max ? `<div role="img" aria-label="得分比例 ${Math.round(v.score/v.max*100)}%" style="height:6px;max-width:220px;background:#eadfd1"><div style="height:100%;width:${Math.max(0,Math.min(100,v.score/v.max*100))}%;background:#a53b30"></div></div>` : ""}</li>`).join("")}</ul><button type="button" id="masteryClose">关闭</button></dialog>`;
     const dialog = host.querySelector("dialog"); host.querySelector("#masteryOpen").onclick = () => dialog.showModal(); host.querySelector("#masteryClose").onclick = () => dialog.close();
   }
   function ensureCoachCss() {

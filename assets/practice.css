@@ -226,6 +226,10 @@ a{color:inherit;text-decoration:none}
   border: 1px solid var(--rule); border-left: 3px solid #1F3A5F; background: #F4F7FB; border-radius: 2px;
   font-size: 12.5px; color: var(--ink2); }
 .rprogress.done { border-left-color: #3f6b4a; background: #F3F7F3; }
+.rprogress .rcheck { display: none; width: 18px; height: 18px; border-radius: 50%; background: #3f6b4a;
+  color: #fff; font-size: 12px; line-height: 18px; text-align: center; margin-right: 6px; flex: none; }
+.rprogress.done .spinner { display: none; }
+.rprogress.done .rcheck { display: inline-block; }
 .rprogress .rbar { flex: 1; height: 4px; background: #dde5ef; border-radius: 2px; overflow: hidden; }
 .rprogress .rbar i { display: block; height: 100%; width: 0; background: #1F3A5F; transition: width .35s ease; }
 .rprogress.done .rbar i { background: #3f6b4a; }

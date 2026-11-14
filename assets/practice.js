@@ -659,7 +659,7 @@
       box.hidden = !total;
       box.classList.toggle("done", Boolean(total) && !running);
       const txt = $("#rprogressText");
-      if (txt) txt.textContent = running ? `AI 正在评分 ${done} / ${total}` : `AI 评分完成 ${done} / ${total}`;
+      if (txt) txt.textContent = running ? `AI 正在评分 ${done} / ${total}` : `评卷完成 ${done} / ${total}`;
       const bar = $("#rprogressBar");
       if (bar) bar.style.width = total ? Math.round(done / total * 100) + "%" : "0%";
     }
@@ -677,7 +677,8 @@
     if (!session || $("#result").hidden) return;
     const masteryWasOpen = !!$("#masteryDialog[open]");
     const results = session.attempt && session.attempt.results || {};
-    $("#result").innerHTML = `<div class="ekicker">RESULT</div><h2>交卷完成</h2><p class="rsum">${esc(session.structure)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
+    const structureBrief = session.structure ? session.structure.split("。")[0] + "。" : "";
+    $("#result").innerHTML = `<div class="ekicker">RESULT</div><h2>交卷完成</h2><p class="rsum">${esc(structureBrief)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span class="rcheck" aria-hidden="true">✓</span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
     window.AtlasAssessment.renderMastery(document.getElementById("mastery"), session.queue, results);
     if (masteryWasOpen) $("#masteryDialog").showModal();
     $("#result").querySelectorAll("[data-review]").forEach(b => b.onclick = () => { $("#result").hidden = true; $("#exam").hidden = false; $("#sheet").hidden = false; $("#sideSubmit").hidden = true; session.i = Number(b.dataset.review); renderQuestion(); });
