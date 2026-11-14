@@ -42,6 +42,18 @@ const SCHEMA = [
      n INTEGER NOT NULL DEFAULT 0,
      until INTEGER NOT NULL DEFAULT 0
    )`,
+  // 意见反馈：即使发信服务不可用也留底
+  `CREATE TABLE IF NOT EXISTS feedback (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     uid TEXT,
+     type TEXT,
+     message TEXT NOT NULL,
+     contact TEXT,
+     ip TEXT,
+     mailed INTEGER NOT NULL DEFAULT 0,
+     created_at INTEGER NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_feedback_ip ON feedback(ip, created_at)`,
 ];
 
 /** 拿到 D1；没绑定返回 null 而不是抛错，方便 /api/health 里报告 */

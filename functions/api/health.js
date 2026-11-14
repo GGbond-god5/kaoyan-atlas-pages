@@ -14,6 +14,7 @@ export async function onRequestGet({ env }) {
       R2: Boolean(env.LIBRARY_FILES),
       SESSION_SECRET: Boolean(env.SESSION_SECRET),
       DASHSCOPE_API_KEY: Boolean(env.DASHSCOPE_API_KEY),
+      RESEND_API_KEY: Boolean(env.RESEND_API_KEY),
     },
     smsDevCode: env.SMS_DEV_CODE === "1",
     signName: mode === "pnvs" ? env.ALIYUN_SMS_SIGN_NAME || null : null,

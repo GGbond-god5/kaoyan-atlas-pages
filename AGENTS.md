@@ -12,7 +12,7 @@
 - 推送 `master` 后 Cloudflare 自动构建部署；其他分支会生成预览部署
 - **不要**用 `wrangler pages deploy` 直传，也不要改 Cloudflare 控制台里的项目设置；
   部署只走 GitHub push
-- 环境变量（`SESSION_SECRET`、阿里云短信、`DASHSCOPE_API_KEY`）只在 Cloudflare 控制台维护，
+- 环境变量（`SESSION_SECRET`、阿里云短信、`DASHSCOPE_API_KEY`、可选的 `RESEND_API_KEY` 反馈发信）只在 Cloudflare 控制台维护，
   仓库里不放任何密钥
 
 ## 开始工作前

@@ -148,6 +148,7 @@ _headers         静态资源缓存策略
 | POST | `/api/grade` | 作文 AI 评分 |
 | 任意 | `/api/coach` | AI 教练问答 |
 | 任意 | `/api/state/:namespace` | 前端状态同步 |
+| POST | `/api/feedback` | 意见反馈：存 D1，配置 `RESEND_API_KEY` 后直接发到站主邮箱 |
 | GET | `/api/health` | 健康检查（D1 / R2 / 密钥 / AI） |
 
 ### 数据库表
@@ -194,10 +195,22 @@ npx wrangler pages dev . --d1=DB --r2=LIBRARY_FILES \
 ## 八、部署
 
 1. 提交并推送 `master` → Cloudflare Pages 自动执行 `node scripts/build-pages.mjs` 并发布 `dist/`
-2. 生产环境变量只在 Cloudflare 控制台维护：`SESSION_SECRET`、`ALIYUN_ACCESS_KEY_ID`、`ALIYUN_ACCESS_KEY_SECRET`、`ALIYUN_SMS_SIGN_NAME`、`ALIYUN_SMS_LOGIN_TEMPLATE_CODE`、`DASHSCOPE_API_KEY`
+2. 生产环境变量只在 Cloudflare 控制台维护：`SESSION_SECRET`、`ALIYUN_ACCESS_KEY_ID`、`ALIYUN_ACCESS_KEY_SECRET`、`ALIYUN_SMS_SIGN_NAME`、`ALIYUN_SMS_LOGIN_TEMPLATE_CODE`、`DASHSCOPE_API_KEY`；可选 `RESEND_API_KEY`（意见反馈发信）、`FEEDBACK_TO`、`FEEDBACK_FROM`
 3. **不要**用 `wrangler pages deploy` 直传，也不要改控制台里的项目设置
 
 上线前至少确认：未登录访问 `/` 跳登录、受保护资源 401、`/api/health` 各项为 true、套卷交卷能跑完自动评分、笔记与档案正常。
+
+### 意见反馈发信
+
+页面右上「意见反馈」点「发送」会 POST 到 `/api/feedback`：内容始终写入 D1 表 `feedback`；若配置了 `RESEND_API_KEY`，还会通过 Resend 直接把邮件发到 `FEEDBACK_TO`（默认 `15398831795@163.com`）。
+
+一次性配置：
+
+1. 用 `15398831795@163.com` 注册 <https://resend.com>，创建一个 API Key
+2. Cloudflare Pages 项目 → Settings → Environment variables，添加 `RESEND_API_KEY`（设为密文）
+3. 等下次部署生效
+
+没配 Key 时按钮照常可用，会提示「内容已留存」，`/api/health` 的 `bindings.RESEND_API_KEY` 可以确认是否生效。发信失败时内容也不会丢，仍留在 `feedback` 表里。
 
 ---
 
