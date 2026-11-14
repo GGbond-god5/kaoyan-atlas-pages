@@ -87,6 +87,9 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 首页每个章节上的「笔记 N」徽标、顶栏「笔记库」入口都会打开笔记阅读器
 - 新增或修改笔记后重跑脚本，把源文件和生成物一起提交；Pages 构建会自动重跑转换
 - 2027 版英语作文模板/预测放在 `lazy-src/英一/2027*.md`，通过 `FILE_MAP` 挂到 english-06/07/08
+- 个人笔记：D1 表 `user_notes(uid,id,chapter_id,title,type,markdown,...)`，
+  `GET/POST /api/notes`、`GET/PUT/DELETE /api/notes/:id`；笔记库右上「新建笔记」，
+  按账号隔离，和内置笔记合并显示，内置内容保持只读
 
 ## 已知限制
 

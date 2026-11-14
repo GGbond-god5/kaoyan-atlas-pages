@@ -271,6 +271,9 @@ AI 地址使用千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
   - `assets/lazy-figs/`：笔记引用的图片
 - 首页章节节点上的「笔记 N」徽标打开对应章节笔记；顶栏「笔记库」打开全库，支持标题搜索和双链跳转
 - 笔记正文用 KaTeX 渲染，图片随笔记按需加载；转换在 Pages 构建时自动执行
+- 个人笔记：登录后点笔记库右上「新建笔记」，可新建/编辑/删除；存 D1 表 `user_notes`，
+  按账号隔离，和内置笔记合并展示，内置 255 篇保持只读
+- 个人笔记接口：`GET/POST /api/notes`，`GET/PUT/DELETE /api/notes/:id`；单用户上限 300 篇
 
 ## 十七、个人档案与个性化首页（2026-11-14）
 
