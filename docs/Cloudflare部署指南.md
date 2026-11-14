@@ -304,6 +304,18 @@ AI 地址使用千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
 - 三个文件通过 `scripts/build-lazy-notes.mjs` 的 `FILE_MAP` 挂到 english-06/07/08，类型为「作文模板」并排在最前
 - 预测内容不是官方押题；模板为原创框架，禁止整段背诵照搬
 
+## 二十、动效与 Remotion（2026-11-14）
+
+- 首页新增 `assets/particles.js`：舞台背景的粒子/连线会跟随鼠标排斥，默认尊重系统
+  `prefers-reduced-motion`；需要强制预览时访问 `/?motion=1`
+- Remotion 工程在 `remotion/`，组合 `AtlasField`（1600×900、6 秒循环）渲染为
+  `assets/remotion/atlas-field.mp4`，作为登录页的环境背景视频（低透明度 + 纸色遮罩）
+- 重新渲染命令：`cd remotion && npx remotion render AtlasField ../assets/remotion/atlas-field.mp4 --codec=h264`
+- 登录页是公共页面，`functions/_middleware.js` 已放行 `/assets/remotion/`
+- 刷题页修复：收起目录时 `exam-grid` 切换为单列，正文不再被挤进 240px 侧栏列；
+  套卷模式保持 900px 阅读宽度
+
+
 
 
 

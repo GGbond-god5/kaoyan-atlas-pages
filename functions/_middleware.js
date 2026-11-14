@@ -9,6 +9,7 @@ const PUBLIC = [
   /^\/api\/sms\/send$/,
   /^\/api\/health$/,
   /^\/assets\/(auth\.(js|css)|config\.js)$/,
+  /^\/assets\/remotion\//,
   /^\/favicon\.ico$/,
 ];
 

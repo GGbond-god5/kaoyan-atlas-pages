@@ -206,6 +206,12 @@ a{color:inherit;text-decoration:none}
 }
 .exam-grid.paper-mode .paper { min-height: 70vh; }
 .paper-mode .paper-link { display: none; }
+/* 收起目录时不要把正文挤进原来的侧栏列 */
+.exam-grid.sheet-hidden { grid-template-columns: minmax(0, 1fr); }
+.exam-grid.paper-mode.sheet-hidden { grid-template-columns: minmax(0, 900px); justify-content: center; }
+@media (max-width: 1000px) {
+  .exam-grid.paper-mode.sheet-hidden { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* AI grade */
 .ai-grade { height: 32px; padding: 0 12px; border: 1px solid var(--blue, #1F3A5F); border-radius: 2px;

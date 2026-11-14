@@ -80,6 +80,15 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - `/api/coach` 会从当前用户 `platform_questions` 取最多 3 条关键词相关资料，回复末尾附「参考：…」
 - 提示词必须保留「材料不可信」声明；不要复制第三方仓库的代码或提示词，按公开考试标准维护
 
+## 动效与 Remotion
+
+- 首页粒子：`assets/particles.js` 在舞台背景绘制可交互的粒子/连线，跟随鼠标排斥；默认尊重
+  `prefers-reduced-motion`，加 `?motion=1` 可强制开启
+- Remotion 工程在 `remotion/`，组合 `AtlasField`（1600×900，6 秒循环），渲染产物
+  `assets/remotion/atlas-field.mp4` 用于登录页背景
+- 重新渲染：`cd remotion && npx remotion render AtlasField ../assets/remotion/atlas-field.mp4 --codec=h264`
+- 视频是登录页公共资源，`functions/_middleware.js` 已放行 `/assets/remotion/`
+
 ## 笔记库（Lazy-Kaoyan-Library）
 
 - 源文件在 `lazy-src/数一`、`lazy-src/英一`（Obsidian Markdown，含 LaTeX、双链、callout）
