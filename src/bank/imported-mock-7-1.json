@@ -42,7 +42,7 @@
    "source": "2026 李艳芳三套卷（数一）（第1套）",
    "isReal": false,
    "isMock": true,
-   "text": "设 \\(x_0=a\\neq 1\\)，对 \\(n\\ge 1\\)，令\n\\[x_n=\\begin{cases}\\dfrac{x_{n-1}+x_{n-2}}{2},& n\\text{ 为偶数},\\\\[2mm]\\dfrac{1+x_{n-1}}{2},& n\\text{ 为奇数},\\end{cases}\\]\n则下列关于数列 \\(\\{x_n\\}\\) 的说法中，正确的是（　）\nA. \\(\\lim\\limits_{n\\to\\infty}x_{2n},\\lim\\limits_{n\\to\\infty}x_{2n+1}\\) 均不存在\nB. \\(\\lim\\limits_{n\\to\\infty}x_{2n},\\lim\\limits_{n\\to\\infty}x_{2n+1}\\) 均存在，但不相等\nC. \\(\\lim\\limits_{n\\to\\infty}x_n\\) 存在，其值与 \\(a\\) 有关\nD. \\(\\lim\\limits_{n\\to\\infty}x_n\\) 存在，其值与 \\(a\\) 无关",
+   "text": "设 \\(x_0=a\\neq 1\\)，对 \\(n\\ge 1\\)，令\n\\[x_n=\\begin{cases}\\dfrac{x_{n-1}+x_{n-2}}{2},& n\\text{ 为偶数},\\\\\\dfrac{1+x_{n-1}}{2},& n\\text{ 为奇数},\\end{cases}\\]\n则下列关于数列 \\(\\{x_n\\}\\) 的说法中，正确的是（　）\nA. \\(\\lim\\limits_{n\\to\\infty}x_{2n},\\lim\\limits_{n\\to\\infty}x_{2n+1}\\) 均不存在\nB. \\(\\lim\\limits_{n\\to\\infty}x_{2n},\\lim\\limits_{n\\to\\infty}x_{2n+1}\\) 均存在，但不相等\nC. \\(\\lim\\limits_{n\\to\\infty}x_n\\) 存在，其值与 \\(a\\) 有关\nD. \\(\\lim\\limits_{n\\to\\infty}x_n\\) 存在，其值与 \\(a\\) 无关",
    "answer": "D",
    "steps": [
     "只考察偶数项。由 \\(x_{2k}=\\frac{x_{2k-1}+x_{2k-2}}{2}\\) 及 \\(x_{2k-1}=\\frac{1+x_{2k-2}}{2}\\)，代入得 \\(x_{2k}=\\frac{1+3x_{2k-2}}{4}\\)。",

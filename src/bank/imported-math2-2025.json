@@ -16,7 +16,7 @@
    "text": "设函数 \\(z = z(x, y)\\) 由 \\(z + \\ln z - \\int_y^x e^{-t^2} \\, \\mathrm{d}t = 0\\) 确定，则 \\(\\frac{\\partial z}{\\partial x} + \\frac{\\partial z}{\\partial y} = (\\quad)\\)\nA. \\(\\frac{z}{z+1}(e^{-x^2} - e^{-y^2})\\) \n B. \\(\\frac{z}{z+1}(e^{-x^2} + e^{-y^2})\\) \n C. \\(-\\frac{z}{z+1}(e^{-x^2} - e^{-y^2})\\) \n D. \\(-\\frac{z}{z+1}(e^{-x^2} + e^{-y^2})\\)",
    "answer": "A",
    "steps": [
-    "析】方程两端对 $x$ 求偏导：$\\dfrac{\\partial z}{\\partial x} + \\dfrac{1}{z}\\dfrac{\\partial z}{\\partial x} - e^{x^2} = 0$，解得：$\\dfrac{\\partial z}{\\partial x} = \\dfrac{z}{z+1}e^{x^2}$．方程两端对 $y$ 求偏导：$\\dfrac{\\partial z}{\\partial y} + \\dfrac{1}{z}\\dfrac{\\partial z}{\\partial y} + e^{-y^2} = 0$，解得：$\\dfrac{\\partial z}{\\partial y} = -\\dfrac{z}{z+1}e^{-y^2}$．故 $\\dfrac{\\partial z}{\\partial x} + \\dfrac{\\partial z}{\\partial y} = \\dfrac{z}{z+1}\\left(e^{x^2} - e^{-y^2}\\right)$．"
+    "析】方程两端对 \\(x\\) 求偏导：\\(\\dfrac{\\partial z}{\\partial x} + \\dfrac{1}{z}\\dfrac{\\partial z}{\\partial x} - e^{x^2} = 0\\)，解得：\\(\\dfrac{\\partial z}{\\partial x} = \\dfrac{z}{z+1}e^{x^2}\\)．方程两端对 \\(y\\) 求偏导：\\(\\dfrac{\\partial z}{\\partial y} + \\dfrac{1}{z}\\dfrac{\\partial z}{\\partial y} + e^{-y^2} = 0\\)，解得：\\(\\dfrac{\\partial z}{\\partial y} = -\\dfrac{z}{z+1}e^{-y^2}\\)．故 \\(\\dfrac{\\partial z}{\\partial x} + \\dfrac{\\partial z}{\\partial y} = \\dfrac{z}{z+1}\\left(e^{x^2} - e^{-y^2}\\right)\\)．"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -38,7 +38,7 @@
    "text": "已知函数 \\(f(x) = \\int_0^x e^{t^2} \\sin t \\, \\mathrm{d}t\\), \\(g(x) = \\int_0^x e^{t^2} \\, \\mathrm{d}t \\cdot \\sin^2 x\\)，则（ ）\nA. \\(x = 0\\) 是 \\(f(x)\\) 的极值点，也是 \\(g(x)\\) 的极值点 \n B. \\(x = 0\\) 是 \\(f(x)\\) 的极值点，\\((0,0)\\) 是曲线 \\(y = g(x)\\) 的拐点 \n C. \\(x = 0\\) 是 \\(f(x)\\) 的极值点，\\((0,0)\\) 是曲线 \\(y = f(x)\\) 的拐点 \n D. \\((0,0)\\) 是曲线 \\(y = f(x)\\) 的极值点，也是曲线 \\(y = g(x)\\) 的拐点",
    "answer": "B",
    "steps": [
-    "析】当 $x \\to 0$ 时，$f(x) = \\int_0^x e^{t^2}\\sin t\\,dt - \\int_0^x t\\,dt = \\dfrac{1}{2}x^2$，$g(x) = \\sin^2 x \\int_0^x e^{t^2}\\,dt - x^2 \\int_0^x 1\\,dt = x^3$，则 $x=0$ 是 $f(x)$ 的极小值点，$(0,0)$ 是 $y=g(x)$ 的拐点，选 B．"
+    "析】当 \\(x \\to 0\\) 时，\\(f(x) = \\int_0^x e^{t^2}\\sin t\\,dt - \\int_0^x t\\,dt = \\dfrac{1}{2}x^2\\)，\\(g(x) = \\sin^2 x \\int_0^x e^{t^2}\\,dt - x^2 \\int_0^x 1\\,dt = x^3\\)，则 \\(x=0\\) 是 \\(f(x)\\) 的极小值点，\\((0,0)\\) 是 \\(y=g(x)\\) 的拐点，选 B．"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -60,7 +60,7 @@
    "text": "如果对微分方程 \\(y'' - 2a y' + (a+2)y = 0\\) 的任一解 \\(y(x)\\)，反常积分 \\(\\int_0^{+\\infty} y(x) \\, \\mathrm{d}x\\) 均收敛，那么 \\(a\\) 的取值范围是（ ）\nA. \\((-2, -1]\\) \n B. \\((-\\infty, -1]\\) \n C. \\((-2, 0)\\) \n D. \\((-\\infty, 0)\\)",
    "answer": "C",
    "steps": [
-    "析】由反常积分 $\\int_0^{+\\infty} y(x)\\,dx$ 均收敛，易知：该微分方程通解部分 $e^{\\lambda x}$ 中 $\\lambda < 0$。其特征方程为 $\\lambda^2 - 2a\\lambda + (a+2) = 0$，$\\Delta = (-2a)^2 - 4(a+2) = 4(a-2)(a+1)$① 当 $\\Delta > 0$ 时，$\\lambda_1 + \\lambda_2 = 2a < 0$, $\\lambda_1\\lambda_2 = (a+2) > 0$，故 $a \\in (-2, -1)$；② 当 $\\Delta = 0$ 时，$\\lambda_1 + \\lambda_2 = 2a < 0$, $\\lambda_1\\lambda_2 = (a+2) > 0$，故 $a = -1$；③ 当 $\\Delta < 0$ 时，此时有两虚特征根，其实部 $\\alpha = a < 0$，故 $a \\in (-1, 0)$。综上，$a \\in (-2, 0)$。"
+    "析】由反常积分 \\(\\int_0^{+\\infty} y(x)\\,dx\\) 均收敛，易知：该微分方程通解部分 \\(e^{\\lambda x}\\) 中 \\(\\lambda < 0\\)。其特征方程为 \\(\\lambda^2 - 2a\\lambda + (a+2) = 0\\)，\\(\\Delta = (-2a)^2 - 4(a+2) = 4(a-2)(a+1)\\)① 当 \\(\\Delta > 0\\) 时，\\(\\lambda_1 + \\lambda_2 = 2a < 0\\), \\(\\lambda_1\\lambda_2 = (a+2) > 0\\)，故 \\(a \\in (-2, -1)\\)；② 当 \\(\\Delta = 0\\) 时，\\(\\lambda_1 + \\lambda_2 = 2a < 0\\), \\(\\lambda_1\\lambda_2 = (a+2) > 0\\)，故 \\(a = -1\\)；③ 当 \\(\\Delta < 0\\) 时，此时有两虚特征根，其实部 \\(\\alpha = a < 0\\)，故 \\(a \\in (-1, 0)\\)。综上，\\(a \\in (-2, 0)\\)。"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -82,7 +82,7 @@
    "text": "设函数 \\(f(x), g(x)\\) 在 \\(x = 0\\) 的某去心邻域内有定义且恒不为零，若当 \\(x \\to 0\\) 时，\\(f(x)\\) 是 \\(g(x)\\) 的高阶无穷小，则当 \\(x \\to 0\\) 时（ ）\nA. \\(f(x) + g(x) = o(g(x))\\) \n B. \\(f(x)g(x) = o(f^2(x))\\) \n C. \\(f(x) = o(e^{g(x)} - 1)\\) \n D. \\(f(x) = o(g^2(x))\\)",
    "answer": "C",
    "steps": [
-    "析】(A) $\\lim\\limits_{x \\to 0} \\dfrac{f(x)+g(x)}{g(x)} = 1 + \\lim\\limits_{x \\to 0} \\dfrac{f(x)}{g(x)} = 1$，故 $f(x)+g(x)-g(x)$；(B) $\\lim\\limits_{x \\to 0} \\dfrac{f(x)g(x)}{f^2(x)} = \\lim\\limits_{x \\to 0} \\dfrac{g(x)}{f(x)} = \\infty$，故 $f(x)g(x)$ 是 $f^2(x)$ 的低阶无穷小；(C) $\\lim\\limits_{x \\to 0} \\dfrac{f(x)}{e^{g(x)} - 1} = \\lim\\limits_{x \\to 0} \\dfrac{f(x)}{g(x)} = 0$，故 $f(x)$ 是 $e^{g(x)} - 1$ 的高阶无穷小，$f(x) = o\\big[e^{g(x)} - 1\\big]$；(D) 反例：$f(x) = x^3$, $g(x) = x^2$，则 $f(x)$ 是 $g^2(x)$ 的低阶无穷小，选 (C)。"
+    "析】(A) \\(\\lim\\limits_{x \\to 0} \\dfrac{f(x)+g(x)}{g(x)} = 1 + \\lim\\limits_{x \\to 0} \\dfrac{f(x)}{g(x)} = 1\\)，故 \\(f(x)+g(x)-g(x)\\)；(B) \\(\\lim\\limits_{x \\to 0} \\dfrac{f(x)g(x)}{f^2(x)} = \\lim\\limits_{x \\to 0} \\dfrac{g(x)}{f(x)} = \\infty\\)，故 \\(f(x)g(x)\\) 是 \\(f^2(x)\\) 的低阶无穷小；(C) \\(\\lim\\limits_{x \\to 0} \\dfrac{f(x)}{e^{g(x)} - 1} = \\lim\\limits_{x \\to 0} \\dfrac{f(x)}{g(x)} = 0\\)，故 \\(f(x)\\) 是 \\(e^{g(x)} - 1\\) 的高阶无穷小，\\(f(x) = o\\big[e^{g(x)} - 1\\big]\\)；(D) 反例：\\(f(x) = x^3\\), \\(g(x) = x^2\\)，则 \\(f(x)\\) 是 \\(g^2(x)\\) 的低阶无穷小，选 (C)。"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -104,8 +104,8 @@
    "text": "设函数 \\(f(x, y)\\) 连续，则 \\(\\int_{-2}^2 \\mathrm{d}x \\int_{4 - x^2}^4 f(x, y) \\, \\mathrm{d}y = (\\quad)\\)\nA. \\(\\int_0^4 \\left[ \\int_{-2}^{-\\sqrt{4 - y}} f(x, y) \\, \\mathrm{d}x + \\int_{\\sqrt{4 - y}}^2 f(x, y) \\, \\mathrm{d}x \\right] \\mathrm{d}y\\) \n B. \\(\\int_0^4 \\left[ \\int_{-2}^{\\sqrt{4 - y}} f(x, y) \\, \\mathrm{d}x + \\int_{\\sqrt{4 - y}}^2 f(x, y) \\, \\mathrm{d}x \\right] \\mathrm{d}y\\) \n C. \\(\\int_0^4 \\left[ \\int_{-2}^{-\\sqrt{4 - y}} f(x, y) \\, \\mathrm{d}x + \\int_2^{\\sqrt{4 - y}} f(x, y) \\, \\mathrm{d}x \\right] \\mathrm{d}y\\) \n D. \\(2 \\int_0^4 \\mathrm{d}y \\int_{\\sqrt{4 - y}}^2 f(x, y) \\, \\mathrm{d}x\\)",
    "answer": "A",
    "steps": [
-    "A. $\\int_0^4 \\left[ \\int_{-2}^{\\sqrt{4-y}} f(x,y)\\,dx + \\int_{\\sqrt{4-y}}^2 f(x,y)\\,dx \\right] dy$",
-    "析】由题意易知：积分区域 $ D = \\left\\{ (x, y) \\,\\middle|\\, 4 - x^2 < y < 4, -2 < x < 2 \\right\\} $.交换积分次序：$ \\int_{-2}^{2} dx \\int_{4 - x^2}^{4} f(x, y) \\, dy = \\int_{0}^{4} \\left[ \\int_{-\\sqrt{4 - y}}^{\\sqrt{4 - y}} f(x, y) \\, dx + \\int_{\\sqrt{4 - y}}^{2} f(x, y) \\, dx \\right] dy $，选(A)."
+    "A. \\(\\int_0^4 \\left[ \\int_{-2}^{\\sqrt{4-y}} f(x,y)\\,dx + \\int_{\\sqrt{4-y}}^2 f(x,y)\\,dx \\right] dy\\)",
+    "析】由题意易知：积分区域 \\(D = \\left\\{ (x, y) \\,\\middle|\\, 4 - x^2 < y < 4, -2 < x < 2 \\right\\}\\).交换积分次序：\\(\\int_{-2}^{2} dx \\int_{4 - x^2}^{4} f(x, y) \\, dy = \\int_{0}^{4} \\left[ \\int_{-\\sqrt{4 - y}}^{\\sqrt{4 - y}} f(x, y) \\, dx + \\int_{\\sqrt{4 - y}}^{2} f(x, y) \\, dx \\right] dy\\)，选(A)."
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -127,7 +127,7 @@
    "text": "设单位质点 \\(P, Q\\) 分别位于点 \\((0,0)\\) 和 \\((0,1)\\) 处，\\(P\\) 从点 \\((0,0)\\) 出发沿 \\(x\\) 正向移动，记 \\(G\\) 为引力常量，则当质点 \\(P\\) 移动到点 \\((l, 0)\\) 时，克服质点 \\(Q\\) 的引力所做的功为（ ）\nA. \\(\\int_0^l \\frac{G}{x^2 + 1} \\, \\mathrm{d}x\\) \n B. \\(\\int_0^l \\frac{Gx}{(x^2 + 1)^{\\frac{3}{2}}} \\, \\mathrm{d}x\\) \n C. \\(\\int_0^l \\frac{G}{(x^2 + 1)^{\\frac{3}{2}}} \\, \\mathrm{d}x\\) \n D. \\(\\int_0^l \\frac{G(x + 1)}{(x^2 + 1)^{\\frac{3}{2}}} \\, \\mathrm{d}x\\)",
    "answer": "B",
    "steps": [
-    "析】取微元 $ [x, x + \\Delta x] $，此时万有引力 $ F = \\dfrac{G M m}{R^2} = \\dfrac{G}{1 + x^2} $，其在水平方向的引力为：$$F \\cos \\alpha = \\frac{G}{1 + x^2} \\cdot \\frac{x}{\\sqrt{1 + x^2}}$$则其微元功为 $ \\Delta W = F \\cos \\alpha \\cdot \\Delta x = \\dfrac{G x}{\\left( x^2 + 1 \\right)^{\\frac{3}{2}}} \\Delta x $，则 $ W = \\int_{0}^{l} \\dfrac{G x}{\\left( x^2 + 1 \\right)^{\\frac{3}{2}}} dx $."
+    "析】取微元 \\([x, x + \\Delta x]\\)，此时万有引力 \\(F = \\dfrac{G M m}{R^2} = \\dfrac{G}{1 + x^2}\\)，其在水平方向的引力为：\\[F \\cos \\alpha = \\frac{G}{1 + x^2} \\cdot \\frac{x}{\\sqrt{1 + x^2}}\\]则其微元功为 \\(\\Delta W = F \\cos \\alpha \\cdot \\Delta x = \\dfrac{G x}{\\left( x^2 + 1 \\right)^{\\frac{3}{2}}} \\Delta x\\)，则 \\(W = \\int_{0}^{l} \\dfrac{G x}{\\left( x^2 + 1 \\right)^{\\frac{3}{2}}} dx\\)."
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -149,8 +149,8 @@
    "text": "设函数 \\(f(x)\\) 连续，给出下列四个条件：① \\(\\lim\\limits_{x \\to 0} \\dfrac{|f(x)| - f(0)}{x}\\) 存在；② \\(\\lim\\limits_{x \\to 0} \\dfrac{f(x) - |f(0)|}{x}\\) 存在；③ \\(\\lim\\limits_{x \\to 0} \\dfrac{|f(x)|}{x}\\) 存在；④ \\(\\lim\\limits_{x \\to 0} \\dfrac{|f(x)| - |f(0)|}{x}\\) 存在；其中能得到 “\\(f(x)\\) 在 \\(x = 0\\) 处可导” 的条件个数是（ ）\nA. 1 \n B. 2 \n C. 3 \n D. 4",
    "answer": "D",
    "steps": [
-    "（本题仅给出题干，无解答内容）设函数 $ f(x) $ 连续，给出以下四个条件：① $ \\displaystyle \\lim_{x \\to 0} \\frac{|f(x)| - f(0)}{x} $ 存在；② $ \\displaystyle \\lim_{x \\to 0} \\frac{f(x) - |f(0)|}{x} $ 存在；③ $ \\displaystyle \\lim_{x \\to 0} \\frac{|f(x)|}{x} $ 存在；④ $ \\displaystyle \\lim_{x \\to 0} \\frac{|f(x)| - |f(0)|}{x} $ 存在；",
-    "析】因为 $f(x)$ 连续，所以 $|f(x)|$ 连续。① 由 $\\lim\\limits_{x \\to 0} \\dfrac{|f(x)| - f(0)}{x}$ 存在，即 $\\lim\\limits_{x \\to 0} |f(x)| = |f(0)| = f(0)$，则 $f(0) \\ge 0$。若 $f(0) > 0$，由极限的保号性：$$\\lim_{x \\to 0} \\frac{|f(x)| - f(0)}{x} = \\lim_{x \\to 0} \\frac{f(x) - f(0)}{x} = f'(0) \\text{ 存在；}$$若 $f(0) = 0$，则$$\\lim_{x \\to 0^+} \\frac{|f(x)| - f(0)}{x} = \\lim_{x \\to 0^+} \\frac{|f(x)|}{x} = \\lim_{x \\to 0^+} \\left| \\frac{f(x) - f(0)}{x - 0} \\right| = |f'_+(0)|;$$$$\\lim_{x \\to 0^-} \\frac{|f(x)| - f(0)}{x} = \\lim_{x \\to 0^-} \\frac{|f(x)|}{x} = -\\lim_{x \\to 0^-} \\left| \\frac{f(x) - f(0)}{x - 0} \\right| = -|f'_-(0)|.$$故 $|f'_+(0)| = -|f'_-(0)|$，即 $f'_+(0) = f'_-(0) = 0$，故 $f'(0)$ 存在.② $\\lim\\limits_{x \\to 0} \\dfrac{f(x) - |f(0)|}{x}$ 存在，可得：$\\lim\\limits_{x \\to 0} f(x) = f(0) = |f(0)|$，故 $f(0) \\ge 0$.若 $f(0) > 0$，则 $\\lim\\limits_{x \\to 0} \\dfrac{f(x) - |f(0)|}{x} = \\lim\\limits_{x \\to 0} \\dfrac{f(x) - f(0)}{x} = f'(0)$ 存在；若 $f(0) = 0$，则 $\\lim\\limits_{x \\to 0} \\dfrac{f(x) - |f(0)|}{x} = \\lim\\limits_{x \\to 0} \\dfrac{f(x)}{x} = f'(0)$ 存在.③ $\\lim\\limits_{x \\to 0} \\dfrac{|f(x)|}{x}$ 存在，可得：$\\lim\\limits_{x \\to 0} |f(x)| = |f(0)| = 0$，即 $f(0) = 0$.故 $\\lim\\limits_{x \\to 0} \\dfrac{|f(x)|}{x}$ 存在，同①正确.④ 若 $f(0) = 0$，则 $\\lim\\limits_{x \\to 0} \\dfrac{|f(x)| - |f(0)|}{x} = \\lim\\limits_{x \\to 0} \\dfrac{|f(x)|}{x}$，同①，$f'(0)$ 存在；"
+    "（本题仅给出题干，无解答内容）设函数 \\(f(x)\\) 连续，给出以下四个条件：① \\(\\displaystyle \\lim_{x \\to 0} \\frac{|f(x)| - f(0)}{x}\\) 存在；② \\(\\displaystyle \\lim_{x \\to 0} \\frac{f(x) - |f(0)|}{x}\\) 存在；③ \\(\\displaystyle \\lim_{x \\to 0} \\frac{|f(x)|}{x}\\) 存在；④ \\(\\displaystyle \\lim_{x \\to 0} \\frac{|f(x)| - |f(0)|}{x}\\) 存在；",
+    "析】因为 \\(f(x)\\) 连续，所以 \\(|f(x)|\\) 连续。① 由 \\(\\lim\\limits_{x \\to 0} \\dfrac{|f(x)| - f(0)}{x}\\) 存在，即 \\(\\lim\\limits_{x \\to 0} |f(x)| = |f(0)| = f(0)\\)，则 \\(f(0) \\ge 0\\)。若 \\(f(0) > 0\\)，由极限的保号性：\\[\\lim_{x \\to 0} \\frac{|f(x)| - f(0)}{x} = \\lim_{x \\to 0} \\frac{f(x) - f(0)}{x} = f'(0) \\text{ 存在；}\\]若 \\(f(0) = 0\\)，则\\[\\lim_{x \\to 0^+} \\frac{|f(x)| - f(0)}{x} = \\lim_{x \\to 0^+} \\frac{|f(x)|}{x} = \\lim_{x \\to 0^+} \\left| \\frac{f(x) - f(0)}{x - 0} \\right| = |f'_+(0)|;\\]\\[\\lim_{x \\to 0^-} \\frac{|f(x)| - f(0)}{x} = \\lim_{x \\to 0^-} \\frac{|f(x)|}{x} = -\\lim_{x \\to 0^-} \\left| \\frac{f(x) - f(0)}{x - 0} \\right| = -|f'_-(0)|.\\]故 \\(|f'_+(0)| = -|f'_-(0)|\\)，即 \\(f'_+(0) = f'_-(0) = 0\\)，故 \\(f'(0)\\) 存在.② \\(\\lim\\limits_{x \\to 0} \\dfrac{f(x) - |f(0)|}{x}\\) 存在，可得：\\(\\lim\\limits_{x \\to 0} f(x) = f(0) = |f(0)|\\)，故 \\(f(0) \\ge 0\\).若 \\(f(0) > 0\\)，则 \\(\\lim\\limits_{x \\to 0} \\dfrac{f(x) - |f(0)|}{x} = \\lim\\limits_{x \\to 0} \\dfrac{f(x) - f(0)}{x} = f'(0)\\) 存在；若 \\(f(0) = 0\\)，则 \\(\\lim\\limits_{x \\to 0} \\dfrac{f(x) - |f(0)|}{x} = \\lim\\limits_{x \\to 0} \\dfrac{f(x)}{x} = f'(0)\\) 存在.③ \\(\\lim\\limits_{x \\to 0} \\dfrac{|f(x)|}{x}\\) 存在，可得：\\(\\lim\\limits_{x \\to 0} |f(x)| = |f(0)| = 0\\)，即 \\(f(0) = 0\\).故 \\(\\lim\\limits_{x \\to 0} \\dfrac{|f(x)|}{x}\\) 存在，同①正确.④ 若 \\(f(0) = 0\\)，则 \\(\\lim\\limits_{x \\to 0} \\dfrac{|f(x)| - |f(0)|}{x} = \\lim\\limits_{x \\to 0} \\dfrac{|f(x)|}{x}\\)，同①，\\(f'(0)\\) 存在；"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -216,7 +216,7 @@
    "text": "设 3 阶矩阵 \\(A, B\\) 满足 \\(r(AB) = r(BA) + 1\\)，则（ ）\nA. 方程组 \\((A + B)x = 0\\) 只有零解 \n B. 方程组 \\(Ax = 0\\) 与方程组 \\(Bx = 0\\) 均只有零解 \n C. 方程组 \\(Ax = 0\\) 与方程组 \\(Bx = 0\\) 没有公共非零解 \n D. 方程组 \\(ABAx = 0\\) 与方程组 \\(BABx = 0\\) 有公共非零解",
    "answer": "D",
    "steps": [
-    "【答案】D【解析】由题意易知 $ r(AB) > r(BA) $，故 $ 1 \\leq r(A) < 3 $, $ 1 \\leq r(B) < 3 $，且 $ r(B) \\leq r(A) $。(A) 反例. $ A = \\begin{bmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix} $, $ B = \\begin{bmatrix} 0 & 0 & 1 \\\\ 0 & 0 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix} $，故 $ A + B = \\begin{bmatrix} 1 & 0 & 1 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix} $，故方程 $ (A + B)x = 0 $ 有非零解，选项 (A) 错误。(B) 反例. $ A = \\begin{bmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix} $, $ B = \\begin{bmatrix} 0 & 0 & 1 \\\\ 0 & 0 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix} $，$ r(A) < 3 $, $ r(B) < 3 $，故方程 $ Ax = 0 $ 与 $ Bx = 0 $ 有非零解，选项 (B) 错误."
+    "【答案】D【解析】由题意易知 \\(r(AB) > r(BA)\\)，故 \\(1 \\leq r(A) < 3\\), \\(1 \\leq r(B) < 3\\)，且 \\(r(B) \\leq r(A)\\)。(A) 反例. \\(A = \\begin{bmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix}\\), \\(B = \\begin{bmatrix} 0 & 0 & 1 \\\\ 0 & 0 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix}\\)，故 \\(A + B = \\begin{bmatrix} 1 & 0 & 1 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix}\\)，故方程 \\((A + B)x = 0\\) 有非零解，选项 (A) 错误。(B) 反例. \\(A = \\begin{bmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix}\\), \\(B = \\begin{bmatrix} 0 & 0 & 1 \\\\ 0 & 0 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix}\\)，\\(r(A) < 3\\), \\(r(B) < 3\\)，故方程 \\(Ax = 0\\) 与 \\(Bx = 0\\) 有非零解，选项 (B) 错误."
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -236,9 +236,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "设 \\(\\int_{1}^{+\\infty} \\dfrac{a}{x(2x + a)} \\, \\mathrm{d}x = \\ln 2\\)，则 \\(a =\\) ________",
-   "answer": "$2$",
+   "answer": "\\(2\\)",
    "steps": [
-    "【答案】$2$．【解析】显然 $a \\ne 0$，$$\\int_{1}^{+\\infty} \\frac{a}{x(2x + a)} \\, \\mathrm{d}x = \\int_{1}^{+\\infty} \\left( \\frac{1}{x} - \\frac{2}{2x + a} \\right) \\mathrm{d}x = \\ln \\left| \\frac{x}{2x + a} \\right| \\Bigg|_{1}^{+\\infty} = \\ln (2 + a) - \\ln 2 = \\ln 2 \\, .$$故 $a = 2$．"
+    "【答案】\\(2\\)．【解析】显然 \\(a \\ne 0\\)，\\[\\int_{1}^{+\\infty} \\frac{a}{x(2x + a)} \\, \\mathrm{d}x = \\int_{1}^{+\\infty} \\left( \\frac{1}{x} - \\frac{2}{2x + a} \\right) \\mathrm{d}x = \\ln \\left| \\frac{x}{2x + a} \\right| \\Bigg|_{1}^{+\\infty} = \\ln (2 + a) - \\ln 2 = \\ln 2 \\, .\\]故 \\(a = 2\\)．"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -258,9 +258,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "曲线 \\(y = \\sqrt[3]{x^3 - 3x^2 + 1}\\) 的渐近线方程为 ________",
-   "answer": "$y = x - 1$",
+   "answer": "\\(y = x - 1\\)",
    "steps": [
-    "【答案】$y = x - 1$．【解析】水平渐近线：$\\displaystyle \\lim_{x \\to \\infty} y = \\lim_{x \\to \\infty} \\sqrt[3]{x^3 - 3x^2 + 1} = \\infty$，故无水平渐近线．该曲线无间断点，故无铅直渐近线．斜渐近线：$\\displaystyle k = \\lim_{x \\to \\infty} \\frac{y}{x} = \\lim_{x \\to \\infty} \\sqrt[3]{1 - \\frac{3}{x} + \\frac{1}{x^3}} = 1$$$b = \\lim_{x \\to \\infty} (y - x) = \\lim_{x \\to \\infty} \\left( \\sqrt[3]{x^3 - 3x^2 + 1} - x \\right) = \\lim_{x \\to \\infty} x \\left( \\sqrt[3]{1 - \\frac{3}{x} + \\frac{1}{x^3}} - 1 \\right)$$$$= \\lim_{x \\to \\infty} x \\cdot \\frac{1}{3} \\left( -\\frac{3}{x} + \\frac{1}{x^3} \\right) = -1$$故有斜渐近线 $y = x - 1$．"
+    "【答案】\\(y = x - 1\\)．【解析】水平渐近线：\\(\\displaystyle \\lim_{x \\to \\infty} y = \\lim_{x \\to \\infty} \\sqrt[3]{x^3 - 3x^2 + 1} = \\infty\\)，故无水平渐近线．该曲线无间断点，故无铅直渐近线．斜渐近线：\\(\\displaystyle k = \\lim_{x \\to \\infty} \\frac{y}{x} = \\lim_{x \\to \\infty} \\sqrt[3]{1 - \\frac{3}{x} + \\frac{1}{x^3}} = 1\\)\\[b = \\lim_{x \\to \\infty} (y - x) = \\lim_{x \\to \\infty} \\left( \\sqrt[3]{x^3 - 3x^2 + 1} - x \\right) = \\lim_{x \\to \\infty} x \\left( \\sqrt[3]{1 - \\frac{3}{x} + \\frac{1}{x^3}} - 1 \\right)\\]\\[= \\lim_{x \\to \\infty} x \\cdot \\frac{1}{3} \\left( -\\frac{3}{x} + \\frac{1}{x^3} \\right) = -1\\]故有斜渐近线 \\(y = x - 1\\)．"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -280,9 +280,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "\\(\\lim\\limits_{n \\to \\infty} \\dfrac{1}{n^2} \\left[ \\ln \\dfrac{1}{n} + 2 \\ln \\dfrac{2}{n} + \\cdots + (n-1) \\ln \\dfrac{n-1}{n} \\right] =\\) ________",
-   "answer": "$-\\dfrac{1}{4}$",
+   "answer": "\\(-\\dfrac{1}{4}\\)",
    "steps": [
-    "析】$$\\lim_{n \\to \\infty} \\frac{1}{n^2} \\left[ \\ln \\frac{1}{n} + 2 \\ln \\frac{2}{n} + \\cdots + (n-1) \\ln \\frac{n-1}{n} \\right] = \\lim_{n \\to \\infty} \\frac{1}{n} \\left[ \\frac{1}{n} \\ln \\frac{1}{n} + \\frac{2}{n} \\ln \\frac{2}{n} + \\cdots + \\frac{n-1}{n} \\ln \\frac{n-1}{n} \\right]$$"
+    "析】\\[\\lim_{n \\to \\infty} \\frac{1}{n^2} \\left[ \\ln \\frac{1}{n} + 2 \\ln \\frac{2}{n} + \\cdots + (n-1) \\ln \\frac{n-1}{n} \\right] = \\lim_{n \\to \\infty} \\frac{1}{n} \\left[ \\frac{1}{n} \\ln \\frac{1}{n} + \\frac{2}{n} \\ln \\frac{2}{n} + \\cdots + \\frac{n-1}{n} \\ln \\frac{n-1}{n} \\right]\\]"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -302,9 +302,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "已知函数 \\(y = y(x)\\) 由 \\(\\begin{cases} x = \\ln(1 + 2t) \\\\ 2t - \\displaystyle\\int_{1}^{y + t^2} e^{-u^2} \\, \\mathrm{d}u = 0 \\end{cases}\\) 确定，则 \\(\\left. \\dfrac{\\mathrm{d}y}{\\mathrm{d}x} \\right|_{t=0} =\\) ________",
-   "answer": "$ e $",
+   "answer": "\\(e\\)",
    "steps": [
-    "析】由题意对方程 $ 2t - \\int_{1}^{y + t^2} e^{-u^2} \\, du = 0 $ 两端对 $ t $ 求导：$$2 - e^{-\\left(y + t^2\\right)^2} \\cdot \\left( y' + 2t \\right) = 0$$当 $ t = 0 $ 时，$ y = 1 $，带入可得：$ y'\\big|_{t=0} = 2e $则$$\\frac{dy}{dx}\\Big|_{t=0} = \\frac{\\frac{dy}{dt}\\Big/ \\frac{dx}{dt}}{\\frac{dx}{dt}}\\Big|_{t=0} = \\frac{y'(t)}{2}\\Big|_{t=0} = \\frac{e}{1 + 2t}\\Big|_{t=0} = e.$$"
+    "析】由题意对方程 \\(2t - \\int_{1}^{y + t^2} e^{-u^2} \\, du = 0\\) 两端对 \\(t\\) 求导：\\[2 - e^{-\\left(y + t^2\\right)^2} \\cdot \\left( y' + 2t \\right) = 0\\]当 \\(t = 0\\) 时，\\(y = 1\\)，带入可得：\\(y'\\big|_{t=0} = 2e\\)则\\[\\frac{dy}{dx}\\Big|_{t=0} = \\frac{\\frac{dy}{dt}\\Big/ \\frac{dx}{dt}}{\\frac{dx}{dt}}\\Big|_{t=0} = \\frac{y'(t)}{2}\\Big|_{t=0} = \\frac{e}{1 + 2t}\\Big|_{t=0} = e.\\]"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -324,9 +324,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "微分方程 \\((2y - 3x)\\,\\mathrm{d}x + (2x - 5y)\\,\\mathrm{d}y = 0\\) 满足条件 \\(y(1) = 1\\) 的解为 ________",
-   "answer": "$ 5y^2 - 4xy + 3x^2 = 4 $",
+   "answer": "\\(5y^2 - 4xy + 3x^2 = 4\\)",
    "steps": [
-    "析】由题意 $ \\frac{dy}{dx} = \\frac{3x - 2y}{2x - 5y} $，令 $ p = \\frac{y}{x} $，则 $ \\frac{dy}{dx} = p + x \\frac{dp}{dx} $，带入：$$p + x \\frac{dp}{dx} = \\frac{3 - 2p}{2 - 5p}$$分离：$ \\frac{(2 - 5p)\\, dp}{5p^2 - 4p + 3} = \\frac{dx}{x} $，积分：$ \\int \\frac{(2 - 5p)\\, dp}{5p^2 - 4p + 3} = \\int \\frac{dx}{x} $可得：$ -\\frac{1}{2} \\ln \\left| 5p^2 - 4p + 3 \\right| = \\ln |x| + C $由 $ y(1) = 1 $ 可得：$ C = -\\ln 2 $即 $ 5y^2 - 4xy + 3x^2 = 4 $。"
+    "析】由题意 \\(\\frac{dy}{dx} = \\frac{3x - 2y}{2x - 5y}\\)，令 \\(p = \\frac{y}{x}\\)，则 \\(\\frac{dy}{dx} = p + x \\frac{dp}{dx}\\)，带入：\\[p + x \\frac{dp}{dx} = \\frac{3 - 2p}{2 - 5p}\\]分离：\\(\\frac{(2 - 5p)\\, dp}{5p^2 - 4p + 3} = \\frac{dx}{x}\\)，积分：\\(\\int \\frac{(2 - 5p)\\, dp}{5p^2 - 4p + 3} = \\int \\frac{dx}{x}\\)可得：\\(-\\frac{1}{2} \\ln \\left| 5p^2 - 4p + 3 \\right| = \\ln |x| + C\\)由 \\(y(1) = 1\\) 可得：\\(C = -\\ln 2\\)即 \\(5y^2 - 4xy + 3x^2 = 4\\)。"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -346,9 +346,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "设矩阵 \\(A = (\\alpha_1, \\alpha_2, \\alpha_3, \\alpha_4)\\)，若 \\(\\alpha_1, \\alpha_2, \\alpha_3\\) 线性无关，且 \\(\\alpha_1 + \\alpha_2 = \\alpha_3 + \\alpha_4\\)，则方程组 \\(Ax = \\alpha_1 + 4\\alpha_4\\) 的通解为 \\(x =\\) ________",
-   "answer": "$ k\\begin{pmatrix}1,1,-1,-1\\end{pmatrix}^\\top + \\begin{pmatrix}2,1,-1,3\\end{pmatrix}^\\top \\ (k \\in \\mathbb{R}) $",
+   "answer": "\\(k\\begin{pmatrix}1,1,-1,-1\\end{pmatrix}^\\top + \\begin{pmatrix}2,1,-1,3\\end{pmatrix}^\\top \\ (k \\in \\mathbb{R})\\)",
    "steps": [
-    "【答案】$ k\\begin{pmatrix}1,1,-1,-1\\end{pmatrix}^\\top + \\begin{pmatrix}2,1,-1,3\\end{pmatrix}^\\top \\ (k \\in \\mathbb{R}) $."
+    "【答案】\\(k\\begin{pmatrix}1,1,-1,-1\\end{pmatrix}^\\top + \\begin{pmatrix}2,1,-1,3\\end{pmatrix}^\\top \\ (k \\in \\mathbb{R})\\)."
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -368,9 +368,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "计算 \\(\\int_0^1 \\frac{1}{(x+1)(x^2-2x+2)}\\,\\mathrm{d}x\\)。",
-   "answer": "$\\dfrac{3}{15}\\ln 2 + \\dfrac{\\pi}{10}$",
+   "answer": "\\(\\dfrac{3}{15}\\ln 2 + \\dfrac{\\pi}{10}\\)",
    "steps": [
-    "析】$\\displaystyle\\int_0^1 \\dfrac{1}{(x+1)(x^2-2x+2)}\\,\\mathrm{d}x = \\dfrac{1}{5}\\int_0^1 \\left[ \\dfrac{1}{x+1} - \\dfrac{x-3}{x^2-2x+2} \\right] \\mathrm{d}x$$\\displaystyle= \\dfrac{1}{5}\\int_0^1 \\left[ \\dfrac{1}{x+1} - \\dfrac{x-1-2}{x^2-2x+2} \\right] \\mathrm{d}x$$\\displaystyle= \\dfrac{1}{5}\\ln|x+1|\\Big|_0^1 - \\dfrac{1}{10}\\ln\\big|x^2-2x+2\\big|\\Big|_0^1 + \\dfrac{2}{5}\\int_0^1 \\dfrac{1}{(x-1)^2+1}\\,\\mathrm{d}x$$\\displaystyle= \\dfrac{1}{5}\\ln|x+1|\\Big|_0^1 - \\dfrac{1}{10}\\ln\\big|x^2-2x+2\\big|\\Big|_0^1 + \\dfrac{2}{5}\\arctan(x-1)\\Big|_0^1$$\\displaystyle= \\dfrac{3}{15}\\ln 2 + \\dfrac{\\pi}{10}$．"
+    "析】\\[\\displaystyle\\int_0^1 \\dfrac{1}{(x+1)(x^2-2x+2)}\\,\\mathrm{d}x = \\dfrac{1}{5}\\int_0^1 \\left[ \\dfrac{1}{x+1} - \\dfrac{x-3}{x^2-2x+2} \\right] \\mathrm{d}x\\]\\[\\displaystyle= \\dfrac{1}{5}\\int_0^1 \\left[ \\dfrac{1}{x+1} - \\dfrac{x-1-2}{x^2-2x+2} \\right] \\mathrm{d}x\\]\\[\\displaystyle= \\dfrac{1}{5}\\ln|x+1|\\Big|_0^1 - \\dfrac{1}{10}\\ln\\big|x^2-2x+2\\big|\\Big|_0^1 + \\dfrac{2}{5}\\int_0^1 \\dfrac{1}{(x-1)^2+1}\\,\\mathrm{d}x\\]\\[\\displaystyle= \\dfrac{1}{5}\\ln|x+1|\\Big|_0^1 - \\dfrac{1}{10}\\ln\\big|x^2-2x+2\\big|\\Big|_0^1 + \\dfrac{2}{5}\\arctan(x-1)\\Big|_0^1\\]\\[\\displaystyle= \\dfrac{3}{15}\\ln 2 + \\dfrac{\\pi}{10}\\]．"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -390,9 +390,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "设函数 \\(f(x)\\) 在 \\(x=0\\) 处连续，且 \\(\\lim_{x\\to 0}\\frac{x f(x)-\\mathrm{e}^{2\\sin x}+1}{\\ln(1+x)+\\ln(1-x)}=-3\\)，证明 \\(f(x)\\) 在 \\(x=0\\) 处可导，并求 \\(f'(0)\\)。",
-   "answer": "$f'(0) = -1$",
+   "answer": "\\(f'(0) = -1\\)",
    "steps": [
-    "析】$\\displaystyle\\lim_{x\\to 0}\\dfrac{xf(x)-e^{2\\sin x}+1}{\\ln(1+x)+\\ln(1-x)} = \\lim_{x\\to 0}\\dfrac{xf(x)-2x+2x-e^{2\\sin x}+1}{\\ln(1-x^2)}$"
+    "析】\\(\\displaystyle\\lim_{x\\to 0}\\dfrac{xf(x)-e^{2\\sin x}+1}{\\ln(1+x)+\\ln(1-x)} = \\lim_{x\\to 0}\\dfrac{xf(x)-2x+2x-e^{2\\sin x}+1}{\\ln(1-x^2)}\\)"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -412,9 +412,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "设函数 \\(f(x,y)\\) 可微且满足：\\[\\mathrm{d}f(x,y) = -2x\\mathrm{e}^{-y}\\,\\mathrm{d}x + \\mathrm{e}^{-y}(x^2 - y - 1)\\,\\mathrm{d}y,\\quad f(0,0)=2\\]求 \\(f(x,y)\\)，并求 \\(f(x,y)\\) 的极值。",
-   "answer": "$ f(x,y) = (y + 2 - x^2)e^{-y} $，极值点为 $ (0, -1) $，且在该点取得极大值 $ f(0,-1) = 3e $",
+   "answer": "\\(f(x,y) = (y + 2 - x^2)e^{-y}\\)，极值点为 \\((0, -1)\\)，且在该点取得极大值 \\(f(0,-1) = 3e\\)",
    "steps": [
-    "析】由 $ df(x,y) = -2xe^{-y}dx + e^{-y}(x^2 - y - 1)dy $ 可知：$$\\frac{\\partial f}{\\partial x} = -2xe^{-y},\\quad \\frac{\\partial f}{\\partial y} = e^{-y}(x^2 - y - 1)$$对 $ \\dfrac{\\partial f}{\\partial x} = -2xe^{-y} $ 偏积分：$$f(x,y) = -\\int 2xe^{-y}\\,dx = -x^2 e^{-y} + \\varphi(y)$$故$$\\frac{\\partial f}{\\partial y} = x^2 e^{-y} + \\varphi'(y) = e^{-y}(x^2 - y - 1)$$即$$\\varphi'(y) = -e^{-y}(y + 1),\\quad \\text{则 } \\varphi(y) = e^{-y}(y + 2) + C$$由初值条件：$ f(0,0) = 2 $ 可得：$ C = 0 $所以$$f(x,y) = \\bigl(y + 2 - x^2\\bigr)e^{-y}$$令 $ \\dfrac{\\partial f}{\\partial x} = -2xe^{-y} = 0 $，$ \\dfrac{\\partial f}{\\partial y} = e^{-y}(x^2 - y - 1) = 0 $，可得驻点 $ (0, -1) $"
+    "析】由 \\(df(x,y) = -2xe^{-y}dx + e^{-y}(x^2 - y - 1)dy\\) 可知：\\[\\frac{\\partial f}{\\partial x} = -2xe^{-y},\\quad \\frac{\\partial f}{\\partial y} = e^{-y}(x^2 - y - 1)\\]对 \\(\\dfrac{\\partial f}{\\partial x} = -2xe^{-y}\\) 偏积分：\\[f(x,y) = -\\int 2xe^{-y}\\,dx = -x^2 e^{-y} + \\varphi(y)\\]故\\[\\frac{\\partial f}{\\partial y} = x^2 e^{-y} + \\varphi'(y) = e^{-y}(x^2 - y - 1)\\]即\\[\\varphi'(y) = -e^{-y}(y + 1),\\quad \\text{则 } \\varphi(y) = e^{-y}(y + 2) + C\\]由初值条件：\\(f(0,0) = 2\\) 可得：\\(C = 0\\)所以\\[f(x,y) = \\bigl(y + 2 - x^2\\bigr)e^{-y}\\]令 \\(\\dfrac{\\partial f}{\\partial x} = -2xe^{-y} = 0\\)，\\(\\dfrac{\\partial f}{\\partial y} = e^{-y}(x^2 - y - 1) = 0\\)，可得驻点 \\((0, -1)\\)"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -434,9 +434,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "已知平面有界区域 \\(D=\\{(x,y)\\mid x^2+y^2\\le 4x,\\,x^2+y^2\\le 4y\\}\\)，计算 \\(\\iint_D (x-y)^2\\,\\mathrm{d}x\\mathrm{d}y\\)。",
-   "answer": "$12\\pi - \\dfrac{112}{3}$",
+   "answer": "\\(12\\pi - \\dfrac{112}{3}\\)",
    "steps": [
-    "析】设 $D_1 = \\left\\{(x, y) \\mid x^2 + y^2 \\le 4x, x \\ge y \\right\\}$，$D_2 = \\left\\{(x, y) \\mid x^2 + y^2 \\le 4y, x \\le y \\right\\}$。$$\\iint\\limits_D (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y = \\iint\\limits_{D_1} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y + \\iint\\limits_{D_2} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y$$直角坐标系 $x, y$ 互换，易知 $\\iint\\limits_{D_1} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y = \\iint\\limits_{D_2} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y$$$\\iint\\limits_D (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y = 2 \\iint\\limits_{D_1} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y$$$$= 2 \\int_0^{\\frac{\\pi}{4}} d\\theta \\int_0^{4\\sin\\theta} \\left(r\\cos\\theta - r\\sin\\theta\\right)^2 r \\, dr$$$$= \\frac{1}{2} \\int_0^{\\frac{\\pi}{4}} \\left(\\cos\\theta - \\sin\\theta\\right)^2 r^4 \\Big|_0^{4\\sin\\theta} \\, d\\theta$$$$= 128 \\int_0^{\\frac{\\pi}{4}} \\left(\\cos\\theta - \\sin\\theta\\right)^2 \\sin^4\\theta \\, d\\theta$$$$= 32 \\int_0^{\\frac{\\pi}{4}} \\left(1 - \\sin 2\\theta\\right)\\left(1 - \\cos 2\\theta\\right)^2 \\, d\\theta$$$$= 32 \\int_0^{\\frac{\\pi}{4}} \\left(1 - \\cos 2\\theta\\right)^2 \\, d\\theta + 16 \\int_0^{\\frac{\\pi}{4}} \\left(1 - \\cos 2\\theta\\right)^2 \\, d(\\cos 2\\theta)$$$$\\int_0^{\\frac{\\pi}{4}} \\left(1 - \\cos 2\\theta\\right)^2 \\, d\\theta \\xlongequal{2\\theta = u} \\frac{1}{2} \\int_0^{\\frac{\\pi}{2}} \\left(1 - \\cos u\\right)^2 \\, du = \\frac{3\\pi}{8} - 1$$$$\\int_0^{\\frac{\\pi}{4}} \\left(1 - \\cos 2\\theta\\right)^2 \\, d(\\cos 2\\theta) = -\\frac{1}{3} \\left(1 - \\cos 2\\theta\\right)^3 \\Big|_0^{\\frac{\\pi}{4}} = -\\frac{1}{3}$$原式 $= 12\\pi - \\dfrac{112}{3}$。"
+    "析】设 \\(D_1 = \\left\\{(x, y) \\mid x^2 + y^2 \\le 4x, x \\ge y \\right\\}\\)，\\(D_2 = \\left\\{(x, y) \\mid x^2 + y^2 \\le 4y, x \\le y \\right\\}\\)。\\[\\iint\\limits_D (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y = \\iint\\limits_{D_1} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y + \\iint\\limits_{D_2} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y\\]直角坐标系 \\(x, y\\) 互换，易知 \\(\\iint\\limits_{D_1} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y = \\iint\\limits_{D_2} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y\\)\\[\\iint\\limits_D (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y = 2 \\iint\\limits_{D_1} (x - y)^2 \\, \\mathrm{d}x\\mathrm{d}y\\]\\[= 2 \\int_0^{\\frac{\\pi}{4}} d\\theta \\int_0^{4\\sin\\theta} \\left(r\\cos\\theta - r\\sin\\theta\\right)^2 r \\, dr\\]\\[= \\frac{1}{2} \\int_0^{\\frac{\\pi}{4}} \\left(\\cos\\theta - \\sin\\theta\\right)^2 r^4 \\Big|_0^{4\\sin\\theta} \\, d\\theta\\]\\[= 128 \\int_0^{\\frac{\\pi}{4}} \\left(\\cos\\theta - \\sin\\theta\\right)^2 \\sin^4\\theta \\, d\\theta\\]\\[= 32 \\int_0^{\\frac{\\pi}{4}} \\left(1 - \\sin 2\\theta\\right)\\left(1 - \\cos 2\\theta\\right)^2 \\, d\\theta\\]\\[= 32 \\int_0^{\\frac{\\pi}{4}} \\left(1 - \\cos 2\\theta\\right)^2 \\, d\\theta + 16 \\int_0^{\\frac{\\pi}{4}} \\left(1 - \\cos 2\\theta\\right)^2 \\, d(\\cos 2\\theta)\\]\\[\\int_0^{\\frac{\\pi}{4}} \\left(1 - \\cos 2\\theta\\right)^2 \\, d\\theta \\xlongequal{2\\theta = u} \\frac{1}{2} \\int_0^{\\frac{\\pi}{2}} \\left(1 - \\cos u\\right)^2 \\, du = \\frac{3\\pi}{8} - 1\\]\\[\\int_0^{\\frac{\\pi}{4}} \\left(1 - \\cos 2\\theta\\right)^2 \\, d(\\cos 2\\theta) = -\\frac{1}{3} \\left(1 - \\cos 2\\theta\\right)^3 \\Big|_0^{\\frac{\\pi}{4}} = -\\frac{1}{3}\\]原式 \\(= 12\\pi - \\dfrac{112}{3}\\)。"
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -456,9 +456,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "设函数 \\(f(x)\\) 在区间 \\((a,b)\\) 内可导，证明导函数 \\(f'(x)\\) 在 \\((a,b)\\) 内严格单调增加的充分必要条件是：对 \\((a,b)\\) 内任意的 \\(x_1,x_2,x_3\\)，当 \\(x_1<x_2<x_3\\) 时，有\\[\\frac{f(x_2)-f(x_1)}{x_2-x_1} < \\frac{f(x_3)-f(x_2)}{x_3-x_2}.\\]",
-   "answer": "导函数 $ f'(x) $ 在 $ (a,b) $ 内严格单调增加的充分必要条件是：对任意 $ x_1, x_2, x_3 \\in (a,b) $，当 $ x_1 < x_2 < x_3 $ 时，有",
+   "answer": "导函数 \\(f'(x)\\) 在 \\((a,b)\\) 内严格单调增加的充分必要条件是：对任意 \\(x_1, x_2, x_3 \\in (a,b)\\)，当 \\(x_1 < x_2 < x_3\\) 时，有",
    "steps": [
-    "析】必要性：由拉格朗日中值定理：存在 $ \\xi_1 \\in (x_1, x_2) $ 使得 $ f'(\\xi_1) = \\dfrac{f(x_2)-f(x_1)}{x_2 - x_1} $；存在 $ \\xi_2 \\in (x_2, x_3) $ 使得 $ f'(\\xi_2) = \\dfrac{f(x_3)-f(x_2)}{x_3 - x_2} $；又因为导函数 $ f'(x) $ 在 $ (a,b) $ 内严格单调增加，即 $ f'(\\xi_1) < f'(\\xi_2) $，故 $ \\dfrac{f(x_2)-f(x_1)}{x_2 - x_1} < \\dfrac{f(x_3)-f(x_2)}{x_3 - x_2} $，得证。充分性：对于 $ (a,b) $ 内任意的 $ x_1, x_2, x_3 $，当 $ x_1 < x_2 < x_3 $ 时，有$$\\frac{f(x_2)-f(x_1)}{x_2 - x_1} < \\frac{f(x_3)-f(x_2)}{x_3 - x_2}.$$取 $ h > 0 $，使得 $ x_1 - h, x_3 + h \\in (a,b) $由已知条件可知：有$$\\frac{f(x_1)-f(x_1-h)}{h} < \\frac{f(x_2)-f(x_1)}{x_2 - x_1} < \\frac{f(x_3)-f(x_2)}{x_3 - x_2} < \\frac{f(x_3+h)-f(x_3)}{h}$$成立令 $ h \\to 0^+ $，由保号性可知$$\\lim_{h \\to 0} \\frac{f(x_1)-f(x_1-h)}{h} \\le \\frac{f(x_2)-f(x_1)}{x_2 - x_1} < \\frac{f(x_3)-f(x_2)}{x_3 - x_2} \\le \\lim_{h \\to 0} \\frac{f(x_3+h)-f(x_3)}{h}$$可得：$$f'(x_1) \\le \\frac{f(x_2)-f(x_1)}{x_2 - x_1} < \\frac{f(x_3)-f(x_2)}{x_3 - x_2} \\le f'(x_3),$$也即 $ f'(x_1) < f'(x_3) $由于对任意的 $ x_1, x_3 \\in (a,b) $，当 $ x_1 < x_3 $ 时，有 $ f'(x_1) < f'(x_3) $，故 $ f'(x) $ 在 $ (a,b) $ 内严格单调增加."
+    "析】必要性：由拉格朗日中值定理：存在 \\(\\xi_1 \\in (x_1, x_2)\\) 使得 \\(f'(\\xi_1) = \\dfrac{f(x_2)-f(x_1)}{x_2 - x_1}\\)；存在 \\(\\xi_2 \\in (x_2, x_3)\\) 使得 \\(f'(\\xi_2) = \\dfrac{f(x_3)-f(x_2)}{x_3 - x_2}\\)；又因为导函数 \\(f'(x)\\) 在 \\((a,b)\\) 内严格单调增加，即 \\(f'(\\xi_1) < f'(\\xi_2)\\)，故 \\(\\dfrac{f(x_2)-f(x_1)}{x_2 - x_1} < \\dfrac{f(x_3)-f(x_2)}{x_3 - x_2}\\)，得证。充分性：对于 \\((a,b)\\) 内任意的 \\(x_1, x_2, x_3\\)，当 \\(x_1 < x_2 < x_3\\) 时，有\\[\\frac{f(x_2)-f(x_1)}{x_2 - x_1} < \\frac{f(x_3)-f(x_2)}{x_3 - x_2}.\\]取 \\(h > 0\\)，使得 \\(x_1 - h, x_3 + h \\in (a,b)\\)由已知条件可知：有\\[\\frac{f(x_1)-f(x_1-h)}{h} < \\frac{f(x_2)-f(x_1)}{x_2 - x_1} < \\frac{f(x_3)-f(x_2)}{x_3 - x_2} < \\frac{f(x_3+h)-f(x_3)}{h}\\]成立令 \\(h \\to 0^+\\)，由保号性可知\\[\\lim_{h \\to 0} \\frac{f(x_1)-f(x_1-h)}{h} \\le \\frac{f(x_2)-f(x_1)}{x_2 - x_1} < \\frac{f(x_3)-f(x_2)}{x_3 - x_2} \\le \\lim_{h \\to 0} \\frac{f(x_3+h)-f(x_3)}{h}\\]可得：\\[f'(x_1) \\le \\frac{f(x_2)-f(x_1)}{x_2 - x_1} < \\frac{f(x_3)-f(x_2)}{x_3 - x_2} \\le f'(x_3),\\]也即 \\(f'(x_1) < f'(x_3)\\)由于对任意的 \\(x_1, x_3 \\in (a,b)\\)，当 \\(x_1 < x_3\\) 时，有 \\(f'(x_1) < f'(x_3)\\)，故 \\(f'(x)\\) 在 \\((a,b)\\) 内严格单调增加."
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",
@@ -478,9 +478,9 @@
    "source": "2025 全国硕士研究生招生考试 数学二",
    "isReal": true,
    "text": "已知矩阵 \\(A=\\begin{pmatrix}4&1&-2\\\\1&1&1\\\\-2&1&a\\end{pmatrix}\\) 与 \\(B=\\begin{pmatrix}k&0&0\\\\0&6&0\\\\0&0&0\\end{pmatrix}\\) 合同。I. 求 \\(a\\) 的值及 \\(k\\) 的范围。II. 若存在正交矩阵 \\(Q\\)，使得 \\(Q^\\mathrm{T}AQ=B\\)，求 \\(k\\) 及 \\(Q\\)。",
-   "answer": "$ a = 4 $，$ k = 3 $",
+   "answer": "\\(a = 4\\)，\\(k = 3\\)",
    "steps": [
-    "析】（1）因为 $ A $ 与 $ B $ 合同，故 $ A $ 与 $ B $ 有相同的正负惯性指数，矩阵 $ B $ 有特征值 $ 0 $，故矩阵 $ A $ 也有特征值 $ 0 $，即 $ |0E - A| = 0 $$$|0E - A| = \\begin{vmatrix} -4 & -1 & 2 \\\\ -1 & -1 & -1 \\\\ 2 & -1 & -a \\end{vmatrix} = \\begin{vmatrix} -3 & -1 & 3 \\\\ 0 & -1 & 0 \\\\ 3 & -1 & 1-a \\end{vmatrix} = -\\begin{vmatrix} -3 & 3 \\\\ 3 & 1-a \\end{vmatrix} = 12 - 3a = 0$$$ a = 4 $．由特征行列式：$$|\\lambda E - A| = \\begin{vmatrix} \\lambda - 4 & -1 & 2 \\\\ -1 & \\lambda - 1 & -1 \\\\ 2 & -1 & \\lambda - 4 \\end{vmatrix} = \\begin{vmatrix} \\lambda - 6 & 0 & 0 \\\\ -1 & \\lambda - 1 & -2 \\\\ 2 & -1 & \\lambda - 2 \\end{vmatrix} = \\lambda(\\lambda - 3)(\\lambda - 6) = 0$$矩阵 $ A $ 的特征值为 $ \\lambda_1 = 3, \\lambda_2 = 6, \\lambda_3 = 0 $．$ p = 2, q = 0 $矩阵 $ B $ 的特征值为 $ \\lambda_1 = k, \\lambda_2 = 6, \\lambda_3 = 0 $，$ k > 0 $．（2）因为存在正交阵 $ Q $，使得 $ Q^T A Q = B $，故 $ A \\sim B $，$ k = 3 $．求矩阵 $ A $ 的特征向量：当 $ \\lambda_1 = 3 $ 时，对于 $ (3E - A)x = 0 $$$(3E - A) \\to \\begin{bmatrix} 1 & 1 & -2 \\\\ 0 & 1 & -1 \\\\ 0 & 0 & 0 \\end{bmatrix},\\quad \\text{有特征向量 } \\alpha_1 = (1,1,1)^T$$当 $ \\lambda_2 = 6 $ 时，对于 $ (6E - A)x = 0 $$$(6E - A) \\to \\begin{bmatrix} 1 & -5 & 1 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix},\\quad \\text{有特征向量 } \\alpha_2 = (1,0,-1)^T$$当 $ \\lambda_3 = 0 $ 时，对于 $ (0E - A)x = 0 $（注：原文在此处截止，未继续写出 $ \\lambda_3=0 $ 对应的特征向量及 $ Q $ 的构造过程，仅列出前两步。）因此, 严格按页面内容，该页解答到此结束，未给出 $ Q $ 的显式形式。综上，按要求："
+    "析】（1）因为 \\(A\\) 与 \\(B\\) 合同，故 \\(A\\) 与 \\(B\\) 有相同的正负惯性指数，矩阵 \\(B\\) 有特征值 \\(0\\)，故矩阵 \\(A\\) 也有特征值 \\(0\\)，即 \\(|0E - A| = 0 \\)\\[|0E - A| = \\begin{vmatrix} -4 & -1 & 2 \\\\ -1 & -1 & -1 \\\\ 2 & -1 & -a \\end{vmatrix} = \\begin{vmatrix} -3 & -1 & 3 \\\\ 0 & -1 & 0 \\\\ 3 & -1 & 1-a \\end{vmatrix} = -\\begin{vmatrix} -3 & 3 \\\\ 3 & 1-a \\end{vmatrix} = 12 - 3a = 0\\]\\(a = 4\\)．由特征行列式：\\[|\\lambda E - A| = \\begin{vmatrix} \\lambda - 4 & -1 & 2 \\\\ -1 & \\lambda - 1 & -1 \\\\ 2 & -1 & \\lambda - 4 \\end{vmatrix} = \\begin{vmatrix} \\lambda - 6 & 0 & 0 \\\\ -1 & \\lambda - 1 & -2 \\\\ 2 & -1 & \\lambda - 2 \\end{vmatrix} = \\lambda(\\lambda - 3)(\\lambda - 6) = 0\\]矩阵 \\(A\\) 的特征值为 \\(\\lambda_1 = 3, \\lambda_2 = 6, \\lambda_3 = 0\\)．\\(p = 2, q = 0\\)矩阵 \\(B\\) 的特征值为 \\(\\lambda_1 = k, \\lambda_2 = 6, \\lambda_3 = 0\\)，\\(k > 0\\)．（2）因为存在正交阵 \\(Q\\)，使得 \\(Q^T A Q = B\\)，故 \\(A \\sim B\\)，\\(k = 3\\)．求矩阵 \\(A\\) 的特征向量：当 \\(\\lambda_1 = 3\\) 时，对于 \\((3E - A)x = 0 \\)\\[(3E - A) \\to \\begin{bmatrix} 1 & 1 & -2 \\\\ 0 & 1 & -1 \\\\ 0 & 0 & 0 \\end{bmatrix},\\quad \\text{有特征向量 } \\alpha_1 = (1,1,1)^T\\]当 \\(\\lambda_2 = 6\\) 时，对于 \\((6E - A)x = 0 \\)\\[(6E - A) \\to \\begin{bmatrix} 1 & -5 & 1 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{bmatrix},\\quad \\text{有特征向量 } \\alpha_2 = (1,0,-1)^T\\]当 \\(\\lambda_3 = 0\\) 时，对于 \\((0E - A)x = 0\\)（注：原文在此处截止，未继续写出 \\(\\lambda_3=0\\) 对应的特征向量及 \\(Q\\) 的构造过程，仅列出前两步。）因此, 严格按页面内容，该页解答到此结束，未给出 \\(Q\\) 的显式形式。综上，按要求："
    ],
    "figures": [],
    "sourcePdf": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学二历年真题做题本/考研数学二真题09-25/2025考研数学二真题.pdf",

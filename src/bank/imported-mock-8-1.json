@@ -367,7 +367,7 @@
    "source": "2025 合工大超越 5+5（数一）（第1套）",
    "isReal": false,
    "isMock": true,
-   "text": "函数 \\(f(x)=\\begin{cases}\\dfrac{\\int_0^x\\sin t^2\\,\\mathrm dt}{x\\ln(\\cos x)}, & -1\\le x<0,\\\\[2mm] 0, & x=0,\\\\[1mm] \\dfrac{(1+x)^{\\frac1x}-e}{x}, & 0<x<1\\end{cases}\\) 的傅里叶级数 \\(\\frac{a_0}{2}+\\sum_{n=1}^{\\infty}(a_n\\cos n\\pi x+b_n\\sin n\\pi x)\\) 在 \\(x=0\\) 处收敛于 ______.",
+   "text": "函数 \\(f(x)=\\begin{cases}\\dfrac{\\int_0^x\\sin t^2\\,\\mathrm dt}{x\\ln(\\cos x)}, & -1\\le x<0,\\ 0, & x=0,\\ \\dfrac{(1+x)^{\\frac1x}-e}{x}, & 0<x<1\\end{cases}\\) 的傅里叶级数 \\(\\frac{a_0}{2}+\\sum_{n=1}^{\\infty}(a_n\\cos n\\pi x+b_n\\sin n\\pi x)\\) 在 \\(x=0\\) 处收敛于 ______.",
    "answer": "\\(-\\frac{4+3e}{12}\\)",
    "steps": [
     "\\(x=0\\) 是 \\(f\\) 的间断点（两侧极限不等），傅里叶级数在 \\(x=0\\) 处收敛于 \\(\\frac{f(0-0)+f(0+0)}{2}\\)。",
@@ -518,7 +518,7 @@
    "source": "2025 合工大超越 5+5（数一）（第1套）",
    "isReal": false,
    "isMock": true,
-   "text": "若函数 \\(f(x,y)=\\begin{cases}x\\arctan^2y, & x\\le\\dfrac1{\\sqrt{1+y^2}},\\\\[2mm] \\dfrac{x^2y}{\\sqrt{2x+1}}, & x>\\dfrac1{\\sqrt{1+y^2}},\\end{cases}\\) 区域 \\(D=\\{(x,y)\\mid0\\le x\\le1,\\ 0\\le y\\le1\\}\\)，计算二重积分 \\(\\iint_Df(x,y)\\mathrm d\\sigma\\).",
+   "text": "若函数 \\(f(x,y)=\\begin{cases}x\\arctan^2y, & x\\le\\dfrac1{\\sqrt{1+y^2}},\\ \\dfrac{x^2y}{\\sqrt{2x+1}}, & x>\\dfrac1{\\sqrt{1+y^2}},\\end{cases}\\) 区域 \\(D=\\{(x,y)\\mid0\\le x\\le1,\\ 0\\le y\\le1\\}\\)，计算二重积分 \\(\\iint_Df(x,y)\\mathrm d\\sigma\\).",
    "answer": "\\(\\frac{\\pi^3}{384}-\\frac{3\\sqrt3}{10}+\\frac{(4+\\sqrt2)\\sqrt{1+\\sqrt2}}{15}\\)",
    "steps": [
     "分界曲线为 \\(x=\\frac1{\\sqrt{1+y^2}}\\)（即 \\(y=\\frac{\\sqrt{1-x^2}}{x}\\)），它与 \\(x=\\frac1{\\sqrt2}\\) 交于 \\(y=1\\)，把 \\(D\\) 分成 \\(D_1,D_2\\) 两部分。",
