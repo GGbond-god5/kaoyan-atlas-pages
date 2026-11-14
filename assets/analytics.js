@@ -1,0 +1,192 @@
+/* 套卷分析：数据全部来自 /api/attempts（套卷/自测的作答与批改结果），在本页内聚合，不新增后端接口。
+ * 口径：得分率 = score/maxScore；满分=1，未满分<1，低分<0.5。只统计 status 为 graded 的题。 */
+(function () {
+  'use strict';
+  var SUBJECT_NAMES = { math: '数学一', math2: '数学二', mechanics: '807 材料力学', english: '英语一', english2: '英语二', politics: '政治' };
+  function subjectName(id, attempts) { if (SUBJECT_NAMES[id]) return SUBJECT_NAMES[id]; for (var i = 0; i < (attempts || []).length; i++) { var qs = attempts[i].questions || []; for (var j = 0; j < qs.length; j++) if (qs[j].subject === id && qs[j].subjectName) return qs[j].subjectName; } return id; }
+  var state = { subject: 'all', attempts: [] };
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var pct = function (x) { return Math.round(x * 100) + '%'; };
+
+  function rate(r) { return r && r.status === 'graded' && Number(r.maxScore) > 0 ? Number(r.score) / Number(r.maxScore) : null; }
+
+  function paperTitle(a) {
+    if (a.mode === 'diagnostic') return subjectName(a.subject, [a]) + ' · 能力自测';
+    var q0 = (a.questions || [])[0] || {};
+    return q0.chapterTitle || subjectName(a.subject, [a]) + ' · 套卷';
+  }
+
+  function paperStats(a) {
+    var qs = a.questions || [], graded = 0, score = 0, max = 0, wrong = [];
+    qs.forEach(function (q, i) {
+      var r = (a.results || {})[q.id], rt = rate(r);
+      if (rt === null) return;
+      graded++; score += Number(r.score); max += Number(r.maxScore);
+      if (rt < 1) wrong.push({ no: i + 1, id: q.id, kp: q.kp || '', kpName: q.kpName || '', chapter: q.chapter || '', chapterTitle: q.chapterTitle || '', kind: q.kind || '', rate: rt });
+    });
+    return { title: paperTitle(a), subject: a.subject, mode: a.mode, total: qs.length, graded: graded, score: score, max: max, rate: max > 0 ? score / max : null, wrong: wrong };
+  }
+
+  function aggregate(papers, keyOf, labelOf) {
+    var map = {};
+    papers.forEach(function (p) {
+      var a = p._attempt;
+      (a.questions || []).forEach(function (q) {
+        var rt = rate((a.results || {})[q.id]);
+        if (rt === null) return;
+        var k = keyOf(q, a);
+        if (!k) return;
+        var e = map[k] || (map[k] = { key: k, label: labelOf(q, a), subject: q.subject || a.subject, chapter: q.chapter || '', kp: q.kp || '', n: 0, full: 0, zero: 0, sum: 0 });
+        e.n++; e.sum += rt; if (rt >= 1) e.full++; if (rt <= 0) e.zero++;
+      });
+    });
+    return Object.values(map).map(function (e) { e.avg = e.sum / e.n; e.missRate = (e.n - e.full) / e.n; return e; });
+  }
+
+  function bankLink(e) {
+    var base = (window.ATLAS_CONFIG && window.ATLAS_CONFIG.bankBase) || 'bank.html';
+    if (!e.kp) return '';
+    return ' <a href="' + esc(base) + '?subject=' + encodeURIComponent(e.subject) + '&chapter=' + encodeURIComponent(e.chapter) + '&kp=' + encodeURIComponent(e.kp) + '">去题库练这个考点 ↗</a>';
+  }
+
+  function buildAdvice(papers, kps, kinds) {
+    var out = [];
+    var weak = kps.filter(function (e) { return e.n >= 2 && e.missRate >= 0.5; }).sort(function (x, y) { return y.missRate - x.missRate || y.n - x.n; });
+    weak.slice(0, 3).forEach(function (e) {
+      out.push('优先攻克「' + esc(e.label) + '」：' + e.n + ' 道题里 ' + (e.n - e.full) + ' 道没拿满分，未满分率 ' + pct(e.missRate) + '，平均得分率 ' + pct(e.avg) + '。' + bankLink(e));
+    });
+    /* 连续两套（含最近）都未满分的考点 */
+    if (papers.length >= 2) {
+      var recent = [papers[papers.length - 1], papers[papers.length - 2]];
+      var both = {};
+      recent[0].wrong.forEach(function (w) { if (w.kpName) both[w.kpName] = true; });
+      var again = recent[1].wrong.filter(function (w) { return w.kpName && both[w.kpName]; }).map(function (w) { return w.kpName; });
+      again = Array.from(new Set(again)).slice(0, 3);
+      if (again.length) out.push('反复错的考点（最近两套都丢分）：' + again.map(esc).join('、') + '。这类题先回看解析、隔 2–3 天再重做错题，比刷新题有效。');
+    }
+    var latest = papers[papers.length - 1];
+    if (latest && latest.wrong.length) {
+      var byChapter = {};
+      latest.wrong.forEach(function (w) { if (w.chapterTitle) byChapter[w.chapterTitle] = (byChapter[w.chapterTitle] || 0) + 1; });
+      var top = Object.entries(byChapter).sort(function (x, y) { return y[1] - x[1]; })[0];
+      if (top && top[1] >= 2) out.push('最近一套的错题集中在「' + esc(top[0]) + '」（' + top[1] + ' 道），先把这一章的错题逐道订正，再做下一套。');
+    }
+    var worstKind = kinds.filter(function (e) { return e.n >= 3; }).sort(function (x, y) { return x.avg - y.avg; })[0];
+    if (worstKind && worstKind.avg < 0.7) out.push('题型短板是「' + esc(worstKind.label) + '」：平均得分率只有 ' + pct(worstKind.avg) + '，建议用按知识点模式做该题型的专项练习。');
+    if (papers.length >= 3) {
+      var rs = papers.map(function (p) { return p.rate; }).filter(function (x) { return x !== null; });
+      var prevAvg = rs.slice(0, -1).reduce(function (s, x) { return s + x; }, 0) / (rs.length - 1);
+      var last = rs[rs.length - 1];
+      if (last < prevAvg - 0.05) out.push('最近一套得分率 ' + pct(last) + '，低于此前平均 ' + pct(prevAvg) + '，先复盘这套的错题号再继续刷新卷。');
+      else if (last > prevAvg + 0.05) out.push('最近一套得分率 ' + pct(last) + '，高于此前平均 ' + pct(prevAvg) + '，走势在往上走，保持当前节奏。');
+    }
+    if (!out.length) out.push('暂时没有突出的薄弱点：样本还少或得分比较稳。继续按套卷推进，错题号会同步累积到这里。');
+    return out;
+  }
+
+  function summaryText(papers, kps, kinds, adviceCount) {
+    var lines = ['这是我的套卷作答数据统计（' + papers.length + ' 套）：'];
+    papers.forEach(function (p, i) {
+      lines.push('第' + (i + 1) + '套 ' + p.title + '：得分率 ' + (p.rate === null ? '未批改完' : pct(p.rate)) + '，错题号 ' + (p.wrong.map(function (w) { return '第' + w.no + '题'; }).join('、') || '无'));
+    });
+    var weak = kps.filter(function (e) { return e.n >= 2; }).sort(function (x, y) { return y.missRate - x.missRate; }).slice(0, 5);
+    if (weak.length) lines.push('薄弱知识点：' + weak.map(function (e) { return e.label + '（' + e.n + '题，未满分率' + pct(e.missRate) + '）'; }).join('；'));
+    lines.push('请基于这些数据给我一份简短的提升建议：先指出最该优先处理的 1–2 个问题，再给接下来一周的具体练法。不要编造数据里没有的错题或分数。');
+    return lines.join('\n');
+  }
+
+  function render() {
+    var papers = state.attempts
+      .filter(function (a) { return state.subject === 'all' || a.subject === state.subject; })
+      .map(function (a) { var s = paperStats(a); s._attempt = a; return s; })
+      .filter(function (p) { return p.graded > 0; });
+    var has = papers.length > 0;
+    ['#overview', '#trendCard', '#kpCard', '#kindCard', '#papersCard', '#adviceCard'].forEach(function (s) { $(s).hidden = !has; });
+    $('#emptyCard').hidden = has;
+    if (!has) return;
+
+    var totQ = papers.reduce(function (s, p) { return s + p.graded; }, 0);
+    var totRate = papers.reduce(function (s, p) { return s + (p.rate || 0) * p.graded; }, 0) / Math.max(1, totQ);
+    var wrongCount = papers.reduce(function (s, p) { return s + p.wrong.length; }, 0);
+    $('#overview').innerHTML = [
+      ['已分析套卷', papers.length + ' 套'],
+      ['已批改题量', totQ + ' 题'],
+      ['整体得分率', pct(totRate)],
+      ['未满分题', wrongCount + ' 题'],
+      ['最近一套得分率', papers[papers.length - 1].rate === null ? '—' : pct(papers[papers.length - 1].rate)],
+    ].map(function (x) { return '<div class="stat"><b>' + esc(x[1]) + '</b><span>' + esc(x[0]) + '</span></div>'; }).join('');
+
+    $('#trend').innerHTML = papers.map(function (p) {
+      var h = Math.max(4, Math.round((p.rate || 0) * 100));
+      return '<div class="tbar"><em>' + pct(p.rate || 0) + '</em><i style="height:' + h + '%"></i><small title="' + esc(p.title) + '">' + esc(p.title) + '</small></div>';
+    }).join('');
+
+    var kps = aggregate(papers, function (q) { return q.kp || q.kpName ? (q.subject + '|' + (q.kp || q.kpName)) : ''; }, function (q) { return q.kpName || q.kp || '未标注考点'; })
+      .sort(function (x, y) { return y.missRate - x.missRate || y.n - x.n; });
+    $('#kpList').innerHTML = kps.slice(0, 12).map(function (e) {
+      return '<div class="row"><div class="rhead"><b>' + esc(e.label) + '</b><span>未满分率 ' + pct(e.missRate) + ' · 平均得分率 ' + pct(e.avg) + '</span></div>' +
+        '<div class="rmeta">' + e.n + ' 道已批改 · 满分 ' + e.full + ' 道 · 零分 ' + e.zero + ' 道' + bankLink(e) + '</div>' +
+        '<div class="bar"><i style="width:' + Math.round(e.avg * 100) + '%"></i></div></div>';
+    }).join('') || '<p class="sub">暂无数据。</p>';
+
+    var kinds = aggregate(papers, function (q) { return q.kind || ''; }, function (q) { return q.kind || '未标注题型'; })
+      .sort(function (x, y) { return x.avg - y.avg; });
+    $('#kindList').innerHTML = kinds.map(function (e) {
+      return '<div class="row"><div class="rhead"><b>' + esc(e.label) + '</b><span>平均得分率 ' + pct(e.avg) + '</span></div>' +
+        '<div class="rmeta">' + e.n + ' 道已批改</div><div class="bar good"><i style="width:' + Math.round(e.avg * 100) + '%"></i></div></div>';
+    }).join('') || '<p class="sub">暂无数据。</p>';
+
+    $('#paperList').innerHTML = papers.slice().reverse().map(function (p) {
+      var chips = p.wrong.length ? p.wrong.map(function (w) {
+        return '<span class="chip' + (w.rate > 0 ? ' part' : '') + '" title="' + esc(w.kpName || w.kind) + '">第' + w.no + '题' + (w.kpName ? ' · ' + esc(w.kpName) : '') + (w.rate > 0 ? '（部分分）' : '') + '</span>';
+      }).join('') : '<span class="chip" style="border-color:#BFD8C6;color:#3E7A4E;background:#EDF5EF">全部满分</span>';
+      return '<div class="paper"><h3>' + esc(p.title) + '</h3><div class="pmeta">' +
+        (p.mode === 'diagnostic' ? '能力自测 · ' : '套卷 · ') + '已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '（' + (p.rate === null ? '—' : pct(p.rate)) + '）</div>' +
+        '<div class="chips">' + chips + '</div></div>';
+    }).join('');
+
+    var advice = buildAdvice(papers, kps, kinds);
+    $('#adviceList').innerHTML = advice.map(function (t) { return '<div class="advice">' + t + '</div>'; }).join('');
+
+    var btn = $('#coachBtn');
+    btn.onclick = async function () {
+      btn.disabled = true; btn.textContent = '教练思考中…';
+      var box = $('#coachReply'); box.hidden = false; box.textContent = '';
+      try {
+        var data = await window.AtlasUser.json('/api/coach', 'POST', {
+          context: { source: 'paper-analytics', subject: state.subject },
+          messages: [{ role: 'user', content: summaryText(papers, kps, kinds, advice.length) }],
+        });
+        box.textContent = data.reply || '教练没有返回内容，请重试。';
+      } catch (err) {
+        box.textContent = '教练暂时不可用：' + err.message;
+      }
+      btn.disabled = false; btn.textContent = '让 AI 教练结合数据再总结一份';
+    };
+  }
+
+  function renderTabs(subjects) {
+    var box = $('#subjectTabs');
+    var mk = function (v, label) { return '<button role="tab" data-s="' + esc(v) + '" class="' + (state.subject === v ? 'on' : '') + '">' + esc(label) + '</button>'; };
+    box.innerHTML = mk('all', '全部科目') + subjects.map(function (s) { return mk(s, subjectName(s, state.attempts)); }).join('');
+    box.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () { state.subject = b.getAttribute('data-s'); renderTabs(subjects); render(); });
+    });
+  }
+
+  async function init() {
+    try {
+      await window.AtlasUser.ready;
+      var data = await window.AtlasUser.json('/api/attempts', 'GET');
+      state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'diagnostic') && Array.isArray(a.questions); });
+      var subjects = Array.from(new Set(state.attempts.map(function (a) { return a.subject; })));
+      renderTabs(subjects);
+      render();
+    } catch (err) {
+      $('#alert').textContent = '加载失败：' + err.message + '（请确认已登录）';
+      $('#emptyCard').hidden = false;
+    }
+  }
+  init();
+})();
