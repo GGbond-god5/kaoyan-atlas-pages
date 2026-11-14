@@ -91,12 +91,10 @@ export async function grade(env, p) {
   if (score !== null && (!Number.isFinite(score) || score < 0 || score > max)) throw new Error('AI 分数超出范围');
   let warning = canScore ? '' : '参考答案或满分尚待核查。';
   if (canScore && score === null) warning = 'AI 未给出具体分数，请重试。';
-  if (canScore && objective && expected && chosen && score !== null) {
+  if (canScore && objective && expected && chosen) {
     const expectedScore = expected === chosen ? max : 0;
-    if (score !== expectedScore) {
-      score = null;
-      warning = 'AI 评分与参考答案不一致，待复核。';
-    }
+    if (score !== null && score !== expectedScore) warning = 'AI 评分与参考答案不一致，已按参考答案记分。';
+    score = expectedScore;
   }
   return {score,maxScore:max,maxScoreAssumed:maxAssumed,level:str(out.level),comments:warning + str(out.comments),missing:str(out.missing),suggestions:str(out.suggestions),revised:str(out.revised),dimensions:out.dimensions && typeof out.dimensions === 'object' && !Array.isArray(out.dimensions) ? out.dimensions : {},status:score === null ? 'pending' : 'graded'};
 }
