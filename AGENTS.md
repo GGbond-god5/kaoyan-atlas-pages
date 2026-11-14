@@ -90,6 +90,8 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 个人笔记：D1 表 `user_notes(uid,id,chapter_id,title,type,markdown,...)`，
   `GET/POST /api/notes`、`GET/PUT/DELETE /api/notes/:id`；笔记库右上「新建笔记」，
   按账号隔离，和内置笔记合并显示，内置内容保持只读
+- 附件：`POST /api/notes/upload`（图片/PDF/MD/TXT，≤20MB）存 R2，键以 uid 开头；
+  `GET /api/notes/file/:file` 校验归属后读取；编辑器里可直接插入图片或附件链接
 
 ## 已知限制
 

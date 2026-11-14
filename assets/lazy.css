@@ -58,6 +58,11 @@ dialog.note-editor::backdrop { background: rgba(20, 18, 23, .45); backdrop-filte
   background: #fffdf8; color: inherit; font: 13px/1.6 var(--sans, sans-serif); padding: 8px 10px; outline: none; }
 .ne-body input:focus, .ne-body select:focus, .ne-body textarea:focus { border-color: var(--accent, #1F3A5F); }
 .ne-body textarea { min-height: 280px; resize: vertical; }
+.ne-insert { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ne-upload { flex-direction: row !important; align-items: center; font-size: 12px; color: var(--accent, #1F3A5F);
+  border: 1px solid currentColor; border-radius: 5px; padding: 4px 10px; cursor: pointer; }
+.ne-upload:hover { background: var(--accent, #1F3A5F); color: #F7F2E8; }
+.ne-upload-state { font-size: 11px; color: var(--ink-3, #6b6b6b); }
 .ne-tabs { display: flex; gap: 6px; }
 .ne-tabs button { font-size: 12px; padding: 4px 10px; border: 1px solid var(--rule, #d8cfc0); border-radius: 4px; color: var(--ink-2, #4a4750); }
 .ne-tabs button.on { background: var(--accent, #1F3A5F); color: #F7F2E8; border-color: var(--accent, #1F3A5F); }

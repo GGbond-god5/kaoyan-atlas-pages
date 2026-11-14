@@ -123,6 +123,8 @@
       return `${pre}\u0000M${stash.length - 1}\u0000`;
     });
     const inline = t => esc(t)
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, src) =>
+        /^(https?:|\/api\/notes\/file\/|assets\/)/.test(src) ? `<img class="lazy-img" src="${src}" alt="${esc(alt)}">` : "")
       .replace(/`([^`]+)`/g, "<code>$1</code>")
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>")
@@ -191,6 +193,11 @@
         <label>标题<input id="neTitle" maxlength="80" placeholder="例如：我的极限计算错题"></label>
         <div class="ne-tabs"><button type="button" data-pane="write" class="on">编辑</button><button type="button" data-pane="preview">预览</button></div>
         <textarea id="neBody" placeholder="支持 Markdown：## 标题、- 列表、**加粗**、$公式$、> 引用"></textarea>
+        <div class="ne-insert">
+          <label class="ne-upload">插入图片<input type="file" id="neImage" accept="image/png,image/jpeg,image/webp,image/gif" hidden></label>
+          <label class="ne-upload">导入文件<input type="file" id="neFile" accept=".md,.markdown,.txt,.pdf" hidden></label>
+          <span class="ne-upload-state" id="neUploadState"></span>
+        </div>
         <div id="nePreview" class="ne-preview" hidden></div>
         <p class="ne-error" id="neError"></p>
       </div>
@@ -211,6 +218,48 @@
       if (preview) { pane.innerHTML = mdToHtml(editorEl.querySelector("#neBody").value); renderMath(pane); }
     });
     editorEl.querySelector("form").addEventListener("submit", saveNote);
+    editorEl.querySelector("#neImage").onchange = event => {
+      const file = event.target.files[0];
+      event.target.value = "";
+      if (file) uploadNoteFile(file);
+    };
+    editorEl.querySelector("#neFile").onchange = async event => {
+      const file = event.target.files[0];
+      event.target.value = "";
+      if (!file) return;
+      if (/\.(md|markdown|txt)$/i.test(file.name)) {
+        const text = (await file.text()).slice(0, 50000);
+        insertText(text);
+        editorEl.querySelector("#neUploadState").textContent = "已导入文本";
+      } else {
+        uploadNoteFile(file);
+      }
+    };
+  }
+
+  function insertText(text) {
+    const area = editorEl.querySelector("#neBody");
+    const before = area.value.slice(0, area.selectionStart);
+    const prefix = before && !before.endsWith("\n") ? "\n" : "";
+    area.setRangeText(prefix + text + "\n", area.selectionStart, area.selectionEnd, "end");
+    area.focus();
+  }
+
+  async function uploadNoteFile(file) {
+    const state = editorEl.querySelector("#neUploadState");
+    state.textContent = "上传中…";
+    const form = new FormData();
+    form.append("file", file);
+    try {
+      const res = await fetch("/api/notes/upload", { method: "POST", body: form, credentials: "include" });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      const isImage = String(data.type || "").startsWith("image/");
+      insertText(isImage ? `![${data.name}](${data.url})` : `[${data.name}](${data.url})`);
+      state.textContent = isImage ? "图片已插入" : "文件链接已插入";
+    } catch (e) {
+      state.textContent = `上传失败：${e.message}`;
+    }
   }
 
   function openEditor(note, groupId) {

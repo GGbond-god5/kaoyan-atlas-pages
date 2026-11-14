@@ -274,6 +274,9 @@ AI 地址使用千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
 - 个人笔记：登录后点笔记库右上「新建笔记」，可新建/编辑/删除；存 D1 表 `user_notes`，
   按账号隔离，和内置笔记合并展示，内置 255 篇保持只读
 - 个人笔记接口：`GET/POST /api/notes`，`GET/PUT/DELETE /api/notes/:id`；单用户上限 300 篇
+- 笔记附件：编辑器「插入图片 / 导入文件」；`POST /api/notes/upload` 支持 PNG/JPEG/WebP/GIF/PDF/MD/TXT，
+  单文件 20MB，存 R2 且键以 uid 开头；`GET /api/notes/file/:file` 校验归属后读取
+- 导入 MD/TXT 会直接插入正文；图片插入 Markdown 图片语法，PDF 插入附件链接
 
 ## 十七、个人档案与个性化首页（2026-11-14）
 
