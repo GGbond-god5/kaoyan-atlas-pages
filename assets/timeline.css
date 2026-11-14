@@ -11,13 +11,13 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
 
-.ttop{position:sticky;top:0;z-index:20;height:64px;display:flex;align-items:center;gap:16px;padding:0 22px;
+.ttop{position:sticky;top:0;z-index:20;height:60px;display:flex;align-items:center;gap:16px;padding:0 22px;
   background:rgba(245,240,230,.93);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule)}
 .tback{font-size:11.5px;color:var(--ink3);white-space:nowrap}
 .tback:hover{color:var(--ink)}
 .tbrand{display:flex;align-items:center;gap:10px;flex:none}
-.tmark{width:32px;height:32px;display:grid;place-items:center;background:var(--ink);color:#F7F2E8;
-  border-radius:3px;font-family:var(--serif);font-size:18px;font-weight:700}
+.tmark{width:30px;height:30px;display:grid;place-items:center;background:var(--ink);color:#F7F2E8;
+  border-radius:3px;font-family:var(--serif);font-size:17px;font-weight:700}
 .tbrand b{display:block;font-family:var(--serif);font-size:15px;line-height:1.2}
 .tbrand small{display:block;font-size:7.5px;letter-spacing:.2em;color:var(--ink3)}
 .teras{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto}
