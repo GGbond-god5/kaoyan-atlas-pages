@@ -373,6 +373,7 @@
   let drag = null;
   stage.addEventListener("pointerdown", e => {
     if (e.target.closest(".node") || e.target.closest(".stage-bottom") || e.target.closest(".zoom")) return;
+    if (e.target.closest("a, button, input, select, textarea")) return;
     drag = { x: e.clientX, y: e.clientY, ox: state.x, oy: state.y };
     stage.classList.add("dragging");
     stage.setPointerCapture(e.pointerId);
