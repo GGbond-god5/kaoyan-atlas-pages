@@ -8,7 +8,7 @@ const PUBLIC = [
   /^\/api\/auth\/(login|register|logout|me)$/,
   /^\/api\/sms\/send$/,
   /^\/api\/health$/,
-  /^\/assets\/(auth\.(js|css)|config\.js)$/,
+  /^\/assets\/(auth\.(js|css)|config\.js|transitions\.css)$/,
   /^\/assets\/remotion\//,
   /^\/favicon\.ico$/,
 ];
