@@ -7,9 +7,10 @@ binding = "DB"
 database_name = "kaoyan-atlas-accounts"
 database_id = "0e82bbde-a58e-40c5-a0e3-ebb6d67d1b4f"
 
-[[r2_buckets]]
-binding = "LIBRARY_FILES"
-bucket_name = "kaoyan-atlas-library"
+# 桶确认存在后再启用；否则 Pages 构建会在部署阶段失败。
+# [[r2_buckets]]
+# binding = "LIBRARY_FILES"
+# bucket_name = "kaoyan-atlas-library"
 
 [vars]
 AI_BASE_URL = "https://maas.qianwenaiapi.com/compatible-mode/v1"
