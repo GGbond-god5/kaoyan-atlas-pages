@@ -56,6 +56,15 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 视觉改动附截图；接口改动附请求结果
 - 两台电脑不要同时发布同一文件；先 pull，再改，再 push
 
+## 个人档案与个性化首页
+
+- 后端：`functions/api/profile/index.js`（GET/PUT），D1 表 `user_profiles(uid, data, updated_at)`
+- 字段：`school`、`majorCode`、`majorName`、`examDate`、`subjects`（math/english/mechanics/politics）、
+  `variants`（math1/2/3、english1/2）、`customSubjects[]`（name/code/fullScore）、`dailyMinutes`、`chronotype`
+- 首页 `assets/profile-boot.js` 先读档案再加载 `atlas.js`，按科目过滤导图、替换数学/英语名称、更新院校与倒计时
+- 不考数学就取消数学；专业课可取消内置 807，或添加任意自定义专业课（显示为占位章节，引导去资料库）
+- 新用户默认档案会在首次进入时弹出一次建档提示；不要把院校/专业写死在页面里
+
 ## 分值规则
 
 - 题目自带 `maxScore` 时一律以卷面分为准。
