@@ -195,21 +195,22 @@ npx wrangler pages dev . --d1=DB --r2=LIBRARY_FILES \
 ## 八、部署
 
 1. 提交并推送 `master` → Cloudflare Pages 自动执行 `node scripts/build-pages.mjs` 并发布 `dist/`
-2. 生产环境变量只在 Cloudflare 控制台维护：`SESSION_SECRET`、`ALIYUN_ACCESS_KEY_ID`、`ALIYUN_ACCESS_KEY_SECRET`、`ALIYUN_SMS_SIGN_NAME`、`ALIYUN_SMS_LOGIN_TEMPLATE_CODE`；AI 相关 `AI_BASE_URL`/`AI_API_KEY`/`AI_MODEL`（默认文本通道）与 `AI_VISION_BASE_URL`/`AI_VISION_API_KEY`/`AI_VISION_MODEL`（带图调用覆盖）；可选 `SMTP_USER`/`SMTP_PASS`（意见反馈直发）、`RESEND_API_KEY`、`FEEDBACK_TO`
+2. 生产环境变量只在 Cloudflare 控制台维护：`SESSION_SECRET`、`ALIYUN_ACCESS_KEY_ID`、`ALIYUN_ACCESS_KEY_SECRET`、`ALIYUN_SMS_SIGN_NAME`、`ALIYUN_SMS_LOGIN_TEMPLATE_CODE`；AI 用 `AI_BASE_URL`/`AI_API_KEY`/`AI_MODEL`（需支持识图）；可选 `SMTP_USER`/`SMTP_PASS`（意见反馈直发）、`RESEND_API_KEY`、`FEEDBACK_TO`
 3. **不要**用 `wrangler pages deploy` 直传，也不要改控制台里的项目设置
 
 上线前至少确认：未登录访问 `/` 跳登录、受保护资源 401、`/api/health` 各项为 true、套卷交卷能跑完自动评分、笔记与档案正常。
 
-### AI 双通道
+### AI 接入
 
-所有 AI 调用都走 `functions/_lib/platform.js` 的 `ai()`，它按消息里有没有 `image_url` 自动分流：
+所有 AI 调用都走 `functions/_lib/platform.js` 的 `ai()`，共用一个 OpenAI 兼容的 `/chat/completions` 端点：文字（教练问答、作文评分）和图片（拍照批改、PDF 按页抽题）不分开，因此所选模型必须**同时支持识图和 JSON 输出**。
 
-| 通道 | 触发条件 | 环境变量 | 典型用途 |
-| --- | --- | --- | --- |
-| 文本 | 纯文字消息 | `AI_BASE_URL` / `AI_API_KEY` / `AI_MODEL` | 教练问答、作文评分 |
-| 视觉 | 含图片的 `image_url` 片段 | `AI_VISION_*`，未配置时回落到文本通道 | 拍照批改、PDF 按页抽题 |
+| 环境变量 | 说明 |
+| --- | --- |
+| `AI_BASE_URL` | 接口地址，默认 `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| `AI_API_KEY` | 密钥（旧部署的 `DASHSCOPE_API_KEY` 仍然兼容） |
+| `AI_MODEL` | 模型名，默认 `qwen3-vl-plus` |
 
-两个通道都要求 OpenAI 兼容的 `/chat/completions` 接口。`AI_MODEL` 默认 `qwen3-vl-plus`；接自建免费网关时把它设成对方暴露的模型名（例如 `deepseek-default`），视觉通道保持千问即可。规则有测试：`node tests/ai-routing.mjs`。
+换服务只改这三个变量，不用动代码。`/api/health` 的 `bindings.AI` 可以确认是否配置成功。
 
 ### 意见反馈发信
 

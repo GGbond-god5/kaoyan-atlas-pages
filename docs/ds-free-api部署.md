@@ -1,7 +1,9 @@
 # ds-free-api 部署到 ECS 并接入本站
 
-用途：把 DeepSeek 网页端反代成 OpenAI 兼容接口，作为本站的**文本 AI 通道**（教练问答、作文评分）。
-拍照批改、PDF 按页抽题依赖识图，仍走千问，**不要**把视觉通道切到这里（DeepSeek 网页端 2026-09 已下线 `vision`）。
+用途：把 DeepSeek 网页端反代成 OpenAI 兼容接口，用来试验免费的文字问答。
+
+> **先看这条**：本站 AI 是单通道——文字与图片共用同一个模型。ds-free-api 只提供文本模型，
+> 接入后拍照批改、PDF 按页抽题会失效。它适合本地试验，不适合作为生产配置。
 
 - 上游项目：<https://github.com/NIYueeE/ds-free-api>（Rust，单二进制 / Docker）
 - 本站接入点：`functions/_lib/platform.js` 的 `ai()`，按有无 `image_url` 分流
@@ -114,7 +116,11 @@ Cloudflare → Workers & Pages → `kaoyan-atlas-pages` → Settings → Environ
 | `AI_MODEL` | `deepseek-default` |
 | `AI_API_KEY` | 管理面板生成的 `sk-...` |
 
-保存后触发一次部署（Deployments → Retry，或 push 一个提交）。视觉那三个 `AI_VISION_*` **不要动**，保持走千问。
+保存后触发一次部署（Deployments → Retry，或 push 一个提交）。
+
+> **注意**：本站目前是单通道，文字和图片共用一个模型。ds-free-api 只提供文本模型（上游已下线识图），
+> 切过去之后**拍照批改与 PDF 抽题会失效**。除非你另外准备好同时支持识图的接口，否则不要把生产切到这里，
+> 只适合在本地试验文字问答。
 
 ---
 

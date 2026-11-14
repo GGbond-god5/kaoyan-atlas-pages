@@ -118,10 +118,9 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 站点要求登录，未登录只能访问 `/login`、`/register` 及其必要资源
 - **R2 已开通**：`wrangler.toml` 绑定 `LIBRARY_FILES` → `kaoyan-atlas-library`；
   资料上传、下载与 AI 抽题可用。改绑定前先确认桶存在，否则 Pages 部署会失败。
-- **AI 分两条通道**，都在 `functions/_lib/platform.js` 的 `ai()` 里按有无 `image_url` 自动分流：
-  文本用 `AI_BASE_URL`/`AI_API_KEY`/`AI_MODEL`，带图调用用 `AI_VISION_*`（未配置则回落文本通道）。
-  视觉必须保留能识图的服务（拍照批改、PDF 抽题），文本可以指向自建 OpenAI 兼容网关；
-  改路由规则请同步 `tests/ai-routing.mjs`
-- 默认视觉端点仍是千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
+- **AI 走单一通道**：`functions/_lib/platform.js` 的 `ai()` 用 `AI_BASE_URL`/`AI_API_KEY`/`AI_MODEL`
+  调 OpenAI 兼容的 `/chat/completions`，文字与图片（拍照批改、PDF 抽题）共用同一模型，
+  所以换服务时必须选**同时支持识图**的模型；换服务只改这三个环境变量，不要改代码
+- 默认端点仍是千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
   （`platform.qianwenai.com` 的 OpenAI 兼容接口，Key 沿用 `DASHSCOPE_API_KEY`）；不要接来历不明的中转
 - `platform_*` 系列 D1 表由接口在首次调用时自动创建，不需要手工迁移
