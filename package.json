@@ -1,1 +1,18 @@
-{"description":"考研科目大观 · KAOYAN ATLAS — Cloudflare Pages 全栈站点（静态页面 + Functions + D1/R2 + AI）","engines":{"node":">=18"},"name":"kaoyan-atlas-pages","private":true,"scripts":{"build":"node scripts/build-pages.mjs","build:questions":"py -3 src/build/build_questions.py","check":"node scripts/check.mjs","dev":"npx wrangler pages dev .","release":"node scripts/check.mjs && node scripts/build-pages.mjs"},"type":"module","version":"1.1.0"}
+{
+  "description": "考研科目大观 · KAOYAN ATLAS — Cloudflare Pages 全栈站点（静态页面 + Functions + D1/R2 + AI）",
+  "engines": {
+    "node": ">=18"
+  },
+  "name": "kaoyan-atlas-pages",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-pages.mjs",
+    "build:questions": "py -3 src/build/build_questions.py",
+    "check": "node scripts/check.mjs",
+    "dev": "npx wrangler pages dev .",
+    "release": "node scripts/check.mjs && node scripts/katex-audit.mjs && node scripts/build-pages.mjs",
+    "check:katex": "node scripts/katex-audit.mjs"
+  },
+  "type": "module",
+  "version": "1.1.0"
+}
