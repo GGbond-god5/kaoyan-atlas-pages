@@ -1,0 +1,23 @@
+name: validate
+
+# 每次推送与 PR 都跑全仓自检 + Pages 构建演练，问题在合并前拦下。
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 全仓自检（语法 / 题库 JSON / 页面登记）
+        run: node scripts/check.mjs
+      - name: Pages 构建演练（生成 dist 并校验页面齐全）
+        run: node scripts/build-pages.mjs
