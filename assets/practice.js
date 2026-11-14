@@ -653,7 +653,9 @@
     const total = session.gradeTotal || 0, done = Math.min(session.gradeDone || 0, total);
     const running = (session.gradeQueue && session.gradeQueue.length) || session.grading;
     const sum = $("#rsummary");
-    if (sum) sum.textContent = `已评分 ${completed} / ${session.queue.length} 题 · 已核分值范围 ${score} / ${max} 分 · ${missingMax} 题满分待核`;
+    const results = session.attempt && session.attempt.results || {};
+    const assumedCount = session.queue.filter(q => { const r = results[q.id]; return r && r.maxScoreAssumed; }).length;
+    if (sum) sum.textContent = `已评分 ${completed} / ${session.queue.length} 题 · 已核分值范围 ${score} / ${max} 分 · ${missingMax} 题满分待核${assumedCount ? ` · ${assumedCount} 题按试卷结构估算满分` : ""}`;
     const box = $("#rprogress");
     if (box) {
       box.hidden = !total;
@@ -804,9 +806,9 @@
       const r = await fetch(AI_ENDPOINT, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          subject: q.subjectName, kp: q.kpName, kind: q.kind,
+          subject: q.subject, subjectName: q.subjectName, kp: q.kpName, kind: q.kind,
           question: (q.passage ? q.passage + "\n\n" : "") + q.text,
-          answer: q.answer, steps: q.steps, maxScore: q.maxScore,
+          answer: q.answer, steps: q.steps, maxScore: q.maxScore, difficulty: q.difficulty,
           selected: picks,
           work, image: photo || "",
         }),
@@ -814,7 +816,7 @@
       const data = await r.json();
       if (!r.ok || data.error) throw new Error(data.error || `HTTP ${r.status}`);
       const score = data.score != null ? `<span class="score">${data.score}${data.maxScore ? " / " + data.maxScore : ""}</span>` : "";
-      const assumed = data.maxScoreAssumed ? ` <span class="ai-note">（按默认满分 ${data.maxScore} 分估算）</span>` : "";
+      const assumed = data.maxScoreAssumed ? ` <span class="ai-note">（按试卷结构估算满分 ${data.maxScore} 分）</span>` : "";
       const lvl = data.level ? `<b>${esc(data.level)}</b> · ` : "";
       let html = score + assumed + lvl + esc(data.comments || "评核完成");
       if (data.missing) html += `<div class="ai-sec"><b>缺失/错误</b><br>${esc(data.missing).replace(/\n/g, "<br>")}</div>`;
