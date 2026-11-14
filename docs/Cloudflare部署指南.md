@@ -262,5 +262,16 @@ AI 地址使用千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
    模型漏给时会自动重试一次。
 5. 结果页会标注「N 题按试卷结构估算满分」，便于区分卷面分与系统排分。
 
+## 十六、Lazy 笔记库（2026-11-14）
+
+- 来源：`lazy-src/数一`、`lazy-src/英一` 的 Obsidian 笔记（252 篇，含 LaTeX、双链、callout、图片）
+- 转换脚本 `scripts/build-lazy-notes.mjs` 生成：
+  - `assets/lazy-index.js`：章节分组与笔记标题索引
+  - `assets/lazy/<章节>.json`：按需加载的笔记正文
+  - `assets/lazy-figs/`：笔记引用的图片
+- 首页章节节点上的「笔记 N」徽标打开对应章节笔记；顶栏「笔记库」打开全库，支持标题搜索和双链跳转
+- 笔记正文用 KaTeX 渲染，图片随笔记按需加载；转换在 Pages 构建时自动执行
+
+
 
 

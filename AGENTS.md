@@ -64,6 +64,13 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 套卷会按官方总分配平：数学 150、807 150、英语/政治 100。
 - 改分值规则只改 `scoring.js`，并用整卷样本验证总分，不要在各接口里另写一套默认分。
 
+## 笔记库（Lazy-Kaoyan-Library）
+
+- 源文件在 `lazy-src/数一`、`lazy-src/英一`（Obsidian Markdown，含 LaTeX、双链、callout）
+- 转换：`node scripts/build-lazy-notes.mjs`，生成 `assets/lazy-index.js`、`assets/lazy/<章节>.json`、`assets/lazy-figs/`
+- 首页每个章节上的「笔记 N」徽标、顶栏「笔记库」入口都会打开笔记阅读器
+- 新增或修改笔记后重跑脚本，把源文件和生成物一起提交；Pages 构建会自动重跑转换
+
 ## 已知限制
 
 - 单文件不超过 25 MiB，部署文件数不超过 20,000（当前约 2,100）
