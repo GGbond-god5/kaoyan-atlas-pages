@@ -262,3 +262,4 @@ npx wrangler pages dev . --d1=DB --r2=LIBRARY_FILES \
 | `docs/真题入库指南.md` | 真题录入规范 |
 | `docs/开发交接-2026-11-14.md` | 某次交接时的完整状态快照 |
 | `docs/audit/` | 题库核校记录 |
+| `docs/ds-free-api部署.md` | 把免费文本 AI 网关接到本站的完整步骤 |
