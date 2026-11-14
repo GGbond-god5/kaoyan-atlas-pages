@@ -13,15 +13,14 @@
    "source": "华工 801 2015（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "1．换轮胎时，司机在十字扳手的两端施加了力 \\(P=100\\,\\mathrm{N}\\)，如图所示。已知钢制扳手的切变模量 \\(G=78\\,\\mathrm{GPa}\\)，扳手各单臂长均为 \\(225\\,\\mathrm{mm}\\)，由直径为 \\(d=16\\,\\mathrm{mm}\\) 的圆杆制成。试求扳手两端的相对转角。",
-   "answer": "水平段最大切应力 \\(1.18\\,\\mathrm{MPa}\\)（弯曲剪切）；竖直段最大切应力 \\(132.6\\,\\mathrm{MPa}\\)（扭转），故臂内最大切应力为 \\(132.6\\,\\mathrm{MPa}\\)；扭转角 \\(\\varphi=3.66^\\circ\\)。",
+   "answer": "扳手两端的相对转角 \\(\\varphi\\approx1.16^\\circ\\)。（竖直受扭段的最大扭转切应力为 \\(\\tau\\approx56.0\\,\\mathrm{MPa}\\)。）",
    "steps": [
-    "水平段（受弯剪）：最大切应力按矩形/圆形截面的弯曲切应力公式 \\(\\tau=\\dfrac{4}{3}\\cdot\\dfrac{F_s}{A}\\)。",
-    "代入：\\(\\tau=\\dfrac{4}{3}\\cdot\\dfrac{100}{\\dfrac{\\pi}{4}\\times(12\\times10^{-3})^2}=1.18\\,\\mathrm{MPa}\\)——水平段的剪应力很小。",
-    "竖直段（受扭）：\\(\\tau=\\dfrac{T}{W_t}=\\dfrac{100\\times0.45}{\\dfrac{\\pi}{16}\\times(12\\times10^{-3})^3}=132.6\\,\\mathrm{MPa}\\)。",
-    "扭矩来源：两端各施力 \\(100\\,\\mathrm{N}\\)、力臂合计 \\(0.45\\,\\mathrm{m}\\)，故 \\(T=100\\times0.45=45\\,\\mathrm{N\\cdot m}\\)。",
-    "取两者较大者：扳手臂内的最大切应力为 \\(132.6\\,\\mathrm{MPa}\\)（扭转控制，远大于弯曲剪切）。",
-    "扭转角：\\(\\varphi=\\dfrac{Tl}{GI_p}\\times\\dfrac{180^\\circ}{\\pi}=\\dfrac{100\\times0.45\\times0.225}{78\\times10^9\\times\\dfrac{\\pi}{32}\\times(12\\times10^{-3})^4}\\times\\dfrac{180^\\circ}{\\pi}=3.66^\\circ\\)。",
-    "结论：最大切应力 \\(132.6\\,\\mathrm{MPa}\\)、扭转角 \\(3.66^\\circ\\)。要点：弯曲剪切（\\(4/3\\cdot F_S/A\\)）与扭转剪应力（\\(T/W_t\\)）量级相差两个数量级，扭转控制；直径须用题给的 \\(12\\,\\mathrm{mm}\\)。"
+    "考点：圆轴扭转的切应力与扭转角公式、扭矩的确定。",
+    "确定扭矩：扳手两端各作用 \\(P=100\\,\\mathrm{N}\\)，两力作用线间距为 \\(2\\times225\\,\\mathrm{mm}=0.45\\,\\mathrm{m}\\)，故竖直受扭段的扭矩为 \\(T=P\\times0.45=100\\times0.45=45\\,\\mathrm{N\\cdot m}\\)。",
+    "截面几何量（务必用题给直径 \\(d=16\\,\\mathrm{mm}\\)）：抗扭截面系数 \\(W_t=\\dfrac{\\pi d^3}{16}=\\dfrac{\\pi\\times16^3}{16}\\approx804\\,\\mathrm{mm^3}=8.04\\times10^{-7}\\,\\mathrm{m^3}\\)；极惯性矩 \\(I_p=\\dfrac{\\pi d^4}{32}=\\dfrac{\\pi\\times16^4}{32}\\approx6434\\,\\mathrm{mm^4}=6.43\\times10^{-9}\\,\\mathrm{m^4}\\)。",
+    "作为参考，竖直段最大扭转切应力为 \\(\\tau=\\dfrac{T}{W_t}=\\dfrac{45}{8.04\\times10^{-7}}\\approx5.60\\times10^{7}\\,\\mathrm{Pa}=56.0\\,\\mathrm{MPa}\\)。（旧解析误用 \\(d=12\\,\\mathrm{mm}\\)，得到 132.6 MPa 与 3.66°，均与题面数据不符。）",
+    "相对转角：受扭段长 \\(l=225\\,\\mathrm{mm}=0.225\\,\\mathrm{m}\\)，两端相对转角 \\(\\varphi=\\dfrac{Tl}{GI_p}=\\dfrac{45\\times0.225}{78\\times10^9\\times6.43\\times10^{-9}}\\approx2.02\\times10^{-2}\\,\\mathrm{rad}\\)。",
+    "结论：\\(\\varphi\\approx2.02\\times10^{-2}\\,\\mathrm{rad}\\approx1.16^\\circ\\)。"
    ],
    "figures": [
     "q807-2015-01.png"
@@ -180,16 +179,14 @@
    "source": "华工 801 2015（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "6．某水轮机主轴的示意图如图所示。已知水轮机组的输出功率 \\(P=37500\\,\\mathrm{kW}\\)，转速 \\(n=150\\,\\mathrm{r/min}\\)。轴向推力 \\(F_x=4800\\,\\mathrm{kN}\\)，转轮重 \\(G=1400\\,\\mathrm{kN}\\)，主轴外径 \\(D=1000\\,\\mathrm{mm}\\)、内径 \\(d=700\\,\\mathrm{mm}\\)，材料许用应力 \\([\\sigma]=80\\,\\mathrm{MPa}\\)。试按第四强度理论校核主轴的强度。",
-   "answer": "扭矩 \\(T=\\dfrac{P}{2\\pi n}=\\dfrac{37.5\\times10^6}{2\\pi\\times2.5}=2.387\\times10^6\\,\\mathrm{N\\cdot m}\\)。轴向压力 \\(N=F_x+G=6200\\,\\mathrm{kN}\\)。空心圆截面：\\(A=4.007\\times10^5\\,\\mathrm{mm^2}\\)、\\(W=\\dfrac{\\pi(D^4-d^4)}{32D}=2.42\\times10^8\\,\\mathrm{mm^3}\\)、\\(W_p=2W\\)。轴力应力 \\(\\sigma_N=\\dfrac{N}{A}=15.5\\,\\mathrm{MPa}\\)，扭转 \\(\\tau=\\dfrac{T}{W_p}=4.93\\,\\mathrm{MPa}\\)，\\(\\sigma_{r4}=\\sqrt{\\sigma_N^2+3\\tau^2}\\approx17.8\\,\\mathrm{MPa}\\ll80\\,\\mathrm{MPa}\\)，满足。",
+   "answer": "\\(T=2.387\\times10^6\\,\\mathrm{N\\cdot m}\\)，\\(\\sigma_N=15.5\\,\\mathrm{MPa}\\)，\\(\\tau=16.0\\,\\mathrm{MPa}\\)，\\(\\sigma_{r4}=31.7\\,\\mathrm{MPa}<[\\sigma]=80\\,\\mathrm{MPa}\\)，强度满足。",
    "steps": [
-    "扭矩：\\(n=150\\,\\mathrm{r/min}=2.5\\,\\mathrm{r/s}\\)，\\(T=\\dfrac{P}{2\\pi n}=\\dfrac{37.5\\times10^6}{2\\pi\\times2.5}=2.387\\times10^6\\,\\mathrm{N\\cdot m}\\)。",
-    "轴向压力：\\(N=F_x+G=4800+1400=6200\\,\\mathrm{kN}=6.2\\times10^6\\,\\mathrm{N}\\)。",
-    "空心圆截面：\\(A=\\dfrac{\\pi(D^2-d^2)}{4}=0.4006\\,\\mathrm{m^2}\\)；抗扭模量 \\(W_p=\\dfrac{\\pi(D^4-d^4)}{16D}=0.1492\\,\\mathrm{m^3}\\)。",
-    "轴力应力：\\(\\sigma_N=\\dfrac{N}{A}=\\dfrac{6.2\\times10^6}{0.4006}=15.5\\,\\mathrm{MPa}\\)（压）。",
-    "扭转切应力：\\(\\tau=\\dfrac{T}{W_p}=\\dfrac{2.387\\times10^6}{0.1492}=16.0\\,\\mathrm{MPa}\\)。",
-    "第四强度理论（压扭组合）：\\(\\sigma_{r4}=\\sqrt{\\sigma_N^2+3\\tau^2}=\\sqrt{15.5^2+3\\times16.0^2}=\\sqrt{1008}=31.7\\,\\mathrm{MPa}\\)。",
-    "校核：\\(\\sigma_{r4}=31.7\\,\\mathrm{MPa}<[\\sigma]=80\\,\\mathrm{MPa}\\)，强度满足（安全裕度约 2.5 倍）。",
-    "要点：水轮机主轴是“轴向压力＋扭矩”的组合（无横向力，故无弯曲）；第四强度理论公式 \\(\\sqrt{\\sigma^2+3\\tau^2}\\) 中 \\(\\sigma\\) 为均匀的轴力应力。"
+    "考点：轴向压缩与扭转的组合变形；第四强度理论校核。",
+    "扭矩：\\(T=9550\\dfrac{P}{n}=9550\\times\\dfrac{37500}{150}=2.387\\times10^6\\,\\mathrm{N\\cdot m}\\)（亦即 \\(T=\\dfrac{P}{2\\pi n}\\)，\\(n=150\\,\\mathrm{r/min}=2.5\\,\\mathrm{r/s}\\)）。",
+    "轴力与轴向应力：轴向压力 \\(N=F_x+G=4800+1400=6200\\,\\mathrm{kN}=6.2\\times10^6\\,\\mathrm{N}\\)；截面面积 \\(A=\\dfrac{\\pi(D^2-d^2)}{4}=\\dfrac{\\pi(1000^2-700^2)}{4}=4.007\\times10^5\\,\\mathrm{mm^2}\\)；\\(\\sigma_N=\\dfrac{N}{A}=\\dfrac{6.2\\times10^6}{4.007\\times10^5}=15.5\\,\\mathrm{MPa}\\)（压）。",
+    "扭转切应力：抗扭模量 \\(W_p=\\dfrac{\\pi(D^4-d^4)}{16D}=\\dfrac{\\pi(1000^4-700^4)}{16\\times1000}=1.492\\times10^8\\,\\mathrm{mm^3}=0.1492\\,\\mathrm{m^3}\\)；\\(\\tau=\\dfrac{T}{W_p}=\\dfrac{2.387\\times10^6}{0.1492}=16.0\\,\\mathrm{MPa}\\)。（原答案栏误得 \\(\\tau=4.93\\,\\mathrm{MPa}\\)，系抗扭模量用错所致。）",
+    "主轴表面为二向应力状态（\\(\\sigma=-15.5\\,\\mathrm{MPa}\\)，\\(\\tau=16.0\\,\\mathrm{MPa}\\)，无弯曲），第四强度理论：\\(\\sigma_{r4}=\\sqrt{\\sigma_N^2+3\\tau^2}=\\sqrt{15.5^2+3\\times16.0^2}=\\sqrt{1008}\\approx31.7\\,\\mathrm{MPa}\\)。",
+    "校核：\\(\\sigma_{r4}=31.7\\,\\mathrm{MPa}<[\\sigma]=80\\,\\mathrm{MPa}\\)，强度满足，安全裕度约 2.5 倍。"
    ],
    "figures": [
     "q807-2015-06.png"

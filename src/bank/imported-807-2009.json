@@ -223,17 +223,14 @@
    "source": "华工 801 2009（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "七．用电阻应变仪测得图示受扭圆轴表面上一点的任意两个相互成 \\(45^\\circ\\) 方向的应变值为 \\(\\varepsilon'=3.75\\times10^{-4}\\)、\\(\\varepsilon''=5\\times10^{-4}\\)。已知 \\(E=2\\times10^5\\,\\mathrm{MPa}\\)、\\(\nu=0.25\\)、\\(D=10\\,\\mathrm{cm}\\)。试求扭转外力偶矩 \\(M_e\\)。（20 分）",
-   "answer": "纯剪切下 \\(45^\\circ\\) 与 \\(135^\\circ\\) 方向恰为主方向，\\(\\varepsilon=\\pm\\dfrac{\\tau}{E}(1+\nu)=\\pm\\dfrac{\\tau}{2G}\\)。由 \\(\\varepsilon'-\\varepsilon''\\) 解出 \\(\\tau=70\\,\\mathrm{MPa}\\)，再由 \\(\\tau=\\dfrac{M_e}{W_p}\\) 得 \\(M_e=\\tau\\dfrac{\\pi D^3}{16}=13.74\\,\\mathrm{kN\\cdot m}\\)。",
+   "answer": "\\(\\tau=100\\,\\mathrm{MPa}\\)，\\(M_e=\\tau\\dfrac{\\pi D^3}{16}\\approx19.63\\,\\mathrm{kN\\cdot m}\\)。",
    "steps": [
-    "纯剪切应力状态：受扭圆轴表面为纯剪切，主应力 \\(\\sigma_1=\\tau\\)、\\(\\sigma_3=-\\tau\\)，主方向与轴线成 \\(45^\\circ\\)。",
-    "因此沿 \\(45^\\circ\\) 与 \\(135^\\circ\\) 方向测得的就是两个主应变：\\(\\varepsilon'=\\dfrac{\\sigma_1}{E}-\\dfrac{\nu\\sigma_3}{E}=\\dfrac{\\tau}{E}(1+\nu)\\)；\\(\\varepsilon''=\\dfrac{\\sigma_3}{E}-\\dfrac{\nu\\sigma_1}{E}=-\\dfrac{\\tau}{E}(1+\nu)\\)。",
-    "两式相减：\\(\\varepsilon'-\\varepsilon''=\\dfrac{2\\tau}{E}(1+\nu)\\)，故 \\(\\tau=\\dfrac{E(\\varepsilon'-\\varepsilon'')}{2(1+\nu)}\\)。",
-    "代入：\\(E=2\\times10^5\\,\\mathrm{MPa}=2\\times10^{11}\\,\\mathrm{Pa}\\)，\\(\nu=0.25\\)，\\(\\varepsilon'=3.75\\times10^{-4}\\)，\\(\\varepsilon''=5\\times10^{-4}\\)（注意这里的符号：若两者都为正，则需按实际采样方向判断，纯剪下二者应异号）。",
-    "按 \\(\\varepsilon=-\\varepsilon''\\)（\\(135^\\circ\\) 方向应变为负）理解：\\(\\varepsilon'-\\varepsilon''=3.75\\times10^{-4}-(-5\\times10^{-4})=8.75\\times10^{-4}\\)。",
-    "\\(\\tau=\\dfrac{2\\times10^{11}\\times8.75\\times10^{-4}}{2\\times1.25}=\\dfrac{1.75\\times10^{8}}{2.5}=7.0\\times10^{7}\\,\\mathrm{Pa}=70\\,\\mathrm{MPa}\\)。",
-    "抗扭截面系数：\\(W_p=\\dfrac{\\pi D^3}{16}=\\dfrac{\\pi\\times0.1^3}{16}=1.963\\times10^{-4}\\,\\mathrm{m^3}\\)。",
-    "\\(M_e=\\tau W_p=70\\times10^6\\times1.963\\times10^{-4}=1.374\\times10^4\\,\\mathrm{N\\cdot m}=13.74\\,\\mathrm{kN\\cdot m}\\)。",
-    "要点：纯剪切下 \\(45^\\circ\\) 方向是主方向，这是“用应变花测扭矩”的物理基础；两个应变异号是纯剪的特征，同号说明还有正应力分量。"
+    "考点：纯剪切应力状态下任意方向的正应变公式；两个成 \\(45^\\circ\\) 的任意方向读数要用平方和关系定 \\(\\tau\\)，不能当作主应变。",
+    "圆轴表面为纯剪切状态：\\(\\varepsilon_x=\\varepsilon_y=0\\)，\\(\\gamma_{xy}=\\dfrac{\\tau}{G}=\\dfrac{2(1+\\nu)\\tau}{E}\\)。由应变转轴公式，与轴线成 \\(\\theta\\) 角方向的正应变为 \\(\\varepsilon_\\theta=\\dfrac{\\gamma_{xy}}{2}\\sin2\\theta=\\dfrac{(1+\\nu)\\tau}{E}\\sin2\\theta\\)。",
+    "两测量方向彼此成 \\(45^\\circ\\)，设为 \\(\\theta\\) 与 \\(\\theta+45^\\circ\\)，则 \\(\\varepsilon'=\\dfrac{(1+\\nu)\\tau}{E}\\sin2\\theta\\)，\\(\\varepsilon''=\\dfrac{(1+\\nu)\\tau}{E}\\sin(2\\theta+90^\\circ)=\\dfrac{(1+\\nu)\\tau}{E}\\cos2\\theta\\)。两式平方相加消去未知方向 \\(\\theta\\)：\\(\\varepsilon'^2+\\varepsilon''^2=\\left[\\dfrac{(1+\\nu)\\tau}{E}\\right]^2\\)。",
+    "代入读数：\\(\\sqrt{\\varepsilon'^2+\\varepsilon''^2}=\\sqrt{3.75^2+5^2}\\times10^{-4}=6.25\\times10^{-4}\\)（\\(3.75\\)、\\(5\\)、\\(6.25\\) 恰为勾股数）。解得 \\(\\tau=\\dfrac{E\\times6.25\\times10^{-4}}{1+\\nu}=\\dfrac{2\\times10^5\\times6.25\\times10^{-4}}{1.25}=100\\,\\mathrm{MPa}\\)。",
+    "抗扭截面系数 \\(W_p=\\dfrac{\\pi D^3}{16}=\\dfrac{\\pi\\times0.1^3}{16}=1.963\\times10^{-4}\\,\\mathrm{m^3}\\)，故 \\(M_e=\\tau W_p=100\\times10^6\\times1.963\\times10^{-4}=1.963\\times10^4\\,\\mathrm{N\\cdot m}\\)。",
+    "说明：两方向是任意方向、并非 \\(\\pm45^\\circ\\) 主方向，且两读数同号，旧解擅自把 \\(\\varepsilon''\\) 改号按主应变处理是错误的。最终结果：\\(\\tau=100\\,\\mathrm{MPa}\\)，\\(M_e\\approx19.63\\,\\mathrm{kN\\cdot m}\\)。"
    ],
    "figures": [
     "q807-2009-07.png"

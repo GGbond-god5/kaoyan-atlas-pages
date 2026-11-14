@@ -49,15 +49,15 @@
    "source": "华工 801 2016（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "二．（20 分）图示实心圆轴 \\(AC\\) 左端马达的输出功率为 \\(200\\,\\mathrm{kW}\\)，转速为 \\(1000\\,\\mathrm{r/min}\\)。齿轮 \\(B\\) 和 \\(C\\) 传递的功率分别为 \\(90\\,\\mathrm{kW}\\) 和 \\(110\\,\\mathrm{kW}\\)。已知轴的直径 \\(d=60\\,\\mathrm{mm}\\)，材料的许用切应力 \\([\\tau]=40\\,\\mathrm{MPa}\\)，切变模量 \\(G=80\\,\\mathrm{GPa}\\)。试：（1）作轴的扭矩图；（2）校核轴的强度；（3）求轴的最大单位长度扭转角。",
-   "answer": "扭矩：\\(M_{eA}=1909.8\\,\\mathrm{N\\cdot m}\\)、\\(M_{eB}=859.41\\,\\mathrm{N\\cdot m}\\)、\\(M_{eC}=1050.39\\,\\mathrm{N\\cdot m}\\)；强度要求 \\(d\\ge\\sqrt[3]{\\dfrac{16M_{eA}}{\\pi[\\tau]}}=57.94\\,\\mathrm{mm}\\)，刚度要求 \\(d\\ge69.14\\,\\mathrm{mm}\\)。故轴的直径至少取 **69.14 mm**（刚度控制）。",
+   "answer": "（1）\\(T_{AB}=1909.8\\,\\mathrm{N\\cdot m}\\)，\\(T_{BC}=1050.4\\,\\mathrm{N\\cdot m}\\)；（2）\\(\\tau_{\\max}\\approx45.0\\,\\mathrm{MPa}>[\\tau]=40\\,\\mathrm{MPa}\\)，强度不满足；（3）\\(\\theta_{\\max}\\approx1.08^\\circ/\\mathrm{m}\\)（在 \\(AB\\) 段）。",
    "steps": [
-    "由功率与转速求各轮扭矩（\\(T=9549\\dfrac{P}{n}\\)，\\(P\\) 以 kW、\\(n\\) 以 r/min 计）：\\n\\(M_{eA}=9549\\times\\dfrac{200}{1000}=1909.8\\,\\mathrm{N\\cdot m}\\)（马达输入）；\\(M_{eB}=9549\\times\\dfrac{90}{1000}=859.41\\,\\mathrm{N\\cdot m}\\)；\\(M_{eC}=9549\\times\\dfrac{110}{1000}=1050.39\\,\\mathrm{N\\cdot m}\\)。",
-    "扭矩图：\\(A\\) 端输入，故 \\(AB\\) 段扭矩 \\(=M_{eA}=1909.8\\,\\mathrm{N\\cdot m}\\)；\\(B\\) 处取出 \\(M_{eB}\\) 后，\\(BC\\) 段扭矩 \\(=M_{eA}-M_{eB}=1050.39\\,\\mathrm{N\\cdot m}\\)。两段均为常数（阶梯形图）。",
-    "强度条件：\\(\\tau_{\\max}=\\dfrac{T_{\\max}}{W_p}=\\dfrac{16T_{\\max}}{\\pi d^3}\\le[\\tau]\\)，解得 \\(d\\ge\\sqrt[3]{\\dfrac{16M_{eA}}{\\pi[\\tau]}}=57.94\\,\\mathrm{mm}\\)。",
-    "刚度条件：\\(\\varphi_{AC}=\\varphi_{AB}+\\varphi_{BC}=\\left(\\dfrac{M_{eA}l_1}{GI_p}+\\dfrac{M_{eC}l_2}{GI_p}\\right)\\times\\dfrac{180^\\circ}{\\pi}\\le[\\varphi_C]=1.5^\\circ\\)。",
-    "把 \\(I_p=\\dfrac{\\pi d^4}{32}\\) 代入并整理，解得 \\(d\\ge69.14\\,\\mathrm{mm}\\)。",
-    "取两者较大者：轴的直径至少为 \\(69.14\\,\\mathrm{mm}\\)（**刚度条件控制**，比强度要求更严）。",
-    "要点：传动轴必须同时校核强度（\\(\\tau\\le[\\tau]\\)）与刚度（单位长度或总扭转角 \\(\\varphi\\le[\\varphi]\\)）；工程上刚度往往比强度更严，本题即为例证（强度只需 57.94 mm，刚度需 69.14 mm）。"
+    "考点：传动轴外力偶矩 \\(M_e=9549P/n\\)、扭矩图、圆轴扭转强度校核 \\(\\tau_{\\max}=T_{\\max}/W_p\\) 与单位长度扭转角 \\(\\theta=T/(GI_p)\\)。",
+    "各轮外力偶矩：\\(M_{eA}=9549\\times\\dfrac{200}{1000}=1909.8\\,\\mathrm{N\\cdot m}\\)（\\(A\\) 端马达输入），\\(M_{eB}=9549\\times\\dfrac{90}{1000}=859.4\\,\\mathrm{N\\cdot m}\\)，\\(M_{eC}=9549\\times\\dfrac{110}{1000}=1050.4\\,\\mathrm{N\\cdot m}\\)。",
+    "扭矩图：\\(AB\\) 段 \\(T_{AB}=M_{eA}=1909.8\\,\\mathrm{N\\cdot m}\\)；\\(B\\) 处输出 \\(90\\,\\mathrm{kW}\\) 后，\\(BC\\) 段 \\(T_{BC}=M_{eA}-M_{eB}=1050.4\\,\\mathrm{N\\cdot m}\\)。两段扭矩均为常量，最大扭矩在 \\(AB\\) 段。",
+    "强度校核（\\(d=60\\,\\mathrm{mm}\\)）：\\(W_p=\\dfrac{\\pi d^3}{16}=\\dfrac{\\pi\\times60^3}{16}\\approx4.24\\times10^{4}\\,\\mathrm{mm^3}\\)，\\(\\tau_{\\max}=\\dfrac{T_{AB}}{W_p}=\\dfrac{1909.8\\times10^3}{4.24\\times10^4}\\approx45.0\\,\\mathrm{MPa}\\)。",
+    "\\(45.0\\,\\mathrm{MPa}>[\\tau]=40\\,\\mathrm{MPa}\\)，故轴的强度不满足要求（若按强度反求直径，需 \\(d\\ge\\sqrt[3]{\\dfrac{16T_{AB}}{\\pi[\\tau]}}\\approx62.4\\,\\mathrm{mm}\\)）。",
+    "单位长度扭转角：\\(I_p=\\dfrac{\\pi d^4}{32}=\\dfrac{\\pi\\times60^4}{32}\\approx1.272\\times10^{6}\\,\\mathrm{mm^4}\\)；\\(AB\\) 段 \\(\\theta_{AB}=\\dfrac{T_{AB}}{GI_p}=\\dfrac{1909.8}{80\\times10^9\\times1.272\\times10^{-6}}\\approx0.01876\\,\\mathrm{rad/m}\\approx1.08^\\circ/\\mathrm{m}\\)；\\(BC\\) 段扭矩较小，\\(\\theta\\) 更小。",
+    "故最大单位长度扭转角 \\(\\theta_{\\max}\\approx1.08^\\circ/\\mathrm{m}\\)，出现在 \\(AB\\) 段。"
    ],
    "figures": [
     "q807-2016-02.png"
@@ -116,17 +116,15 @@
    "source": "华工 801 2016（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "四．矩形截面悬臂梁受力及尺寸如图示。假想将梁沿中性层截开，试画出梁下半部分分离体的受力图，并列出其平衡方程。",
-   "answer": "与 2008 年第 11 题同型。下半部分（\\(-h/2\\le y\\le0\\)）的分离体上有：自由端面的切应力合力 \\(F_P\\)、固定端面的正应力（压）合力及其力偶、中性层上的纵向切应力合力与竖直切应力合力。平衡方程给出纵向切应力合力等于两横截面正应力合力之差（由此可推出弯曲切应力公式）。",
+   "answer": "下半部分离体：固定端横截面下半部有正应力合力 \\(N=\\dfrac{3F_Pl}{2h}\\) 及其力偶 \\(M_1=\\dfrac{F_Pl}{2}\\)、竖向切应力合力 \\(\\dfrac{F_P}{2}\\)；自由端横截面下半部只有竖向切应力合力 \\(\\dfrac{F_P}{2}\\)；中性层水平面上只有纵向切应力，其合力 \\(T=\\dfrac{3F_Pl}{2h}\\)，该面 \\(\\sigma_y=0\\)、无竖直方向面力。平衡方程：\\(\\sum F_x=0\\Rightarrow T=N=\\dfrac{3F_Pl}{2h}\\)；\\(\\sum F_y=0\\Rightarrow\\dfrac{F_P}{2}-\\dfrac{F_P}{2}=0\\)；\\(\\sum M=0\\Rightarrow\\dfrac{F_P}{2}\\cdot l=M_1=\\dfrac{F_Pl}{2}\\)。",
    "steps": [
-    "题意为推导弯曲切应力公式做准备：把矩形截面悬臂梁（宽 \\(b\\)、高 \\(h\\)、长 \\(l\\)）沿中性层（\\(y=0\\)）假想切开，取下半部分为隔离体。",
-    "隔离体的四个面：①自由端横截面（\\(x=l\\)，正应力为零、有竖直切应力合力即 \\(F_P\\)）；②固定端横截面（\\(x=0\\)，有正应力 \\(\\sigma=\\dfrac{My}{I_z}\\)，此处 \\(M=-F_Pl\\) 使下半部分受压）；③中性层水平截面（\\(y=0\\)，长 \\(l\\)、宽 \\(b\\)，有纵向与竖直切应力）；④两个侧面（无应力）。",
-    "固定端面正应力的合力：\\(N=\\displaystyle\\int_{-h/2}^{0}\\sigma\\,b\\,\\mathrm{d}y=\\dfrac{M}{I_z}\\cdot\\dfrac{bh^2}{8}=\\dfrac{3F_Pl}{2h}\\)（压，向下游方向）。",
-    "该合力对中性层的力偶：\\(M_1=\\displaystyle\\int_{-h/2}^{0}\\sigma\\,y\\,b\\,\\mathrm{d}y=\\dfrac{M}{I_z}\\cdot\\dfrac{I_z}{2}=\\dfrac{M}{2}=\\dfrac{F_Pl}{2}\\)。",
-    "平衡方程之一（沿 \\(x\\) 向）：固定端正应力合力 \\(N\\) ＋ 中性层纵向切应力合力 \\(T\\) ＝ 0，故 \\(T=|N|=\\dfrac{3F_Pl}{2h}\\)——**这就是弯曲切应力的来源**：纵向切应力必须平衡两横截面正应力之差。",
-    "平衡方程之二（沿 \\(y\\) 向）：中性层竖直切应力合力 \\(V'\\) ＝ 自由端外力 \\(F_P\\)，故 \\(V'=F_P\\)（即截面剪力）。",
-    "平衡方程之三（力矩）：\\(M_1+\\displaystyle\\int_0^l\\tau_{yx}b x\\,\\mathrm{d}x=F_Pl\\)，即纵向切应力的力矩与固定端力偶共同平衡外力矩。",
-    "由这三个方程可推出 \\(\\tau=\\dfrac{F_SS_z^*}{I_zb}\\)：取长度 \\(\\mathrm{d}x\\) 的微段，纵向切应力差 \\(=\\dfrac{\\mathrm{d}M}{I_z}\\cdot S_z^*\\)，除以面积 \\(b\\,\\mathrm{d}x\\) 即得。",
-    "要点：这是“用分离体平衡推出弯曲切应力公式”的标准铺垫题——核心认识是“横截面上除了正应力还必须有切应力，否则平衡不成立”。"
+    "考点：用分离体平衡认识弯曲切应力的来源；中性层水平面上的面力只有纵向切应力 \\(\\tau_{yx}\\)，法向应力 \\(\\sigma_y=0\\)。",
+    "取梁下半部分（中性层以下）为隔离体，它有四个受力面：固定端横截面、自由端横截面、中性层水平面、梁的下表面（自由面，无应力）。设梁宽 \\(b\\)、高 \\(h\\)、长 \\(l\\)，端部荷载 \\(F_P\\)，固定端弯矩 \\(M=F_Pl\\)，截面惯性矩 \\(I_z=\\dfrac{bh^3}{12}\\)。",
+    "固定端横截面下半部的正应力合力：\\(N=\\displaystyle\\int_{-h/2}^{0}\\dfrac{My}{I_z}b\\,\\mathrm{d}y=\\dfrac{M}{I_z}\\cdot\\dfrac{bh^2}{8}=\\dfrac{3F_Pl}{2h}\\)（沿轴向，拉压由荷载方向定）。",
+    "该正应力分布对中性轴的力偶：\\(M_1=\\displaystyle\\int_{-h/2}^{0}\\sigma y b\\,\\mathrm{d}y=\\dfrac{M}{I_z}\\cdot\\dfrac{bh^3}{24}=\\dfrac{M}{2}=\\dfrac{F_Pl}{2}\\)。同时由切应力公式 \\(\\tau=\\dfrac{F_PS_z^*}{I_zb}\\) 沿下半截面积分，两端横截面下半部的切应力合力各为 \\(\\dfrac{F_P}{2}\\)，方向相反。",
+    "中性层水平面：其法向应力 \\(\\sigma_y=0\\)，只存在纵向切应力 \\(\\tau_{yx}\\)，合力记为 \\(T\\)。不存在所谓“竖直切应力合力 \\(V'=F_P\\)”；力矩式中的 \\(\\int\\tau_{yx}bx\\,\\mathrm{d}x\\) 也不是力矩——\\(\\tau_{yx}\\) 沿 \\(x\\) 方向，与力臂 \\(x\\) 平行，对取矩点不产生力矩。这两处是旧解析的概念错误。",
+    "平衡方程：\\(\\sum F_x=0\\) 给出 \\(T-N=0\\)，即纵向切应力合力 \\(T=N=\\dfrac{3F_Pl}{2h}\\)，正是它平衡两横截面正应力合力之差（弯曲切应力由此而来）；\\(\\sum F_y=0\\)：两端面下半部剪力合力 \\(\\dfrac{F_P}{2}\\) 与 \\(\\dfrac{F_P}{2}\\) 自相平衡；\\(\\sum M_O=0\\)（对固定端中性点取矩）：\\(\\dfrac{F_P}{2}\\cdot l=M_1=\\dfrac{F_Pl}{2}\\)，自洽。",
+    "最终结果：\\(N=T=\\dfrac{3F_Pl}{2h}\\)，\\(M_1=\\dfrac{F_Pl}{2}\\)；中性层上只有纵向切应力合力，两端面各有 \\(\\dfrac{F_P}{2}\\) 的竖向剪力合力互相平衡。"
    ],
    "figures": [
     "q807-2016-04.png"
@@ -151,16 +149,16 @@
    "source": "华工 801 2016（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "五．从钢制圆柱 \\(S\\) 中切去一小圆柱体，以力 \\(F\\) 将一橡胶圆柱 \\(R\\) 无间隙地压入钢圆柱内，如图所示。橡胶圆柱长为 \\(L\\)，横截面面积为 \\(A\\)，其上表面承受均布荷载作用。橡胶材料的弹性模量为 \\(E\\)，泊松比为 \\(\nu\\)，忽略摩擦以及钢圆柱的变形。试求橡胶圆柱内的应力状态。",
-   "answer": "橡胶被钢圆柱侧向完全约束（\\(\\varepsilon_r=\\varepsilon_\\theta=0\\)，因无间隙且钢不变形），轴向受均布压力。这是三向受压＋侧向约束问题：轴向应力 \\(\\sigma_z=-\\dfrac{F}{A}\\)，径向与环向应力由 \\(\\varepsilon_r=0\\) 反求：\\(\\sigma_r=\\sigma_\\theta=\\dfrac{\nu}{1-\nu}\\sigma_z\\)。",
+   "answer": "橡胶圆柱内为三向压应力状态：轴向 \\(\\sigma_z=-\\dfrac{F}{A}\\)，径向与环向 \\(\\sigma_r=\\sigma_\\theta=\\dfrac{\\nu}{1-\\nu}\\sigma_z=-\\dfrac{\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}\\)。主应力 \\(\\sigma_1=\\sigma_2=\\sigma_r=-\\dfrac{\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}\\)，\\(\\sigma_3=\\sigma_z=-\\dfrac{F}{A}\\)；第三强度理论相当应力 \\(\\sigma_{r3}=\\sigma_1-\\sigma_3=\\dfrac{1-2\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}\\)。",
    "steps": [
-    "约束条件：橡胶圆柱被压入钢圆柱且“无间隙”、钢不变形 → 橡胶的侧向（径向与环向）应变被完全约束：\\(\\varepsilon_r=\\varepsilon_\\theta=0\\)。",
-    "轴向：上表面受均布荷载，轴力 \\(F\\) → 轴向应力 \\(\\sigma_z=-\\dfrac{F}{A}\\)（压）。",
-    "由广义胡克定律，径向应变：\\(\\varepsilon_r=\\dfrac{1}{E}\\left[\\sigma_r-\nu(\\sigma_\\theta+\\sigma_z)\\right]=0\\)。",
-    "由轴对称性 \\(\\sigma_r=\\sigma_\\theta\\)，代入得 \\(\\sigma_r-\nu(\\sigma_r+\\sigma_z)=0\\)，即 \\(\\sigma_r(1-\nu)=\nu\\sigma_z\\)。",
-    "故 \\(\\sigma_r=\\sigma_\\theta=\\dfrac{\nu}{1-\nu}\\sigma_z=-\\dfrac{\nu}{1-\nu}\\cdot\\dfrac{F}{A}\\)（都是压应力，量值小于轴向）。",
-    "应力状态：三向受压，\\(\\sigma_z\\) 最负（最大压）、\\(\\sigma_r=\\sigma_\\theta\\) 较小。若按第三强度理论（适用于塑性材料），\\(\\sigma_{r3}=\\sigma_1-\\sigma_3=0-(-\\dfrac{F}{A})=\\dfrac{F}{A}\\)——注意侧向压应力“抵消”了部分效应，使相当应力小于单向受压时的值。",
-    "这是“三向受压提高材料强度”的典型例子（静水压力下材料不易屈服），橡胶密封件、粉末冶金压坯都利用这一原理。",
-    "要点：关键是“侧向应变被完全约束”这一边界条件——它把单向应力状态变成三向应力状态，且侧向应力由胡克定律反求（不是零）。"
+    "考点：广义胡克定律、侧向完全约束下的三向应力状态、主应力排序与强度理论。",
+    "约束条件：橡胶圆柱无间隙压入不变形的钢圆柱内，侧向变形被完全约束，即 \\(\\varepsilon_r=\\varepsilon_\\theta=0\\)；轴向由均布荷载直接给出 \\(\\sigma_z=-\\dfrac{F}{A}\\)（压应力）。",
+    "由轴对称性，径向与环向应力相等：\\(\\sigma_r=\\sigma_\\theta\\)，两者即为该点的两个主应力（另一个为 \\(\\sigma_z\\)）。",
+    "由广义胡克定律写径向应变：\\(\\varepsilon_r=\\dfrac{1}{E}\\left[\\sigma_r-\\nu(\\sigma_\\theta+\\sigma_z)\\right]=0\\)。代入 \\(\\sigma_\\theta=\\sigma_r\\) 得 \\(\\sigma_r-\\nu(\\sigma_r+\\sigma_z)=0\\)，即 \\(\\sigma_r(1-\\nu)=\\nu\\sigma_z\\)。",
+    "解得 \\(\\sigma_r=\\sigma_\\theta=\\dfrac{\\nu}{1-\\nu}\\sigma_z=-\\dfrac{\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}\\)，为压应力，且量值小于轴向压应力 \\(\\dfrac{F}{A}\\)（因 \\(\\nu<0.5\\) 时 \\(\\dfrac{\\nu}{1-\\nu}<1\\)）。",
+    "主应力排序：三个主应力均为压应力，其中 \\(\\sigma_z=-\\dfrac{F}{A}\\) 最小（压得最厉害），故 \\(\\sigma_1=\\sigma_2=\\sigma_r=-\\dfrac{\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}\\)，\\(\\sigma_3=\\sigma_z=-\\dfrac{F}{A}\\)。注意 \\(\\sigma_1\\) 是侧向压应力而不是 0。",
+    "第三强度理论：\\(\\sigma_{r3}=\\sigma_1-\\sigma_3=-\\dfrac{\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}+\\dfrac{F}{A}=\\dfrac{1-2\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}\\)；最大切应力 \\(\\tau_{\\max}=\\dfrac{\\sigma_1-\\sigma_3}{2}=\\dfrac{1-2\\nu}{2(1-\\nu)}\\cdot\\dfrac{F}{A}\\)。",
+    "结论：橡胶内的应力状态为 \\(\\sigma_z=-\\dfrac{F}{A}\\)、\\(\\sigma_r=\\sigma_\\theta=-\\dfrac{\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}\\) 的三向受压，\\(\\sigma_{r3}=\\dfrac{1-2\\nu}{1-\\nu}\\cdot\\dfrac{F}{A}\\)。特别地，当 \\(\\nu\\to0.5\\)（橡胶近似不可压缩）时 \\(\\sigma_r\\to\\sigma_z\\)，趋于静水压力状态，\\(\\sigma_{r3}\\to0\\)。旧解析在排序时误取 \\(\\sigma_1=0\\)，得 \\(\\sigma_{r3}=\\dfrac{F}{A}\\)，是错误的。"
    ],
    "figures": [
     "q807-2016-05.png"

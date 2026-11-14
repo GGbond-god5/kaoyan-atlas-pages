@@ -111,15 +111,14 @@
    "source": "华工 801 2007（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "二、填空（共 2 小题，共 20 分）\n1．正方形钢块放置在刚性槽内，钢块顶面承受向下的荷载 \\(F_{\\mathrm{p}}\\)，钢块沿 \\(x\\)、\\(y\\)、\\(z\\) 方向的线应变和正应力的表达式分别为＿＿＿＿；＿＿＿＿。",
-   "answer": "刚性槽内受压（\\(y\\)、\\(z\\) 方向应变被约束为零）：\\(\\varepsilon_x=-\\dfrac{F_p}{EA}\\)（\\(A\\) 为承压面积）、\\(\\varepsilon_y=\\varepsilon_z=0\\)；正应力 \\(\\sigma_x=-\\dfrac{F_p}{A}\\)、\\(\\sigma_y=\\sigma_z=-\\dfrac{\\mu}{1-\\mu}\\cdot\\dfrac{F_p}{A}\\)。",
+   "answer": "\\(\\varepsilon_x=-\\dfrac{F_p}{EA}\\cdot\\dfrac{(1+\\mu)(1-2\\mu)}{1-\\mu}\\)，\\(\\varepsilon_y=\\varepsilon_z=0\\)；\\(\\sigma_x=-\\dfrac{F_p}{A}\\)，\\(\\sigma_y=\\sigma_z=-\\dfrac{\\mu}{1-\\mu}\\cdot\\dfrac{F_p}{A}\\)。",
    "steps": [
-    "物理情形与 2004 年填空第 1 题同型：钢块在刚性槽内，\\(y\\)、\\(z\\) 两个侧向因槽壁约束而应变为零，只有 \\(x\\)（受力）方向可自由变形。",
-    "应变：\\(\\varepsilon_y=\\varepsilon_z=0\\)（被刚性槽约束）；\\(\\varepsilon_x\\) 由总变形与尺寸决定，写为 \\(\\varepsilon_x=\\dfrac{\\Delta l}{l}\\)（受压时为负）。",
-    "正应力：设 \\(\\sigma_x=-\\dfrac{F_p}{A}=-\\sigma\\)（\\(A\\) 为顶面承压面积）。",
-    "由广义胡克定律与 \\(\\varepsilon_y=0\\)：\\(\\sigma_y-\\mu(\\sigma_x+\\sigma_z)=0\\)，又由对称性 \\(\\sigma_y=\\sigma_z\\)，得 \\(\\sigma_y(1-\\mu)=\\mu\\sigma_x\\)。",
-    "故 \\(\\sigma_y=\\sigma_z=\\dfrac{\\mu}{1-\\mu}\\sigma_x=-\\dfrac{\\mu}{1-\\mu}\\cdot\\dfrac{F_p}{A}\\)（均为压应力）。",
-    "\\(\\varepsilon_x\\) 的表达式：\\(\\varepsilon_x=\\dfrac{1}{E}\\left[\\sigma_x-\\mu(\\sigma_y+\\sigma_z)\\right]=\\dfrac{\\sigma_x}{E}\\left[1-\\dfrac{2\\mu^2}{1-\\mu}\\right]\\)，代回 \\(\\sigma_x=-F_p/A\\) 即得。",
-    "要点：刚性槽＝侧向应变为零的边界条件；先用胡克定律建立 \\(\\sigma_y\\) 与 \\(\\sigma_x\\) 的关系，再求各分量。三个正应力全为压，且侧向应力小于轴向应力（因 \\(\\mu/(1-\\mu)<1\\) 当 \\(\\mu<0.5\\)）。"
+    "考点：广义胡克定律；刚性槽约束使侧向应变为零，由此反求侧向约束应力，再求受载方向应变。",
+    "设受载方向为 \\(x\\)，承压面积为 \\(A\\)，则 \\(\\sigma_x=-\\dfrac{F_p}{A}\\)（压应力）。槽壁刚性约束使侧向应变 \\(\\varepsilon_y=\\varepsilon_z=0\\)，且由对称性 \\(\\sigma_y=\\sigma_z\\)。",
+    "由广义胡克定律 \\(\\varepsilon_y=\\dfrac{1}{E}\\left[\\sigma_y-\\mu(\\sigma_z+\\sigma_x)\\right]=0\\)，代入 \\(\\sigma_z=\\sigma_y\\) 得 \\(\\sigma_y(1-\\mu)=\\mu\\sigma_x\\)，即 \\(\\sigma_y=\\sigma_z=\\dfrac{\\mu}{1-\\mu}\\sigma_x=-\\dfrac{\\mu}{1-\\mu}\\cdot\\dfrac{F_p}{A}\\)（压应力）。",
+    "再求 \\(\\varepsilon_x=\\dfrac{1}{E}\\left[\\sigma_x-\\mu(\\sigma_y+\\sigma_z)\\right]=\\dfrac{\\sigma_x}{E}\\left(1-\\dfrac{2\\mu^2}{1-\\mu}\\right)\\)。注意 \\(\\varepsilon_x\\neq\\dfrac{\\sigma_x}{E}\\)：侧向约束应力会通过泊松效应减小轴向压缩应变，旧答案栏漏掉了这一点。",
+    "化简 \\(1-\\dfrac{2\\mu^2}{1-\\mu}=\\dfrac{(1+\\mu)(1-2\\mu)}{1-\\mu}\\)，得 \\(\\varepsilon_x=-\\dfrac{F_p}{EA}\\cdot\\dfrac{(1+\\mu)(1-2\\mu)}{1-\\mu}\\)。",
+    "最终结果：\\(\\varepsilon_x=-\\dfrac{F_p}{EA}\\cdot\\dfrac{(1+\\mu)(1-2\\mu)}{1-\\mu}\\)，\\(\\varepsilon_y=\\varepsilon_z=0\\)；\\(\\sigma_x=-\\dfrac{F_p}{A}\\)，\\(\\sigma_y=\\sigma_z=-\\dfrac{\\mu}{1-\\mu}\\cdot\\dfrac{F_p}{A}\\)。"
    ],
    "figures": [
     "q807-2007-04.png"

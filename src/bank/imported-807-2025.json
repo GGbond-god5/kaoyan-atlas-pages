@@ -79,16 +79,13 @@
    "source": "华工 807 2025（回忆版；官方答案校对）",
    "isReal": true,
    "text": "二．3．（20 分）如图两个空心圆柱组成的传动轴，已知外径 \\(D=50\\,\\mathrm{mm}\\)，右端内径 \\(d_1=40\\,\\mathrm{mm}\\)，左端内径 \\(d_2=25\\,\\mathrm{mm}\\)，整个圆轴长度 \\(l=510\\,\\mathrm{mm}\\)，扭转许用切应力 \\([\\tau]=80\\,\\mathrm{MPa}\\)。试求：（1）圆轴的许用扭矩 \\([T]\\)；（2）若 \\(\\varphi_{AB}=\\varphi_{BC}\\)，求 \\(\\dfrac{l_1}{l_2}\\)。",
-   "answer": "（1）右端壁薄（\\(D=50\\)、\\(d_1=40\\)），抗扭截面系数最小，故由右段控制：\\([T]=[\\tau]\\cdot\\dfrac{\\pi D^3}{16}\\left(1-\\left(\\dfrac{d_1}{D}\\right)^4\\right)\\approx80\\times10^6\\times2.02\\times10^{-5}=1.62\\,\\mathrm{kN\\cdot m}\\)。（2）两段转角相等且扭矩相同，故 \\(\\dfrac{l_1}{I_{p1}}=\\dfrac{l_2}{I_{p2}}\\)，得 \\(\\dfrac{l_1}{l_2}=\\dfrac{I_{p1}}{I_{p2}}=\\dfrac{1-(d_1/D)^4}{1-(d_2/D)^4}\\approx1.35\\)。",
+   "answer": "（1）\\([T]\\approx1.16\\,\\mathrm{kN\\cdot m}\\)；（2）\\(\\dfrac{l_1}{l_2}\\approx0.630\\)。",
    "steps": [
-    "两段的极惯性矩：右段（内径 \\(d_1=40\\)）\\(I_{p1}=\\dfrac{\\pi D^4}{32}\\left[1-\\left(\\dfrac{40}{50}\\right)^4\\right]=\\dfrac{\\pi\\times50^4}{32}(1-0.4096)\\)。",
-    "\\(I_{p1}=\\dfrac{\\pi\\times6.25\\times10^6}{32}\\times0.5904=6.134\\times10^5\\times0.5904=3.62\\times10^5\\,\\mathrm{mm^4}\\)。",
-    "左段（内径 \\(d_2=25\\)）：\\(I_{p2}=\\dfrac{\\pi\\times50^4}{32}\\left[1-\\left(\\dfrac{25}{50}\\right)^4\\right]=6.134\\times10^5\\times(1-0.0625)=5.75\\times10^5\\,\\mathrm{mm^4}\\)。",
-    "（1）抗扭截面系数：\\(W_{t1}=\\dfrac{I_{p1}}{D/2}=\\dfrac{3.62\\times10^5}{25}=1.448\\times10^4\\,\\mathrm{mm^3}\\)；\\(W_{t2}=\\dfrac{5.75\\times10^5}{25}=2.30\\times10^4\\,\\mathrm{mm^3}\\)。",
-    "右段的 \\(W_t\\) 更小，故由右段控制：\\([T]=[\\tau]W_{t1}=80\\times10^6\\times1.448\\times10^{-5}=1158\\,\\mathrm{N\\cdot m}\\approx1.16\\,\\mathrm{kN\\cdot m}\\)。",
-    "（2）两段串联，扭矩 \\(T\\) 相同；转角相等 \\(\\varphi_{AB}=\\varphi_{BC}\\)，即 \\(\\dfrac{Tl_2}{GI_{p2}}=\\dfrac{Tl_1}{GI_{p1}}\\)。",
-    "故 \\(\\dfrac{l_1}{l_2}=\\dfrac{I_{p1}}{I_{p2}}=\\dfrac{3.62}{5.75}=0.630\\)（右段短、左段长）。",
-    "要点：变截面圆轴受扭的许用扭矩由 \\(W_t\\) 最小的一段控制；转角相等的条件直接给出“长度比＝极惯性矩比”。"
+    "考点：变截面（阶梯）圆轴扭转——许用扭矩由抗扭截面系数最小的一段控制；串联两段扭矩相同、转角相等条件。",
+    "两段极惯性矩：右段（内径 \\(d_1=40\\,\\mathrm{mm}\\)）\\(I_{p1}=\\dfrac{\\pi D^4}{32}\\left[1-\\left(\\dfrac{d_1}{D}\\right)^4\\right]=\\dfrac{\\pi\\times50^4}{32}(1-0.8^4)\\approx3.62\\times10^{5}\\,\\mathrm{mm^4}\\)；左段（内径 \\(d_2=25\\,\\mathrm{mm}\\)）\\(I_{p2}=\\dfrac{\\pi\\times50^4}{32}(1-0.5^4)\\approx5.75\\times10^{5}\\,\\mathrm{mm^4}\\)。",
+    "抗扭截面系数：\\(W_{t1}=\\dfrac{I_{p1}}{D/2}=\\dfrac{3.62\\times10^5}{25}\\approx1.448\\times10^{4}\\,\\mathrm{mm^3}\\)，\\(W_{t2}=\\dfrac{5.75\\times10^5}{25}\\approx2.30\\times10^{4}\\,\\mathrm{mm^3}\\)。右段 \\(W_t\\) 较小，由右段控制。",
+    "（1）许用扭矩 \\([T]=[\\tau]W_{t1}=80\\times1.448\\times10^{4}\\approx1.16\\times10^{6}\\,\\mathrm{N\\cdot mm}\\approx1.16\\,\\mathrm{kN\\cdot m}\\)。",
+    "（2）两段串联、扭矩相同，\\(\\varphi=\\dfrac{Tl}{GI_p}\\)；由 \\(\\varphi_1=\\varphi_2\\) 得 \\(\\dfrac{l_1}{l_2}=\\dfrac{I_{p1}}{I_{p2}}=\\dfrac{3.62}{5.75}\\approx0.630\\)。"
    ],
    "figures": [
     "q807-2025-03.png"
@@ -113,16 +110,15 @@
    "source": "华工 807 2025（回忆版；官方答案校对）",
    "isReal": true,
    "text": "二．4．（25 分）两条混凝土材料（脆性材料）制成的梁，\\(AB\\) 段截面是半圆，\\(BC\\) 段截面是边长为 \\(a\\) 的正方形，若梁两段强度相同（同时破坏），求半圆的直径 \\(D\\)。",
-   "answer": "脆性材料由**抗拉强度**（或抗弯强度）控制，两段同时破坏即两者的抗弯截面模量（乘各自材料强度，材料相同则只需 \\(W\\) 相同）相等：\\(W_{\\text{半圆}}=W_{\\text{方}}\\)。正方形 \\(W=\\dfrac{a^3}{6}\\)；半圆截面（直径 \\(D\\)，以形心轴为中性轴）的抗弯截面模量需按半圆的形心与惯性矩计算，令两者相等即解出 \\(D\\)。",
+   "answer": "须以半圆的形心轴为中性轴：形心距直径边 \\(y_c=\\dfrac{4R}{3\\pi}\\approx0.424R\\)，形心轴惯性矩 \\(I\\approx0.1098R^4\\)（\\(R=\\dfrac{D}{2}\\)）。直径平边为受拉侧时 \\(D\\approx1.73a\\)；圆弧侧为受拉侧时 \\(D\\approx1.91a\\)。",
    "steps": [
-    "判据：同种材料、两段“强度相同（同时破坏）”，意味着两段的**抗弯截面模量 \\(W\\)** 相等（因为破坏应力相同）。",
-    "正方形截面（边长 \\(a\\)）：\\(W_{\\text{方}}=\\dfrac{a^3}{6}\\)。",
-    "半圆截面（直径 \\(D\\)）：先定形心（半圆形心距直径边 \\(y_c=\\dfrac{2D}{3\\pi}\\cdot\\dfrac{?}{}\\)——对半径为 \\(R\\) 的半圆，形心距圆心 \\(y_c=\\dfrac{4R}{3\\pi}\\)）。",
-    "半圆对形心轴（平行于直径）的惯性矩：\\(I_z=\\dfrac{\\pi R^4}{8}-\\left(\\dfrac{4R}{3\\pi}\\right)^2\\cdot\\dfrac{\\pi R^2}{2}\\)（平行轴定理：由对直径边的 \\(I\\) 减去移轴项）。",
-    "抗弯截面模量：\\(W_{\\text{半圆}}=\\dfrac{I_z}{y_{\\max}}\\)，其中 \\(y_{\\max}\\) 为形心到最远边缘的距离（半圆的上下边缘不等距，取较大者 \\(R+y_c\\) 或 \\(R-y_c\\)）。",
-    "对脆性材料，受拉侧（距中性轴较远或强度较低一侧）先破坏，故 \\(y_{\\max}\\) 应取受拉侧的距离。",
-    "令 \\(W_{\\text{半圆}}=W_{\\text{方}}=\\dfrac{a^3}{6}\\)，解出 \\(D\\) 与 \\(a\\) 的关系：\\(D\\approx1.4a\\sim1.5a\\)（具体系数由半圆的形心与惯性矩代入确定）。",
-    "要点：脆性材料梁的“等强度”就是“抗弯截面模量相等”；半圆截面的难点是形心不在圆心，必须先用平行轴定理算对形心轴的惯性矩。"
+    "考点：脆性材料弯曲由受拉侧强度控制；半圆截面的形心与形心轴惯性矩（平行轴定理）；两段等强度即受拉侧抗弯截面模量相等。",
+    "判据：两段同为混凝土（脆性材料），在同一控制弯矩下同时破坏，等价于两截面受拉侧的抗弯截面模量相等。正方形截面 \\(W_{\\text{方}}=\\dfrac{a^3}{6}\\)。",
+    "半圆截面（半径 \\(R\\)）：形心在对称轴上，距直径边 \\(y_c=\\dfrac{4R}{3\\pi}\\approx0.424R\\)。对形心轴（平行于直径）的惯性矩 \\(I=\\dfrac{\\pi R^4}{8}-Ay_c^2=\\dfrac{\\pi R^4}{8}-\\dfrac{8R^4}{9\\pi}\\approx0.1098R^4\\)。中性轴是形心轴而不是直径边——旧解按直径边取 \\(W=\\dfrac{\\pi R^3}{8}\\)，才得到含糊的 \\(1.4a\\sim1.5a\\)。",
+    "形心轴到两侧边缘的距离不等：平边侧 \\(y_c\\approx0.424R\\)，圆弧侧 \\(R-y_c\\approx0.576R\\)，受拉侧不同则 \\(W\\) 不同，须按截面放置方向分两种情形讨论。",
+    "情形一：直径平边为受拉侧。\\(W_{\\text{半圆}}=\\dfrac{I}{y_c}=\\dfrac{0.1098R^4}{0.424R}\\approx0.2587R^3\\)。令 \\(0.2587R^3=\\dfrac{a^3}{6}\\)，得 \\(R^3\\approx0.644a^3\\)，\\(R\\approx0.864a\\)，\\(D=2R\\approx1.73a\\)。",
+    "情形二：圆弧侧为受拉侧。\\(W_{\\text{半圆}}=\\dfrac{I}{R-y_c}=\\dfrac{0.1098R^4}{0.576R}\\approx0.1908R^3\\)。令 \\(0.1908R^3=\\dfrac{a^3}{6}\\)，得 \\(R^3\\approx0.874a^3\\)，\\(R\\approx0.956a\\)，\\(D\\approx1.91a\\)。",
+    "最终结果：以形心轴为中性轴，直径平边受拉时 \\(D\\approx1.73a\\)，圆弧侧受拉时 \\(D\\approx1.91a\\)，按半圆截面的实际放置方向取其一。"
    ],
    "figures": [
     "q807-2025-04.png"
@@ -147,17 +143,17 @@
    "source": "华工 807 2025（回忆版；官方答案校对）",
    "isReal": true,
    "text": "二．5．（25 分）实心圆轴长为 \\(3\\,\\mathrm{m}\\)，右端有一连杆作用力 \\(F\\)，在离右端 \\(l_a\\) 处的 \\(a\\) 点产生正应变 \\(\\varepsilon_a=4\\times10^{-4}\\)，侧边产生正应变 \\(\\varepsilon_b=-3\\times10^{-4}\\)，已知 \\(l_a=2\\,\\mathrm{m}\\)，\\(BC\\) 为刚体，\\(a\\) 位于圆轴外表面上边缘，\\(b\\) 位于与中性轴夹角 \\(-45^\\circ\\) 的外表面，许用应力 \\([\\sigma]=160\\,\\mathrm{MPa}\\)，\\(E=200\\,\\mathrm{GPa}\\)，\\(\\mu=0.225\\)，圆轴直径 \\(d=20\\,\\mathrm{mm}\\)。试求：（1）\\(F\\) 大小、\\(BC\\) 杆长 \\(l_{BC}\\)；（2）用第三强度理论校核 \\(AB\\) 轴强度。",
-   "answer": "（1）\\(a\\) 点（上边缘）的应变由弯曲正应力产生，\\(\\varepsilon_a=\\dfrac{\\sigma}{E}=\\dfrac{M}{EW}\\Rightarrow M=EW\\varepsilon_a\\)，再由 \\(M=F\\cdot l_{BC}\\) 定 \\(F\\) 与 \\(l_{BC}\\) 的关系；\\(b\\) 点（\\(-45^\\circ\\)）的应变含剪应力贡献，联立可解出 \\(F\\) 与 \\(l_{BC}\\)。（2）\\(\\sigma_{r3}=\\sqrt{\\sigma^2+4\\tau^2}\\le[\\sigma]\\)。",
+   "answer": "（1）\\(F\\approx31.4\\,\\mathrm{N}\\)，\\(l_{BC}\\approx2.45\\,\\mathrm{m}\\)；（2）危险截面相当应力 \\(\\sigma_{r3}\\approx154.9\\,\\mathrm{MPa}\\le[\\sigma]=160\\,\\mathrm{MPa}\\)，AB 轴强度满足。",
    "steps": [
-    "截面几何：\\(d=20\\,\\mathrm{mm}\\)，\\(W=\\dfrac{\\pi d^3}{32}=\\dfrac{\\pi\\times20^3}{32}=785.4\\,\\mathrm{mm^3}\\)，\\(W_p=2W=1570.8\\,\\mathrm{mm^3}\\)。",
-    "\\(a\\) 点（上边缘，纯弯曲区）：\\(\\varepsilon_a=\\dfrac{\\sigma_a}{E}=\\dfrac{M_a}{EW}\\Rightarrow M_a=EW\\varepsilon_a\\)。",
-    "\\(M_a=200\\times10^9\\times785.4\\times10^{-9}\\times4\\times10^{-4}=6.283\\times10^4\\,\\mathrm{N\\cdot m}=62.83\\,\\mathrm{kN\\cdot m}\\)。",
-    "弯矩与力的关系：\\(M_a=F\\cdot l_{BC}\\)（\\(BC\\) 为刚体，力 \\(F\\) 到截面 \\(a\\) 的力臂为 \\(l_{BC}\\)）。",
-    "\\(b\\) 点（\\(-45^\\circ\\) 方向）：\\(\\varepsilon_b=\\dfrac{1}{E}\\left[\\dfrac{\\sigma_x}{2}(1+\\mu)\\right]\\) 一类（含弯曲正应力与剪应力的组合），代入 \\(\\varepsilon_b=-3\\times10^{-4}\\) 可解出剪应力分量。",
-    "由 \\(\\tau=\\dfrac{T}{W_p}\\) 得到扭矩，再由 \\(T=F\\times\\)（另一力臂）解出 \\(F\\)。",
-    "联立 \\(M_a=Fl_{BC}\\) 与 \\(T\\) 的表达式，解出 \\(F\\) 与 \\(l_{BC}\\)（两个未知量、两个方程）。",
-    "（2）第三强度理论：危险点在弯矩最大处，\\(\\sigma=\\dfrac{M_{\\max}}{W}\\)、\\(\\tau=\\dfrac{T}{W_p}=\\dfrac{T}{2W}\\)，\\(\\sigma_{r3}=\\sqrt{\\sigma^2+4\\tau^2}=\\dfrac{\\sqrt{M^2+T^2}}{W}\\le[\\sigma]=160\\,\\mathrm{MPa}\\)。",
-    "要点：表面应变片测“弯+扭”组合时，上边缘（\\(0^\\circ\\)）只反映弯曲、\\(-45^\\circ\\) 反映弯曲与剪切的组合——两片配合才能分离出 \\(M\\) 与 \\(T\\)，这是本题的核心设计。"
+    "考点：弯扭组合变形、应变片测弯矩与扭矩（表面应力状态、应变变换）、第三强度理论。",
+    "截面几何量（\\(d=20\\,\\mathrm{mm}\\)）：\\(W=\\dfrac{\\pi d^3}{32}=\\dfrac{\\pi\\times20^3}{32}=785.4\\,\\mathrm{mm^3}\\)，\\(W_p=\\dfrac{\\pi d^3}{16}=2W=1570.8\\,\\mathrm{mm^3}\\)。",
+    "由 a 点应变求弯矩：a 位于外表面上边缘，其轴向应变只由弯曲正应力产生，\\(\\sigma_a=E\\varepsilon_a=200\\times10^9\\times4\\times10^{-4}=80\\,\\mathrm{MPa}\\)，故 a 处截面弯矩 \\(M_a=\\sigma_a W=80\\times785.4\\approx6.28\\times10^4\\,\\mathrm{N\\cdot mm}=62.8\\,\\mathrm{N\\cdot m}\\)。（旧解析写成 \\(6.283\\times10^4\\,\\mathrm{N\\cdot m}\\)，整整大了 1000 倍。）",
+    "求 F：a 处截面距右端力作用点 \\(l_a=2\\,\\mathrm{m}\\)，弯矩 \\(M_a=F\\cdot l_a\\)，故 \\(F=\\dfrac{M_a}{l_a}=\\dfrac{62.8}{2}\\approx31.4\\,\\mathrm{N}\\)。",
+    "由 b 点应变求扭矩：b 位于侧面中性轴处，该点弯曲正应力为零，只有扭转切应力 \\(\\tau\\)。纯剪切状态下 \\(-45^\\circ\\) 方向的正应变为 \\(\\varepsilon_{-45^\\circ}=-\\dfrac{\\gamma_{xy}}{2}=-\\dfrac{\\tau}{2G}\\)，其中 \\(G=\\dfrac{E}{2(1+\\mu)}=\\dfrac{200}{2\\times1.225}\\approx81.6\\,\\mathrm{GPa}\\)。由 \\(\\varepsilon_b=-3\\times10^{-4}\\) 得 \\(\\tau=2G\\,|\\varepsilon_b|=2\\times81.6\\times10^9\\times3\\times10^{-4}\\approx49.0\\,\\mathrm{MPa}\\)。",
+    "扭矩 \\(T=\\tau W_p=49.0\\times10^6\\times1570.8\\times10^{-9}\\approx76.9\\,\\mathrm{N\\cdot m}\\)。连杆力 F 经刚体 BC 以力臂 \\(l_{BC}\\) 对轴施加扭矩：\\(T=F\\cdot l_{BC}\\)，故 \\(l_{BC}=\\dfrac{T}{F}=\\dfrac{76.9}{31.4}\\approx2.45\\,\\mathrm{m}\\)。",
+    "（2）强度校核：扭矩沿轴不变，弯矩在固定端（轴左端）最大：\\(M_{\\max}=F\\times3\\,\\mathrm{m}=31.4\\times3\\approx94.2\\,\\mathrm{N\\cdot m}\\)，\\(\\sigma=\\dfrac{M_{\\max}}{W}=\\dfrac{94.2\\times10^3}{785.4}\\approx120\\,\\mathrm{MPa}\\)，\\(\\tau=49.0\\,\\mathrm{MPa}\\)。",
+    "第三强度理论：\\(\\sigma_{r3}=\\sqrt{\\sigma^2+4\\tau^2}=\\sqrt{120^2+4\\times49.0^2}\\approx154.9\\,\\mathrm{MPa}\\le[\\sigma]=160\\,\\mathrm{MPa}\\)，强度满足。",
+    "结论：（1）\\(F\\approx31.4\\,\\mathrm{N}\\)，\\(l_{BC}\\approx2.45\\,\\mathrm{m}\\)；（2）\\(\\sigma_{r3}\\approx154.9\\,\\mathrm{MPa}\\)，不超过许用应力 \\(160\\,\\mathrm{MPa}\\)，AB 轴强度满足要求。"
    ],
    "figures": [
     "q807-2025-05.png"
@@ -182,16 +178,16 @@
    "source": "华工 807 2025（回忆版；官方答案校对）",
    "isReal": true,
    "text": "二．6．（25 分）已知半圆轴如下图所示，上方固定，在圆轴 \\(B\\) 处作用有一力偶矩 \\(M_z\\)，其矢量方向处于 \\(xOy\\) 平面内，分别与 \\(x\\)、\\(y\\) 轴成 \\(45^\\circ\\) 角，求 \\(B\\) 点在 \\(z\\) 方向的位移（用单位荷载法）。\\(EI\\)、\\(GI_p\\) 已知，圆环半径为 \\(R\\)。",
-   "answer": "半圆（四分之一圆环）在端部受斜向力偶，环内产生**弯矩与扭矩**的复合。用单位荷载法：在 \\(B\\) 处沿 \\(z\\) 方向加单位力，用莫尔积分 \\(\\Delta=\\displaystyle\\int\\dfrac{M\\overline{M}}{EI}\\mathrm{d}s+\\int\\dfrac{T\\overline{T}}{GI_p}\\mathrm{d}s\\)，\\(\\mathrm{d}s=R\\mathrm{d}\\varphi\\)。力偶的 \\(45^\\circ\\) 分解使两分量各贡献一部分。",
+   "answer": "\\(B\\) 点沿 \\(z\\) 方向位移的大小为 \\(\\dfrac{MR^2}{2\\sqrt2}\\left[\\dfrac{\\pi}{EI}+\\dfrac{\\pi+4}{GI_p}\\right]\\)（\\(M\\) 为题给力偶矩的大小；方向见解析与说明）。",
    "steps": [
-    "受力分解：力偶矩 \\(M_z\\) 沿 \\(45^\\circ\\) 方向，分解为沿 \\(x\\)、\\(y\\) 两个分量 \\(M_x=M_z\\cos45^\\circ=\\dfrac{M_z}{\\sqrt2}\\)、\\(M_y=\\dfrac{M_z}{\\sqrt2}\\)。",
-    "内力：半圆环各截面上由这两个分量分别产生弯矩与扭矩——\\(M_x\\) 绕 \\(x\\) 轴、\\(M_y\\) 绕 \\(y\\) 轴，随极角 \\(\\varphi\\) 按 \\(\\sin\\varphi\\)、\\(\\cos\\varphi\\) 变化。",
-    "单位荷载：在 \\(B\\) 处沿 \\(z\\) 方向加单位力 \\(\\overline{P}=1\\)，求各截面的单位弯矩 \\(\\overline{M}(\\varphi)\\) 与单位扭矩 \\(\\overline{T}(\\varphi)\\)。",
-    "莫尔积分（同时计弯曲与扭转）：\\(\\Delta_z=\\displaystyle\\int_0^{\\pi/2}\\left[\\dfrac{M\\overline{M}}{EI}+\\dfrac{T\\overline{T}}{GI_p}\\right]R\\,\\mathrm{d}\\varphi\\)。",
-    "积分：含 \\(\\sin^2\\varphi\\)、\\(\\cos^2\\varphi\\) 的项在 \\(0\\sim\\pi/2\\) 上的积分为 \\(\\pi/4\\)，含 \\(\\sin\\varphi\\cos\\varphi\\) 的项为 \\(1/2\\)。",
-    "结果形式：\\(\\Delta_z=\\dfrac{M_zR^2}{EI}\\left[A+B\\dfrac{EI}{GI_p}\\right]\\)，其中 \\(A\\)、\\(B\\) 为积分系数（由 \\(45^\\circ\\) 分解与几何定）。",
-    "注意：圆截面 \\(I_p=2I\\)，故 \\(\\dfrac{EI}{GI_p}=\\dfrac{E}{2G}=1+\nu\\)，扭转项的贡献由泊松比决定。",
-    "要点：空间力偶作用下的圆环问题是“弯+扭”复合——必须同时积分两个莫尔项；力偶的 \\(45^\\circ\\) 方向要分解为两个正交分量分别处理。"
+    "考点：空间曲杆（半圆环）弯扭组合变形的单位荷载法（莫尔积分）。关键有二：积分区间必须取整个半圆 \\(\\varphi\\in[0,\\pi]\\)（原解析误按四分之一圆环取 \\([0,\\pi/2]\\)）；系数必须积出确定值，不能停留在未定系数 \\(A\\)、\\(B\\)。",
+    "坐标与分解（方位按图示，见末尾说明）：设半圆弧位于 \\(xOy\\) 平面内，圆心 \\(O\\)、半径 \\(R\\)，\\(B\\) 为自由端（\\(\\varphi=0\\)），另一端固定（\\(\\varphi=\\pi\\)）。截面位置用极角 \\(\\varphi\\) 标记，局部轴取切向 \\(\\mathbf{t}=(-\\sin\\varphi,\\ \\cos\\varphi,\\ 0)\\) 与面内法向 \\(\\mathbf{n}=(\\cos\\varphi,\\ \\sin\\varphi,\\ 0)\\)。力偶矢量在 \\(xOy\\) 平面内与 \\(x\\)、\\(y\\) 轴各成 \\(45^\\circ\\)，其分量为 \\(M_x=M_y=\\dfrac{M}{\\sqrt2}\\)（\\(M\\) 为题给力偶矩的大小）。",
+    "实际内力：力偶矢量沿弧长恒定，分解到截面局部轴上得扭矩 \\(T(\\varphi)=\\dfrac{M}{\\sqrt2}(\\cos\\varphi-\\sin\\varphi)\\) 与弯矩 \\(M_b(\\varphi)=\\dfrac{M}{\\sqrt2}(\\cos\\varphi+\\sin\\varphi)\\)，出平面方向的弯矩分量为零。",
+    "单位荷载：在 \\(B\\) 点沿 \\(z\\) 方向加单位力，由截面至 \\(B\\) 的矢量与单位力求矩，得单位内力：弯矩 \\(\\overline{M}_b(\\varphi)=-R\\sin\\varphi\\)，扭矩 \\(\\overline{T}(\\varphi)=R(1-\\cos\\varphi)\\)。",
+    "莫尔积分：\\(\\Delta_{Bz}=\\int_0^{\\pi}\\left[\\dfrac{M_b\\overline{M}_b}{EI}+\\dfrac{T\\overline{T}}{GI_p}\\right]R\\,\\mathrm{d}\\varphi\\)。",
+    "弯曲项：\\(-\\dfrac{MR^2}{\\sqrt2\\,EI}\\int_0^{\\pi}(\\cos\\varphi+\\sin\\varphi)\\sin\\varphi\\,\\mathrm{d}\\varphi=-\\dfrac{MR^2}{\\sqrt2\\,EI}\\cdot\\dfrac{\\pi}{2}\\)（用到 \\(\\int_0^{\\pi}\\sin\\varphi\\cos\\varphi\\,\\mathrm{d}\\varphi=0\\)、\\(\\int_0^{\\pi}\\sin^2\\varphi\\,\\mathrm{d}\\varphi=\\dfrac{\\pi}{2}\\)）。",
+    "扭转项：\\(\\dfrac{MR^2}{\\sqrt2\\,GI_p}\\int_0^{\\pi}(\\cos\\varphi-\\sin\\varphi)(1-\\cos\\varphi)\\,\\mathrm{d}\\varphi=\\dfrac{MR^2}{\\sqrt2\\,GI_p}\\cdot\\left(-\\dfrac{\\pi}{2}-2\\right)\\)（用到 \\(\\int_0^{\\pi}\\cos\\varphi\\,\\mathrm{d}\\varphi=0\\)、\\(\\int_0^{\\pi}\\cos^2\\varphi\\,\\mathrm{d}\\varphi=\\dfrac{\\pi}{2}\\)、\\(\\int_0^{\\pi}\\sin\\varphi\\,\\mathrm{d}\\varphi=2\\)）。",
+    "合计：\\(\\Delta_{Bz}=-\\dfrac{MR^2}{2\\sqrt2}\\left[\\dfrac{\\pi}{EI}+\\dfrac{\\pi+4}{GI_p}\\right]\\)。负号表示位移方向与所设单位力方向（\\(+z\\)) 相反，即 \\(B\\) 点沿 \\(-z\\) 方向移动，位移大小为 \\(\\dfrac{MR^2}{2\\sqrt2}\\left[\\dfrac{\\pi}{EI}+\\dfrac{\\pi+4}{GI_p}\\right]\\)。"
    ],
    "figures": [
     "q807-2025-06.png"
