@@ -1,0 +1,49 @@
+# 变更记录 · 2026-11-15 全栈升级
+
+本日改动由站点所有者提出需求、Muse 实施，经 GitHub 提交至 master 并由 Cloudflare Pages 自动部署。
+提交哈希为短哈希，完整记录以仓库 git log 为准。部署后均以 `GET /api/health` 验证（`smsDevCode:false`、AI 通道正常）。
+
+## 1. AI 批改优化（第一批，提交 38029b7 / 5c9aa41 / c4bb0c6 等）
+- `functions/_lib/prompts.js` 重写：按学科分系统提示词（数学逐步给分、807 四维评分含协调方程与量级检查、政治采分点、英语意群切分与作文分档 rubric）；新增两段式手写转写 `TRANSCRIBE_SYSTEM` 与结构化解析 `SOLUTION_SYSTEM`；统一输出契约含分步得分明细（breakdown 之和须等于总分）。
+- `functions/_lib/platform.js` 的 `grade()`：非客观题照片批改先转写再批改；分数越界改为钳制并告警（原实现直接抛错）；返回新增 `transcript`、`breakdown` 字段；客观题仍以参考答案强制复核。
+- `skills/import-questions/SKILL.md` 与生成的 `functions/_lib/import-prompt.js` 升级抽题规范（逐题转写、逐题自解核对、答案存疑单列、每题必写解析）。
+- `scoring.js` 审查后不改动。
+
+## 2. 套卷分析页（第一批，提交 980c1ca / ea0c007 / 42b4d68 / 1fcfe59）
+- 新增 `analytics.html` + `assets/analytics.js/css`：零新增后端，基于 `GET /api/attempts` 聚合历次套卷（错题号、知识点、薄弱榜、题型得分率、规则化建议），可调 `/api/coach` 做 AI 总结。首页与刷题页加入口。
+- ⚠ **已知事故**：该页当时漏登记进 `scripts/build-pages.mjs` 的 FILES 白名单，页面文件虽在仓库中，但未被复制进 dist，线上实际不可达；本日工作流批次已修复并加双重拦截（见 §8）。
+
+## 3. 自建科目 + 资料分类（第二批，后端随第一批 platform.js，前端提交 0fb17ed / 059b047 / fda673a / a4a104c / 33819bf）
+- 新增 D1 表 `platform_subjects` 与接口 `functions/api/subjects/index.js`（GET/POST/DELETE `/api/subjects`）：任意用户可建自己的考试科目（id 形如 `u-xxxxxxxx`），资料上传、抽题导入、套卷作答的服务端校验由「内置科目集合」改为「内置 ∪ 本人自建」。
+- 资料库上传新增自定义「分类」字段（D1 `platform_files.category`，列表可筛选、输入有历史分类候选）。
+- 前端：资料页科目下拉新增「＋ 新建我的科目…」；档案保存后自动把自定义专业课同步为自建科目；刷题页自动识别个人题的自建科目并显示其名称。
+
+## 4. 院校专业目录扩充·华工批（第三批，提交 8029e5a）
+- `functions/_lib/programs.js` 由 6 条增至 19 条：新增华南理工大学 13 个专业（020200、080500、085600、085601、081200、085404、080900、081000、081100、083500、085405、080800、085801），考试科目据研招网 2027 年硕士专业目录逐条核查（华工共 103 个专业，未登录仅可见前 10 个，其余待登录态分批补）；按方向不同的业务课二以占位 + note 写明对应关系，不编造组合。
+
+## 5. 视觉统一·地基与第一批接入（第三、四批，提交 37ae849 / b8036c2 / 792f403 / 7859f3a / 6910ebe）
+- 新增 `assets/theme.css`：全站设计令牌（纸墨色板、字阶、间距、圆角、阴影、动效曲线、统一页眉高度）与共享组件（`.top` 页眉、`.btn`、`.card`、表单、入场动画、减少动态偏好）。
+- 首页、资料页、套卷分析页已接入；资料页与套卷分析页页眉换为统一 `.top` 组件。其余页面（刷题/题库/词汇/时间线/登录）待后续批次收敛。
+
+## 6. 首页 AI 向导 + 教练向导模式（提交 8c5c884，及前端批次）
+- `prompts.js` 新增 `GUIDE_SYSTEM`：向导「小观」双职责——功能引导（内置完整站内地图，只按地图答、不编造功能）与解题答疑（与批改同口径：考点先行、逐步推导、结论自检、照片先转述题干）。
+- `platform.js` 的 coach：`context.source === 'home-guide'` 时走真实多轮消息（最近 20 轮），用户消息可带 `images`（≤3 张 data URL，服务端 `validImage` 校验）；其余来源行为不变。
+- 前端新增 `assets/guide.js/css`：首页右下悬浮入口、对话面板、快捷问法、图片上传（浏览器端压缩至 1280px 后发送）、公式渲染对接 KaTeX。
+
+## 7. 新手功能引导（前端批次）
+- 新增 `assets/onboarding.js/css`，首页接入：新账号首次进入强制 7 步引导（不可点遮罩关闭），每一步提供「我是老手，跳过教程」；完成/跳过状态存服务端 `state/onboarding`（按账号，换设备不重复）；顶栏新增「功能引导」按钮可重看，`?tour=1` 亦可触发。
+
+## 8. 全栈工作流优化（本批）
+- **修复**：`scripts/build-pages.mjs` 的 FILES 补入 `analytics.html`，并新增防漏校验——根目录任何 `.html` 未登记即构建失败；`scripts/check.mjs` 同步拦截。
+- 新增 `scripts/check.mjs`（`npm run check`）：functions/assets 全量 JS 语法检查 + 题库 JSON 合法性与缺答案/缺解析统计 + 页面登记检查。
+- 新增 `package.json`：统一命令入口（build / build:questions / check / dev / release）。
+- 新增 GitHub Actions：`validate.yml`（push/PR 自检 + 构建演练）、`build-questions.yml`（题库源变更自动重建 `assets/questions.js` 并回提交）。
+- 新增 `.gitignore`（与 AGENTS.md 禁止提交清单一致）。
+- 文档：新增 `docs/全栈工作流.md`、`docs/功能说明.md`、本文件；README 与 AGENTS 增补索引与新约定。
+
+## 9. 题库补缺与勘误·数学二（题库批次）
+- 数学二 42 道缺解析真题（2009–2024）逐题独立求解补写 steps，重建 `assets/questions.js`（总数不变 5,916；数二缺解析归零）。
+- 勘误 2 处（已改正并验算）：`math2-2024-20` 原答案两问错误且自相矛盾，正确为 (Ⅰ) ∂²f/∂u∂v = 1/25，(Ⅱ) f(u,v) = (1/25)uv − (u+1)e^(−u) + (1/50)v²；`math2-2018-23` 原答案 (Ⅱ) 缺失，已补全 P 的通式（k₂≠k₃）。其余 40 题答案验算无误。
+
+## 10. AI 通道诊断结论（未改配置）
+- 生产 `AI_BASE_URL` 配置完整（wrangler.toml [vars] 含 `/compatible-mode/v1`），key 直连上游自测正常；`platform.js` 的 `ai()` 另加了「裸域名自动补路径」兜底。站内 AI 若仍有个别功能报错，按 `docs/全栈工作流.md` §5 的顺序定位具体流程，不要先动 key。
