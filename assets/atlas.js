@@ -517,6 +517,21 @@
 
   function openReader(id, kpId, fromRoute) {
     if (!id) return;
+    if (/^custom-.+-intro$/.test(id)) {
+      const subject = SUBJECTS.find(s => id === s.id + "-intro");
+      const name = subject ? subject.name : "自定义专业课";
+      readerToc.innerHTML = "";
+      readerCrumb.innerHTML = `<b>${esc(name)}</b><span class="sep">/</span><span>专业课</span>`;
+      readerDownload.hidden = true;
+      readerArticle.innerHTML = `<section class="cover"><div class="ekicker">PROFESSIONAL</div><h1>${esc(name)}</h1><p class="cover-sub">这门专业课的章节内容还没有录入。可以先把讲义或真题上传到资料库，用 AI 抽题后加入个人题库；录入章节后会自动出现在这里。</p><p><a class="btn" href="library.html">打开资料库</a> <a class="btn ghost" href="practice.html">去刷题</a></p></section>`;
+      readerEl.scrollTop = 0;
+      readerEl.classList.add("open");
+      readerEl.setAttribute("aria-hidden", "false");
+      document.body.classList.add("reader-open");
+      document.title = name + " · 考研科目大观";
+      history.replaceState(null, "", "#read=" + id);
+      return;
+    }
     ensureChapter(id, ch => showReader(ch, kpId || null, !!fromRoute), () => {
       readerToc.innerHTML = "";
       readerArticle.innerHTML = `<section class="cover"><h1>讲义加载失败</h1><p class="cover-sub">找不到 web/${esc(id)}.js，请重新运行 py src/build/build_web.py。</p></section>`;

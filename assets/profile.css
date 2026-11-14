@@ -1,0 +1,46 @@
+dialog.profile-dialog { border: 0; padding: 0; background: transparent; width: min(560px, 94vw); max-width: 94vw; max-height: none; margin: auto; }
+dialog.profile-dialog::backdrop { background: rgba(20, 18, 23, .45); backdrop-filter: blur(3px); }
+.profile-card, .profile-card *, .profile-card *::before, .profile-card *::after { box-sizing: border-box; }
+.profile-card { background: var(--paper, #F7F2E8); color: var(--ink, #1b1a1f);
+  border: 1px solid var(--rule, #d8cfc0); border-radius: 10px; box-shadow: 0 24px 70px rgba(0, 0, 0, .28);
+  overflow: hidden; display: flex; flex-direction: column; max-height: min(86vh, 820px); }
+.profile-head { display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px;
+  border-bottom: 1px solid var(--rule, #d8cfc0); background: rgba(255, 255, 255, .5); }
+.profile-head b { font: 600 16px/1.3 var(--serif, serif); display: block; }
+.profile-head span { display: block; margin-top: 3px; font-size: 11.5px; color: var(--ink-3, #6b6b6b); }
+.profile-close { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; font-size: 20px; line-height: 1; color: var(--ink-2, #555); }
+.profile-close:hover { background: rgba(0, 0, 0, .06); }
+.profile-body { padding: 16px 18px 6px; overflow-y: auto; }
+.pf-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; font-size: 12px; color: var(--ink-2, #4a4750); }
+.pf-field input, .pf-field select { padding: 8px 10px; border: 1px solid var(--rule, #d8cfc0); border-radius: 6px;
+  background: #fffdf8; color: inherit; font: 13px/1.5 var(--sans, sans-serif); outline: none; }
+.pf-field input:focus, .pf-field select:focus { border-color: var(--accent, #1F3A5F); box-shadow: 0 0 0 3px rgba(31, 58, 95, .08); }
+.pf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pf-subjects { border: 1px solid var(--rule, #d8cfc0); border-radius: 7px; padding: 10px 12px 6px; margin: 2px 0 10px; }
+.pf-subjects legend { font-size: 11.5px; color: var(--ink-3, #6b6b6b); padding: 0 4px; }
+.pf-check { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 13px; color: var(--ink-2, #3a3840); }
+.pf-check input { accent-color: var(--accent, #1F3A5F); }
+.pf-check select { margin-left: auto; padding: 4px 6px; border: 1px solid var(--rule, #d8cfc0);
+  border-radius: 4px; background: #fffdf8; color: inherit; font-size: 12px; outline: none; }
+.pf-custom { border: 1px solid var(--rule, #d8cfc0); border-radius: 7px; padding: 10px 12px 8px; margin: 2px 0 12px; }
+.pf-custom legend { font-size: 11.5px; color: var(--ink-3, #6b6b6b); padding: 0 4px; }
+.pf-custom-row { display: grid; grid-template-columns: minmax(0, 1fr) 80px 86px 28px; gap: 6px; margin-bottom: 7px; align-items: center; }
+.pf-custom-row input, .pf-custom-row select { padding: 6px 8px; border: 1px solid var(--rule, #d8cfc0); border-radius: 5px;
+  background: #fffdf8; color: inherit; font: 12px/1.4 var(--sans, sans-serif); outline: none; min-width: 0; }
+.pf-custom-row input:focus, .pf-custom-row select:focus { border-color: var(--accent, #1F3A5F); }
+.pf-remove { width: 28px; height: 28px; border-radius: 50%; color: #8c2f26; font-size: 17px; line-height: 1; }
+.pf-remove:hover { background: rgba(140, 47, 38, .08); }
+.pf-add { margin-top: 2px; font-size: 12px; color: var(--accent, #1F3A5F); border-bottom: 1px dashed currentColor; }
+.pf-hint { font-size: 11px; color: var(--ink-3, #8a7d6b); margin: 4px 0 10px; line-height: 1.6; }
+.profile-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+  padding: 12px 18px 14px; border-top: 1px solid var(--rule, #d8cfc0); background: rgba(255, 255, 255, .45); }
+.pf-error { margin-right: auto; color: #8c2f26; font-size: 12px; }
+.profile-hint { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 6;
+  display: flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px;
+  background: rgba(255, 253, 248, .94); border: 1px solid var(--rule, #d8cfc0);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .08); font-size: 12px; color: var(--ink-2, #4a4750); white-space: nowrap; }
+.profile-hint button { color: var(--accent, #1F3A5F); border-bottom: 1px dashed currentColor; font-size: 12px; }
+@media (max-width: 560px) {
+  .pf-row { grid-template-columns: 1fr; gap: 0; }
+  .profile-hint { top: 8px; font-size: 11px; padding: 6px 10px; max-width: 94vw; white-space: normal; }
+}
