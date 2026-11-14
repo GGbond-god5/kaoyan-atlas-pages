@@ -124,3 +124,15 @@ git switch -c codex/<主题>        # 或 claude/<主题>
 - 默认端点仍是千问平台 `https://maas.qianwenaiapi.com/compatible-mode/v1`
   （`platform.qianwenai.com` 的 OpenAI 兼容接口，Key 沿用 `DASHSCOPE_API_KEY`）；不要接来历不明的中转
 - `platform_*` 系列 D1 表由接口在首次调用时自动创建，不需要手工迁移
+
+## 2026-11-15 增补约定
+
+- **新增根目录页面必须同步登记** `scripts/build-pages.mjs` 的 `FILES`，否则不会进 dist、线上 404；
+  构建脚本与 `scripts/check.mjs` 已对此双重拦截，不要绕过校验。
+- 提交前跑 `npm run check`（JS 语法 + 题库 JSON + 页面登记）；题库源改动可依赖
+  `build-questions` Action 自动重建 `assets/questions.js`，或本地 `npm run build:questions` 后一并提交。
+- 视觉令牌只改 `assets/theme.css`；新页面默认接 theme 并用统一页眉 `.top`。
+- 首页 AI 向导的人设与站内地图在 `functions/_lib/prompts.js` 的 `GUIDE_SYSTEM`；
+  站内功能增删时同步更新这份地图与 `docs/功能说明.md`，否则向导会给出错指引。
+- 批改/教练提示词变更后，旧 attempt 命中 D1 缓存不重批，验证必须用新作答。
+- 本日全部改动与事故记录见 `docs/CHANGELOG-2026-11-15.md`，工作流见 `docs/全栈工作流.md`。
