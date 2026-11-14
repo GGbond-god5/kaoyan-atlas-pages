@@ -1,0 +1,15 @@
+# Pages 默认给静态资源 max-age=0，每次访问都要回源验证一遍。
+# 站点自己的资源都带 ?v= 版本号，所以允许浏览器先用手上的副本，
+# 同时在后台悄悄校验，避免长时间拿不到更新。
+
+/assets/*
+  Cache-Control: public, max-age=300, stale-while-revalidate=604800
+
+/content/*
+  Cache-Control: public, max-age=300, stale-while-revalidate=604800
+
+/pdf/*
+  Cache-Control: public, max-age=300, stale-while-revalidate=604800
+
+/*.html
+  Cache-Control: no-cache

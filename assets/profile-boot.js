@@ -61,7 +61,7 @@
     if (window.__atlasMapLoaded) return;
     window.__atlasMapLoaded = true;
     const script = document.createElement("script");
-    script.src = "assets/atlas.js?v=21";
+    script.src = "assets/atlas.js?v=22";
     script.onload = () => {
       if (window.AtlasProfile) window.AtlasProfile.afterMap();
     };
@@ -273,15 +273,18 @@
     if (stage) stage.appendChild(hint);
   }
 
+  function loadProfile() {
+    if (window.__profilePromise) {
+      return Promise.resolve(window.__profilePromise).then(data => (data && data.profile) || null).catch(() => null);
+    }
+    return fetch("/api/profile", { credentials: "include" })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => (data && data.profile) || null)
+      .catch(() => null);
+  }
+
   async function boot() {
-    let profile = null;
-    try {
-      const res = await fetch("/api/profile", { credentials: "include" });
-      if (res.ok) {
-        const data = await res.json();
-        profile = data.profile || null;
-      }
-    } catch (e) { /* 离线或接口不可用时按完整图谱展示 */ }
+    const profile = await loadProfile();
     window.ATLAS_PROFILE = profile;
     window.__profileBoot = { hasProfile: !!profile, isDefault: !!(profile && profile.isDefault) };
     if (profile) applyProfile(profile);

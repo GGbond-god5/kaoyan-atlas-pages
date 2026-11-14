@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="assets/transitions.css?v=2">
 <script>if(/[?&]motion=0/.test(location.search))document.documentElement.classList.add("motion-off");</script>
+<script>
+/* 档案请求与后续脚本并行：图谱要等这两个都到齐才能画 */
+window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then(r => r.ok ? r.json() : null).catch(() => null);
+</script>
+<link rel="preload" as="script" href="assets/atlas.js?v=22">
 <title>考研科目大观 · 2027 · 华南理工 085500</title>
 <meta name="description" content="数学一、英语一、807 材料力学、政治：考点、真题与专题的交互式阅读图谱，支持页内阅读与 PDF 下载。">
 <link rel="stylesheet" href="assets/atlas.css?v=18">
@@ -96,17 +101,28 @@
   </div>
 </div>
 
-<script src="assets/katex/katex.min.js"></script>
-<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/katex-loader.js?v=1"></script>
 <script src="assets/config.js?v=2027-11-07"></script>
 <script src="assets/data.js?v=16"></script>
 <script src="assets/lazy-index.js"></script>
 <script src="assets/user-state.js"></script>
 <script src="assets/assessment.js?v=6"></script>
-<script src="assets/profile-boot.js?v=7"></script>
-<script src="assets/lazy.js?v=7"></script>
+<script src="assets/profile-boot.js?v=8"></script>
+<script src="assets/lazy.js?v=8"></script>
 <script src="assets/auth-nav.js?v=2"></script>
 <script src="assets/site-tools.js"></script>
-<script defer src="assets/remotion/atlas-player.js?v=2"></script>
+<script>
+/* 播放器体量大，等首屏画完、空闲时再取，避免和首屏脚本抢带宽 */
+(function () {
+  var start = function () {
+    var s = document.createElement('script');
+    s.src = 'assets/remotion/atlas-player.js?v=3';
+    s.async = true;
+    document.body.appendChild(s);
+  };
+  if (window.requestIdleCallback) requestIdleCallback(start, { timeout: 1800 });
+  else setTimeout(start, 1000);
+})();
+</script>
 </body>
 </html>

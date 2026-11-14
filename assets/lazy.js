@@ -389,6 +389,7 @@
   }
 
   function renderMath(el) {
+    if (window.AtlasKatex) { window.AtlasKatex.render(el); return; }
     if (!window.renderMathInElement) return;
     try {
       window.renderMathInElement(el, {

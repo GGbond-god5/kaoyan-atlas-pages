@@ -458,6 +458,7 @@
   }
 
   function renderMathIn(root) {
+    if (window.AtlasKatex) { window.AtlasKatex.render(root); return; }
     if (!window.renderMathInElement) return;
     try {
       window.renderMathInElement(root, {

@@ -12,6 +12,7 @@ const FILES = [
   "login.html",
   "register.html",
   "library.html",
+  "_headers",
 ];
 
 const DIRS = ["assets", "web", "content", "pdf"];
