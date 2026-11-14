@@ -1,0 +1,35 @@
+name: build-questions
+
+# 题库源（src/bank、src/chapters）变更后，自动重建生成物 assets/questions.js 并回提交，
+# 免去人工跑 Python 再单独提交大文件的步骤。只监听源文件路径，回提交只动 questions.js，不会循环触发。
+on:
+  push:
+    branches: [master]
+    paths:
+      - "src/bank/**"
+      - "src/chapters/**"
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 重建 assets/questions.js
+        run: python3 src/build/build_questions.py
+      - name: 有变化才回提交
+        run: |
+          if git diff --quiet -- assets/questions.js; then
+            echo "questions.js 无变化，跳过"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/questions.js
+          git commit -m "chore: 自动重建 questions.js [skip actions]"
+          git push
