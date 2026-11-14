@@ -977,7 +977,9 @@
   async function bootstrap() {
     await window.AtlasUser.ready; DB_NAME = window.AtlasUser.key("atlas-practice-photos");
     store = await window.AtlasUser.load("practice", {rec:{}}) || {rec:{}}; if (!store.rec) store.rec = {};
-    try { const data = await window.AtlasUser.json("/api/personal/questions", "GET"); ITEMS.push(...(data.items || []).map(q => ({...q, _bank:"private"}))); } catch (err) { console.error("个人题库加载失败", err); }
+    try { const data = await window.AtlasUser.json("/api/personal/questions", "GET"); const mine = (data.items || []).map(q => ({...q, _bank:"private"}));
+      mine.forEach(q => { if (q.subject && !SUBJECT_NAMES[q.subject]) { SUBJECT_NAMES[q.subject] = q.subjectName || q.subject; SUBJECTS.push({id:q.subject, name:SUBJECT_NAMES[q.subject], count:0}); } });
+      ITEMS.push(...mine); } catch (err) { console.error("个人题库加载失败", err); }
     init();
   }
   bootstrap().catch(err => { $("#pintro").textContent = `加载失败：${err.message}`; $("#pstart").disabled = true; });
