@@ -65,3 +65,4 @@
 - 题库分片加速：scripts/build-pages.mjs 构建时把 questions.js 按科目拆为 assets/questions/<科目>.js + manifest.json（dist 不再带整包）；新增 assets/questions-loader.js 按需加载，practice.js 改为分片注入（深链科目/错题复习全量/默认数学一先行，其余空闲后台补齐，开始练习前强制补齐当前范围）。
 - 学习计划生成器：新增 assets/plan.js + plan.css，首页左下角改为卡片栈（计划卡 + 今日任务卡）；计划存 state 'plan'（platform.js 白名单新增 plan 命名空间），按档案与套卷表现加权分配每日时长，7 天滚动生成。
 - 错题本：新增 wrongbook.html（已登记 build-pages FILES）+ assets/wrongbook.js/css，数据来自 practice state 的 rec 与题库分片（全量加载）+ 个人题；practice.html 开始行加导出入口。
+- 文档状态同步：功能说明新增「项目状态总览」（题库校核补缺标注为已解决并列明三处残余、产品化三层与当日功能清单、目录导入进行中、两项待决策）；README 页面一览补齐套卷分析/社区/错题本/设置/管理台并修正头像入口与题量；全栈工作流的院校目录条目改写为全国目录抓取方案。
