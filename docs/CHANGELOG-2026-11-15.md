@@ -64,3 +64,4 @@
 - 档案院校目录选择器上线（profile-boot v12，提交 7181d12）：静态分片目录优先、/api/programs 回退；全国目录抓取器（~/workspace/catalog-crawl）用院校库枚举+zsml 全名回查方案，北京 148/148 验证通过，全量抓取中。
 - 题库分片加速：scripts/build-pages.mjs 构建时把 questions.js 按科目拆为 assets/questions/<科目>.js + manifest.json（dist 不再带整包）；新增 assets/questions-loader.js 按需加载，practice.js 改为分片注入（深链科目/错题复习全量/默认数学一先行，其余空闲后台补齐，开始练习前强制补齐当前范围）。
 - 学习计划生成器：新增 assets/plan.js + plan.css，首页左下角改为卡片栈（计划卡 + 今日任务卡）；计划存 state 'plan'（platform.js 白名单新增 plan 命名空间），按档案与套卷表现加权分配每日时长，7 天滚动生成。
+- 错题本：新增 wrongbook.html（已登记 build-pages FILES）+ assets/wrongbook.js/css，数据来自 practice state 的 rec 与题库分片（全量加载）+ 个人题；practice.html 开始行加导出入口。
