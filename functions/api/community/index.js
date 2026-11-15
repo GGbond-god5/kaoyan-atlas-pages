@@ -23,6 +23,29 @@ function parseJson(s) {
   try { return JSON.parse(s); } catch { return null; }
 }
 
+async function ensureSocial(env) {
+  const db = await getDb(env);
+  if (!db) return;
+  await db.prepare("CREATE TABLE IF NOT EXISTS platform_share_likes (share_id TEXT NOT NULL, uid TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (share_id, uid))").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS platform_share_comments (id TEXT PRIMARY KEY, share_id TEXT NOT NULL, uid TEXT NOT NULL, text TEXT NOT NULL, created_at TEXT NOT NULL)").run();
+}
+
+async function avatarMap(db, uids) {
+  const map = new Map();
+  const ids = [...new Set(uids.filter(Boolean))];
+  if (!ids.length) return map;
+  try {
+    const rows = await db
+      .prepare(`SELECT uid, data FROM user_profiles WHERE uid IN (${ids.map(() => "?").join(",")})`)
+      .bind(...ids)
+      .all();
+    for (const r of rows.results || []) {
+      try { const p = JSON.parse(r.data); map.set(r.uid, { motto: p.motto || "", avatarAt: p.avatarAt || 0 }); } catch (_) { /* 忽略损坏档案 */ }
+    }
+  } catch (_) { /* user_profiles 尚未创建时忽略 */ }
+  return map;
+}
+
 const fileOut = (f) => ({
   id: f.id, name: f.name, subject: f.subject, category: f.category || "",
   size: f.size, status: f.status, createdAt: f.created_at,
@@ -34,6 +57,26 @@ export async function onRequestGet({ request, env }) {
   const db = await getDb(env);
   if (!db) return fail(503, "数据库未配置");
   const uid = gate.user.id;
+  await ensureSocial(env);
+  const wantComments = new URL(request.url).searchParams.get("comments");
+  if (wantComments) {
+    try {
+      const rows = await db
+        .prepare("SELECT c.*, u.nickname AS author FROM platform_share_comments c JOIN users u ON u.id = c.uid WHERE c.share_id=? ORDER BY c.created_at ASC LIMIT 200")
+        .bind(wantComments)
+        .all();
+      const profs = await avatarMap(db, (rows.results || []).map((r) => r.uid));
+      return ok({
+        comments: (rows.results || []).map((c) => ({
+          id: c.id, text: c.text, createdAt: c.created_at, author: c.author || "同学",
+          authorUid: c.uid, authorAvatarAt: (profs.get(c.uid) || {}).avatarAt || 0, mine: c.uid === uid,
+        })),
+      });
+    } catch (err) {
+      console.error("[community] 评论读取失败", err);
+      return fail(500, "评论读取失败");
+    }
+  }
   try {
     const shareRows = await db
       .prepare("SELECT s.*, u.nickname AS owner_name FROM platform_shares s JOIN users u ON u.id = s.uid ORDER BY s.created_at DESC LIMIT 100")
@@ -60,6 +103,12 @@ export async function onRequestGet({ request, env }) {
         }
       } catch (_) { /* user_profiles 尚未创建时忽略 */ }
     }
+    const likeRows = await db.prepare("SELECT share_id, COUNT(*) AS n FROM platform_share_likes GROUP BY share_id").all();
+    const likeMap = new Map((likeRows.results || []).map((r) => [r.share_id, r.n]));
+    const myLikeRows = await db.prepare("SELECT share_id FROM platform_share_likes WHERE uid=?").bind(uid).all();
+    const myLikes = new Set((myLikeRows.results || []).map((r) => r.share_id));
+    const ccRows = await db.prepare("SELECT share_id, COUNT(*) AS n FROM platform_share_comments GROUP BY share_id").all();
+    const ccMap = new Map((ccRows.results || []).map((r) => [r.share_id, r.n]));
     const myImported = new Set(myFiles.filter((f) => f.id.startsWith("share-")).map((f) => f.id.slice(6)));
     const shareByFile = new Map();
     const shares = [];
@@ -77,6 +126,9 @@ export async function onRequestGet({ request, env }) {
         ownerMotto: (profileMap.get(s.uid) || {}).motto || "",
         ownerAvatarAt: (profileMap.get(s.uid) || {}).avatarAt || 0,
         mine: s.uid === uid,
+        likeCount: likeMap.get(s.id) || 0,
+        liked: myLikes.has(s.id),
+        commentCount: ccMap.get(s.id) || 0,
         questions: countMap.get(`${s.uid}|${s.file_id}`) || 0,
         imported: myImported.has(s.id),
       });
@@ -101,6 +153,7 @@ export async function onRequestPost({ request, env }) {
   const uid = gate.user.id;
   const body = await readJson(request).catch(() => null);
   const action = String(body?.action || "");
+  await ensureSocial(env);
   try {
     if (action === "share") {
       const fileId = String(body.fileId || "");
@@ -154,6 +207,35 @@ export async function onRequestPost({ request, env }) {
       }
       await db.prepare("UPDATE platform_shares SET imports=imports+1 WHERE id=?").bind(share.id).run();
       return ok({ imported, fileId: myFileId });
+    }
+    if (action === "like") {
+      const id = String(body.id || "");
+      const share = await db.prepare("SELECT id FROM platform_shares WHERE id=?").bind(id).first();
+      if (!share) return fail(404, "分享不存在或已取消");
+      const had = await db.prepare("SELECT share_id FROM platform_share_likes WHERE share_id=? AND uid=?").bind(id, uid).first();
+      if (had) {
+        await db.prepare("DELETE FROM platform_share_likes WHERE share_id=? AND uid=?").bind(id, uid).run();
+      } else {
+        await db.prepare("INSERT INTO platform_share_likes (share_id, uid, created_at) VALUES (?,?,?)").bind(id, uid, new Date().toISOString()).run();
+      }
+      const cnt = await db.prepare("SELECT COUNT(*) AS n FROM platform_share_likes WHERE share_id=?").bind(id).first();
+      return ok({ liked: !had, likeCount: cnt?.n || 0 });
+    }
+    if (action === "comment") {
+      const id = String(body.id || "");
+      const text = String(body.text || "").trim().slice(0, 300);
+      if (!text) return fail(400, "评论不能为空");
+      const share = await db.prepare("SELECT id FROM platform_shares WHERE id=?").bind(id).first();
+      if (!share) return fail(404, "分享不存在或已取消");
+      const cid = crypto.randomUUID();
+      const now = new Date().toISOString();
+      await db.prepare("INSERT INTO platform_share_comments (id, share_id, uid, text, created_at) VALUES (?,?,?,?,?)").bind(cid, id, uid, text, now).run();
+      return ok({ comment: { id: cid, text, createdAt: now, author: gate.user.nickname || "同学", authorUid: uid, authorAvatarAt: 0, mine: true } }, 201);
+    }
+    if (action === "uncomment") {
+      const cid = String(body.commentId || "");
+      await db.prepare("DELETE FROM platform_share_comments WHERE id=? AND uid=?").bind(cid, uid).run();
+      return ok({});
     }
     return fail(400, "未知 action");
   } catch (err) {

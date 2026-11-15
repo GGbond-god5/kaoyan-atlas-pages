@@ -10,6 +10,7 @@
 <title>社区共享 · 考研科目大观</title>
 <link rel="stylesheet" href="assets/theme.css?v=1">
 <link rel="stylesheet" href="assets/panel.css?v=1">
+<link rel="stylesheet" href="assets/community.css?v=1">
   <link rel="stylesheet" href="assets/account-hub.css?v=1">
 </head>
 <body>
@@ -29,8 +30,22 @@
 
   <section class="card">
     <h2>共享广场</h2>
-    <p class="note">大家分享出来的资料与自建题集。导入后，资料会出现在你的「我的资料」里，题目会进入你的个人题库，可以直接在刷题页练习。</p>
+    <p class="note">大家分享出来的资料与自建题集。导入后，资料会出现在你的「我的资料」里，题目会进入你的个人题库，可以直接在刷题页练习。看好的分享可以点赞、留言交流。</p>
+    <div class="cm-toolbar">
+      <input class="cm-search" id="shareSearch" type="search" placeholder="搜索标题、说明、分享者…" autocomplete="off">
+      <div class="cm-chips" id="subjectChips"></div>
+    </div>
     <div id="shareList"><p class="note">正在加载…</p></div>
+  </section>
+
+  <section class="card">
+    <h2>开发者交流 · GitHub</h2>
+    <p class="note">本站已开源。功能建议、题库勘误、开发讨论可以去 GitHub 仓库里提（需要 GitHub 账号）；站内交流用广场上的点赞和评论就好，不需要注册 GitHub。</p>
+    <div class="cm-gh-links">
+      <a class="btn ghost" href="https://github.com/GGbond-god5/kaoyan-atlas-pages" target="_blank" rel="noopener">仓库主页</a>
+      <a class="btn ghost" href="https://github.com/GGbond-god5/kaoyan-atlas-pages/discussions" target="_blank" rel="noopener">Discussions 讨论区</a>
+      <a class="btn ghost" href="https://github.com/GGbond-god5/kaoyan-atlas-pages/issues" target="_blank" rel="noopener">Issues 反馈与勘误</a>
+    </div>
   </section>
 
   <section class="card">
@@ -40,8 +55,31 @@
   </section>
 </main>
 
+<dialog class="cm-dialog" id="shareDialog">
+  <form method="dialog">
+    <h3>分享到广场</h3>
+    <label>分享标题<input type="text" id="shareTitle" maxlength="120" placeholder="给这份资料起个清楚的标题"></label>
+    <label>一句话说明<textarea id="shareNote" rows="3" maxlength="200" placeholder="比如：适用科目 / 来源 / 适合人群，可留空"></textarea></label>
+    <div class="cm-dialog-actions">
+      <button type="button" class="btn ghost" id="shareCancel">取消</button>
+      <button type="button" class="btn" id="shareSubmit">分享到广场</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="cm-dialog" id="confirmDialog">
+  <div class="cm-dialog-body">
+    <h3>请确认</h3>
+    <p id="confirmText"></p>
+    <div class="cm-dialog-actions">
+      <button type="button" class="btn ghost" id="confirmCancel">再想想</button>
+      <button type="button" class="btn" id="confirmOk">确定</button>
+    </div>
+  </div>
+</dialog>
+
 <script src="assets/user-state.js"></script>
-<script src="assets/community.js?v=2"></script>
+<script src="assets/community.js?v=3"></script>
 <script src="assets/pwa.js?v=1"></script>
 <script src="assets/account-hub.js?v=1"></script>
 </body>
