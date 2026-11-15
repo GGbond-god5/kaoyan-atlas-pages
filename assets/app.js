@@ -416,6 +416,85 @@
     $('#guidePreview').hidden = true;
     gAddMsg('assistant', GREETING);
   });
+  /* ---------- 小观对话历史：查看 / 继续 / 删除 / 清空 ---------- */
+  function fmtHistTime(ts) {
+    if (!ts) return '';
+    var d = new Date(ts), now = new Date();
+    var hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    if (d.toDateString() === now.toDateString()) return '今天 ' + hm;
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + hm;
+  }
+  function closeHistory() { $('#historyView').hidden = true; }
+  function resetGuideChat() {
+    gCid = null; gMsgs = []; gImage = null;
+    $('#guideMsgs').innerHTML = '';
+    $('#guidePreview').hidden = true;
+    gAddMsg('assistant', GREETING);
+  }
+  function openHistory() {
+    $('#historyView').hidden = false;
+    var box = $('#historyList');
+    box.innerHTML = '<div class="sub-loading">正在加载历史…</div>';
+    AtlasUser.json('/api/coach/list').then(function (r) {
+      var list = r.conversations || [];
+      if (!list.length) { box.innerHTML = '<div class="sub-loading">还没有历史对话。和 小观 聊过的内容会自动存到这里。</div>'; return; }
+      box.innerHTML = list.map(function (c) {
+        return '<div class="hist-row" data-hist="' + esc(c.id) + '"><div class="hist-main"><div class="hist-title">' + esc(c.title || '对话') + '</div>' +
+          '<div class="hist-meta">' + c.count + ' 条消息' + (c.updatedAt ? ' · ' + fmtHistTime(c.updatedAt) : '') + (c.id === gCid ? ' · 当前对话' : '') + '</div></div>' +
+          '<button type="button" class="btn-sub hist-del" data-hist-del="' + esc(c.id) + '">删除</button></div>';
+      }).join('');
+    }).catch(function (e) { box.innerHTML = '<div class="sub-loading">历史加载失败：' + esc(e.message || '') + '</div>'; });
+  }
+  function loadConversation(id) {
+    AtlasUser.json('/api/coach/' + encodeURIComponent(id)).then(function (d) {
+      var msgs = (d && d.messages) || [];
+      gCid = id; gMsgs = []; gImage = null;
+      $('#guideMsgs').innerHTML = '';
+      $('#guidePreview').hidden = true;
+      msgs.forEach(function (m) {
+        if (!m || (m.role !== 'user' && m.role !== 'assistant')) return;
+        gMsgs.push({ role: m.role, content: m.content || '', images: m.images });
+        gAddMsg(m.role, m.content || '', m.images && m.images[0]);
+      });
+      if (!gMsgs.length) gAddMsg('assistant', GREETING);
+      closeHistory();
+      toast('已打开这条对话，可以继续聊');
+    }).catch(function (e) { toast('打开失败：' + e.message); });
+  }
+  $('#guideHistoryBtn').addEventListener('click', openHistory);
+  $('#historyBack').addEventListener('click', closeHistory);
+  $('#historyList').addEventListener('click', function (e) {
+    var del = e.target.closest('[data-hist-del]');
+    if (del) {
+      e.stopPropagation();
+      var id = del.dataset.histDel;
+      showConfirm({ title: '删除这条对话？', text: '删除后无法恢复。', okText: '删除' }).then(function (okDel) {
+        if (!okDel) return;
+        AtlasUser.json('/api/coach/' + encodeURIComponent(id), 'DELETE').then(function () {
+          if (id === gCid) resetGuideChat();
+          openHistory();
+          toast('已删除');
+        }).catch(function (err) { toast('删除失败：' + err.message); });
+      });
+      return;
+    }
+    var row = e.target.closest('[data-hist]');
+    if (row) loadConversation(row.dataset.hist);
+  });
+  $('#historyClear').addEventListener('click', function () {
+    AtlasUser.json('/api/coach/list').then(function (r) {
+      var list = r.conversations || [];
+      if (!list.length) { toast('没有可清空的历史'); return; }
+      showConfirm({ title: '清空全部对话历史？', text: '共 ' + list.length + ' 条，删除后无法恢复。', okText: '全部删除' }).then(function (okAll) {
+        if (!okAll) return;
+        Promise.all(list.map(function (c) { return AtlasUser.json('/api/coach/' + encodeURIComponent(c.id), 'DELETE').catch(function () {}); })).then(function () {
+          resetGuideChat();
+          openHistory();
+          toast('历史已清空');
+        });
+      });
+    }).catch(function (e) { toast('操作失败：' + e.message); });
+  });
   $('#guideSend').addEventListener('click', function () { gSend(); });
   $('#guideInput').addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); gSend(); }
@@ -476,7 +555,7 @@
   });
   /* 浮层（子页面/阅读器/向导/弹窗）状态上报原生壳：系统返回键先关最上层浮层，而不是跳页 */
   function anyLayerOpen() {
-    return !$('#modalScrim').hidden || !$('#guideView').hidden || !$('#readerView').hidden || !$('#subView').hidden;
+    return !$('#modalScrim').hidden || !$('#historyView').hidden || !$('#guideView').hidden || !$('#readerView').hidden || !$('#subView').hidden;
   }
   function reportLayer() {
     if (window.AtlasApp && window.AtlasApp.setLayerOpen) { try { window.AtlasApp.setLayerOpen(anyLayerOpen()); } catch (e) {} }
@@ -484,6 +563,7 @@
   window.__atlasBack = function () {
     try {
       if (!$('#modalScrim').hidden) closeModal(null);
+      else if (!$('#historyView').hidden) closeHistory();
       else if (!$('#guideView').hidden) closeGuide();
       else if (!$('#readerView').hidden) { $('#readerView').hidden = true; document.body.style.overflow = ''; }
       else if (!$('#subView').hidden) { document.getElementById('subBack').click(); return true; }
@@ -494,7 +574,7 @@
   };
   if (window.MutationObserver) {
     var layerObserver = new MutationObserver(function () { reportLayer(); });
-    ['subView', 'readerView', 'guideView', 'modalScrim'].forEach(function (id) {
+    ['subView', 'readerView', 'guideView', 'modalScrim', 'historyView'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) layerObserver.observe(el, { attributes: true, attributeFilter: ['hidden'] });
     });

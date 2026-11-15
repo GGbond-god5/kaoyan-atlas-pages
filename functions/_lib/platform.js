@@ -404,9 +404,18 @@ async function dispatch(request,env,uid,action,params) {
       }
     } catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502, e.message); }
     await noteUsage(env, uid, 'coach');
-    const data={context:b.context,messages:[...b.messages,{role:'assistant',content:reply}]};
+    const data={context:b.context,messages:[...b.messages,{role:'assistant',content:reply}],updatedAt:Date.now()};
     await run(db,'INSERT INTO platform_coach VALUES (?,?,?) ON CONFLICT(uid,id) DO UPDATE SET data=excluded.data',uid,cid,JSON.stringify(data)); return ok({reply,conversationId:cid,references:refs.map(r=>r.title)});
   }
   if (action === 'coachItem' && method === 'GET') {const r=await row(db,'SELECT data FROM platform_coach WHERE uid=? AND id=?',uid,fid); return r ? ok(parse(r.data)) : notFound();}
+  if (action === 'coachItem' && method === 'DELETE') { await run(db,'DELETE FROM platform_coach WHERE uid=? AND id=?',uid,fid); return ok({deleted:true}); }
+  if (action === 'coachList' && method === 'GET') {
+    const rows = await all(db,'SELECT id,data FROM platform_coach WHERE uid=? ORDER BY rowid DESC LIMIT 50',uid);
+    const conversations = rows.map(r => { const d = parse(r.data) || {}; const msgs = Array.isArray(d.messages) ? d.messages : [];
+      const fu = msgs.find(m => m && m.role === 'user') || msgs[0] || {};
+      return { id: r.id, title: String(fu.content || '图片对话').replace(/\s+/g,' ').slice(0,60), count: msgs.length, updatedAt: d.updatedAt || 0, scene: (d.context && (d.context.scene || d.context.source)) || '' };
+    });
+    return ok({conversations});
+  }
   return fail(405,'方法不支持');
 }

@@ -218,6 +218,7 @@
   <div class="guide-top">
     <button class="reader-top-btn" id="guideBack" type="button">← 返回</button>
     <div class="guide-title"><b>小观 · AI 向导</b><small id="guideScene">功能引导 · 解题答疑</small></div>
+    <button class="reader-top-btn" id="guideHistoryBtn" type="button">历史</button>
     <button class="reader-top-btn" id="guideNew" type="button">新对话</button>
   </div>
   <div class="guide-msgs" id="guideMsgs"></div>
@@ -232,6 +233,16 @@
     <button type="button" class="guide-send" id="guideSend">发送</button>
     <input type="file" id="guideFile" accept="image/*" hidden>
   </div>
+</div>
+
+<!-- 小观对话历史：查看往期对话、继续聊、自助删除 -->
+<div class="guide-view history-view" id="historyView" hidden>
+  <div class="guide-top">
+    <button class="reader-top-btn" id="historyBack" type="button">← 返回</button>
+    <div class="guide-title"><b>对话历史</b><small>点一条继续聊，或删除记录</small></div>
+    <button class="reader-top-btn" id="historyClear" type="button">清空</button>
+  </div>
+  <div class="history-list" id="historyList"></div>
 </div>
 
 <nav class="app-tabs" id="appTabs">
@@ -258,6 +269,6 @@
 <script src="assets/questions-loader.js?v=1"></script>
 <script src="assets/katex-loader.js?v=1"></script>
 <script src="assets/plain-text.js?v=1"></script>
-<script src="assets/app.js?v=10"></script>
+<script src="assets/app.js?v=11"></script>
 </body>
 </html>
