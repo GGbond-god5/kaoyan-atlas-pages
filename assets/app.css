@@ -513,8 +513,8 @@ button { font-family: inherit; }
 /* 对话历史 */
 .history-view { z-index: 96; }
 .history-list { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-.hist-row { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; cursor: pointer; }
+.hist-row { display: flex; align-items: center; gap: 10px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 14px; padding: 12px 14px; cursor: pointer; }
 .hist-main { flex: 1; min-width: 0; }
 .hist-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hist-meta { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.hist-meta { color: var(--ink3); font-size: 12px; margin-top: 3px; }
 .hist-del { flex: none; }
