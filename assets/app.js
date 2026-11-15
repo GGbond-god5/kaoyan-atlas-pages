@@ -704,6 +704,7 @@
     if (isNaN(d)) return '';
     return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
   }
+  function cleanText(x) { var t = String(x == null ? '' : x); return window.AtlasPlain ? window.AtlasPlain.clean(t) : t; }
   function renderAttemptDetail(body) {
     var id = attemptDetailId;
     body.innerHTML = '<div class="sub-loading">正在加载详情…</div>';
