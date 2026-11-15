@@ -30,6 +30,14 @@ async function ensureSocial(env) {
   await db.prepare("CREATE TABLE IF NOT EXISTS platform_share_comments (id TEXT PRIMARY KEY, share_id TEXT NOT NULL, uid TEXT NOT NULL, text TEXT NOT NULL, created_at TEXT NOT NULL)").run();
 }
 
+async function ensurePosts(env) {
+  const db = await getDb(env);
+  if (!db) return;
+  await db.prepare("CREATE TABLE IF NOT EXISTS platform_posts (id TEXT PRIMARY KEY, uid TEXT NOT NULL, text TEXT NOT NULL, subject TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS platform_post_likes (post_id TEXT NOT NULL, uid TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (post_id, uid))").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS platform_post_comments (id TEXT PRIMARY KEY, post_id TEXT NOT NULL, uid TEXT NOT NULL, parent_id TEXT NOT NULL DEFAULT '', text TEXT NOT NULL, created_at TEXT NOT NULL)").run();
+}
+
 async function avatarMap(db, uids) {
   const map = new Map();
   const ids = [...new Set(uids.filter(Boolean))];
@@ -58,6 +66,59 @@ export async function onRequestGet({ request, env }) {
   if (!db) return fail(503, "数据库未配置");
   const uid = gate.user.id;
   await ensureSocial(env);
+  const qs = new URL(request.url).searchParams;
+  if (qs.get("feed")) {
+    try {
+      await ensurePosts(env);
+      const rows = await db
+        .prepare("SELECT p.*, u.nickname AS author FROM platform_posts p JOIN users u ON u.id = p.uid ORDER BY p.created_at DESC LIMIT 60")
+        .all();
+      const list = rows.results || [];
+      const profs = await avatarMap(db, list.map((r) => r.uid));
+      const likeRows = await db.prepare("SELECT post_id, COUNT(*) AS n FROM platform_post_likes GROUP BY post_id").all();
+      const likeMap = new Map((likeRows.results || []).map((r) => [r.post_id, r.n]));
+      const myLikeRows = await db.prepare("SELECT post_id FROM platform_post_likes WHERE uid=?").bind(uid).all();
+      const myLikes = new Set((myLikeRows.results || []).map((r) => r.post_id));
+      const ccRows = await db.prepare("SELECT post_id, COUNT(*) AS n FROM platform_post_comments GROUP BY post_id").all();
+      const ccMap = new Map((ccRows.results || []).map((r) => [r.post_id, r.n]));
+      return ok({
+        posts: list.map((p) => ({
+          id: p.id, text: p.text, subject: p.subject || "", createdAt: p.created_at,
+          author: p.author || "同学", authorUid: p.uid,
+          authorAvatarAt: (profs.get(p.uid) || {}).avatarAt || 0,
+          mine: p.uid === uid, likeCount: likeMap.get(p.id) || 0, liked: myLikes.has(p.id),
+          commentCount: ccMap.get(p.id) || 0,
+        })),
+      });
+    } catch (err) {
+      console.error("[community] 动态读取失败", err);
+      return fail(500, "动态读取失败");
+    }
+  }
+  const wantPostComments = qs.get("postComments");
+  if (wantPostComments) {
+    try {
+      await ensurePosts(env);
+      const rows = await db
+        .prepare("SELECT c.*, u.nickname AS author FROM platform_post_comments c JOIN users u ON u.id = c.uid WHERE c.post_id=? ORDER BY c.created_at ASC LIMIT 300")
+        .bind(wantPostComments)
+        .all();
+      const list = rows.results || [];
+      const byId = new Map(list.map((c) => [c.id, c]));
+      const profs = await avatarMap(db, list.map((r) => r.uid));
+      return ok({
+        comments: list.map((c) => ({
+          id: c.id, text: c.text, createdAt: c.created_at, parentId: c.parent_id || "",
+          parentAuthor: c.parent_id && byId.get(c.parent_id) ? (byId.get(c.parent_id).author || "同学") : "",
+          author: c.author || "同学", authorUid: c.uid,
+          authorAvatarAt: (profs.get(c.uid) || {}).avatarAt || 0, mine: c.uid === uid,
+        })),
+      });
+    } catch (err) {
+      console.error("[community] 动态评论读取失败", err);
+      return fail(500, "评论读取失败");
+    }
+  }
   const wantComments = new URL(request.url).searchParams.get("comments");
   if (wantComments) {
     try {
@@ -235,6 +296,60 @@ export async function onRequestPost({ request, env }) {
     if (action === "uncomment") {
       const cid = String(body.commentId || "");
       await db.prepare("DELETE FROM platform_share_comments WHERE id=? AND uid=?").bind(cid, uid).run();
+      return ok({});
+    }
+    if (action === "post") {
+      await ensurePosts(env);
+      const text = String(body.text || "").trim().slice(0, 500);
+      if (!text) return fail(400, "动态内容不能为空");
+      const subject = String(body.subject || "").trim().slice(0, 20);
+      const id = crypto.randomUUID();
+      const now = new Date().toISOString();
+      await db.prepare("INSERT INTO platform_posts (id, uid, text, subject, created_at) VALUES (?,?,?,?,?)").bind(id, uid, text, subject, now).run();
+      return ok({ post: { id, text, subject, createdAt: now, author: gate.user.nickname || "同学", authorUid: uid, authorAvatarAt: 0, mine: true, likeCount: 0, liked: false, commentCount: 0 } }, 201);
+    }
+    if (action === "postDelete") {
+      await ensurePosts(env);
+      const id = String(body.id || "");
+      const own = await db.prepare("SELECT id FROM platform_posts WHERE id=? AND uid=?").bind(id, uid).first();
+      if (!own) return fail(404, "动态不存在或不是你的");
+      await db.prepare("DELETE FROM platform_posts WHERE id=?").bind(id).run();
+      await db.prepare("DELETE FROM platform_post_likes WHERE post_id=?").bind(id).run();
+      await db.prepare("DELETE FROM platform_post_comments WHERE post_id=?").bind(id).run();
+      return ok({});
+    }
+    if (action === "postLike") {
+      await ensurePosts(env);
+      const id = String(body.id || "");
+      const post = await db.prepare("SELECT id FROM platform_posts WHERE id=?").bind(id).first();
+      if (!post) return fail(404, "动态不存在或已删除");
+      const had = await db.prepare("SELECT post_id FROM platform_post_likes WHERE post_id=? AND uid=?").bind(id, uid).first();
+      if (had) await db.prepare("DELETE FROM platform_post_likes WHERE post_id=? AND uid=?").bind(id, uid).run();
+      else await db.prepare("INSERT INTO platform_post_likes (post_id, uid, created_at) VALUES (?,?,?)").bind(id, uid, new Date().toISOString()).run();
+      const cnt = await db.prepare("SELECT COUNT(*) AS n FROM platform_post_likes WHERE post_id=?").bind(id).first();
+      return ok({ liked: !had, likeCount: cnt?.n || 0 });
+    }
+    if (action === "postComment") {
+      await ensurePosts(env);
+      const id = String(body.id || "");
+      const text = String(body.text || "").trim().slice(0, 300);
+      if (!text) return fail(400, "评论不能为空");
+      const post = await db.prepare("SELECT id FROM platform_posts WHERE id=?").bind(id).first();
+      if (!post) return fail(404, "动态不存在或已删除");
+      let parentId = String(body.parentId || "");
+      if (parentId) {
+        const parent = await db.prepare("SELECT id FROM platform_post_comments WHERE id=? AND post_id=?").bind(parentId, id).first();
+        if (!parent) parentId = "";
+      }
+      const cid = crypto.randomUUID();
+      const now = new Date().toISOString();
+      await db.prepare("INSERT INTO platform_post_comments (id, post_id, uid, parent_id, text, created_at) VALUES (?,?,?,?,?,?)").bind(cid, id, uid, parentId, text, now).run();
+      return ok({ comment: { id: cid, text, createdAt: now, parentId, parentAuthor: "", author: gate.user.nickname || "同学", authorUid: uid, authorAvatarAt: 0, mine: true } }, 201);
+    }
+    if (action === "postUncomment") {
+      await ensurePosts(env);
+      const cid = String(body.commentId || "");
+      await db.prepare("DELETE FROM platform_post_comments WHERE id=? AND uid=?").bind(cid, uid).run();
       return ok({});
     }
     return fail(400, "未知 action");

@@ -10,7 +10,7 @@
 <title>社区共享 · 考研科目大观</title>
 <link rel="stylesheet" href="assets/theme.css?v=1">
 <link rel="stylesheet" href="assets/panel.css?v=1">
-<link rel="stylesheet" href="assets/community.css?v=1">
+<link rel="stylesheet" href="assets/community.css?v=2">
   <link rel="stylesheet" href="assets/account-hub.css?v=1">
 </head>
 <body>
@@ -29,6 +29,24 @@
   <div class="alert" id="alert" role="status" aria-live="polite"></div>
 
   <section class="card">
+    <h2>交流广场</h2>
+    <p class="note">像发动态一样聊备考：心得、问题、情报都可以。点赞、评论、回复都在这里。</p>
+    <div class="post-composer">
+      <textarea id="postText" rows="3" maxlength="500" placeholder="说点什么：备考心得、问题、资料情报……"></textarea>
+      <div class="post-composer-row">
+        <select id="postSubject">
+          <option value="">不限科目</option>
+          <option value="math">数学一</option><option value="math2">数学二</option>
+          <option value="english">英语一</option><option value="english2">英语二</option>
+          <option value="mechanics">807 材料力学</option><option value="politics">政治</option>
+        </select>
+        <button class="btn" id="postBtn" type="button">发布动态</button>
+      </div>
+    </div>
+    <div id="feedList"><p class="note">正在加载…</p></div>
+  </section>
+
+  <section class="card">
     <h2>共享广场</h2>
     <p class="note">大家分享出来的资料与自建题集。导入后，资料会出现在你的「我的资料」里，题目会进入你的个人题库，可以直接在刷题页练习。看好的分享可以点赞、留言交流。</p>
     <div class="cm-toolbar">
@@ -40,7 +58,7 @@
 
   <section class="card">
     <h2>开发者交流 · GitHub</h2>
-    <p class="note">本站已开源。功能建议、题库勘误、开发讨论可以去 GitHub 仓库里提（需要 GitHub 账号）；站内交流用广场上的点赞和评论就好，不需要注册 GitHub。</p>
+    <p class="note">本站已开源。功能建议、题库勘误、开发讨论可以去 GitHub 仓库里提（需要 GitHub 账号）；站内交流用上面的交流广场就好，不需要注册 GitHub。</p>
     <div class="cm-gh-links">
       <a class="btn ghost" href="https://github.com/GGbond-god5/kaoyan-atlas-pages" target="_blank" rel="noopener">仓库主页</a>
       <a class="btn ghost" href="https://github.com/GGbond-god5/kaoyan-atlas-pages/discussions" target="_blank" rel="noopener">Discussions 讨论区</a>
@@ -79,7 +97,7 @@
 </dialog>
 
 <script src="assets/user-state.js"></script>
-<script src="assets/community.js?v=3"></script>
+<script src="assets/community.js?v=4"></script>
 <script src="assets/pwa.js?v=1"></script>
 <script src="assets/account-hub.js?v=1"></script>
 </body>

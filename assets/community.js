@@ -32,7 +32,7 @@
     return '<span class="cm-avatar cm-avatar-fallback" style="width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * 0.42) + 'px">' + ch + '</span>';
   }
 
-  var state = { shares: [], myFiles: [], q: '', subject: '' };
+  var state = { shares: [], myFiles: [], q: '', subject: '', posts: [], openPost: '', postComments: {}, replyTo: null };
   var shareForm = document.querySelector('#shareDialog form');
   if (shareForm) shareForm.addEventListener('submit', function (e) { e.preventDefault(); });
 
@@ -275,10 +275,136 @@
       renderChips();
       renderShares();
       renderMine(state.myFiles);
+      loadFeed();
     } catch (err) {
       alertBox('加载失败：' + err.message + '（请确认已登录）');
     }
   }
+
+  function relText(iso) {
+    var t = new Date(iso).getTime();
+    if (isNaN(t)) return '';
+    var d = Date.now() - t;
+    if (d < 60000) return '刚刚';
+    if (d < 3600000) return Math.floor(d / 60000) + ' 分钟前';
+    if (d < 86400000) return Math.floor(d / 3600000) + ' 小时前';
+    if (d < 604800000) return Math.floor(d / 86400000) + ' 天前';
+    return timeText(iso);
+  }
+  async function loadFeed() {
+    try {
+      var data = await api('GET', null, '?feed=1');
+      state.posts = data.posts || [];
+    } catch (err) { state.posts = []; }
+    renderFeed();
+  }
+  function postHtml(p) {
+    var open = state.openPost === p.id;
+    var comments = state.postComments[p.id];
+    var cHtml = '';
+    if (open) {
+      cHtml = '<div class="post-comments">' +
+        (comments == null ? '<p class="note">加载评论…</p>' : (comments.length ? comments.map(function (c) {
+          return '<div class="pcomment"><div class="pcomment-main">' + avatarHtml(c.authorUid, c.authorAvatarAt, c.author, 22) + '<b>' + esc(c.author) + '</b>' +
+            (c.parentAuthor ? '<span class="pcomment-re">回复 @' + esc(c.parentAuthor) + '</span>' : '') +
+            '<span class="pcomment-time">' + esc(relText(c.createdAt)) + '</span></div>' +
+            '<p>' + esc(c.text) + '</p>' +
+            '<div class="pcomment-acts"><button type="button" data-reply="' + esc(p.id) + '|' + esc(c.id) + '|' + esc(c.author) + '">回复</button>' +
+            (c.mine ? '<button type="button" data-pcomment-del="' + esc(p.id) + '|' + esc(c.id) + '">删除</button>' : '') + '</div></div>';
+        }).join('') : '<p class="note">还没有评论。</p>')) +
+        (state.replyTo && state.replyTo.postId === p.id ? '<div class="reply-hint">回复 @' + esc(state.replyTo.author) + ' <button type="button" data-reply-cancel>取消</button></div>' : '') +
+        '<div class="comment-row"><input data-post-input="' + esc(p.id) + '" maxlength="300" placeholder="' + (state.replyTo && state.replyTo.postId === p.id ? '写下你的回复…' : '写评论…') + '"><button class="btn ghost" type="button" data-post-send="' + esc(p.id) + '">发送</button></div>' +
+        '</div>';
+    }
+    return '<article class="post-card"><div class="post-head">' + avatarHtml(p.authorUid, p.authorAvatarAt, p.author, 38) +
+      '<div class="post-who"><b>' + esc(p.author) + '</b><span>' + esc(relText(p.createdAt)) + (p.subject ? ' · ' + esc(subjectLabel(p.subject)) : '') + '</span></div>' +
+      (p.mine ? '<button type="button" class="btn ghost danger" data-post-del="' + esc(p.id) + '">删除</button>' : '') + '</div>' +
+      '<p class="post-text">' + esc(p.text) + '</p>' +
+      '<div class="post-actions"><button type="button" class="post-act' + (p.liked ? ' on' : '') + '" data-post-like="' + esc(p.id) + '">' + (p.liked ? '♥' : '♡') + ' ' + (p.likeCount || 0) + '</button>' +
+      '<button type="button" class="post-act" data-post-toggle="' + esc(p.id) + '">评论 ' + (p.commentCount || 0) + '</button></div>' + cHtml + '</article>';
+  }
+  function renderFeed() {
+    var box = $('#feedList');
+    if (!box) return;
+    box.innerHTML = state.posts.length ? state.posts.map(postHtml).join('') : '<p class="note">还没有动态，来发第一条吧。</p>';
+    box.querySelectorAll('[data-post-like]').forEach(function (b) { b.addEventListener('click', async function () {
+      try {
+        var r = await api('POST', { action: 'postLike', id: b.dataset.postLike });
+        var p = state.posts.filter(function (x) { return x.id === b.dataset.postLike; })[0];
+        if (p && r) { p.liked = r.liked; p.likeCount = r.likeCount; }
+        renderFeed();
+      } catch (err) { alertBox(err.message); }
+    }); });
+    box.querySelectorAll('[data-post-toggle]').forEach(function (b) { b.addEventListener('click', async function () {
+      var id = b.dataset.postToggle;
+      if (state.openPost === id) { state.openPost = ''; state.replyTo = null; renderFeed(); return; }
+      state.openPost = id; state.replyTo = null; renderFeed();
+      if (state.postComments[id] == null) {
+        try { var d = await api('GET', null, '?postComments=' + encodeURIComponent(id)); state.postComments[id] = d.comments || []; }
+        catch (err) { state.postComments[id] = []; }
+        if (state.openPost === id) renderFeed();
+      }
+    }); });
+    box.querySelectorAll('[data-post-del]').forEach(function (b) { b.addEventListener('click', async function () {
+      if (!await askConfirm('这条动态和它的评论、点赞会一并删除，确定吗？')) return;
+      try {
+        await api('POST', { action: 'postDelete', id: b.dataset.postDel });
+        state.posts = state.posts.filter(function (x) { return x.id !== b.dataset.postDel; });
+        renderFeed();
+      } catch (err) { alertBox(err.message); }
+    }); });
+    box.querySelectorAll('[data-reply]').forEach(function (b) { b.addEventListener('click', function () {
+      var parts = b.dataset.reply.split('|');
+      state.replyTo = { postId: parts[0], commentId: parts[1], author: parts[2] };
+      renderFeed();
+      var inp = box.querySelector('[data-post-input="' + parts[0] + '"]');
+      if (inp) inp.focus();
+    }); });
+    var cancel = box.querySelector('[data-reply-cancel]');
+    if (cancel) cancel.addEventListener('click', function () { state.replyTo = null; renderFeed(); });
+    box.querySelectorAll('[data-pcomment-del]').forEach(function (b) { b.addEventListener('click', async function () {
+      var parts = b.dataset.pcommentDel.split('|');
+      try {
+        await api('POST', { action: 'postUncomment', commentId: parts[1] });
+        state.postComments[parts[0]] = (state.postComments[parts[0]] || []).filter(function (c) { return c.id !== parts[1]; });
+        var p = state.posts.filter(function (x) { return x.id === parts[0]; })[0];
+        if (p) p.commentCount = Math.max(0, (p.commentCount || 1) - 1);
+        renderFeed();
+      } catch (err) { alertBox(err.message); }
+    }); });
+    box.querySelectorAll('[data-post-send]').forEach(function (b) { b.addEventListener('click', async function () {
+      var id = b.dataset.postSend;
+      var inp = box.querySelector('[data-post-input="' + id + '"]');
+      var text = inp ? inp.value.trim() : '';
+      if (!text) return;
+      var parentId = state.replyTo && state.replyTo.postId === id ? state.replyTo.commentId : '';
+      var parentAuthor = state.replyTo && state.replyTo.postId === id ? state.replyTo.author : '';
+      try {
+        var r = await api('POST', { action: 'postComment', id: id, text: text, parentId: parentId });
+        if (r && r.comment) {
+          r.comment.parentAuthor = parentAuthor;
+          (state.postComments[id] = state.postComments[id] || []).push(r.comment);
+          var p = state.posts.filter(function (x) { return x.id === id; })[0];
+          if (p) p.commentCount = (p.commentCount || 0) + 1;
+        }
+        state.replyTo = null;
+        renderFeed();
+      } catch (err) { alertBox(err.message); }
+    }); });
+  }
+  var postBtn = $('#postBtn');
+  if (postBtn) postBtn.addEventListener('click', async function () {
+    var text = ($('#postText').value || '').trim();
+    if (!text) { alertBox('先写点内容吧'); return; }
+    postBtn.disabled = true;
+    try {
+      var r = await api('POST', { action: 'post', text: text, subject: $('#postSubject').value || '' });
+      if (r && r.post) state.posts.unshift(r.post);
+      $('#postText').value = '';
+      renderFeed();
+    } catch (err) { alertBox('发布失败：' + err.message); }
+    postBtn.disabled = false;
+  });
 
   window.AtlasUser.ready.then(load).catch(function () { alertBox('请先登录'); });
 })();

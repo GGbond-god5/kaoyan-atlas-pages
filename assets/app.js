@@ -1104,7 +1104,7 @@
   }
 
   /* ---------- 社区（App 内） ---------- */
-  var cmState = { shares: [], myFiles: [], q: '', subject: '' };
+  var cmState = { shares: [], myFiles: [], q: '', subject: '', posts: [], openPost: '', postComments: {}, replyTo: null, postSubject: '' };
   subRenderers.community = { title: '社区', render: function (body) { renderCommunity(body); } };
   function cmApi(method, bodyObj, query) { return AtlasUser.json('/api/community' + (query || ''), method, bodyObj); }
   function cmAvatar(uid, at, name, size) {
@@ -1135,13 +1135,147 @@
       '<form class="cm-form" data-cm-form="' + esc(x.id) + '"><input maxlength="300" placeholder="写一句鼓励或提问…" autocomplete="off"><button class="btn-sub" type="submit">发送</button></form>' +
       '</div></article>';
   }
+  function fmtRel(iso) {
+    var t = new Date(iso).getTime();
+    if (isNaN(t)) return '';
+    var d = Date.now() - t;
+    if (d < 60000) return '刚刚';
+    if (d < 3600000) return Math.floor(d / 60000) + ' 分钟前';
+    if (d < 86400000) return Math.floor(d / 3600000) + ' 小时前';
+    if (d < 604800000) return Math.floor(d / 86400000) + ' 天前';
+    var dt = new Date(t);
+    return (dt.getMonth() + 1) + '月' + dt.getDate() + '日';
+  }
+  function avatarHtml2(uid, avatarAt, name) {
+    if (avatarAt) return '<img class="post-ava" src="/api/profile/avatar?uid=' + encodeURIComponent(uid) + '" alt="">';
+    return '<span class="post-ava post-ava-txt">' + esc(String(name || '同').slice(0, 1)) + '</span>';
+  }
+  function cmPostHtml(p) {
+    var open = cmState.openPost === p.id;
+    var comments = cmState.postComments[p.id];
+    return '<div class="card post-card"><div class="post-head">' + avatarHtml2(p.authorUid, p.authorAvatarAt, p.author) +
+      '<div class="post-who"><b>' + esc(p.author) + '</b><span>' + esc(fmtRel(p.createdAt)) + (p.subject ? ' · ' + esc(SUBJECT_NAMES[p.subject] || p.subject) : '') + '</span></div>' +
+      (p.mine ? '<button type="button" class="btn-sub danger" data-post-del="' + esc(p.id) + '">删除</button>' : '') + '</div>' +
+      '<p class="post-text">' + esc(p.text) + '</p>' +
+      '<div class="post-actions">' +
+      '<button type="button" class="post-act' + (p.liked ? ' on' : '') + '" data-post-like="' + esc(p.id) + '">' + (p.liked ? '♥' : '♡') + ' ' + (p.likeCount || 0) + '</button>' +
+      '<button type="button" class="post-act" data-post-toggle="' + esc(p.id) + '">评论 ' + (p.commentCount || 0) + '</button></div>' +
+      (open ? '<div class="post-comments">' +
+        (comments == null ? '<div class="sub-loading">加载评论…</div>' : (comments.length ? comments.map(function (c) { return cmCommentHtml(p, c); }).join('') : '<div class="today-empty">还没有评论。</div>')) +
+        (cmState.replyTo && cmState.replyTo.postId === p.id ? '<div class="reply-hint">回复 @' + esc(cmState.replyTo.author) + ' <button type="button" data-reply-cancel>取消</button></div>' : '') +
+        '<div class="comment-row"><input class="f-input" data-post-input="' + esc(p.id) + '" maxlength="300" placeholder="' + (cmState.replyTo && cmState.replyTo.postId === p.id ? '写下你的回复…' : '写评论…') + '"><button type="button" class="btn-sub" data-post-send="' + esc(p.id) + '">发送</button></div>' +
+        '</div>' : '') +
+      '</div>';
+  }
+  function cmCommentHtml(p, c) {
+    return '<div class="pcomment"><div class="pcomment-main"><b>' + esc(c.author) + '</b>' +
+      (c.parentAuthor ? '<span class="pcomment-re">回复 @' + esc(c.parentAuthor) + '</span>' : '') +
+      '<span class="pcomment-time">' + esc(fmtRel(c.createdAt)) + '</span></div>' +
+      '<p>' + esc(c.text) + '</p>' +
+      '<div class="pcomment-acts"><button type="button" data-reply="' + esc(p.id) + '|' + esc(c.id) + '|' + esc(c.author) + '">回复</button>' +
+      (c.mine ? '<button type="button" data-pcomment-del="' + esc(p.id) + '|' + esc(c.id) + '">删除</button>' : '') + '</div></div>';
+  }
+  function repaintFeed(body) {
+    var feed = document.getElementById('cmFeed');
+    if (feed) feed.innerHTML = cmState.posts.length ? cmState.posts.map(cmPostHtml).join('') : '<div class="card"><div class="today-empty">还没有动态，来发第一条吧。</div></div>';
+    wireFeedCards(body);
+  }
+  function loadPostComments(body, postId) {
+    cmApi('GET', null, '?postComments=' + encodeURIComponent(postId)).then(function (d) {
+      cmState.postComments[postId] = (d && d.comments) || [];
+      if (cmState.openPost === postId) repaintFeed(body);
+    }).catch(function () { cmState.postComments[postId] = []; if (cmState.openPost === postId) repaintFeed(body); });
+  }
+  function wireFeed(body) {
+    $$('[data-cm-psubject]', body).forEach(function (b) { b.addEventListener('click', function () { cmState.postSubject = b.dataset.cmPsubject; paintCommunity(body); }); });
+    var btn = document.getElementById('cmPostBtn');
+    if (btn) btn.addEventListener('click', function () {
+      var ta = document.getElementById('cmPostText');
+      var text = (ta.value || '').trim();
+      if (!text) { toast('先写点内容吧'); return; }
+      btn.disabled = true;
+      cmApi('POST', { action: 'post', text: text, subject: cmState.postSubject }).then(function (r) {
+        if (r && r.post) cmState.posts.unshift(r.post);
+        toast('已发布');
+        paintCommunity(body);
+      }).catch(function (e) { toast('发布失败：' + (e.message || '')); btn.disabled = false; });
+    });
+    wireFeedCards(body);
+  }
+  function wireFeedCards(body) {
+    $$('[data-post-like]', body).forEach(function (b) { b.addEventListener('click', function () {
+      var id = b.dataset.postLike;
+      cmApi('POST', { action: 'postLike', id: id }).then(function (r) {
+        var p = cmState.posts.filter(function (x) { return x.id === id; })[0];
+        if (p && r) { p.liked = r.liked; p.likeCount = r.likeCount; }
+        repaintFeed(body);
+      }).catch(function (e) { toast(e.message || '操作失败'); });
+    }); });
+    $$('[data-post-toggle]', body).forEach(function (b) { b.addEventListener('click', function () {
+      var id = b.dataset.postToggle;
+      if (cmState.openPost === id) { cmState.openPost = ''; cmState.replyTo = null; repaintFeed(body); return; }
+      cmState.openPost = id; cmState.replyTo = null;
+      repaintFeed(body);
+      if (cmState.postComments[id] == null) loadPostComments(body, id);
+    }); });
+    $$('[data-post-del]', body).forEach(function (b) { b.addEventListener('click', function () {
+      var id = b.dataset.postDel;
+      showConfirm({ title: '删除动态', text: '这条动态和它的评论、点赞会一并删除，确定吗？', okText: '删除' }).then(function (yes) {
+        if (!yes) return;
+        cmApi('POST', { action: 'postDelete', id: id }).then(function () {
+          cmState.posts = cmState.posts.filter(function (x) { return x.id !== id; });
+          toast('已删除'); repaintFeed(body);
+        }).catch(function (e) { toast(e.message || '删除失败'); });
+      });
+    }); });
+    $$('[data-reply]', body).forEach(function (b) { b.addEventListener('click', function () {
+      var parts = b.dataset.reply.split('|');
+      cmState.replyTo = { postId: parts[0], commentId: parts[1], author: parts[2] };
+      repaintFeed(body);
+      var inp = document.querySelector('[data-post-input="' + parts[0] + '"]');
+      if (inp) inp.focus();
+    }); });
+    var cancel = body.querySelector('[data-reply-cancel]');
+    if (cancel) cancel.addEventListener('click', function () { cmState.replyTo = null; repaintFeed(body); });
+    $$('[data-pcomment-del]', body).forEach(function (b) { b.addEventListener('click', function () {
+      var parts = b.dataset.pcommentDel.split('|');
+      cmApi('POST', { action: 'postUncomment', commentId: parts[1] }).then(function () {
+        var list = cmState.postComments[parts[0]] || [];
+        cmState.postComments[parts[0]] = list.filter(function (c) { return c.id !== parts[1]; });
+        var p = cmState.posts.filter(function (x) { return x.id === parts[0]; })[0];
+        if (p) p.commentCount = Math.max(0, (p.commentCount || 1) - 1);
+        repaintFeed(body);
+      }).catch(function (e) { toast(e.message || '删除失败'); });
+    }); });
+    $$('[data-post-send]', body).forEach(function (b) { b.addEventListener('click', function () {
+      var id = b.dataset.postSend;
+      var inp = document.querySelector('[data-post-input="' + id + '"]');
+      var text = inp ? inp.value.trim() : '';
+      if (!text) return;
+      var parentId = cmState.replyTo && cmState.replyTo.postId === id ? cmState.replyTo.commentId : '';
+      var parentAuthor = cmState.replyTo && cmState.replyTo.postId === id ? cmState.replyTo.author : '';
+      cmApi('POST', { action: 'postComment', id: id, text: text, parentId: parentId }).then(function (r) {
+        if (r && r.comment) {
+          r.comment.parentAuthor = parentAuthor;
+          (cmState.postComments[id] = cmState.postComments[id] || []).push(r.comment);
+          var p = cmState.posts.filter(function (x) { return x.id === id; })[0];
+          if (p) p.commentCount = (p.commentCount || 0) + 1;
+        }
+        cmState.replyTo = null;
+        repaintFeed(body);
+      }).catch(function (e) { toast(e.message || '评论失败'); });
+    }); });
+  }
+
   function renderCommunity(body) {
     body.innerHTML = '<div class="sub-loading">正在加载社区…</div>';
     cmApi('GET').then(function (data) {
       if (subCurrent !== 'community') return;
       cmState.shares = data.shares || [];
       cmState.myFiles = data.myFiles || [];
-      paintCommunity(body);
+      return cmApi('GET', null, '?feed=1').then(function (fd) { cmState.posts = (fd && fd.posts) || []; }).catch(function () { cmState.posts = []; });
+    }).then(function () {
+      if (subCurrent === 'community') paintCommunity(body);
     }).catch(function (e) { body.innerHTML = '<div class="sub-loading">社区加载失败：' + esc(e.message || '') + '</div>'; });
   }
   function paintCommunity(body) {
@@ -1153,6 +1287,13 @@
     });
     var subjChips = [''].concat(SUBJECT_ORDER.filter(function (sid) { return cmState.shares.some(function (x) { return x.subject === sid; }); }));
     body.innerHTML =
+      '<div class="card post-composer"><textarea class="f-input post-input" id="cmPostText" rows="3" maxlength="500" placeholder="说点什么：备考心得、问题、资料情报……"></textarea>' +
+      '<div class="filter-chips" style="margin-top:8px">' + [''].concat(SUBJECT_ORDER).map(function (sid) {
+        return '<button type="button" class="f-chip' + (cmState.postSubject === sid ? ' on' : '') + '" data-cm-psubject="' + esc(sid) + '">' + (sid ? (SUBJECT_NAMES[sid] || sid) : '不限科目') + '</button>';
+      }).join('') + '</div>' +
+      '<button class="btn-main" id="cmPostBtn" type="button">发布动态</button></div>' +
+      '<div id="cmFeed">' + (cmState.posts.length ? cmState.posts.map(cmPostHtml).join('') : '<div class="card"><div class="today-empty">还没有动态，来发第一条吧。</div></div>') + '</div>' +
+      '<h2 class="sec-title">资料广场</h2>' +
       '<input class="f-input" id="cmSearch" placeholder="搜索分享标题、说明或作者" value="' + esc(cmState.q) + '">' +
       '<div class="filter-chips" style="margin-top:10px">' + subjChips.map(function (sid) {
         return '<button type="button" class="f-chip' + (cmState.subject === sid ? ' on' : '') + '" data-cm-subject="' + esc(sid) + '">' + (sid ? (SUBJECT_NAMES[sid] || sid) : '全部') + '</button>';
@@ -1173,6 +1314,7 @@
     });
     $$('[data-cm-subject]', body).forEach(function (b) { b.addEventListener('click', function () { cmState.subject = b.dataset.cmSubject; paintCommunity(body); }); });
     wireCommunityList(body);
+    wireFeed(body);
     $$('[data-cm-share]', body).forEach(function (b) {
       b.addEventListener('click', function () {
         showForm({ title: '分享到广场', okText: '发布分享', fields: [

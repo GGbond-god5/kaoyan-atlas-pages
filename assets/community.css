@@ -37,3 +37,26 @@
 .cm-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
 
 .cm-gh-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* 交流广场（动态信息流） */
+.post-composer textarea { width: 100%; resize: vertical; padding: 10px 12px; border: 1px solid var(--line, #ddd); border-radius: 10px; font: inherit; }
+.post-composer-row { display: flex; gap: 10px; margin-top: 8px; justify-content: flex-end; }
+.post-card { border: 1px solid var(--line, #e5e0d0); border-radius: 14px; padding: 14px 16px; margin-top: 12px; }
+.post-head { display: flex; align-items: center; gap: 10px; }
+.post-who { flex: 1; display: flex; flex-direction: column; }
+.post-who span { color: #8A8172; font-size: 12px; }
+.post-text { margin-top: 8px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+.post-actions { display: flex; gap: 8px; margin-top: 10px; border-top: 1px solid #eee5cf; padding-top: 8px; }
+.post-act { background: none; border: 0; color: #8A8172; font-size: 13.5px; cursor: pointer; padding: 4px 8px; }
+.post-act.on { color: #A8342A; font-weight: 700; }
+.post-comments { margin-top: 8px; border-top: 1px dashed #e5e0d0; padding-top: 8px; }
+.pcomment { padding: 7px 0; border-bottom: 1px solid #f0ead8; }
+.pcomment-main { display: flex; align-items: center; gap: 6px; }
+.pcomment-re { color: #B8860B; font-size: 12px; }
+.pcomment-time { color: #8A8172; font-size: 11.5px; }
+.pcomment p { line-height: 1.65; margin-top: 2px; white-space: pre-wrap; word-break: break-word; }
+.pcomment-acts button { background: none; border: 0; color: #8A8172; font-size: 12px; cursor: pointer; padding: 2px 6px 0 0; }
+.reply-hint { font-size: 12.5px; color: #B8860B; margin: 6px 0; }
+.reply-hint button { background: none; border: 0; color: #8A8172; cursor: pointer; }
+.comment-row { display: flex; gap: 8px; margin-top: 8px; }
+.comment-row input { flex: 1; padding: 8px 10px; border: 1px solid var(--line, #ddd); border-radius: 8px; font: inherit; }
