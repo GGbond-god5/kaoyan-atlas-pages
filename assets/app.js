@@ -645,8 +645,22 @@
     d.innerHTML = String(html || '');
     return (d.textContent || '').replace(/\s+/g, ' ').trim();
   }
+  function texClean(t) {
+    // 列表摘要专用：把 LaTeX 源码转成可读纯文本（公式在摘要里不渲染，避免露出 \sum\limits 这类源码）。
+    var s = String(t == null ? '' : t);
+    var SYM = { alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', varepsilon: 'ε', zeta: 'ζ', eta: 'η', theta: 'θ', vartheta: 'θ', lambda: 'λ', mu: 'μ', nu: 'ν', xi: 'ξ', pi: 'π', rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', varphi: 'φ', omega: 'ω', Delta: 'Δ', Gamma: 'Γ', Theta: 'Θ', Lambda: 'Λ', Sigma: 'Σ', Phi: 'Φ', Omega: 'Ω', infty: '∞', sum: '∑', int: '∫', iint: '∬', prod: '∏', le: '≤', leq: '≤', ge: '≥', geq: '≥', ne: '≠', neq: '≠', approx: '≈', sim: '∼', to: '→', rightarrow: '→', leftarrow: '←', Rightarrow: '⇒', Leftrightarrow: '⇔', cdot: '·', times: '×', div: '÷', pm: '±', partial: '∂', in: '∈', notin: '∉', subset: '⊂', cup: '∪', cap: '∩', ldots: '…', cdots: '⋯' };
+    s = s.replace(/\\\(|\\\)|\\\[|\\\]/g, ' ');
+    s = s.replace(/\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, '$1/$2');
+    s = s.replace(/\\sqrt\s*\{([^{}]*)\}/g, '√($1)');
+    s = s.replace(/\\(varepsilon|vartheta|varphi|alpha|beta|gamma|delta|epsilon|zeta|eta|theta|lambda|mu|nu|xi|pi|rho|sigma|tau|phi|omega|Delta|Gamma|Theta|Lambda|Sigma|Phi|Omega|infty|sum|int|iint|prod|leq|geq|neq|le|ge|ne|approx|sim|to|rightarrow|leftarrow|Rightarrow|Leftrightarrow|cdot|times|div|pm|partial|in|notin|subset|cup|cap|ldots|cdots)\b/g, function (m, k) { return SYM[k] || m; });
+    s = s.replace(/\\limits/g, '').replace(/\\left|\\right/g, '').replace(/\\[,;:!]/g, ' ').replace(/\\\\/g, ' ');
+    s = s.replace(/\^\{([^{}]*)\}/g, '^($1)').replace(/_\{([^{}]*)\}/g, '_($1)');
+    s = s.replace(/\\[a-zA-Z]+/g, '');
+    s = s.replace(/[{}]/g, '');
+    return s;
+  }
   function snippet(text, n) {
-    var t = plainTextOf(text);
+    var t = plainTextOf(texClean(text));
     return t.length > n ? t.slice(0, n) + '…' : t;
   }
 
