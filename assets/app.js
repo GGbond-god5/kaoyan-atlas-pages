@@ -112,7 +112,6 @@
       return;
     }
     $('#recentEmpty').hidden = true;
-    $('#recentMore').hidden = false;
     box.innerHTML = list.map(function (a) {
       var s = summarizeAttempt(a);
       var rate = s.rate == null ? '待批改' : Math.round(s.rate * 100) + '%';
