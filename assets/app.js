@@ -744,7 +744,20 @@
       return '<div class="card qd-card"><div class="qd-head" data-qd="' + idx + '"><b>第 ' + (idx + 1) + ' 题</b>' +
         '<span class="qd-kp">' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' + chip + '<span class="qd-arrow">▾</span></div>' +
         '<div class="qd-body" id="qdBody' + idx + '" hidden><div class="sub-loading">加载题目…</div></div></div>';
-    }).join('') + '</div>';
+    }).join('') + '</div>' +
+    '<div class="card"><div class="row-title">数据管理</div><p class="view-note">重置后这套卷的作答与批改记录会被删除，套卷分析、错题统计同步更新，可以干净地二刷；按知识点练习的记录不受影响。删除后不能恢复。</p>' +
+    '<button type="button" class="btn-sub danger" id="qdReset">重置这套（删除记录）</button></div>';
+    var resetBtn = document.getElementById('qdReset');
+    if (resetBtn) resetBtn.addEventListener('click', function () {
+      showConfirm({ title: '重置这套卷', text: '确定删除这套卷的作答与批改记录吗？删除后不能恢复。', okText: '删除重置' }).then(function (yes) {
+        if (!yes) return;
+        AtlasUser.json('/api/attempts', 'DELETE', { ids: [a.id] }).then(function () {
+          state.attempts = (state.attempts || []).filter(function (x) { return x.id !== a.id; });
+          toast('已重置，可以二刷了');
+          closeSub();
+        }).catch(function (e) { toast('重置失败：' + (e.message || '')); });
+      });
+    });
     $$('[data-qd]', body).forEach(function (h) {
       h.addEventListener('click', function () {
         var box = document.getElementById('qdBody' + h.dataset.qd);
@@ -1050,7 +1063,7 @@
       var opts = SUBJECT_ORDER.map(function (sid) { return '<option value="' + sid + '">' + SUBJECT_NAMES[sid] + '</option>'; }).join('') +
         customs.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>'; }).join('');
       var html = '<div class="card"><div class="row-title">上传资料</div>' +
-        '<label class="f-label">选择文件（PDF / 图片 / 文本，≤25 MiB）</label>' +
+        '<label class="f-label">选择文件（PDF / 图片 / 文本，≤20 MiB）</label>' +
         '<input class="f-input" type="file" id="libFile">' +
         '<label class="f-label">科目</label><select class="f-select" id="libSubject">' + opts + '</select>' +
         '<button class="btn-sub" id="libAddSubject" type="button" style="margin-top:8px">＋ 新增科目</button>' +
@@ -1091,6 +1104,7 @@
         var fi = document.getElementById('libFile');
         var file = fi.files && fi.files[0];
         if (!file) { toast('先选择一个文件'); return; }
+        if (file.size > 20 * 1024 * 1024) { toast('这个文件有 ' + (file.size / 1048576).toFixed(1) + ' MiB，超过 20 MiB 上限，请压缩或拆分后再传'); return; }
         var btn = this;
         btn.disabled = true; btn.textContent = '上传中…';
         var fd = new FormData();
@@ -1101,7 +1115,7 @@
           if (!j || j.ok === false) throw new Error((j && j.error) || '上传失败');
           toast('上传完成');
           renderLibrary(body);
-        }).catch(function (e) { toast('上传失败：' + e.message); btn.disabled = false; btn.textContent = '上传'; });
+        }).catch(function (e) { toast(e instanceof TypeError ? '上传中断，没有连上服务器：换个稳定的网络重试，扫描版 PDF 较大时先压到 10 MiB 以内' : '上传失败：' + e.message); btn.disabled = false; btn.textContent = '上传'; });
       });
       $$('[data-lib-del]', body).forEach(function (b) {
         b.addEventListener('click', function () {

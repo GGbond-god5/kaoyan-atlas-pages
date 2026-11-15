@@ -32,7 +32,8 @@ async function refresh() {
 }
 $('#upload').addEventListener('submit', async e => {
   e.preventDefault(); const form = e.currentTarget, file = form.elements.file.files[0];
-  if (!file || file.size > 20 * 1024 * 1024) { message('请选择不超过 20 MiB 的文件。'); return; }
+  if (!file) { message('先选择一个文件。'); return; }
+  if (file.size > 20 * 1024 * 1024) { message('这个文件有 ' + (file.size / 1048576).toFixed(1) + ' MiB，超过 20 MiB 上限。扫描版 PDF 可以先用压缩工具压到 20 MiB 以内，或按科目拆成几份再传。'); return; }
   if (!/\.(pdf|png|jpe?g|webp|txt|md|markdown|json)$/i.test(file.name)) { message('不支持该文件类型。'); return; }
   const data = new FormData(form); if (!data.get('name').trim()) data.set('name', file.name);
   if (data.get('subject') === '__new') {
@@ -42,7 +43,7 @@ $('#upload').addEventListener('submit', async e => {
   }
   data.delete('newSubject');
   const button = form.querySelector('button'); button.disabled = true; message('正在上传…');
-  try { const r = await fetch('/api/library', {method:'POST',credentials:'include',body:data}); const j = await r.json(); if (!r.ok || j.ok === false) throw Error(j.error || '上传失败'); form.reset(); await refresh(); message('上传完成。'); } catch (err) { message(err.message); } finally { button.disabled = false; }
+  try { const r = await fetch('/api/library', {method:'POST',credentials:'include',body:data}); const j = await r.json().catch(() => null); if (!r.ok || !j || j.ok === false) throw Error((j && j.error) || ('上传失败（' + r.status + '）')); form.reset(); await refresh(); message('上传完成。'); } catch (err) { message(err instanceof TypeError ? '上传中断，没有连上服务器：多为网络不稳，或文件较大（' + (file.size / 1048576).toFixed(1) + ' MiB）上传超时。换个稳定的网络重试；还不行就把 PDF 压到 10 MiB 以内再传。' : err.message); } finally { button.disabled = false; }
 });
 function parsePages(value, total) {
   const out = new Set();

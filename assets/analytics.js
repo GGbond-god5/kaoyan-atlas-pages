@@ -26,7 +26,7 @@
       graded++; score += Number(r.score); max += Number(r.maxScore);
       if (rt < 1) wrong.push({ no: i + 1, id: q.id, kp: q.kp || '', kpName: q.kpName || '', chapter: q.chapter || '', chapterTitle: q.chapterTitle || '', kind: q.kind || '', rate: rt });
     });
-    return { title: paperTitle(a), subject: a.subject, mode: a.mode, total: qs.length, graded: graded, score: score, max: max, rate: max > 0 ? score / max : null, wrong: wrong };
+    return { id: a.id, title: paperTitle(a), subject: a.subject, mode: a.mode, total: qs.length, graded: graded, score: score, max: max, rate: max > 0 ? score / max : null, wrong: wrong };
   }
 
   function aggregate(papers, keyOf, labelOf) {
@@ -178,8 +178,20 @@
       }).join('') : '<span class="chip" style="border-color:#BFD8C6;color:#3E7A4E;background:#EDF5EF">全部满分</span>';
       return '<div class="paper"><h3>' + esc(p.title) + '</h3><div class="pmeta">' +
         (p.mode === 'mock' ? '全真模考 · ' : p.mode === 'diagnostic' ? '能力自测 · ' : '套卷 · ') + '已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '（' + (p.rate === null ? '—' : pct(p.rate)) + '）</div>' +
-        '<div class="chips">' + chips + '</div></div>';
+        '<div class="chips">' + chips + '</div>' +
+        '<div style="margin-top:10px"><button type="button" class="btn ghost danger" data-reset-paper="' + esc(p.id || '') + '">重置这套（删除记录，二刷用）</button></div></div>';
     }).join('');
+    document.querySelectorAll('#paperList [data-reset-paper]').forEach(function (b) {
+      b.addEventListener('click', async function () {
+        if (!b.dataset.resetPaper) return;
+        if (!confirm('确定重置这套卷吗？这一次的作答与批改记录会被删除，套卷分析、错题统计会同步更新；按知识点练习的记录不受影响。删了不能恢复。')) return;
+        b.disabled = true;
+        try {
+          await window.AtlasUser.json('/api/attempts', 'DELETE', { ids: [b.dataset.resetPaper] });
+          location.reload();
+        } catch (err) { alert('重置失败：' + err.message); b.disabled = false; }
+      });
+    });
 
     var advice = buildAdvice(papers, kps, kinds);
     $('#adviceList').innerHTML = advice.map(function (t) { return '<div class="advice">' + t + '</div>'; }).join('');

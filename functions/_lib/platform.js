@@ -356,6 +356,9 @@ async function dispatch(request,env,uid,action,params) {
       if (!changes(result)) return fail(409,'版本冲突',await read()); return ok(await read()); }
   }
   if (action === 'attempts') {
+    if (method === 'DELETE') { const b = await body(); const ids = Array.isArray(b?.ids) ? [...new Set(b.ids.map(str).filter(Boolean))].slice(0, 100) : []; let n = 0;
+      for (const aid of ids) { const r = await run(db,'DELETE FROM platform_attempts WHERE uid=? AND id=?',uid,aid); if (changes(r)) { n++; await run(db,'DELETE FROM platform_results WHERE uid=? AND attempt_id=?',uid,aid); } }
+      return ok({deleted:n}); }
     if (method === 'GET') {const rows=await all(db,'SELECT id FROM platform_attempts WHERE uid=?',uid); return ok({attempts:await Promise.all(rows.map(r=>attempt(db,uid,r.id)))});}
     if (method === 'POST') {const b=await body(); if (!b || !(await subjectAllowed(db, uid, b.subject)) || !str(b.mode) || !Array.isArray(b.questions) || !b.questions.length || b.questions.length > 500 || !b.answers || typeof b.answers !== 'object' || Array.isArray(b.answers) || b.questions.some(q=>!q || typeof q.id !== 'string' || !q.id || q.subject !== b.subject) || new Set(b.questions.map(q=>q.id)).size !== b.questions.length) return fail(400,'试卷必须包含同一科目且题号唯一的题目');
       if (Object.values(b.answers).some(a=>!a || typeof a !== 'object' || !validImage(a.image))) return fail(400,'作答格式无效');
