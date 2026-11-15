@@ -56,3 +56,12 @@
 #planCard .pset-ctrl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 #planCard .pset-ctrl em { font-style: normal; color: #8a7a52; font-size: 11px; width: 100%; text-align: right; }
 #planCard .pbtn-ghost { background: transparent; border: 1px solid rgba(120,96,40,.45); color: #7a5b12; }
+
+/* 本周 7 天全览（与 App 学习计划一致） */
+.pweek { margin-top: 12px; border-top: 1px solid #E7DFC9; padding-top: 10px; }
+.pweek-title { font-weight: 700; margin-bottom: 6px; }
+.pday { padding: 8px 0; border-bottom: 1px dashed #EFE7D2; }
+.pday:last-child { border-bottom: 0; }
+.pday-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.pday-head span { color: #8A8172; font-size: 12.5px; }
+.pday.today .pday-head b { color: #B8860B; }

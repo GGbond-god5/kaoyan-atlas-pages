@@ -206,20 +206,37 @@
         '<span class="pdetail">' + esc(t.detail) + '</span></div>' +
         (t.href ? '<a class="pgo" href="' + esc(t.href) + '">去做 →</a>' : '') + '</div>';
     }).join('');
-    var tomorrow = plan.days[dayKey(addDays(new Date(), 1))];
-    var tmr = tomorrow ? '<div class="ptomorrow">明日预告：' + tomorrow.tasks.slice(0, 3).map(function (t) { return esc(t.label); }).join(' · ') + '</div>' : '';
+    var weekNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    var week = Object.keys(plan.days).sort().map(function (k) {
+      var d = plan.days[k];
+      var dt = new Date(k + 'T12:00:00');
+      var dDone = d.tasks.filter(function (t) { return d.done[t.id]; }).length;
+      var title = (k === todayK ? '今天' : weekNames[dt.getDay()]) + ' · ' + (dt.getMonth() + 1) + '月' + dt.getDate() + '日';
+      var trows = d.tasks.map(function (t) {
+        var done = !!d.done[t.id];
+        return '<div class="prow' + (done ? ' done' : '') + '">' +
+          '<label class="pcheck"><input type="checkbox" data-day="' + k + '" data-task="' + esc(t.id) + '"' + (done ? ' checked' : '') + '></label>' +
+          '<div class="pmeta"><span class="plabel">' + esc(t.label) + (t.mins ? ' <span class="pmins">约 ' + t.mins + ' 分钟</span>' : '') + '</span>' +
+          '<span class="pdetail">' + esc(t.detail) + '</span></div>' +
+          (t.href ? '<a class="pgo" href="' + esc(t.href) + '">去做 →</a>' : '') + '</div>';
+      }).join('');
+      return '<div class="pday' + (k === todayK ? ' today' : '') + '"><div class="pday-head"><b>' + title + '</b><span>' + dDone + ' / ' + d.tasks.length + ' 项</span></div>' + trows + '</div>';
+    }).join('');
+    var tmr = '<div class="pweek"><div class="pweek-title">本周计划 · 7 天全览</div>' + week + '</div>';
     card.innerHTML = '<div class="phead"><b>学习计划 · ' + esc(plan.phase) + '</b>' +
       '<span class="pdays">距初试 ' + plan.daysLeft + ' 天</span>' +
       '<button type="button" id="planClose" aria-label="关闭">×</button></div>' +
       '<div class="pprogress">今日已完成 ' + doneN + ' / ' + day.tasks.length + ' 项（按每日 ' + fmtH(plan.dailyMinutes) + ' 生成）</div>' +
-      rows + tmr +
+      tmr +
       '<div class="pfoot"><button type="button" class="pbtn" id="planRegen">重新生成本周计划</button>' +
       '<button type="button" class="pbtn pbtn-ghost" id="planSettingsBtn">计划设置</button>' +
       '<span class="pnote">依据档案与最近套卷表现自动排定</span></div>';
     card.hidden = false;
     card.querySelectorAll('[data-task]').forEach(function (cb) {
       cb.addEventListener('change', async function () {
-        day.done[cb.getAttribute('data-task')] = cb.checked;
+        var dk = cb.getAttribute('data-day') || todayK;
+        var dd = plan.days[dk];
+        if (dd) dd.done[cb.getAttribute('data-task')] = cb.checked;
         try { await window.AtlasUser.save('plan', plan); } catch (e) {}
         render();
       });
