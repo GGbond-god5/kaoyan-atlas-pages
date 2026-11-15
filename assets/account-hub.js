@@ -80,6 +80,8 @@
         if (!unread.length) return;
         var t = panel.querySelector("#hubInboxText");
         if (t) t.textContent = unread.length + " 条未读 · 最新：" + (unread[0].title || "批改完成");
+        var item0 = panel.querySelector("#hubInboxItem");
+        if (item0 && unread[0] && unread[0].attemptId) item0.href = "analytics.html?attempt=" + encodeURIComponent(unread[0].attemptId);
         if (btn && !btn.querySelector(".hub-dot")) {
           var dot = document.createElement("span");
           dot.className = "hub-dot";

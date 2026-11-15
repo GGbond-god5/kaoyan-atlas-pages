@@ -235,6 +235,8 @@
       try { var g = await window.AtlasUser.load('goals', { targets: {} }); state.targets = (g && g.targets) || {}; } catch (e) {}
       renderTabs(subjects);
       render();
+      var want = new URLSearchParams(location.search).get('attempt');
+      if (want) openPaperDetail(want);
     } catch (err) {
       $('#alert').textContent = '加载失败：' + err.message + '（请确认已登录）';
       $('#emptyCard').hidden = false;

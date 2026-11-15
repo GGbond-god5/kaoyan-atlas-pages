@@ -31,6 +31,7 @@
     } catch (e) {}
   }
   var pill = null;
+  var lastDoneId = null;
   function showPill(text, sticky) {
     if (!pill) {
       pill = document.createElement('button');
@@ -39,7 +40,7 @@
       var st = document.createElement('style');
       st.textContent = '#gradeBgPill{position:fixed;left:50%;transform:translateX(-50%);bottom:' + (window.AtlasApp ? '88px' : '18px') + ';z-index:200;background:#17161A;color:#F7F2E7;border:0;border-radius:999px;padding:10px 18px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer;max-width:92vw}';
       document.head.appendChild(st);
-      pill.addEventListener('click', function () { location.href = 'analytics.html'; });
+      pill.addEventListener('click', function () { location.href = 'analytics.html' + (lastDoneId ? '?attempt=' + encodeURIComponent(lastDoneId) : ''); });
       document.body.appendChild(pill);
     }
     pill.textContent = text;
@@ -55,7 +56,8 @@
       await inboxAdd({ id: 'g' + rec.attemptId, kind: 'grade', attemptId: rec.attemptId, title: rec.title || '套卷', at: Date.now(), read: false });
       sysNotify('批改完成', '「' + (rec.title || '套卷') + '」已全部批改，去套卷分析看成绩和解析');
     }
-    showPill('✓ 批改完成，点此看套卷分析');
+    lastDoneId = rec.attemptId;
+    showPill('✓ 批改完成，点此看这套的评分与解析');
   }
 
   var running = false;
