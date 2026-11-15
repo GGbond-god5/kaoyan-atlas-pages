@@ -645,6 +645,22 @@
     d.innerHTML = String(html || '');
     return (d.textContent || '').replace(/\s+/g, ' ').trim();
   }
+async function clearPaperRecordsApp(qids) {
+  // 重置二刷：连带清除这套题目的做题记录（practice rec）与复盘排期（review sched），收藏与手动加入错题本保留。
+  try {
+    var store = await window.AtlasUser.load('practice', { rec: {} });
+    var rec = (store && store.rec) || {}; var changed = false;
+    (qids || []).forEach(function (id) { if (rec[id]) { delete rec[id]; changed = true; } });
+    if (changed) await window.AtlasUser.save('practice', Object.assign({}, store, { rec: rec }));
+  } catch (e) {}
+  try {
+    var rv = await window.AtlasUser.load('review', { sched: {} });
+    var sched = (rv && rv.sched) || {}; var ch2 = false;
+    (qids || []).forEach(function (id) { if (sched[id]) { delete sched[id]; ch2 = true; } });
+    if (ch2) await window.AtlasUser.save('review', Object.assign({}, rv, { sched: sched }));
+  } catch (e) {}
+}
+
   function texClean(t) {
     // 列表摘要专用：把 LaTeX 源码转成可读纯文本（公式在摘要里不渲染，避免露出 \sum\limits 这类源码）。
     var s = String(t == null ? '' : t);
@@ -787,9 +803,10 @@
     });
     var resetBtn = document.getElementById('qdReset');
     if (resetBtn) resetBtn.addEventListener('click', function () {
-      showConfirm({ title: '重置这套卷', text: '确定删除这套卷的作答与批改记录吗？删除后不能恢复。', okText: '删除重置' }).then(function (yes) {
+      showConfirm({ title: '重置这套卷', text: '确定删除这套卷的作答与批改记录吗？这套题目的做题记录（做过/错题次数、复盘排期）也会一并清除，可以干净二刷；收藏保留。删除后不能恢复。', okText: '删除重置' }).then(function (yes) {
         if (!yes) return;
-        AtlasUser.json('/api/attempts', 'DELETE', { ids: [a.id] }).then(function () {
+        AtlasUser.json('/api/attempts', 'DELETE', { ids: [a.id] }).then(async function () {
+          await clearPaperRecordsApp((a.questions || []).map(function (q) { return q.id; }));
           state.attempts = (state.attempts || []).filter(function (x) { return x.id !== a.id; });
           toast('已重置，可以二刷了');
           closeSub();

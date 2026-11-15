@@ -97,6 +97,22 @@
     return lines.join('\n');
   }
 
+async function clearPaperRecords(qids) {
+  // 重置二刷：连带清除这套题目的做题记录（practice rec）与复盘排期（review sched），收藏与手动加入错题本保留。
+  try {
+    var store = await window.AtlasUser.load('practice', { rec: {} });
+    var rec = (store && store.rec) || {}; var changed = false;
+    (qids || []).forEach(function (id) { if (rec[id]) { delete rec[id]; changed = true; } });
+    if (changed) await window.AtlasUser.save('practice', Object.assign({}, store, { rec: rec }));
+  } catch (e) {}
+  try {
+    var rv = await window.AtlasUser.load('review', { sched: {} });
+    var sched = (rv && rv.sched) || {}; var ch2 = false;
+    (qids || []).forEach(function (id) { if (sched[id]) { delete sched[id]; ch2 = true; } });
+    if (ch2) await window.AtlasUser.save('review', Object.assign({}, rv, { sched: sched }));
+  } catch (e) {}
+}
+
   function lineChart() {
     // 折线只做同科比较：每科一条线，横轴是该科的第 N 套；选了科目页签就只画那一科。
     var COLORS = { math: '#B8860B', math2: '#8A6BA8', english: '#4A6FA5', english2: '#3E8E8A', mechanics: '#A53B30', politics: '#3E7A4E' };
@@ -248,10 +264,13 @@
     document.querySelectorAll('#paperList [data-reset-paper]').forEach(function (b) {
       b.addEventListener('click', async function () {
         if (!b.dataset.resetPaper) return;
-        if (!confirm('确定重置这套卷吗？这一次的作答与批改记录会被删除，套卷分析、错题统计会同步更新；按知识点练习的记录不受影响。删了不能恢复。')) return;
+        if (!confirm('确定重置这套卷吗？这一次的作答与批改记录会被删除，这套题目的做题记录（做过/错题次数、复盘排期）也会一并清除，可以干净二刷；收藏与手动加入错题本的题保留。删了不能恢复。')) return;
         b.disabled = true;
         try {
+          var att = (state.attempts || []).filter(function (x) { return x.id === b.dataset.resetPaper; })[0];
+          var qids = att && att.questions ? att.questions.map(function (q) { return q.id; }) : [];
           await window.AtlasUser.json('/api/attempts', 'DELETE', { ids: [b.dataset.resetPaper] });
+          await clearPaperRecords(qids);
           location.reload();
         } catch (err) { alert('重置失败：' + err.message); b.disabled = false; }
       });
