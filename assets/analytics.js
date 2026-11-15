@@ -97,13 +97,65 @@
     return lines.join('\n');
   }
 
+  function lineChart(papers) {
+    var pts = papers.filter(function (p) { return p.rate !== null; });
+    if (!pts.length) return '<p class="sub">暂无数据。</p>';
+    var W = 680, H = 240, L = 46, R = 18, T = 16, B = 40, iw = W - L - R, ih = H - T - B;
+    var avg = pts.reduce(function (sm, p) { return sm + p.rate * p.graded; }, 0) / Math.max(1, pts.reduce(function (sm, p) { return sm + p.graded; }, 0));
+    var X = function (i) { return pts.length === 1 ? L + iw / 2 : L + iw * i / (pts.length - 1); };
+    var Y = function (v) { return T + ih * (1 - v); };
+    var out = '<svg class="chart-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="得分率折线图">';
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (g) {
+      out += '<line x1="' + L + '" y1="' + Y(g) + '" x2="' + (W - R) + '" y2="' + Y(g) + '" stroke="#E7DFC9" stroke-width="1"/>' +
+        '<text x="' + (L - 6) + '" y="' + (Y(g) + 4) + '" text-anchor="end" font-size="11" fill="#8A8172">' + Math.round(g * 100) + '%</text>';
+    });
+    out += '<line x1="' + L + '" y1="' + Y(avg) + '" x2="' + (W - R) + '" y2="' + Y(avg) + '" stroke="#7A8BA0" stroke-width="1.2" stroke-dasharray="5 4"/>' +
+      '<text x="' + (W - R) + '" y="' + (Y(avg) - 5) + '" text-anchor="end" font-size="11" fill="#7A8BA0">平均 ' + pct(avg) + '</text>';
+    if (pts.length > 1) out += '<polyline fill="none" stroke="#B8860B" stroke-width="2.2" points="' + pts.map(function (p, i) { return X(i).toFixed(1) + ',' + Y(p.rate).toFixed(1); }).join(' ') + '"/>';
+    pts.forEach(function (p, i) {
+      var short = (subjectName(p.subject, state.attempts) || '').slice(0, 4) + (p.mode === 'mock' ? '·模考' : '');
+      out += '<circle cx="' + X(i) + '" cy="' + Y(p.rate) + '" r="4" fill="#B8860B" stroke="#fff" stroke-width="1.6"><title>' + esc(p.title) + '：' + pct(p.rate) + '</title></circle>' +
+        '<text x="' + X(i) + '" y="' + (Y(p.rate) - 9) + '" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4A4436">' + pct(p.rate) + '</text>' +
+        '<text x="' + X(i) + '" y="' + (H - 22) + '" text-anchor="middle" font-size="10.5" fill="#8A8172">' + esc(short) + '</text>' +
+        '<text x="' + X(i) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="10.5" fill="#8A8172">第 ' + (i + 1) + ' 套</text>';
+    });
+    return out + '</svg>';
+  }
+
+  function subjectChart() {
+    var all = state.attempts.map(function (a) { var st = paperStats(a); st._attempt = a; return st; }).filter(function (p) { return p.graded > 0 && p.rate !== null; });
+    var bySub = {};
+    all.forEach(function (p) { (bySub[p.subject] = bySub[p.subject] || []).push(p); });
+    var sids = Object.keys(bySub);
+    if (!sids.length) return '<p class="sub">暂无数据。</p>';
+    var rowH = 46, W = 680, L = 76, R = 56, iw = W - L - R, H = sids.length * rowH + 30;
+    var out = '<svg class="chart-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="各科得分率柱状图">';
+    [0, 0.5, 1].forEach(function (g) {
+      var x = L + iw * g;
+      out += '<line x1="' + x + '" y1="4" x2="' + x + '" y2="' + (H - 22) + '" stroke="#EFE9D8" stroke-width="1"/>' +
+        '<text x="' + x + '" y="' + (H - 6) + '" text-anchor="middle" font-size="10.5" fill="#8A8172">' + Math.round(g * 100) + '%</text>';
+    });
+    sids.forEach(function (sid, ri) {
+      var ps = bySub[sid], latest = ps[ps.length - 1];
+      var wsum = ps.reduce(function (sm, p) { return sm + p.graded; }, 0);
+      var avg = ps.reduce(function (sm, p) { return sm + p.rate * p.graded; }, 0) / Math.max(1, wsum);
+      var y = 8 + ri * rowH;
+      out += '<text x="' + (L - 8) + '" y="' + (y + 15) + '" text-anchor="end" font-size="12.5" font-weight="700" fill="#4A4436">' + esc(subjectName(sid, state.attempts)) + '</text>' +
+        '<rect x="' + L + '" y="' + y + '" width="' + Math.max(2, iw * latest.rate) + '" height="11" rx="3" fill="#B8860B"/>' +
+        '<text x="' + (L + Math.max(2, iw * latest.rate) + 6) + '" y="' + (y + 10) + '" font-size="11" fill="#4A4436">最近 ' + pct(latest.rate) + '</text>' +
+        '<rect x="' + L + '" y="' + (y + 15) + '" width="' + Math.max(2, iw * avg) + '" height="11" rx="3" fill="#7A8BA0"/>' +
+        '<text x="' + (L + Math.max(2, iw * avg) + 6) + '" y="' + (y + 25) + '" font-size="11" fill="#4A4436">平均 ' + pct(avg) + '</text>';
+    });
+    return out + '</svg>';
+  }
+
   function render() {
     var papers = state.attempts
       .filter(function (a) { return state.subject === 'all' || a.subject === state.subject; })
       .map(function (a) { var s = paperStats(a); s._attempt = a; return s; })
       .filter(function (p) { return p.graded > 0; });
     var has = papers.length > 0;
-    ['#overview', '#trendCard', '#gapCard', '#kpCard', '#kindCard', '#papersCard', '#adviceCard'].forEach(function (s) { $(s).hidden = !has; });
+    ['#overview', '#trendCard', '#subjectCard', '#gapCard', '#kpCard', '#kindCard', '#papersCard', '#adviceCard'].forEach(function (s) { $(s).hidden = !has; });
     $('#emptyCard').hidden = has;
     if (!has) return;
 
@@ -118,10 +170,8 @@
       ['最近一套得分率', papers[papers.length - 1].rate === null ? '—' : pct(papers[papers.length - 1].rate)],
     ].map(function (x) { return '<div class="stat"><b>' + esc(x[1]) + '</b><span>' + esc(x[0]) + '</span></div>'; }).join('');
 
-    $('#trend').innerHTML = papers.map(function (p) {
-      var h = Math.max(4, Math.round((p.rate || 0) * 100));
-      return '<div class="tbar"><em>' + pct(p.rate || 0) + '</em><i style="height:' + h + '%"></i><small title="' + esc(p.title) + '">' + esc(p.title) + '</small></div>';
-    }).join('');
+    $('#trend').innerHTML = lineChart(papers);
+    $('#subjectChart').innerHTML = subjectChart();
 
     /* 目标差距：每科取最近一套的得分率，折算到满分后与自设目标分对比 */
     var FULL = { math: 150, math2: 150, mechanics: 150, english: 100, english2: 100, politics: 100 };
