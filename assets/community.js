@@ -27,9 +27,14 @@
         : (s.imported
           ? '<span class="tag">已导入</span>'
           : '<button class="btn" data-import="' + esc(s.id) + '">导入到我的账号</button>');
+      var avatar = s.ownerAvatarAt
+        ? '<img src="/api/profile/avatar?uid=' + encodeURIComponent(s.ownerUid) + '&v=' + s.ownerAvatarAt + '" alt="" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none;border:2px solid #E4DCCB">'
+        : '';
       return '<div class="row" style="justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;border-top:1px dashed rgba(120,96,40,.25)">' +
-        '<div style="min-width:0"><b>' + esc(s.title) + '</b>' +
+        avatar +
+        '<div style="min-width:0;flex:1"><b>' + esc(s.title) + '</b>' +
         (s.note ? '<div class="note">' + esc(s.note) + '</div>' : '') +
+        (s.ownerMotto ? '<div class="note">「' + esc(s.ownerMotto) + '」</div>' : '') +
         '<div class="note">' + esc(meta) + '</div></div>' +
         '<div style="flex:none">' + btn + '</div></div>';
     }).join('');

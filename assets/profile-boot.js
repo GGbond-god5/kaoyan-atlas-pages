@@ -87,6 +87,20 @@
         <button type="button" class="profile-close" data-close aria-label="关闭">×</button>
       </header>
       <div class="profile-body">
+        <div class="pf-card">
+          <div class="pf-avatar-row">
+            <img id="pfAvatar" class="pf-avatar" alt="我的头像" hidden>
+            <div id="pfAvatarFallback" class="pf-avatar pf-avatar-fallback">观</div>
+            <div class="pf-avatar-actions">
+              <label class="pf-upload">更换头像<input type="file" id="pfAvatarFile" accept="image/*" hidden></label>
+              <button type="button" class="pf-avatar-del" id="pfAvatarDel" hidden>删除头像</button>
+              <span class="pf-hint">自动裁成正方形，2MB 以内</span>
+            </div>
+          </div>
+          <div class="pf-chips" id="pfChips"></div>
+          <p class="pf-quote" id="pfQuote"></p>
+          <label class="pf-field"><span>我的格言</span><input name="motto" maxlength="60" placeholder="一句陪你上岸的话，如：山海可平，功不唐捐"></label>
+        </div>
         <label class="pf-field"><span>院校专业目录</span><input id="programSearch" maxlength="40" placeholder="搜索院校、专业或代码，如 华南理工 085500" autocomplete="off"></label>
         <div class="pf-programs" id="programResults" hidden></div>
         <label class="pf-field"><span>目标院校</span><input name="school" maxlength="40" placeholder="例如：华南理工大学"></label>
@@ -116,8 +130,93 @@
     dialog.querySelectorAll("[data-close]").forEach(b => b.onclick = () => dialog.close());
     dialog.querySelector("#addCustom").onclick = () => addCustomRow({});
     dialog.querySelector("#profileForm").addEventListener("submit", save);
+    dialog.querySelector("#pfAvatarFile").addEventListener("change", onAvatarFile);
+    dialog.querySelector("#pfAvatarDel").onclick = onAvatarDelete;
     bindProgramSearch(dialog);
     return dialog;
+  }
+
+  const QUOTES = ["山海可平，功不唐捐。", "日拱一卒，功不唐捐。", "把题做对，把心放稳。", "慢就是快，基础不牢，地动山摇。", "错题是地图，不是判决。", "今天多算一遍，明天少慌一分。", "上岸不是奇迹，是重复。"];
+  function titleFor(seen) {
+    return seen === 0 ? "尚未启程" : seen < 50 ? "晨光初醒" : seen < 150 ? "执笔为剑" : seen < 300 ? "破卷有声" : seen < 600 ? "拾级而上" : seen < 1000 ? "登堂入室" : "山海可平";
+  }
+
+  function paintAvatar(profile) {
+    const img = document.getElementById("pfAvatar");
+    const fb = document.getElementById("pfAvatarFallback");
+    const del = document.getElementById("pfAvatarDel");
+    if (!img) return;
+    if (profile && profile.avatarAt) {
+      img.src = `/api/profile/avatar?v=${profile.avatarAt}`;
+      img.hidden = false; fb.hidden = true; del.hidden = false;
+    } else {
+      img.hidden = true; fb.hidden = false; del.hidden = true;
+    }
+    const top = document.getElementById("topAvatar");
+    if (top) top.src = profile && profile.avatarAt ? `/api/profile/avatar?v=${profile.avatarAt}` : "";
+    if (top) top.hidden = !(profile && profile.avatarAt);
+  }
+
+  async function fillChips(profile) {
+    const el = document.getElementById("pfChips");
+    const quote = document.getElementById("pfQuote");
+    if (quote) quote.textContent = profile.motto ? `「${profile.motto}」` : `今日一句：${QUOTES[Math.floor(Date.now() / 86400000) % QUOTES.length]}`;
+    if (!el) return;
+    const chips = [];
+    if (profile.examDate) {
+      const days = Math.ceil((new Date(profile.examDate + "T00:00:00") - new Date(new Date().toDateString())) / 86400000);
+      chips.push(days >= 0 ? `距初试 ${days} 天` : "初试已结束，加油等成绩");
+    }
+    el.innerHTML = chips.map(c => `<span class="pf-chip">${esc(c)}</span>`).join("");
+    try {
+      if (!window.AtlasUser) return;
+      const st = await window.AtlasUser.load("practice", { rec: {} });
+      const rec = (st && st.rec) || {};
+      let seen = 0, okN = 0;
+      for (const k in rec) { seen += rec[k].seen || 0; okN += rec[k].ok || 0; }
+      chips.push(`累计刷题 ${seen}`, `称号 · ${titleFor(seen)}`);
+      if (seen) chips.push(`正确率 ${Math.round((okN / seen) * 100)}%`);
+      el.innerHTML = chips.map(c => `<span class="pf-chip">${esc(c)}</span>`).join("");
+    } catch (e) { /* 统计失败不影响档案 */ }
+  }
+
+  async function onAvatarFile(event) {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = "";
+    if (!file) return;
+    try {
+      const bmp = await createImageBitmap(file);
+      const size = 256, canvas = document.createElement("canvas");
+      canvas.width = size; canvas.height = size;
+      const scale = Math.max(size / bmp.width, size / bmp.height);
+      const w = bmp.width * scale, h = bmp.height * scale;
+      canvas.getContext("2d").drawImage(bmp, (size - w) / 2, (size - h) / 2, w, h);
+      bmp.close();
+      const blob = await new Promise(res => canvas.toBlob(res, "image/jpeg", 0.85));
+      if (!blob) throw new Error("图片处理失败");
+      const res = await fetch("/api/profile/avatar", { method: "POST", credentials: "include", headers: { "Content-Type": "image/jpeg" }, body: blob });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      window.ATLAS_PROFILE = Object.assign({}, window.ATLAS_PROFILE, { avatarAt: data.avatarAt, avatarType: "image/jpeg" });
+      paintAvatar(window.ATLAS_PROFILE);
+    } catch (err) {
+      const error = document.getElementById("profileError");
+      if (error) error.textContent = `头像上传失败：${err.message}`;
+    }
+  }
+
+  async function onAvatarDelete() {
+    if (!confirm("删除当前头像？")) return;
+    try {
+      const res = await fetch("/api/profile/avatar", { method: "DELETE", credentials: "include" });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      window.ATLAS_PROFILE = Object.assign({}, window.ATLAS_PROFILE, { avatarAt: 0, avatarType: "" });
+      paintAvatar(window.ATLAS_PROFILE);
+    } catch (err) {
+      const error = document.getElementById("profileError");
+      if (error) error.textContent = `头像删除失败：${err.message}`;
+    }
   }
 
   function bindProgramSearch(dialog) {
@@ -191,6 +290,9 @@
   function fill(profile) {
     const form = document.getElementById("profileForm");
     if (!form) return;
+    if (form.motto) form.motto.value = profile.motto || "";
+    paintAvatar(profile);
+    fillChips(profile);
     form.school.value = profile.school || "";
     form.majorCode.value = profile.majorCode || "";
     form.majorName.value = profile.majorName || "";
@@ -229,6 +331,7 @@
       })).filter(x => x.name),
       dailyMinutes: Number(form.dailyMinutes.value),
       chronotype: form.chronotype.value,
+      motto: form.motto ? form.motto.value.trim() : "",
     };
     const submit = form.querySelector('button[type="submit"]');
     submit.disabled = true; submit.textContent = "保存中…";
@@ -271,6 +374,15 @@
     btn.textContent = "档案";
     btn.title = `${profile.school} · ${profile.majorCode} ${profile.majorName} · ${profile.examDate}`;
     btn.onclick = () => openDialog(profile);
+    if (profile && profile.avatarAt && btn.parentElement && !document.getElementById("topAvatar")) {
+      const img = document.createElement("img");
+      img.id = "topAvatar";
+      img.className = "pf-top-avatar";
+      img.alt = "我的头像";
+      img.src = `/api/profile/avatar?v=${profile.avatarAt}`;
+      img.onclick = () => openDialog(profile);
+      btn.parentElement.insertBefore(img, btn);
+    }
   }
 
   function showHint(profile) {

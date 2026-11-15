@@ -121,7 +121,7 @@
   };
 
   const topicNameOf = i => TOPIC_NAMES[i.topicChapter] || i.topicTitle || i.chapterTitle;
-  const inTopicMode = i => !isPaperChapter(i.chapter) || !!i.topicChapter;
+  const inTopicMode = i => i._bank === "private" || !isPaperChapter(i.chapter) || !!i.topicChapter;
 
   function renderChapterOptions() {
     const pool = ITEMS.filter(i =>

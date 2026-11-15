@@ -47,6 +47,19 @@ export async function onRequestGet({ request, env }) {
       .bind(uid)
       .all();
     const myFiles = (myFileRows.results || []).map(fileOut);
+    const ownerIds = [...new Set((shareRows.results || []).map((s) => s.uid))];
+    const profileMap = new Map();
+    if (ownerIds.length) {
+      try {
+        const profRows = await db
+          .prepare(`SELECT uid, data FROM user_profiles WHERE uid IN (${ownerIds.map(() => "?").join(",")})`)
+          .bind(...ownerIds)
+          .all();
+        for (const r of profRows.results || []) {
+          try { const p = JSON.parse(r.data); profileMap.set(r.uid, { motto: p.motto || "", avatarAt: p.avatarAt || 0 }); } catch (_) { /* 档案损坏时忽略 */ }
+        }
+      } catch (_) { /* user_profiles 尚未创建时忽略 */ }
+    }
     const myImported = new Set(myFiles.filter((f) => f.id.startsWith("share-")).map((f) => f.id.slice(6)));
     const shareByFile = new Map();
     const shares = [];
@@ -60,6 +73,9 @@ export async function onRequestGet({ request, env }) {
         imports: s.imports || 0,
         createdAt: s.created_at,
         owner: s.owner_name || "同学",
+        ownerUid: s.uid,
+        ownerMotto: (profileMap.get(s.uid) || {}).motto || "",
+        ownerAvatarAt: (profileMap.get(s.uid) || {}).avatarAt || 0,
         mine: s.uid === uid,
         questions: countMap.get(`${s.uid}|${s.file_id}`) || 0,
         imported: myImported.has(s.id),

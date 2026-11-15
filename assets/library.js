@@ -3,9 +3,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL('./pdfjs/pdf.worker.min.mjs', impo
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let selected = null, drafts = [];
+let importedIds = new Set();
 let mySubjects = {}; // id -> name（自建科目）
 let allFiles = [];
-const subjectLabel = v => mySubjects[v] || v;
+const BUILTIN_SUBJECTS = {math:'数学一', math2:'数学二', english:'英语一', english2:'英语二', mechanics:'材料力学', politics:'政治'};
+const subjectLabel = v => mySubjects[v] || BUILTIN_SUBJECTS[v] || v;
 const message = s => { $('#status').textContent = s; };
 async function refresh() {
   const [files, questions] = await Promise.all([AtlasUser.json('/api/library'), AtlasUser.json('/api/personal/questions')]);
@@ -17,14 +19,16 @@ async function refresh() {
   function renderFiles() {
     const want = ff ? ff.value : '';
     const list = allFiles.filter(f => !want || (want === '__none' ? !f.category : f.category === want));
-    $('#files').innerHTML = list.length ? list.map(f => `<div class="file"><strong>${esc(f.name)}</strong><small>${esc(subjectLabel(f.subject))}${f.category ? ' · ' + esc(f.category) : ''} · ${(f.size/1048576).toFixed(2)} MiB · ${esc(f.status || '')}</small><div><a href="/api/library/${encodeURIComponent(f.id)}" target="_blank" rel="noopener">查看原文件</a><button data-id="${esc(f.id)}">选择并抽题</button></div></div>`).join('') : '<p>该分类下还没有资料。</p>';
+    $('#files').innerHTML = list.length ? list.map(f => `<div class="file"><strong>${esc(f.name)}</strong><small>${esc(subjectLabel(f.subject))}${f.category ? ' · ' + esc(f.category) : ''} · ${(f.size/1048576).toFixed(2)} MiB · ${esc(f.status || '')}</small><div><a href="/api/library/${encodeURIComponent(f.id)}" target="_blank" rel="noopener">查看原文件</a><button data-pick="${esc(f.id)}">选择并抽题</button><button data-del="${esc(f.id)}">删除资料</button></div></div>`).join('') : '<p>该分类下还没有资料。</p>';
     bindFileButtons();
   }
   if (ff) ff.onchange = renderFiles;
   function bindFileButtons() {
-  $('#files').querySelectorAll('button').forEach(b => b.addEventListener('click', async () => { selected = allFiles.find(f => String(f.id) === b.dataset.id); drafts = []; renderDrafts(); $('#extract').hidden = false; $('#selected').textContent = selected.name; $('#progress').textContent = '正在加载已保存草稿…'; $('#extract').scrollIntoView({behavior:'smooth'}); try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract'); drafts = out.items; renderDrafts(); $('#progress').textContent = `已加载 ${drafts.length} 道已保存草稿。`; } catch (err) { $('#progress').textContent = '草稿加载失败：' + err.message; } }));
+  $('#files').querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', async () => { selected = allFiles.find(f => String(f.id) === b.dataset.pick); drafts = []; renderDrafts(); $('#extract').hidden = false; $('#selected').textContent = selected.name; $('#progress').textContent = '正在加载已保存草稿…'; $('#extract').scrollIntoView({behavior:'smooth'}); try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract'); drafts = out.items; importedIds = new Set(out.importedIds || []); renderDrafts(); $('#progress').textContent = `已加载 ${drafts.length} 道已保存草稿。`; } catch (err) { $('#progress').textContent = '草稿加载失败：' + err.message; } }));
+  $('#files').querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => { const f = allFiles.find(x => String(x.id) === b.dataset.del); if (!f) return; if (!confirm(`删除资料「${f.name}」？它抽出的草稿和已导入的题目会一并删除，无法恢复。`)) return; b.disabled = true; try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(f.id), 'DELETE'); if (selected && String(selected.id) === String(f.id)) { selected = null; drafts = []; importedIds = new Set(); renderDrafts(); $('#extract').hidden = true; } await refresh(); message(`已删除资料${out.questions ? `，连同 ${out.questions} 道已导入题目` : ''}。`); } catch (err) { message('删除失败：' + err.message); b.disabled = false; } }));
   }
-  $('#questions').innerHTML = questions.items.length ? questions.items.map(q => `<div class="question"><strong>${esc(q.subjectName || subjectLabel(q.subject || ''))} · ${esc(q.kpName || q.chapterTitle || '个人题目')}</strong><p>${esc(q.text || '')}</p><small>来源页 ${esc(q.sourcePage || '待核')} · ${esc(q.reviewStatus || '待核')}</small></div>`).join('') : '<p>还没有导入题目。</p>';
+  $('#questions').innerHTML = questions.items.length ? questions.items.map(q => `<div class="question"><strong>${esc(q.subjectName || subjectLabel(q.subject || ''))} · ${esc(q.kpName || q.chapterTitle || '个人题目')}</strong><p>${esc(q.text || '')}</p><small>来源页 ${esc(q.sourcePage || '待核')} · ${esc(q.reviewStatus || '待核')}</small><div><button data-qdel="${esc(q.draftId || '')}">从题库删除</button></div></div>`).join('') : '<p>还没有导入题目。</p>';
+  $('#questions').querySelectorAll('[data-qdel]').forEach(b => b.addEventListener('click', async () => { if (!b.dataset.qdel) return; if (!confirm('把这道题从个人题库删除？')) return; b.disabled = true; try { await AtlasUser.json('/api/personal/questions', 'DELETE', {draftId: b.dataset.qdel}); await refresh(); message('已从个人题库删除。'); } catch (err) { message('删除失败：' + err.message); b.disabled = false; } }));
 }
 $('#upload').addEventListener('submit', async e => {
   e.preventDefault(); const form = e.currentTarget, file = form.elements.file.files[0];
@@ -55,10 +59,11 @@ async function pdfPage(pdf, n) {
 }
 function renderDrafts() {
   $('#review').hidden = !drafts.length;
-  $('#drafts').innerHTML = drafts.map((d,i) => `<div class="draft"><label><input type="checkbox" checked data-check="${i}"> 第 ${esc(d.sourcePage || '?')} 页 · 草稿 ${i+1}</label><label>题目<textarea data-field="text" data-index="${i}">${esc(d.text || '')}</textarea></label><label>答案<textarea data-field="answer" data-index="${i}">${esc(d.answer || '')}</textarea></label><label>解析步骤（每行一步）<textarea data-field="steps" data-index="${i}">${esc((d.steps || []).join('\n'))}</textarea></label><label><input type="checkbox" data-verified="${i}"> 我已核对题目和答案</label><small>未核对的答案会保留待核标记。</small></div>`).join('');
+  $('#drafts').innerHTML = drafts.map((d,i) => `<div class="draft"><label><input type="checkbox" ${importedIds.has(d.draftId) ? '' : 'checked'} data-check="${i}"> 第 ${esc(d.sourcePage || '?')} 页 · 草稿 ${i+1}${importedIds.has(d.draftId) ? ' · 已导入题库' : ''}</label><label>题目<textarea data-field="text" data-index="${i}">${esc(d.text || '')}</textarea></label><label>答案<textarea data-field="answer" data-index="${i}">${esc(d.answer || '')}</textarea></label><label>解析步骤（每行一步）<textarea data-field="steps" data-index="${i}">${esc((d.steps || []).join('\n'))}</textarea></label><label><input type="checkbox" data-verified="${i}"> 我已核对题目和答案</label><small>未核对的答案会保留待核标记。</small><div><button data-ddel="${i}">删除这条草稿</button></div></div>`).join('');
+  $('#drafts').querySelectorAll('[data-ddel]').forEach(b => b.addEventListener('click', async () => { const i = +b.dataset.ddel, d = drafts[i]; if (!d) return; if (!confirm('删除这条草稿？删除后重新打开资料也不会再出现。')) return; try { if (selected && d.draftId) await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract', 'DELETE', {draftId: d.draftId}); drafts.splice(i, 1); renderDrafts(); } catch (err) { message('删除草稿失败：' + err.message); } }));
 }
 $('#start').addEventListener('click', async () => {
-  if (!selected) return; const button = $('#start'); button.disabled = true;
+  if (!selected) return; const button = $('#start'); button.disabled = true; let skippedTotal = 0;
   try {
     $('#progress').textContent = '正在读取原文件…';
     const r = await fetch('/api/library/' + encodeURIComponent(selected.id), {credentials:'include'}); if (!r.ok) throw Error('原文件读取失败（' + r.status + '）');
@@ -72,16 +77,21 @@ $('#start').addEventListener('click', async () => {
       else if (blob.type.startsWith('image/') || /\.(png|jpe?g|webp)$/i.test(name)) { const bitmap = await createImageBitmap(blob); const scale = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height)); const canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(bitmap.width * scale)); canvas.height = Math.max(1, Math.round(bitmap.height * scale)); canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height); bitmap.close(); page = {page:n,text:'',image:canvas.toDataURL('image/jpeg', .8)}; }
       else page = {page:n,text:await blob.text()};
       const chunks = page.text.length > 100000 ? page.text.match(/[\s\S]{1,100000}/g).map(text => ({page:n,text})) : [page];
-      for (const chunk of chunks) { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract', 'POST', {pages:[chunk]}); drafts.push(...out.items); renderDrafts(); }
+      for (const chunk of chunks) { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract', 'POST', {pages:[chunk]}); drafts.push(...out.items); skippedTotal += out.skipped || 0; renderDrafts(); }
     }
-    $('#progress').textContent = `处理完成，共 ${drafts.length} 道草稿。`;
+    $('#progress').textContent = `处理完成，共 ${drafts.length} 道草稿。` + (skippedTotal ? `另有 ${skippedTotal} 条因结构不完整被跳过。` : '');
   } catch (err) { $('#progress').textContent = '处理中断：' + err.message + '。已取得的草稿仍可审阅。'; } finally { button.disabled = false; }
 });
 $('#import').addEventListener('click', async () => {
   const button = $('#import'); let items;
   try { items = [...$('#drafts').querySelectorAll('[data-check]:checked')].map(c => { const i = c.dataset.check, item = {...drafts[i]}; for (const field of ['text','answer','steps']) { const value = $('#drafts').querySelector(`[data-field="${field}"][data-index="${i}"]`).value; item[field] = field === 'steps' ? value.split(/\r?\n/).filter(Boolean) : value; } item.userVerified = $('#drafts').querySelector(`[data-verified="${i}"]`).checked; if (!item.text.trim()) throw Error('题目内容不能为空。'); return item; }); if (!items.length) throw Error('请至少选择一道题目。'); } catch (err) { message('草稿无法导入：' + err.message); return; }
   button.disabled = true;
-  try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/import', 'POST', {items}); message(`导入完成：${out.imported} 道。`); await refresh(); } catch (err) { message(err.message); } finally { button.disabled = false; }
+  try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/import', 'POST', {items});
+    (out.items || []).forEach(q => importedIds.add(q.draftId)); renderDrafts();
+    let note = `导入完成：新增 ${out.imported} 道。`;
+    if (out.skipped) note += ` ${out.skipped} 道此前已导入，已跳过。`;
+    if (out.errors && out.errors.length) note += ` ${out.errors.length} 道未导入：${out.errors[0].error}。`;
+    message(note); await refresh(); } catch (err) { message('导入失败：' + err.message); } finally { button.disabled = false; }
 });
 function addSubjectOption(sub) {
   const sel = document.querySelector('#upload select[name="subject"]'); if (!sel || sel.querySelector(`option[value="${sub.id}"]`)) return;

@@ -115,8 +115,9 @@ function validQuestion(q) {
 }
 function normalizeDraft(q, subject, page, draftId) {
   if (!q || typeof q !== 'object' || Array.isArray(q)) return null;
-  const d = {draftId, subject, sourcePage:page, reviewStatus:'pending', text:str(q.text), answer:str(q.answer), steps:Array.isArray(q.steps) ? q.steps : [], chapter:str(q.chapter), chapterTitle:str(q.chapterTitle), kp:str(q.kp), kpName:str(q.kpName), kind:str(q.kind), difficulty:str(q.difficulty), passage:str(q.passage), topicChapter:str(q.topicChapter)};
-  if (q.maxScore !== '' && q.maxScore != null) d.maxScore = q.maxScore;
+  const d = {draftId, subject, sourcePage:page, reviewStatus:'pending', text:str(q.text), answer:str(q.answer), steps:Array.isArray(q.steps) ? q.steps.map(x => typeof x === 'string' ? x : String(x ?? '')) : [], chapter:str(q.chapter), chapterTitle:str(q.chapterTitle), kp:str(q.kp), kpName:str(q.kpName), kind:str(q.kind), difficulty:str(q.difficulty), passage:str(q.passage), topicChapter:str(q.topicChapter)};
+  const ms = typeof q.maxScore === 'string' ? Number.parseFloat(q.maxScore) : q.maxScore;
+  if (typeof ms === 'number' && Number.isFinite(ms) && ms > 0) d.maxScore = ms;
   return validQuestion(d) ? d : null;
 }
 async function digest(value) {
@@ -256,16 +257,30 @@ async function dispatch(request,env,uid,action,params) {
       const obj = await env.LIBRARY_FILES.get(f.object_key); if (!obj) return notFound();
       return new Response(obj.body,{headers:{'Content-Type':f.mime,'Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(f.name)}`,'X-Content-Type-Options':'nosniff','Cache-Control':'private, no-store'}});
     }
+    if (action === 'file' && method === 'DELETE') {
+      const qc = await row(db,'SELECT COUNT(*) AS n FROM platform_questions WHERE uid=? AND file_id=?',uid,fid);
+      await db.batch([
+        db.prepare('DELETE FROM platform_questions WHERE uid=? AND file_id=?').bind(uid,fid),
+        db.prepare('DELETE FROM platform_drafts WHERE uid=? AND file_id=?').bind(uid,fid),
+        db.prepare('DELETE FROM platform_extractions WHERE uid=? AND file_id=?').bind(uid,fid),
+        db.prepare('DELETE FROM platform_files WHERE uid=? AND id=?').bind(uid,fid),
+      ]);
+      try { await run(db,'DELETE FROM platform_shares WHERE uid=? AND file_id=?',uid,fid); } catch (_) { /* 社区表可能尚未创建 */ }
+      if (env.LIBRARY_FILES) { try { await env.LIBRARY_FILES.delete(f.object_key); } catch (_) { /* 对象已不存在 */ } }
+      return ok({deleted:true, questions:qc?.n || 0});
+    }
     if (action === 'extract' && method === 'GET') {
       const extractions = await all(db,'SELECT draft_ids FROM platform_extractions WHERE uid=? AND file_id=?',uid,fid);
       const visible = new Set(extractions.flatMap(extraction => parse(extraction.draft_ids)));
       const drafts = await all(db,'SELECT data FROM platform_drafts WHERE uid=? AND file_id=?',uid,fid);
-      return ok({items:drafts.map(x=>parse(x.data)).filter(draft=>visible.has(draft.draftId))});
+      const importedRows = await all(db,'SELECT draft_id FROM platform_questions WHERE uid=? AND file_id=?',uid,fid);
+      return ok({items:drafts.map(x=>parse(x.data)).filter(draft=>visible.has(draft.draftId)), importedIds:importedRows.map(r=>r.draft_id)});
     }
     if (action === 'extract' && method === 'POST') {
       const b = await body();
       if (!Array.isArray(b?.pages) || !b.pages.length || b.pages.length > 5 || b.pages.some(p => !Number.isInteger(p.page) || p.page < 1 || typeof p.text !== 'string' || p.text.length > 100000 || !validImage(p.image) || (!p.text.trim() && !p.image))) return fail(400,'页面数据无效');
       const items = [];
+      let skipped = 0;
       for (const p of b.pages) {
         const extractionDigest = await digest(JSON.stringify([uid,fid,p.page,p.text,p.image || '']));
         let extraction = await row(db,'SELECT draft_ids FROM platform_extractions WHERE uid=? AND file_id=? AND digest=?',uid,fid,extractionDigest);
@@ -281,8 +296,10 @@ async function dispatch(request,env,uid,action,params) {
         let output; try { output = await ai(env,[{role:'system',content:IMPORT_PROMPT},{role:'user',content}],true); } catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
         await noteUsage(env, uid, 'extract');
         if (!Array.isArray(output?.items) || output.items.length > 100) return fail(502,'AI 抽题格式无效');
-        const drafts = await Promise.all(output.items.map(async (q,index) => normalizeDraft(q,f.subject,p.page,await digest(`${extractionDigest}:${index}`))));
-        if (drafts.some(x => !x)) return fail(502,'AI 抽题结构无效');
+        const rawDrafts = await Promise.all(output.items.map(async (q,index) => normalizeDraft(q,f.subject,p.page,await digest(`${extractionDigest}:${index}`))));
+        const drafts = rawDrafts.filter(Boolean);
+        skipped += rawDrafts.length - drafts.length;
+        if (!drafts.length) continue;
         const statements = [db.prepare('INSERT OR IGNORE INTO platform_extractions VALUES (?,?,?,?)').bind(uid,fid,extractionDigest,JSON.stringify(drafts.map(draft=>draft.draftId)))];
         statements.push(...drafts.map(draft => db.prepare('INSERT OR IGNORE INTO platform_drafts VALUES (?,?,?,?)').bind(draft.draftId,uid,fid,JSON.stringify(draft))));
         await db.batch(statements);
@@ -293,24 +310,42 @@ async function dispatch(request,env,uid,action,params) {
         }
       }
       await run(db,"UPDATE platform_files SET status='draft' WHERE uid=? AND id=?",uid,fid);
-      return ok({items});
+      return ok({items, skipped});
+    }
+    if (action === 'extract' && method === 'DELETE') {
+      const b = await body(); const draftId = typeof b?.draftId === 'string' ? b.draftId : '';
+      if (!draftId) return fail(400,'草稿 ID 无效');
+      const r = await run(db,'DELETE FROM platform_drafts WHERE uid=? AND file_id=? AND id=?',uid,fid,draftId);
+      return ok({deleted:changes(r) > 0});
     }
     if (action === 'import' && method === 'POST') {
-      const b = await body(); if (!Array.isArray(b?.items) || b.items.length > 500) return fail(400,'草稿无效');
-      const seen = new Set(), records = [];
+      const b = await body(); if (!Array.isArray(b?.items) || !b.items.length || b.items.length > 500) return fail(400,'草稿无效');
+      const seen = new Set(), records = [], errors = [];
       for (const q of b.items) {
-        if (!q || typeof q.draftId !== 'string' || seen.has(q.draftId)) return fail(400,'草稿 ID 无效或重复'); seen.add(q.draftId);
-        const saved = await row(db,'SELECT data FROM platform_drafts WHERE uid=? AND file_id=? AND id=?',uid,fid,q.draftId); if (!saved) return fail(400,'草稿不存在');
+        if (!q || typeof q.draftId !== 'string') { errors.push({error:'有一道草稿缺少 ID'}); continue; }
+        if (seen.has(q.draftId)) { errors.push({draftId:q.draftId, error:'同一草稿被重复提交'}); continue; }
+        seen.add(q.draftId);
+        const saved = await row(db,'SELECT data FROM platform_drafts WHERE uid=? AND file_id=? AND id=?',uid,fid,q.draftId);
+        if (!saved) { errors.push({draftId:q.draftId, error:'草稿不存在（可能已被删除，请重新抽题）'}); continue; }
         const original = parse(saved.data), item = {...original,...q,id:`personal-${q.draftId}`,draftId:q.draftId,subject:f.subject,subjectName:await subjectNameOf(db, uid, f.subject),sourcePage:original.sourcePage,reviewStatus:q.userVerified === true ? 'user_verified' : 'pending'};
-        if (!validQuestion(item)) return fail(400,'题目结构无效'); records.push(item);
+        if (!validQuestion(item)) { errors.push({draftId:q.draftId, error:'题目结构无效（题干/答案/步骤不完整）'}); continue; }
+        records.push(item);
       }
+      if (!records.length) return fail(400, errors[0]?.error || '没有可导入的题目');
       let imported = 0, items = [];
-      for (const item of records) { const result = await run(db,'INSERT OR IGNORE INTO platform_questions VALUES (?,?,?,?)',uid,fid,item.draftId,JSON.stringify(item)); imported += changes(result); const saved = await row(db,'SELECT data FROM platform_questions WHERE uid=? AND file_id=? AND draft_id=?',uid,fid,item.draftId); items.push(parse(saved.data)); }
-      await run(db,"UPDATE platform_files SET status='imported' WHERE uid=? AND id=?",uid,fid);
-      return ok({items,imported});
+      for (const item of records) { const result = await run(db,'INSERT OR IGNORE INTO platform_questions VALUES (?,?,?,?)',uid,fid,item.draftId,JSON.stringify(item)); imported += changes(result); const saved = await row(db,'SELECT data FROM platform_questions WHERE uid=? AND file_id=? AND draft_id=?',uid,fid,item.draftId); if (saved) items.push(parse(saved.data)); }
+      if (imported) await run(db,"UPDATE platform_files SET status='imported' WHERE uid=? AND id=?",uid,fid);
+      return ok({items, imported, skipped:records.length - imported, errors});
     }
   }
   if (action === 'questions' && method === 'GET') return ok({items:(await all(db,'SELECT data FROM platform_questions WHERE uid=?',uid)).map(x=>parse(x.data))});
+  if (action === 'questions' && method === 'DELETE') {
+    const b = await body();
+    const did = typeof b?.draftId === 'string' ? b.draftId : (typeof b?.id === 'string' ? b.id.replace(/^personal-/,'') : '');
+    if (!did) return fail(400,'题目 ID 无效');
+    const r = await run(db,'DELETE FROM platform_questions WHERE uid=? AND draft_id=?',uid,did);
+    return ok({deleted:changes(r) > 0});
+  }
   if (action === 'state') {
     const ns = params.namespace; if (!['practice','vocab','review','goals','onboarding'].includes(ns)) return notFound();
     const read = async () => {const r = await row(db,'SELECT data,revision FROM platform_state WHERE uid=? AND namespace=?',uid,ns); return r ? {data:parse(r.data),revision:r.revision} : {data:null,revision:0};};

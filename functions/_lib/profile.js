@@ -25,6 +25,9 @@ export const DEFAULT_PROFILE = {
   customSubjects: [],
   dailyMinutes: 240,
   chronotype: 'normal',
+  motto: '',
+  avatarAt: 0,
+  avatarType: '',
 };
 
 const SUBJECT_IDS = new Set(['math', 'english', 'mechanics', 'politics']);
@@ -64,14 +67,14 @@ export function normalize(input) {
   const minutes = Number(value.dailyMinutes);
   const dailyMinutes = Number.isFinite(minutes) ? Math.min(900, Math.max(30, Math.round(minutes))) : DEFAULT_PROFILE.dailyMinutes;
   const chronotype = ['morning', 'normal', 'night'].includes(value.chronotype) ? value.chronotype : DEFAULT_PROFILE.chronotype;
+  const motto = text(value.motto, 60);
   const variants = value.variants && typeof value.variants === 'object' ? value.variants : {};
   const mathVariant = ['math1', 'math2', 'math3'].includes(variants.math) ? variants.math : DEFAULT_PROFILE.variants.math;
   const englishVariant = ['english1', 'english2'].includes(variants.english) ? variants.english : DEFAULT_PROFILE.variants.english;
-  return { school, majorCode, majorName, examDate, subjects: subjects.length ? subjects : DEFAULT_PROFILE.subjects.slice(), variants: { math: mathVariant, english: englishVariant }, customSubjects, dailyMinutes, chronotype };
+  return { school, majorCode, majorName, examDate, subjects: subjects.length ? subjects : DEFAULT_PROFILE.subjects.slice(), variants: { math: mathVariant, english: englishVariant }, customSubjects, dailyMinutes, chronotype, motto };
 }
 
-export async function saveProfile(env, uid, input) {
-  const profile = normalize(input);
+async function upsert(env, uid, profile) {
   const database = await db(env);
   const now = new Date().toISOString();
   await database
@@ -80,4 +83,21 @@ export async function saveProfile(env, uid, input) {
     .bind(uid, JSON.stringify(profile), now)
     .run();
   return { ...profile, updatedAt: now, isDefault: false };
+}
+
+export async function saveProfile(env, uid, input) {
+  const profile = normalize(input);
+  // 头像元数据由头像接口单独维护，普通保存时保留不覆盖
+  const current = await getProfile(env, uid);
+  profile.avatarAt = current.avatarAt || 0;
+  profile.avatarType = current.avatarType || '';
+  return upsert(env, uid, profile);
+}
+
+export async function setAvatarMeta(env, uid, avatarAt, avatarType) {
+  const current = await getProfile(env, uid);
+  const profile = normalize(current);
+  profile.avatarAt = avatarAt || 0;
+  profile.avatarType = avatarType || '';
+  return upsert(env, uid, profile);
 }

@@ -55,3 +55,17 @@ dialog.profile-dialog::backdrop { background: rgba(20, 18, 23, .45); backdrop-fi
   .pf-row { grid-template-columns: 1fr; gap: 0; }
   .profile-hint { top: 8px; font-size: 11px; padding: 6px 10px; max-width: 94vw; white-space: normal; }
 }
+
+/* 个人名片：头像 / 格言 / 学习徽章 */
+.pf-card { border: 1px solid #E4DCCB; border-radius: 12px; padding: 12px; margin-bottom: 14px; background: #FBF8F1; }
+.pf-avatar-row { display: flex; align-items: center; gap: 12px; }
+.pf-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid #E4DCCB; background: #17161A; }
+.pf-avatar-fallback { display: flex; align-items: center; justify-content: center; color: #F5F0E6; font-size: 26px; font-family: "Noto Serif SC", serif; }
+.pf-avatar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pf-upload { cursor: pointer; border: 1px solid #C9BFA9; border-radius: 999px; padding: 5px 12px; font-size: 13px; background: #fff; }
+.pf-upload:hover { border-color: #7A5C3E; }
+.pf-avatar-del { border: none; background: none; color: #B3261E; font-size: 13px; cursor: pointer; padding: 4px; }
+.pf-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.pf-chip { background: #17161A; color: #F5F0E6; border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+.pf-quote { margin: 8px 0 4px; color: #7A5C3E; font-size: 13px; }
+.pf-top-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid #E4DCCB; vertical-align: middle; }
