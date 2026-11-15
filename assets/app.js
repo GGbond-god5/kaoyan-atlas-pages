@@ -301,6 +301,145 @@
     });
   });
 
+  /* ---------- 小观 AI 向导（App 形态）----------
+   * 位置逻辑（参考 LobeChat / Dify 等成熟产品的移动端形态）：
+   * 首页一级入口卡（不做悬浮球，不遮挡内容）→ 全屏对话页（底部输入栏 + 图片附件）；
+   * 场景入口：阅读器顶栏「问小观」带本章上下文。对话走 /api/coach（home-guide），
+   * 与网页版同一位小观、同一套讲题口径。 */
+  var gMsgs = [], gCid = null, gImage = null, gBusy = false;
+  var gScene = { type: 'home', title: '' };
+  var HOME_CHIPS = ['怎么上传自己的资料？', '套卷分析在哪看？', '按我的进度，今天先复习什么？', '错题复习是怎么安排的？'];
+  var GREETING = '你好，我是小观。可以问我站内功能怎么用（比如上传资料、看套卷分析），也可以直接发题目——打字或点「图片」拍照，我按步骤给你讲。';
+
+  function gFmt(s) { return esc(window.AtlasPlain ? window.AtlasPlain.clean(s) : s); }
+  function gMath(el) {
+    if (window.renderMathInElement) {
+      try {
+        window.renderMathInElement(el, { delimiters: [{ left: '\\(', right: '\\)', display: false }, { left: '\\[', right: '\\]', display: true }], throwOnError: false });
+      } catch (_) { /* 忽略 */ }
+    }
+  }
+  function gAddMsg(role, text, img) {
+    var box = $('#guideMsgs');
+    var d = document.createElement('div');
+    d.className = 'g-msg ' + (role === 'user' ? 'u' : 'a');
+    d.innerHTML = gFmt(text || '') + (img ? '<img alt="题目照片" src="' + img + '">' : '');
+    box.appendChild(d);
+    gMath(d);
+    box.scrollTop = box.scrollHeight;
+    return d;
+  }
+  function gCompress(file, cb) {
+    var url = URL.createObjectURL(file), im = new Image();
+    im.onload = function () {
+      URL.revokeObjectURL(url);
+      var scale = Math.min(1, 1280 / Math.max(im.width, im.height));
+      var c = document.createElement('canvas');
+      c.width = Math.round(im.width * scale); c.height = Math.round(im.height * scale);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      cb(c.toDataURL('image/jpeg', 0.82));
+    };
+    im.onerror = function () { URL.revokeObjectURL(url); cb(null); };
+    im.src = url;
+  }
+  function gRenderChips() {
+    var chips = gScene.type === 'reader'
+      ? ['讲讲本章的重点和难点', '本章最容易考什么题型？', '帮我总结本章要点']
+      : HOME_CHIPS;
+    $('#guideChips').innerHTML = chips.map(function (c) {
+      return '<button type="button" class="guide-chip">' + esc(c) + '</button>';
+    }).join('');
+    $$('#guideChips .guide-chip').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var q = b.textContent;
+        if (gScene.type === 'reader' && gScene.title) q = '我正在读《' + gScene.title + '》这一章。' + q;
+        gSend(q);
+      });
+    });
+  }
+  function openGuide(scene) {
+    gScene = scene || { type: 'home', title: '' };
+    $('#guideScene').textContent = gScene.type === 'reader'
+      ? '正在读《' + (gScene.title || '本章') + '》 · 随问随答'
+      : '功能引导 · 解题答疑';
+    gRenderChips();
+    $('#guideView').hidden = false;
+    document.body.style.overflow = 'hidden';
+    if (!gMsgs.length && !$('#guideMsgs').children.length) gAddMsg('assistant', GREETING);
+  }
+  function closeGuide() {
+    $('#guideView').hidden = true;
+    if ($('#readerView').hidden) document.body.style.overflow = '';
+  }
+  function gSend(text) {
+    text = (text != null ? text : $('#guideInput').value).trim();
+    if (gBusy || (!text && !gImage)) return;
+    var myImage = gImage;
+    gAddMsg('user', text, myImage);
+    gMsgs.push({ role: 'user', content: text || '请看这张题目照片，帮我解这道题。', images: myImage ? [myImage] : undefined });
+    gImage = null; $('#guidePreview').hidden = true; $('#guideInput').value = '';
+    gBusy = true; $('#guideSend').disabled = true;
+    var think = gAddMsg('assistant', '小观思考中…');
+    think.classList.add('think');
+    AtlasUser.json('/api/coach', 'POST', {
+      conversationId: gCid || undefined,
+      context: { source: 'home-guide', scene: gScene.type, chapterTitle: gScene.title || undefined },
+      messages: gMsgs.slice(-20)
+    }).then(function (r) {
+      gCid = r.conversationId || gCid;
+      think.remove();
+      gAddMsg('assistant', r.reply || '（没有收到回复，请再试一次）');
+      gMsgs.push({ role: 'assistant', content: r.reply || '' });
+    }).catch(function (e) {
+      think.remove();
+      gAddMsg('assistant', '刚才没连上：' + (e.message || '请稍后再试') + '。可以检查网络后再发一次。');
+      gMsgs.pop();
+    }).finally(function () {
+      gBusy = false; $('#guideSend').disabled = false;
+    });
+  }
+  $('#guideCard').addEventListener('click', function (e) {
+    if (e.target.closest('[data-guide-chip]')) return;
+    openGuide({ type: 'home', title: '' });
+  });
+  $$('#guideCard [data-guide-chip]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      openGuide({ type: 'home', title: '' });
+      gSend(b.dataset.guideChip);
+    });
+  });
+  $('#guideBack').addEventListener('click', closeGuide);
+  $('#guideNew').addEventListener('click', function () {
+    gMsgs = []; gCid = null; gImage = null;
+    $('#guideMsgs').innerHTML = '';
+    $('#guidePreview').hidden = true;
+    gAddMsg('assistant', GREETING);
+  });
+  $('#guideSend').addEventListener('click', function () { gSend(); });
+  $('#guideInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); gSend(); }
+  });
+  $('#guidePhoto').addEventListener('click', function () { $('#guideFile').click(); });
+  $('#guideFile').addEventListener('change', function () {
+    var f = $('#guideFile').files && $('#guideFile').files[0];
+    $('#guideFile').value = '';
+    if (!f) return;
+    gCompress(f, function (d) {
+      if (!d) { gAddMsg('assistant', '这张图片没读出来，换一张试试。'); return; }
+      gImage = d;
+      $('#guidePreviewImg').src = d;
+      $('#guidePreview').hidden = false;
+    });
+  });
+  $('#guidePreviewRm').addEventListener('click', function () {
+    gImage = null;
+    $('#guidePreview').hidden = true;
+  });
+  $('#readerGuideBtn').addEventListener('click', function () {
+    var title = (reader.content && reader.content.title) || (reader.meta && reader.meta.title) || '';
+    openGuide({ type: 'reader', title: title });
+  });
+
   /* ---------- 小说式阅读器 ----------
    * 结构来自 assets/data.js（window.ATLAS），正文按章懒加载 web/<章节id>.js
    * （window.ATLAS_CH，与网页版阅读器同一份讲义）。全屏沉浸阅读：
