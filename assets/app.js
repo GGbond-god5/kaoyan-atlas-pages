@@ -6,6 +6,7 @@
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function linkify(s) { return String(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
   var esc = function (s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -1315,7 +1316,7 @@ async function clearPaperRecordsApp(qids) {
     return '<div class="card post-card"><div class="post-head">' + avatarHtml2(p.authorUid, p.authorAvatarAt, p.author) +
       '<div class="post-who"><b>' + esc(p.author) + '</b><span>' + esc(fmtRel(p.createdAt)) + (p.subject ? ' · ' + esc(SUBJECT_NAMES[p.subject] || p.subject) : '') + '</span></div>' +
       (p.mine ? '<button type="button" class="btn-sub danger" data-post-del="' + esc(p.id) + '">删除</button>' : '') + '</div>' +
-      '<p class="post-text">' + esc(p.text) + '</p>' +
+      '<p class="post-text">' + linkify(esc(p.text)) + '</p>' +
       '<div class="post-actions">' +
       '<button type="button" class="post-act' + (p.liked ? ' on' : '') + '" data-post-like="' + esc(p.id) + '">' + (p.liked ? '♥' : '♡') + ' ' + (p.likeCount || 0) + '</button>' +
       '<button type="button" class="post-act" data-post-toggle="' + esc(p.id) + '">评论 ' + (p.commentCount || 0) + '</button></div>' +
@@ -1330,7 +1331,7 @@ async function clearPaperRecordsApp(qids) {
     return '<div class="pcomment"><div class="pcomment-main"><b>' + esc(c.author) + '</b>' +
       (c.parentAuthor ? '<span class="pcomment-re">回复 @' + esc(c.parentAuthor) + '</span>' : '') +
       '<span class="pcomment-time">' + esc(fmtRel(c.createdAt)) + '</span></div>' +
-      '<p>' + esc(c.text) + '</p>' +
+      '<p>' + linkify(esc(c.text)) + '</p>' +
       '<div class="pcomment-acts"><button type="button" data-reply="' + esc(p.id) + '|' + esc(c.id) + '|' + esc(c.author) + '">回复</button>' +
       (c.mine ? '<button type="button" data-pcomment-del="' + esc(p.id) + '|' + esc(c.id) + '">删除</button>' : '') + '</div></div>';
   }
