@@ -1,4 +1,4 @@
-/* 套卷分析：数据全部来自 /api/attempts（套卷/自测的作答与批改结果），在本页内聚合，不新增后端接口。
+/* 套卷分析：数据全部来自 /api/attempts（套卷/模考的作答与批改结果），在本页内聚合，不新增后端接口。
  * 口径：得分率 = score/maxScore；满分=1，未满分<1，低分<0.5。只统计 status 为 graded 的题。 */
 (function () {
   'use strict';
@@ -12,6 +12,7 @@
   function rate(r) { return r && r.status === 'graded' && Number(r.maxScore) > 0 ? Number(r.score) / Number(r.maxScore) : null; }
 
   function paperTitle(a) {
+    if (a.mode === 'mock') return subjectName(a.subject, [a]) + ' · 全真模考';
     if (a.mode === 'diagnostic') return subjectName(a.subject, [a]) + ' · 能力自测';
     var q0 = (a.questions || [])[0] || {};
     return q0.chapterTitle || subjectName(a.subject, [a]) + ' · 套卷';
@@ -176,7 +177,7 @@
         return '<span class="chip' + (w.rate > 0 ? ' part' : '') + '" title="' + esc(w.kpName || w.kind) + '">第' + w.no + '题' + (w.kpName ? ' · ' + esc(w.kpName) : '') + (w.rate > 0 ? '（部分分）' : '') + '</span>';
       }).join('') : '<span class="chip" style="border-color:#BFD8C6;color:#3E7A4E;background:#EDF5EF">全部满分</span>';
       return '<div class="paper"><h3>' + esc(p.title) + '</h3><div class="pmeta">' +
-        (p.mode === 'diagnostic' ? '能力自测 · ' : '套卷 · ') + '已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '（' + (p.rate === null ? '—' : pct(p.rate)) + '）</div>' +
+        (p.mode === 'mock' ? '全真模考 · ' : p.mode === 'diagnostic' ? '能力自测 · ' : '套卷 · ') + '已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '（' + (p.rate === null ? '—' : pct(p.rate)) + '）</div>' +
         '<div class="chips">' + chips + '</div></div>';
     }).join('');
 
@@ -213,7 +214,7 @@
     try {
       await window.AtlasUser.ready;
       var data = await window.AtlasUser.json('/api/attempts', 'GET');
-      state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'diagnostic') && Array.isArray(a.questions); });
+      state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'diagnostic' || a.mode === 'mock') && Array.isArray(a.questions); });
       var subjects = Array.from(new Set(state.attempts.map(function (a) { return a.subject; })));
       try { var g = await window.AtlasUser.load('goals', { targets: {} }); state.targets = (g && g.targets) || {}; } catch (e) {}
       renderTabs(subjects);

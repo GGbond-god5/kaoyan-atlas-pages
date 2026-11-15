@@ -83,7 +83,7 @@ export function allocatePaper(subject, questions, mode) {
   const table = STANDARD[subject] || STANDARD.math;
   for (const i of missing) scores[i] = table[list[i].kind] != null ? table[list[i].kind] : (OBJECTIVE.has(list[i].kind) ? 2 : 10);
 
-  const isPaper = mode === "paper" || mode === "diagnostic";
+  const isPaper = mode === "paper" || mode === "diagnostic" || mode === "mock";
   if (!isPaper || !total) return scores;
 
   const fixed = scores.reduce((sum, s, i) => sum + (missing.includes(i) ? 0 : s), 0);

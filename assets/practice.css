@@ -337,3 +337,41 @@ button.q-opt:hover{background:rgba(120,110,90,.06)}
 .rgrid button.ok { background: #d9e9dc; } .rgrid button.wrong { background: #f2d7d2; }
 #mastery dialog, #atlasCoach { max-width: min(90vw, 680px); max-height: 80vh; overflow: auto; border: 1px solid #cbbba7; background: #fffaf2; color: #3e3028; padding: 24px; }
 #atlasCoach textarea { width: 100%; min-height: 110px; } .coach-log { white-space: pre-wrap; max-height: 40vh; overflow: auto; }
+
+/* ===== 全真模考计时状态 ===== */
+.etimer.warn{color:#8a6d1a;border-color:#d9c08e;background:#fbf3e2}
+.etimer.danger{color:var(--ver);border-color:#d9a79f;background:#faece9;font-weight:700}
+
+/* ===== 平板与移动端：答题卡抽屉化 + 触控目标放大 ===== */
+@media (max-width: 1000px) {
+  .exam-grid, .exam-grid.paper-mode { grid-template-columns: minmax(0, 1fr); }
+  .exam-grid .sheet, .exam-grid.paper-mode .sheet {
+    position: fixed; top: 60px; right: 0; z-index: 45;
+    width: min(300px, 86vw); height: calc(100vh - 60px); height: calc(100dvh - 60px);
+    overflow-y: auto; border-radius: 0; border-top: 0; border-bottom: 0; border-right: 0;
+    box-shadow: -12px 0 32px rgba(23, 22, 26, .18);
+  }
+  .exam-grid .sheet[hidden] { display: none; }
+  .qbtn { height: 40px; font-size: 12px; }
+  .sheet .side-submit { height: 44px; font-size: 13px; }
+}
+@media (max-width: 700px) {
+  .mode-tabs { display: flex; overflow-x: auto; max-width: 100%; }
+  .mode-tabs button { height: 40px; padding: 0 18px; font-size: 13px; flex: 1 0 auto; }
+  .srow select { height: 40px; font-size: 16px; flex: 1; min-width: 0; }
+  .srow .slabel { flex: 0 0 64px; }
+  .seg button { height: 38px; padding: 0 16px; font-size: 12px; }
+  .start { height: 48px; font-size: 14px; width: 100%; }
+  .start-row { flex-wrap: wrap; gap: 10px; }
+  .q-opt { padding: 10px 0; }
+  .q-opt .ol { flex-basis: 1.9em; height: 1.9em; font-size: 12px; }
+  .paper-actions button { height: 42px; font-size: 12px; }
+  .photo-pick, .ai-grade { height: 42px; padding: 0 16px; font-size: 12px; }
+  #work { font-size: 16px; }
+  #result .rgrid { grid-template-columns: repeat(6, 1fr); }
+  .etimer { flex: none; }
+  .esubmit, .eexit { height: 36px; padding: 0 12px; }
+}
+@media (max-width: 600px) {
+  .exam-grid .sheet, .exam-grid.paper-mode .sheet { top: 100px; height: calc(100vh - 100px); height: calc(100dvh - 100px); }
+}

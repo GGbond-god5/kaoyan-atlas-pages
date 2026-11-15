@@ -66,3 +66,4 @@
 - 学习计划生成器：新增 assets/plan.js + plan.css，首页左下角改为卡片栈（计划卡 + 今日任务卡）；计划存 state 'plan'（platform.js 白名单新增 plan 命名空间），按档案与套卷表现加权分配每日时长，7 天滚动生成。
 - 错题本：新增 wrongbook.html（已登记 build-pages FILES）+ assets/wrongbook.js/css，数据来自 practice state 的 rec 与题库分片（全量加载）+ 个人题；practice.html 开始行加导出入口。
 - 文档状态同步：功能说明新增「项目状态总览」（题库校核补缺标注为已解决并列明三处残余、产品化三层与当日功能清单、目录导入进行中、两项待决策）；README 页面一览补齐套卷分析/社区/错题本/设置/管理台并修正头像入口与题量；全栈工作流的院校目录条目改写为全国目录抓取方案。
+- 全真模考替换能力自测（practice.js v43）：新增 mock 模式——按正式考试题型配额组卷（复用原自测配额与题组抽取）、开始前考试须知确认、180 分钟倒计时（30 分钟变黄/10 分钟变红）、时间到自动交卷、结果页显示用时、中途退出不保存成绩；attempt 以 mode=mock 保存，scoring.js 的套卷满分推算与 analytics 的筛选/标注同步支持 mock（历史 diagnostic 记录保留「能力自测」标注）；today.js、profile-boot 引导、analytics.html、README 文案同步改名。同时完成刷题页平板/移动端适配（practice.css）：≤1000px 答题卡改为右侧抽屉（目录按钮开合、点题号自动收起）、≤700px 触控目标放大与输入防缩放。

@@ -37,11 +37,11 @@
       var list = (data.attempts || []).filter(function (a) { return a && a.createdAt; })
         .sort(function (a, b) { return String(a.createdAt).localeCompare(String(b.createdAt)); });
       if (!list.length) {
-        rows.push(row('套卷 / 自测', '还没做过整套卷', 'practice.html', '去做一套'));
+        rows.push(row('套卷 / 模考', '还没做过整套卷', 'practice.html', '去做一套'));
       } else {
         var last = list[list.length - 1], d = new Date(last.createdAt);
         var today = new Date().toDateString() === d.toDateString();
-        rows.push(row('套卷 / 自测',
+        rows.push(row('套卷 / 模考',
           (today ? '今日已完成一套' : '上次是 ' + (d.getMonth() + 1) + '月' + d.getDate() + '日') + '，共 ' + list.length + ' 套',
           today ? 'analytics.html' : 'practice.html', today ? '看分析' : '再做一套'));
       }

@@ -82,7 +82,7 @@
   let session = null;
   let timerId = null;
   let confirmCb = null;
-  let diagnosticPreview = [];
+  let mockPreview = [];
 
   let store = {rec:{}};
   function save() { window.AtlasUser.save("practice", store).catch(err => console.error(err)); }
@@ -226,7 +226,7 @@
     return ITEMS.filter(i => {
       if (state.bank !== "all" && i._bank !== state.bank) return false;
       if (state.mode === "knowledge" && !inTopicMode(i)) return false;
-      if (state.mode === "diagnostic" && state.subject === "all") return false;
+      if (state.mode === "mock" && state.subject === "all") return false;
       if (state.mode === "knowledge" && state.kp && i.kp !== state.kp) return false;
       if (state.subject !== "all" && i.subject !== state.subject) return false;
       if (state.mode === "knowledge" && state.chapter !== "all" && topicOf(i) !== state.chapter) return false;
@@ -240,7 +240,7 @@
 
   function updateCount() {
     const info = $("#structureInfo"); info.hidden = true; info.textContent = "";
-    if ((state.mode === "paper" || state.mode === "diagnostic") && state.subject === "all") {
+    if ((state.mode === "paper" || state.mode === "mock") && state.subject === "all") {
       $("#pcount").textContent = "请先选择单一科目"; $("#pstart").disabled = true; $("#paperSol").hidden = true; return 0;
     }
     const arc = state.mode === "paper" ? archiveOf(state.paper) : null;
@@ -259,14 +259,14 @@
       return 0;
     }
     const pool = currentPool();
-    if (state.mode === "diagnostic") {
-      const groups = diagnosticGroups(state.subject), selected = diagnosticPool(pool, state.subject);
-      diagnosticPreview = selected;
+    if (state.mode === "mock") {
+      const groups = mockGroups(state.subject), selected = mockPool(pool, state.subject);
+      mockPreview = selected;
       const counts = groups && groups.map(g => { const available = selected.filter(q => g.kinds.includes(q.kind)).length; return `${g.name} ${available}/${g.count}${available < g.count ? "（缺题）" : ""}`; });
       const missing = selected.filter(q => !Number.isFinite(Number(q.maxScore)) || q.maxScore == null || Number(q.maxScore) <= 0).length;
       const knownMax = selected.filter(q => q.maxScore != null && Number.isFinite(Number(q.maxScore)) && Number(q.maxScore) > 0).reduce((sum,q) => sum + Number(q.maxScore), 0);
       const missingNo = selected.filter(q => paperNo(q) === 9999).length;
-      info.textContent = (counts ? `按试卷题型配额：${counts.join("；")}。${["english", "english2"].includes(state.subject) ? "完形、阅读、新题型按原文及完整题组抽取，英语一翻译按原卷题组抽取；原文或题目不全的不计入。" : ""}` : `材料力学未设统一题型配额，按可用原卷题号排序，${missingNo} 题题号待核并排在末尾，题量由下方选择。`) + `实际抽取 ${selected.length} 题，已知满分合计 ${knownMax} 分，其中 ${missing} 题满分待核；${counts ? "未列入的题型不计入自测。" : ""}`;
+      info.textContent = (counts ? `全真模考按正式考试结构组卷，限时 180 分钟，时间到自动交卷。题型配额：${counts.join("；")}。${["english", "english2"].includes(state.subject) ? "完形、阅读、新题型按原文及完整题组抽取，英语一翻译按原卷题组抽取；原文或题目不全的不计入。" : ""}` : `全真模考限时 180 分钟，时间到自动交卷。材料力学未设统一题型配额，按可用原卷题号排序，${missingNo} 题题号待核并排在末尾，题量由下方选择。`) + `实际抽取 ${selected.length} 题，已知满分合计 ${knownMax} 分，其中 ${missing} 题满分待核；${counts ? "未列入的题型不计入模考。" : ""}`;
       info.hidden = false; $("#pcount").textContent = `当前可组卷：${selected.length} 题`;
       $("#pstart").disabled = !selected.length; return selected.length;
     }
@@ -280,11 +280,11 @@
     state.mode = mode;
     $$("#modeTabs button").forEach(b => b.classList.toggle("on", b.dataset.mode === mode));
     const paper = mode === "paper";
-    $("#rowChapter").hidden = paper || mode === "diagnostic";
+    $("#rowChapter").hidden = paper || mode === "mock";
     $("#rowPaper").hidden = !paper;
     $("#rowDiff").hidden = paper;
     $("#rowSource").hidden = paper;
-    $("#countRow").hidden = paper || (mode === "diagnostic" && state.subject !== "mechanics");
+    $("#countRow").hidden = paper || (mode === "mock" && state.subject !== "mechanics");
     $("#paperNote").hidden = !paper;
     updateCount();
   }
@@ -303,7 +303,7 @@
     while (buckets.length && (!count || out.length < count)) for (let i = buckets.length - 1; i >= 0 && (!count || out.length < count); i--) { out.push(buckets[i].pop()); if (!buckets[i].length) buckets.splice(i, 1); }
     return out;
   }
-  function diagnosticGroups(subject) {
+  function mockGroups(subject) {
     if (["math", "math2"].includes(subject)) return [
       {name:"选择题", kinds:["选择题", "单选题"], count:10},
       {name:"填空题", kinds:["填空题"], count:6},
@@ -321,8 +321,8 @@
     ];
     return null;
   }
-  function diagnosticPool(pool, subject) {
-    const single = pool.filter(q => q.subject === subject), groups = diagnosticGroups(subject);
+  function mockPool(pool, subject) {
+    const single = pool.filter(q => q.subject === subject), groups = mockGroups(subject);
     if (groups) return groups.flatMap(g => {
       const candidates = single.filter(q => g.kinds.includes(q.kind));
       if (!["english", "english2"].includes(subject) || !["完形", "阅读", "新题型", "翻译"].includes(g.name) || (g.name === "翻译" && subject === "english2")) return stratified(candidates, g.count);
@@ -341,7 +341,7 @@
   }
   const sealed = () => session && session.mode !== "knowledge" && !session.ended;
   function start(poolOverride, poolTitle) {
-    if ((state.mode === "paper" || state.mode === "diagnostic") && state.subject === "all") return;
+    if ((state.mode === "paper" || state.mode === "mock") && state.subject === "all") return;
     if (state.mode === "paper") {
       const arc = archiveOf(state.paper);
       if (arc) {
@@ -353,13 +353,13 @@
     if (!pool.length) { $("#pcount").textContent = "没有符合条件的题目"; return; }
     if (!poolOverride && state.mode === "knowledge") pool = shuffle(pool.slice());
     if (!poolOverride && state.mode === "knowledge" && state.count > 0) pool = pool.slice(0, state.count);
-    if (!poolOverride && state.mode === "diagnostic") pool = diagnosticPreview.slice();
+    if (!poolOverride && state.mode === "mock") pool = mockPreview.slice();
     if (!pool.length || (state.mode !== "knowledge" && pool.some(q => q.subject !== state.subject))) { $("#pcount").textContent = "题型不足或科目不一致，无法组卷"; return; }
     if (!poolOverride && state.mode === "paper") pool = pool.slice().sort((a, b) => paperNo(a) - paperNo(b));
     $("#sideSubmit").hidden = false;
-    session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, startTime: Date.now(), ended: false, mode: state.mode, structure: $("#structureInfo").hidden ? "" : $("#structureInfo").textContent };
+    session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, startTime: Date.now(), ended: false, mode: state.mode, limitSec: state.mode === "mock" ? MOCK_SECONDS : 0, subject: state.subject, structure: $("#structureInfo").hidden ? "" : $("#structureInfo").textContent };
     const sub = SUBJECTS.find(s => s.id === state.subject);
-    const title = poolTitle || (poolOverride ? "错题重练" : (state.mode === "diagnostic" ? `${sub ? sub.name : state.subject} · 能力自测` : state.mode === "paper" ? pool[0].chapterTitle
+    const title = poolTitle || (poolOverride ? "错题重练" : (state.mode === "mock" ? `${sub ? sub.name : state.subject} · 全真模考` : state.mode === "paper" ? pool[0].chapterTitle
       : (state.chapter !== "all" ? pool[0].chapterTitle
         : (sub ? sub.name : "全科综合"))));
     $("#paperTitle").textContent = `${title} · ${pool.length} 题`;
@@ -373,10 +373,12 @@
     document.body.classList.toggle("paper-run", state.mode === "paper");
     // 套卷模式也给题号目录：默认收起，点「目录」展开
     $("#tocBtn").hidden = false;
-    $("#sheet").hidden = state.mode === "paper";
-    $("#examGrid").classList.toggle("sheet-hidden", state.mode === "paper");
+    const sheetHidden = state.mode === "paper" || window.matchMedia("(max-width: 1000px)").matches;
+    $("#sheet").hidden = sheetHidden;
+    $("#examGrid").classList.toggle("sheet-hidden", sheetHidden);
     $("#tocBtn").textContent = "目录";
-    $("#timer").textContent = "00:00";
+    $("#timer").textContent = session.limitSec ? fmtClock(session.limitSec) : "00:00";
+    $("#timer").classList.remove("warn", "danger");
     if (timerId) clearInterval(timerId);
     timerId = setInterval(tick, 1000);
     window.scrollTo({ top: 0 });
@@ -384,10 +386,24 @@
     renderQuestion();
   }
 
+  const MOCK_SECONDS = 180 * 60;
+  function fmtClock(sec) {
+    sec = Math.max(0, sec);
+    return `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
+  }
   function tick() {
     if (!session || session.ended) return;
     const sec = Math.floor((Date.now() - session.startTime) / 1000);
-    $("#timer").textContent = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
+    const el = $("#timer");
+    if (session.mode === "mock" && session.limitSec) {
+      const left = session.limitSec - sec;
+      el.textContent = fmtClock(left);
+      el.classList.toggle("warn", left <= 1800 && left > 600);
+      el.classList.toggle("danger", left <= 600);
+      if (left <= 0 && !session.submitting) { session.timeUp = true; doSubmit(); }
+      return;
+    }
+    el.textContent = fmtClock(sec);
   }
 
   function renderSheet() {
@@ -643,7 +659,7 @@
     finally { if (session === active) { session.grading = null; updateResultStatus(); } }
   }
   function finishSubmit() {
-    session.ended = true; if (timerId) clearInterval(timerId);
+    session.ended = true; session.endTime = Date.now(); if (timerId) clearInterval(timerId);
     $("#submitBtn").hidden = true; $("#exitBtn").hidden = true; $("#tocBtn").hidden = true; $("#exam").hidden = true; $("#result").hidden = false; $("#bankLink").hidden = false; document.body.classList.remove("paper-run"); renderResult();
   }
   function qStatus(q) {
@@ -698,7 +714,7 @@
     const masteryWasOpen = !!$("#masteryDialog[open]");
     const results = session.attempt && session.attempt.results || {};
     const structureBrief = session.structure ? session.structure.split("。")[0] + "。" : "";
-    $("#result").innerHTML = `<div class="ekicker">RESULT</div><h2>交卷完成</h2><p class="rsum">${esc(structureBrief)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span class="rcheck" aria-hidden="true">✓</span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
+    $("#result").innerHTML = `<div class="ekicker">${session.mode === "mock" ? "MOCK EXAM" : "RESULT"}</div><h2>${session.mode === "mock" ? "全真模考 · 交卷完成" : "交卷完成"}</h2>${session.mode === "mock" ? `<p class="rsum">用时 ${Math.max(1, Math.round(((session.endTime || Date.now()) - session.startTime) / 60000))} 分钟（限时 180 分钟）${session.timeUp ? " · 时间到自动交卷" : ""}</p>` : ""}<p class="rsum">${esc(structureBrief)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span class="rcheck" aria-hidden="true">✓</span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
     window.AtlasAssessment.renderMastery(document.getElementById("mastery"), session.queue, results);
     if (masteryWasOpen) $("#masteryDialog").showModal();
     $("#result").querySelectorAll("[data-review]").forEach(b => b.onclick = () => { $("#result").hidden = true; $("#exam").hidden = false; $("#sheet").hidden = false; $("#sideSubmit").hidden = true; session.i = Number(b.dataset.review); renderQuestion(); });
@@ -707,7 +723,7 @@
   }
 
   function requestExit() {
-    askConfirm("退出考试", "已作答内容会保存在本机，确定退出吗？", () => {
+    askConfirm("退出考试", session && session.mode === "mock" ? "退出后本次模考不保存成绩，确定退出吗？" : "已作答内容会保存在本机，确定退出吗？", () => {
       if (timerId) clearInterval(timerId);
       session = null;
       $("#submitBtn").hidden = true;
@@ -887,7 +903,7 @@
       catch (err) { console.error("题库分片加载失败", err); }
     }
     if (state.mode === "paper") renderPaperOptions(); else renderChapterOptions();
-    $("#countRow").hidden = state.mode === "paper" || (state.mode === "diagnostic" && state.subject !== "mechanics");
+    $("#countRow").hidden = state.mode === "paper" || (state.mode === "mock" && state.subject !== "mechanics");
     updateCount();
   });
   $("#fChapter").addEventListener("change", e => { state.chapter = e.target.value; state.kp = ""; updateCount(); });
@@ -909,6 +925,11 @@
         populateSubjects(); $("#fSubject").value = state.subject;
       } catch (err) { console.error("题库加载失败", err); }
     }
+    if (state.mode === "mock") {
+      const sub = SUBJECTS.find(s => s.id === state.subject);
+      askConfirm("全真模考 · 考试须知", `${sub ? sub.name : ""}全真模考按正式考试结构组卷，限时 180 分钟，倒计时结束自动交卷。交卷前不能查看解析与答案；中途退出本次模考不保存成绩。确认开始吗？`, () => start());
+      return;
+    }
     start();
   });
   $("#prev").addEventListener("click", () => go(session.i - 1));
@@ -924,7 +945,13 @@
     $("#tocBtn").textContent = hidden ? "目录" : "收起目录";
   });
   $("#qgrid").addEventListener("click", e => {
-    const b = e.target.closest("[data-i]"); if (b) go(Number(b.dataset.i));
+    const b = e.target.closest("[data-i]"); if (!b) return;
+    go(Number(b.dataset.i));
+    if (window.matchMedia("(max-width: 1000px)").matches && !$("#sheet").hidden) {
+      $("#sheet").hidden = true;
+      $("#examGrid").classList.add("sheet-hidden");
+      $("#tocBtn").textContent = "目录";
+    }
   });
   function chooseOption(letter) {
     const q = current();
@@ -989,7 +1016,7 @@
   });
 
   function init() {
-    $("#pintro").textContent = `共 ${publicCount("") + ITEMS.filter(i => i._bank === "private").length} 题：数学 ${publicCount("math")}、英语 ${publicCount("english")}、材力 ${publicCount("mechanics")}、政治 ${publicCount("politics")}。按知识点刷有答题卡目录；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷与 ${PAPERS.mock.length} 套模拟卷。题库按科目分片加载，切换科目时自动补齐。`;
+    $("#pintro").textContent = `共 ${publicCount("") + ITEMS.filter(i => i._bank === "private").length} 题：数学 ${publicCount("math")}、英语 ${publicCount("english")}、材力 ${publicCount("mechanics")}、政治 ${publicCount("politics")}。按知识点刷有答题卡目录；全真模考按正式结构组卷、限时 180 分钟、到时自动交卷；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷与 ${PAPERS.mock.length} 套模拟卷。题库按科目分片加载，切换科目时自动补齐。`;
     populateSubjects();
     const params = new URLSearchParams(location.search);
     if (SUBJECTS.some(s => s.id === params.get("subject"))) state.subject = params.get("subject");
