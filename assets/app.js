@@ -671,6 +671,7 @@ async function clearPaperRecordsApp(qids) {
     s = s.replace(/\\(varepsilon|vartheta|varphi|alpha|beta|gamma|delta|epsilon|zeta|eta|theta|lambda|mu|nu|xi|pi|rho|sigma|tau|phi|omega|Delta|Gamma|Theta|Lambda|Sigma|Phi|Omega|infty|sum|int|iint|prod|leq|geq|neq|le|ge|ne|approx|sim|to|rightarrow|leftarrow|Rightarrow|Leftrightarrow|cdot|times|div|pm|partial|in|notin|subset|cup|cap|ldots|cdots)\b/g, function (m, k) { return SYM[k] || m; });
     s = s.replace(/\\limits/g, '').replace(/\\left|\\right/g, '').replace(/\\[,;:!]/g, ' ').replace(/\\\\/g, ' ');
     s = s.replace(/\^\{([^{}]*)\}/g, '^($1)').replace(/_\{([^{}]*)\}/g, '_($1)');
+    s = s.replace(/\\(?:begin|end)\{[a-zA-Z*]+\}/g, ' ');
     s = s.replace(/\\[a-zA-Z]+/g, '');
     s = s.replace(/[{}]/g, '');
     return s;
