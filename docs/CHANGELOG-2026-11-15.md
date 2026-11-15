@@ -47,3 +47,19 @@
 
 ## 10. AI 通道诊断结论（未改配置）
 - 生产 `AI_BASE_URL` 配置完整（wrangler.toml [vars] 含 `/compatible-mode/v1`），key 直连上游自测正常；`platform.js` 的 `ai()` 另加了「裸域名自动补路径」兜底。站内 AI 若仍有个别功能报错，按 `docs/全栈工作流.md` §5 的顺序定位具体流程，不要先动 key。
+
+## 11. 内测地基（第一层）
+- AI 每日配额与用量记账（platform_usage；批改 30/教练 60/抽题 20 每日，环境变量可调，管理员不限）、改密码/数据导出/注销账号（settings 页与 /api/auth/password|export|delete）、全站安全头（_headers：CSP/HSTS/防嵌套等）、邀请码注册（INVITE_REQUIRED 开关）与管理台（admin 页：统计、封禁、邀请码、公告）。提交 07b6a08 + 修复 931c75f。
+
+## 12. 留存与社区（第二、三层）
+- 错题艾宾浩斯回流（assets/review.js + practice 记账钩子）、首页今日任务卡、套卷分析目标差距卡、PWA（manifest/sw/图标）；社区共享上线（platform_shares，广场导入复制题目、原文件共享 R2 对象）。提交 c7f7ae8 + 图标 03639d0。顺带修复 state 命名空间白名单遗漏 review/goals/onboarding 的问题。
+
+## 13. 资料导入修复、档案升级与头像中枢
+- 导入全链路去静默失败：草稿字段宽容 coercion、逐条导入并回报明细、删除资料/题目/草稿全链路、抽题结果标注已导入。档案加头像（R2 存储、方形裁剪）与格言、称号与名片卡；社区分享带分享者头像与格言。提交 0e613c3。
+- 头像账号中枢：assets/account-hub.js 全站接入，点头像开个人中心（名片/档案/设置三合一），首页移除独立档案与设置入口。提交 2d5c415（同批含知识点选题页，后按用户反馈于 8506ce5 撤下，刷题入口收敛到考点阅读页自带的「去题库练这个考点」按钮）。
+
+## 14. 社区完善、AI 文案与题库分片（下午批次）
+- 社区：分享/确认改样式化弹窗，广场加搜索与科目筛选、点赞（platform_share_likes）、评论（platform_share_comments），页面加 GitHub 交流区入口。提交 3270b50。
+- AI 输出去 Markdown 化：prompts.js 新增 PLAIN_STYLE 并挂到全部批改/向导/教练系统；新增 assets/plain-text.js 显示层清洗，接入套卷教练、批改评语与小观回复。提交 42b4aa8。
+- 档案院校目录选择器上线（profile-boot v12，提交 7181d12）：静态分片目录优先、/api/programs 回退；全国目录抓取器（~/workspace/catalog-crawl）用院校库枚举+zsml 全名回查方案，北京 148/148 验证通过，全量抓取中。
+- 题库分片加速：scripts/build-pages.mjs 构建时把 questions.js 按科目拆为 assets/questions/<科目>.js + manifest.json（dist 不再带整包）；新增 assets/questions-loader.js 按需加载，practice.js 改为分片注入（深链科目/错题复习全量/默认数学一先行，其余空闲后台补齐，开始练习前强制补齐当前范围）。

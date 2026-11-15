@@ -2,7 +2,18 @@
   "use strict";
   const DATA = window.QUESTIONS;
   if (!DATA) return;
-  const ITEMS = (DATA.items || []).map(q => ({...q, _bank:"public"}));
+  const ITEMS = [];
+  let MANIFEST = null;
+  if (window.AtlasQuestions) {
+    window.AtlasQuestions._sink = items => { ITEMS.push(...(items || []).map(q => ({ ...q, _bank: "public" }))); };
+    if ((DATA.items || []).length) window.AtlasQuestions._sink(DATA.items);
+  } else {
+    ITEMS.push(...(DATA.items || []).map(q => ({ ...q, _bank: "public" })));
+  }
+  function publicCount(id) {
+    if (MANIFEST && MANIFEST.subjects) return id ? (MANIFEST.subjects[id] || 0) : (MANIFEST.total || 0);
+    return ITEMS.filter(i => i._bank === "public" && (!id || i.subject === id)).length;
+  }
   const PAPERS = window.PAPERS || { real: [], mock: [] };
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
@@ -93,8 +104,9 @@
   }));
 
   function populateSubjects() {
-    $("#fSubject").innerHTML = `<option value="all">全部科目（${ITEMS.length}）</option>` +
-      SUBJECTS.map(s => `<option value="${s.id}">${esc(s.name)}（${ITEMS.filter(i => i.subject === s.id).length}）</option>`).join("");
+    const priv = id => ITEMS.filter(i => i._bank === "private" && (!id || i.subject === id)).length;
+    $("#fSubject").innerHTML = `<option value="all">全部科目（${publicCount("") + priv("")}）</option>` +
+      SUBJECTS.map(s => `<option value="${s.id}">${esc(s.name)}（${publicCount(s.id) + priv(s.id)}）</option>`).join("");
   }
 
   function isPaperChapter(id) {
@@ -867,8 +879,13 @@
   $("#modeTabs").addEventListener("click", e => {
     const b = e.target.closest("[data-mode]"); if (b) setMode(b.dataset.mode);
   });
-  $("#fSubject").addEventListener("change", e => {
+  $("#fSubject").addEventListener("change", async e => {
     state.subject = e.target.value; state.kp = "";
+    if (window.AtlasQuestions && state.subject !== "all" && !window.AtlasQuestions.isLoaded(state.subject)) {
+      $("#pcount").textContent = "正在加载该科目题库…";
+      try { await window.AtlasQuestions.load(state.subject); populateSubjects(); $("#fSubject").value = state.subject; }
+      catch (err) { console.error("题库分片加载失败", err); }
+    }
     if (state.mode === "paper") renderPaperOptions(); else renderChapterOptions();
     $("#countRow").hidden = state.mode === "paper" || (state.mode === "diagnostic" && state.subject !== "mechanics");
     updateCount();
@@ -884,7 +901,16 @@
     $$("#fCount button").forEach(x => x.classList.toggle("on", x === b));
     updateCount();
   });
-  $("#pstart").addEventListener("click", () => start());
+  $("#pstart").addEventListener("click", async () => {
+    if (window.AtlasQuestions) {
+      try {
+        if (state.subject === "all") await window.AtlasQuestions.load("all");
+        else if (!window.AtlasQuestions.isLoaded(state.subject)) await window.AtlasQuestions.load(state.subject);
+        populateSubjects(); $("#fSubject").value = state.subject;
+      } catch (err) { console.error("题库加载失败", err); }
+    }
+    start();
+  });
   $("#prev").addEventListener("click", () => go(session.i - 1));
   $("#next").addEventListener("click", () => go(session.i + 1));
   $("#reveal").addEventListener("click", () => { if (session.ended) { $("#exam").hidden = true; $("#result").hidden = false; renderResult(); } else showSolution(false); });
@@ -963,7 +989,7 @@
   });
 
   function init() {
-    $("#pintro").textContent = `共 ${ITEMS.length} 题：数学 ${ITEMS.filter(i => i.subject === "math").length}、英语 ${ITEMS.filter(i => i.subject === "english").length}、材力 ${ITEMS.filter(i => i.subject === "mechanics").length}、政治 ${ITEMS.filter(i => i.subject === "politics").length}。按知识点刷有答题卡目录；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷与 ${PAPERS.mock.length} 套模拟卷。`;
+    $("#pintro").textContent = `共 ${publicCount("") + ITEMS.filter(i => i._bank === "private").length} 题：数学 ${publicCount("math")}、英语 ${publicCount("english")}、材力 ${publicCount("mechanics")}、政治 ${publicCount("politics")}。按知识点刷有答题卡目录；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷与 ${PAPERS.mock.length} 套模拟卷。题库按科目分片加载，切换科目时自动补齐。`;
     populateSubjects();
     const params = new URLSearchParams(location.search);
     if (SUBJECTS.some(s => s.id === params.get("subject"))) state.subject = params.get("subject");
@@ -981,7 +1007,19 @@
     try { const data = await window.AtlasUser.json("/api/personal/questions", "GET"); const mine = (data.items || []).map(q => ({...q, _bank:"private"}));
       mine.forEach(q => { if (q.subject && !SUBJECT_NAMES[q.subject]) { SUBJECT_NAMES[q.subject] = q.subjectName || q.subject; SUBJECTS.push({id:q.subject, name:SUBJECT_NAMES[q.subject], count:0}); } });
       ITEMS.push(...mine); } catch (err) { console.error("个人题库加载失败", err); }
+    if (window.AtlasQuestions) {
+      try {
+        const p0 = new URLSearchParams(location.search);
+        if (p0.get("review")) await window.AtlasQuestions.load("all");
+        else await window.AtlasQuestions.load(p0.get("subject") || "math");
+        MANIFEST = await window.AtlasQuestions.manifest;
+      } catch (err) { console.error("题库分片加载失败", err); }
+    }
     init();
+    if (window.AtlasQuestions) {
+      const warm = () => { window.AtlasQuestions.load("all").then(() => populateSubjects()).catch(() => {}); };
+      if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 4000 }); else setTimeout(warm, 2500);
+    }
     /* 错题艾宾浩斯回流：?review=1 直接组今日到期错题开练；平时在设置区提示到期数量 */
     if (window.AtlasReview) {
       try {
