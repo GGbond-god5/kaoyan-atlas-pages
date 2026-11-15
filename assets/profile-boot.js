@@ -152,9 +152,7 @@
     } else {
       img.hidden = true; fb.hidden = false; del.hidden = true;
     }
-    const top = document.getElementById("topAvatar");
-    if (top) top.src = profile && profile.avatarAt ? `/api/profile/avatar?v=${profile.avatarAt}` : "";
-    if (top) top.hidden = !(profile && profile.avatarAt);
+    window.dispatchEvent(new CustomEvent("atlas:avatar", { detail: { avatarAt: (profile && profile.avatarAt) || 0 } }));
   }
 
   async function fillChips(profile) {
@@ -443,6 +441,7 @@
     window.__profileBoot = { hasProfile: !!profile, isDefault: !!(profile && profile.isDefault) };
     if (profile) applyProfile(profile);
     renderButton(profile || {});
+    if (profile && location.hash === "#profile") setTimeout(() => openDialog(profile), 500);
     loadAtlas();
     const welcomeOpen = await showWelcome();
     if (profile && profile.isDefault) {

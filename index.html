@@ -24,6 +24,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <link rel="stylesheet" href="assets/site-tools.css?v=4">
 <link rel="stylesheet" href="assets/lazy.css?v=7">
 <link rel="stylesheet" href="assets/profile.css?v=5">
+  <link rel="stylesheet" href="assets/account-hub.css?v=1">
 </head>
 <body>
 <header class="topbar">
@@ -37,12 +38,11 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
   <nav class="subject-nav" id="subjectNav" aria-label="科目切换"></nav>
   <div class="actions">
     <a class="btn ghost" href="practice.html">刷题</a>
+    <a class="btn ghost" href="topics.html">知识点选题</a>
     <a class="btn ghost" href="analytics.html">套卷分析</a>
     <a class="btn ghost" href="community.html">社区</a>
     <button class="btn ghost" id="lazyBtn" type="button">笔记库</button>
-    <button class="btn ghost" id="profileBtn" type="button">档案</button>
     <button class="btn ghost" id="tourBtn" type="button">功能引导</button>
-    <a class="btn ghost" href="settings.html">设置</a>
     <a class="btn ghost auth-chip" href="login.html" id="authChip">登录</a>
     <button class="btn ghost" id="listBtn">目录</button>
     <button class="btn" id="searchBtn">搜索 <kbd>/</kbd></button>
@@ -121,9 +121,9 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <script src="assets/lazy-index.js"></script>
 <script src="assets/user-state.js"></script>
 <script src="assets/assessment.js?v=6"></script>
-<script src="assets/profile-boot.js?v=10"></script>
+<script src="assets/profile-boot.js?v=11"></script>
 <script src="assets/lazy.js?v=8"></script>
-<script src="assets/auth-nav.js?v=2"></script>
+<script src="assets/account-hub.js?v=1"></script>
 <script src="assets/site-tools.js?v=4"></script>
 <script>
 /* 播放器体量大，等首屏画完、空闲时再取，避免和首屏脚本抢带宽 */

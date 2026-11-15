@@ -1,0 +1,62 @@
+/* 账号中心（头像入口 + 个人中心面板） */
+.hub-wrap { margin-left: auto; display: flex; align-items: center; padding-left: 10px; }
+.hub-btn {
+  width: 34px; height: 34px; border-radius: 50%; padding: 0; overflow: hidden;
+  border: 1px solid rgba(23, 22, 26, .28); background: #17161A; color: #F5F0E6;
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  font: inherit; flex: none;
+}
+.hub-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hub-btn .hub-initial { font-size: 15px; font-weight: 700; line-height: 1; }
+.hub-btn .hub-login { font-size: 12px; padding: 0 8px; }
+.hub-btn.open { outline: 2px solid rgba(122, 92, 62, .55); outline-offset: 2px; }
+.hub-panel {
+  position: fixed; top: 66px; right: 14px; z-index: 120; width: min(350px, calc(100vw - 24px));
+  max-height: calc(100vh - 84px); overflow: auto;
+  background: #FBF8F0; border: 1px solid #E4DCCB; border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(23, 22, 26, .25); padding: 16px; color: #17161A;
+  font-size: 14px;
+}
+.hub-card { display: flex; gap: 12px; align-items: center; }
+.hub-ava {
+  width: 58px; height: 58px; border-radius: 50%; overflow: hidden; flex: none; cursor: pointer;
+  background: #17161A; color: #F5F0E6; display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(23, 22, 26, .25);
+}
+.hub-ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hub-initial.big { font-size: 24px; font-weight: 700; }
+.hub-who { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hub-who b { font-size: 17px; }
+.hub-who span { color: rgba(23, 22, 26, .55); font-size: 12px; }
+.hub-who .hub-motto { color: #7A5C3E; font-size: 12.5px; }
+.hub-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
+.hub-chip { background: rgba(122, 92, 62, .12); color: #5c4a1f; border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+.hub-menu { display: flex; flex-direction: column; margin-top: 8px; }
+.hub-item {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  padding: 11px 4px; border-bottom: 1px solid #EFE8D8; background: none; border-top: 0; border-left: 0; border-right: 0;
+  font: inherit; font-size: 14.5px; color: #17161A; text-decoration: none; cursor: pointer; text-align: left; width: 100%;
+}
+.hub-item span { color: rgba(23, 22, 26, .45); font-size: 12px; text-align: right; }
+.hub-item:hover { color: #7A5C3E; }
+.hub-settings { border-top: 1px solid #E4DCCB; margin-top: 10px; padding-top: 10px; display: flex; flex-direction: column; gap: 14px; }
+.hub-settings form, .hub-settings .hub-row { display: flex; flex-direction: column; gap: 7px; }
+.hub-settings b { font-size: 13.5px; }
+.hub-settings b.danger { color: #A33B2E; }
+.hub-settings input {
+  font: inherit; font-size: 13.5px; padding: 8px 10px; border-radius: 9px;
+  border: 1px solid #D8CFBB; background: #fff; color: #17161A;
+}
+.hub-act {
+  font: inherit; font-size: 13.5px; padding: 8px 12px; border-radius: 9px; cursor: pointer;
+  background: #17161A; color: #F5F0E6; border: 1px solid #17161A; align-self: flex-start;
+}
+.hub-act.ghost { background: transparent; color: #17161A; }
+.hub-act.danger { background: #A33B2E; border-color: #A33B2E; }
+.hub-msg { min-height: 18px; font-size: 12.5px; color: #A33B2E; margin: 8px 0 0; }
+.hub-msg.ok { color: #3E7A4E; }
+.hub-logout {
+  width: 100%; margin-top: 8px; padding: 10px; border-radius: 10px; cursor: pointer;
+  background: transparent; border: 1px solid #D8CFBB; font: inherit; font-size: 14px; color: #17161A;
+}
+.hub-logout:hover { border-color: #A33B2E; color: #A33B2E; }
