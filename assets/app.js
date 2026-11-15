@@ -325,6 +325,7 @@
 
   function gFmt(s) { return esc(window.AtlasPlain ? window.AtlasPlain.clean(s) : s); }
   function gMath(el) {
+    if (window.AtlasKatex && window.AtlasKatex.render) { window.AtlasKatex.render(el); return; }
     if (window.renderMathInElement) {
       try {
         window.renderMathInElement(el, { delimiters: [{ left: '\\(', right: '\\)', display: false }, { left: '\\[', right: '\\]', display: true }], throwOnError: false });

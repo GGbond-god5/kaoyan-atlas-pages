@@ -27,6 +27,7 @@
     return html;
   }
   function mathAll() {
+    if (window.AtlasKatex && window.AtlasKatex.render) { window.AtlasKatex.render(document.getElementById('wbList')); return; }
     if (window.renderMathInElement) {
       try {
         window.renderMathInElement(document.getElementById('wbList'), {

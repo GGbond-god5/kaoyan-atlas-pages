@@ -5,7 +5,7 @@
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function fmt(s) { return esc(window.AtlasPlain ? window.AtlasPlain.clean(s) : s); }
-  function math(el) { if (window.renderMathInElement) { try { window.renderMathInElement(el, { delimiters: [{ left: '\\(', right: '\\)', display: false }, { left: '\\[', right: '\\]', display: true }] }); } catch (e) {} } }
+  function math(el) { if (window.AtlasKatex && window.AtlasKatex.render) { window.AtlasKatex.render(el); return; } if (window.renderMathInElement) { try { window.renderMathInElement(el, { delimiters: [{ left: '\\(', right: '\\)', display: false }, { left: '\\[', right: '\\]', display: true }] }); } catch (e) {} } }
   function addMsg(role, text, img) {
     var d = document.createElement('div');
     d.className = 'gd-msg ' + (role === 'user' ? 'u' : 'a');
