@@ -6,7 +6,7 @@
 <title>考研科目大观 · App</title>
 <link rel="icon" href="assets/icons/icon-192.png">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
-<link rel="stylesheet" href="assets/app.css?v=3">
+<link rel="stylesheet" href="assets/app.css?v=4">
 </head>
 <body>
 <header class="app-top">
@@ -55,11 +55,11 @@
       </div>
       <div class="today-row" id="todayVocab" hidden>
         <span class="today-dot dot-gold"></span><span class="today-text"></span>
-        <a class="today-go" href="vocab.html">去背词</a>
+        <a class="today-go" href="#" data-sub="vocab">去背词</a>
       </div>
       <div class="today-row" id="todayPlan" hidden>
         <span class="today-dot dot-green"></span><span class="today-text"></span>
-        <a class="today-go" href="index.html">看计划</a>
+        <a class="today-go" href="#" data-sub="plan">看计划</a>
       </div>
       <div class="today-empty" id="todayEmpty">正在加载今日任务…</div>
     </div>
@@ -67,20 +67,20 @@
     <h2 class="sec-title">快捷入口</h2>
     <div class="card quick-grid">
       <a class="quick" href="practice.html"><span class="quick-mark mark-ver">考</span><span>全真模考</span></a>
-      <a class="quick" href="analytics.html"><span class="quick-mark">析</span><span>套卷分析</span></a>
-      <a class="quick" href="library.html"><span class="quick-mark">料</span><span>资料库</span></a>
-      <a class="quick" href="community.html"><span class="quick-mark">区</span><span>社区</span></a>
-      <a class="quick" href="index.html"><span class="quick-mark">谱</span><span>图谱总览</span></a>
-      <a class="quick" href="vocab.html"><span class="quick-mark">词</span><span>每日单词</span></a>
-      <a class="quick" href="wrongbook.html"><span class="quick-mark">本</span><span>错题本</span></a>
-      <a class="quick" href="index.html"><span class="quick-mark">记</span><span>笔记库</span></a>
+      <a class="quick" href="#" data-sub="analytics"><span class="quick-mark">析</span><span>套卷分析</span></a>
+      <a class="quick" href="#" data-sub="library"><span class="quick-mark">料</span><span>资料库</span></a>
+      <a class="quick" href="#" data-sub="community"><span class="quick-mark">区</span><span>社区</span></a>
+      <a class="quick" href="#" data-sub="vocab"><span class="quick-mark">词</span><span>每日单词</span></a>
+      <a class="quick" href="#" data-sub="wrongbook"><span class="quick-mark">本</span><span>错题本</span></a>
+      <a class="quick" href="#" data-sub="plan"><span class="quick-mark">划</span><span>学习计划</span></a>
+      <a class="quick" href="#" id="quickGuide"><span class="quick-mark">观</span><span>问小观</span></a>
     </div>
 
     <h2 class="sec-title">最近成绩</h2>
     <div class="card" id="recentCard">
       <div class="today-empty" id="recentEmpty">正在加载…</div>
       <div id="recentList"></div>
-      <a class="more-link" href="analytics.html" id="recentMore" hidden>查看全部分析 →</a>
+      <a class="more-link" href="#" data-sub="analytics" id="recentMore" hidden>查看全部分析 →</a>
     </div>
   </section>
 
@@ -141,7 +141,7 @@
       <span class="mode-title">开始今日复习</span>
       <span class="mode-desc">到期错题自动组队，答对逐级拉长间隔</span>
     </a>
-    <a class="card mode-card" href="wrongbook.html">
+    <a class="card mode-card" href="#" data-sub="wrongbook">
       <span class="mode-badge">错题本</span>
       <span class="mode-title">打开错题本</span>
       <span class="mode-desc">全部错题清单，可筛选科目、导出打印</span>
@@ -162,19 +162,43 @@
       </div>
     </div>
     <div class="card entry-list">
-      <a class="entry" href="index.html#profile"><span>档案设置</span><span class="entry-arrow">›</span></a>
-      <a class="entry" href="analytics.html"><span>套卷分析</span><span class="entry-arrow">›</span></a>
-      <a class="entry" href="library.html"><span>我的资料库</span><span class="entry-arrow">›</span></a>
-      <a class="entry" href="community.html"><span>社区分享</span><span class="entry-arrow">›</span></a>
-      <a class="entry" href="vocab.html"><span>每日单词</span><span class="entry-arrow">›</span></a>
-      <a class="entry" href="wrongbook.html"><span>错题本</span><span class="entry-arrow">›</span></a>
-      <a class="entry" href="settings.html"><span>账号设置</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="profile"><span>档案设置</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="analytics"><span>套卷分析</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="library"><span>我的资料库</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="community"><span>社区分享</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="vocab"><span>每日单词</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="wrongbook"><span>错题本</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="plan"><span>学习计划</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="settings"><span>账号设置</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" id="versionEntry" hidden><span>版本更新</span><span class="entry-note" id="versionText"></span><span class="entry-arrow">›</span></a>
       <a class="entry" href="admin.html" id="adminEntry" hidden><span>管理控制台</span><span class="entry-arrow">›</span></a>
     </div>
     <button class="logout-btn" id="logoutBtn" type="button">退出登录</button>
     <p class="view-note center">考研科目大观 · App 结构与网页版独立，数据互通</p>
   </section>
 </main>
+
+<!-- App 内功能子页面：分析/单词/错题本/资料库/社区/计划/档案/设置都在此框架内 -->
+<div class="subview" id="subView" hidden>
+  <div class="subview-top">
+    <button class="reader-top-btn" id="subBack" type="button">← 返回</button>
+    <div class="subview-title" id="subTitle">功能</div>
+    <span class="subview-side"></span>
+  </div>
+  <div class="subview-body" id="subBody"></div>
+</div>
+
+<div class="modal-scrim" id="modalScrim" hidden>
+  <div class="modal-card">
+    <div class="modal-title" id="modalTitle">提示</div>
+    <div class="modal-text" id="modalText"></div>
+    <div class="modal-fields" id="modalFields"></div>
+    <div class="modal-btns">
+      <button type="button" class="modal-btn" id="modalCancel">取消</button>
+      <button type="button" class="modal-btn primary" id="modalOk">确定</button>
+    </div>
+  </div>
+</div>
 
 <!-- 小说式阅读器：全屏沉浸阅读，目录为左侧抽屉，底部上一章/下一章 -->
 <div class="reader" id="readerView" hidden>
@@ -246,6 +270,6 @@
 <script src="assets/questions-loader.js?v=1"></script>
 <script src="assets/katex-loader.js?v=1"></script>
 <script src="assets/plain-text.js?v=1"></script>
-<script src="assets/app.js?v=3"></script>
+<script src="assets/app.js?v=4"></script>
 </body>
 </html>

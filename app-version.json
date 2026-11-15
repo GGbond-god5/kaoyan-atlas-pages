@@ -1,0 +1,7 @@
+{
+  "versionCode": 5,
+  "versionName": "5.0",
+  "apkUrl": "/assets/app/kaoyan-atlas.apk",
+  "size": 120530,
+  "notes": "功能全部进 App 框架：套卷分析、每日单词、错题本、资料库、社区、学习计划、档案与账号设置都在 App 内完成，不再跳网页版；新增 App 内检查更新，之后的新版直接在 App 里下载安装。"
+}

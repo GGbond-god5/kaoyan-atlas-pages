@@ -15,6 +15,8 @@ const PUBLIC = [
   /^\/sw\.js$/,
   /^\/manifest\.webmanifest$/,
   /^\/favicon\.ico$/,
+  /^\/app-version\.json$/,
+  /^\/assets\/app\//,
 ];
 
 function isPublic(pathname) {

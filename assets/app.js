@@ -15,7 +15,7 @@
   var SUBJECT_ORDER = ['math', 'math2', 'english', 'english2', 'mechanics', 'politics'];
   var MODE_LABELS = { paper: '套卷', mock: '全真模考', diagnostic: '能力自测', knowledge: '知识点练习' };
 
-  var state = { user: null, profile: null, practiceRec: {}, bankItems: {} };
+  var state = { user: null, profile: null, practiceRec: {}, bankItems: {}, attempts: null };
 
   function toast(msg) {
     var t = $('#appToast');
@@ -440,6 +440,786 @@
     openGuide({ type: 'reader', title: title });
   });
 
+
+  /* ---------- App 内功能框架 ----------
+   * 首页与「我的」的入口不再跳网页版页面：分析 / 单词 / 错题本 / 资料库 /
+   * 社区 / 计划 / 档案 / 设置都在 App 自己的子页面框架里运行，共用同一套
+   * 后端接口与状态（与网页版实时同步）。做题引擎与图谱仍是站内页面。 */
+  var FULL_SCORES = { math: 150, math2: 150, english: 100, english2: 100, mechanics: 150, politics: 100 };
+  var subRenderers = {};
+  var subCurrent = null;
+  function openSub(name) {
+    var r = subRenderers[name];
+    if (!r) return;
+    subCurrent = name;
+    $('#subTitle').textContent = r.title;
+    var body = $('#subBody');
+    body.innerHTML = '<div class="sub-loading">正在加载…</div>';
+    $('#subView').hidden = false;
+    document.body.style.overflow = 'hidden';
+    body.scrollTop = 0;
+    try { r.render(body); } catch (e) { body.innerHTML = '<div class="sub-loading">打开失败：' + esc(e.message || '') + '</div>'; }
+  }
+  function closeSub() {
+    $('#subView').hidden = true;
+    subCurrent = null;
+    if ($('#readerView').hidden && $('#guideView').hidden) document.body.style.overflow = '';
+  }
+  $('#subBack').addEventListener('click', closeSub);
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-sub]');
+    if (!t) return;
+    e.preventDefault();
+    openSub(t.dataset.sub);
+  });
+  $('#quickGuide').addEventListener('click', function (e) { e.preventDefault(); openGuide({ type: 'home', title: '' }); });
+
+  /* 通用弹窗（确认 / 表单），替代原生 confirm/prompt */
+  var modalResolve = null;
+  function closeModal(v) {
+    $('#modalScrim').hidden = true;
+    if (modalResolve) { var r = modalResolve; modalResolve = null; r(v); }
+  }
+  $('#modalCancel').addEventListener('click', function () { closeModal(null); });
+  $('#modalScrim').addEventListener('click', function (e) { if (e.target === this) closeModal(null); });
+  function showConfirm(opts) {
+    return new Promise(function (resolve) {
+      modalResolve = resolve;
+      $('#modalTitle').textContent = opts.title || '请确认';
+      $('#modalText').textContent = opts.text || '';
+      $('#modalFields').innerHTML = '';
+      var ok = $('#modalOk');
+      ok.textContent = opts.okText || '确定';
+      ok.className = 'modal-btn ' + (opts.danger ? 'danger' : 'primary');
+      ok.onclick = function () { closeModal(true); };
+      $('#modalScrim').hidden = false;
+    });
+  }
+  function showForm(opts) {
+    return new Promise(function (resolve) {
+      modalResolve = resolve;
+      $('#modalTitle').textContent = opts.title || '填写';
+      $('#modalText').textContent = opts.text || '';
+      $('#modalFields').innerHTML = (opts.fields || []).map(function (f) {
+        return '<div><label>' + esc(f.label) + '</label><input class="f-input" id="mf-' + f.id + '" type="' + (f.type || 'text') + '" value="' + esc(f.value || '') + '" placeholder="' + esc(f.placeholder || '') + '" maxlength="' + (f.maxlength || 120) + '"></div>';
+      }).join('');
+      var ok = $('#modalOk');
+      ok.textContent = opts.okText || '确定';
+      ok.className = 'modal-btn primary';
+      ok.onclick = function () {
+        var out = {};
+        (opts.fields || []).forEach(function (f) { var el = document.getElementById('mf-' + f.id); out[f.id] = el ? el.value.trim() : ''; });
+        closeModal(out);
+      };
+      $('#modalScrim').hidden = false;
+    });
+  }
+  function plainTextOf(html) {
+    var d = document.createElement('div');
+    d.innerHTML = String(html || '');
+    return (d.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+  function snippet(text, n) {
+    var t = plainTextOf(text);
+    return t.length > n ? t.slice(0, n) + '…' : t;
+  }
+
+  /* ---------- 套卷分析（App 内） ---------- */
+  subRenderers.analytics = { title: '套卷分析', render: function (body) { renderAnalytics(body); } };
+  function paperAttempts() {
+    return (state.attempts || []).filter(function (a) { return a.mode === 'paper' || a.mode === 'mock' || a.mode === 'diagnostic'; })
+      .slice().sort(function (x, y) { return String(y.createdAt || '') > String(x.createdAt || '') ? 1 : -1; });
+  }
+  function renderAnalytics(body) {
+    var list = paperAttempts();
+    var rates = list.map(function (a) { return summarizeAttempt(a).rate; }).filter(function (r) { return r != null; });
+    var avg = rates.length ? Math.round(rates.reduce(function (a, b) { return a + b; }, 0) / rates.length * 100) : null;
+    var gradedQ = 0;
+    list.forEach(function (a) { gradedQ += summarizeAttempt(a).graded; });
+    var html = '<div class="card stats-strip">' +
+      '<div class="stat"><b>' + list.length + '</b><span>套卷 / 模考</span></div>' +
+      '<div class="stat"><b>' + (avg == null ? '--' : avg + '%') + '</b><span>平均得分率</span></div>' +
+      '<div class="stat"><b>' + gradedQ + '</b><span>已批改题数</span></div></div>';
+    html += '<h2 class="sec-title">目标差距（最近一套折算）</h2><div class="card" id="gapCard"><div class="today-empty">正在加载目标…</div></div>';
+    html += '<h2 class="sec-title">成绩明细</h2><div class="card">' + (list.length ? list.map(function (a) {
+      var sm = summarizeAttempt(a);
+      var rate = sm.rate == null ? '待批改' : Math.round(sm.rate * 100) + '%';
+      var cls = sm.rate == null ? 'mid' : sm.rate >= 0.8 ? 'good' : sm.rate >= 0.5 ? 'mid' : 'low';
+      return '<div class="recent-row"><span class="recent-title">' + esc(attemptTitle(a)) + '</span><span class="recent-rate ' + cls + '">' + rate + '</span><span class="recent-date">' + esc(attemptDate(a)) + '</span></div>';
+    }).join('') : '<div class="today-empty">还没有套卷或模考成绩。</div>') + '</div>';
+    body.innerHTML = html;
+    AtlasUser.load('goals', { targets: {} }).then(function (g) {
+      var targets = (g && g.targets) || {};
+      var latest = {};
+      list.forEach(function (a) { if (!latest[a.subject]) latest[a.subject] = a; });
+      var sids = Object.keys(latest);
+      var card = document.getElementById('gapCard');
+      if (!card) return;
+      if (!sids.length) { card.innerHTML = '<div class="today-empty">做完一套卷后，这里会对比你的目标分。</div>'; return; }
+      card.innerHTML = sids.map(function (sid) {
+        var sm = summarizeAttempt(latest[sid]);
+        var full = FULL_SCORES[sid] || 100;
+        var est = sm.rate == null ? null : Math.round(sm.rate * full * 10) / 10;
+        var tgt = targets[sid];
+        var gapTxt = est == null ? '待批改' : (tgt == null || tgt === '' ? '未设目标' : (est >= tgt ? '已达目标 ✓' : '还差 ' + (Math.round((tgt - est) * 10) / 10) + ' 分'));
+        return '<div class="gap-row"><div class="gap-head"><b>' + esc(SUBJECT_NAMES[sid] || sid) + '</b><span>最近得分率 ' + (sm.rate == null ? '—' : Math.round(sm.rate * 100) + '%') + ' · 折算 ' + (est == null ? '—' : est) + ' / ' + full + '</span></div>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + (est == null ? 0 : Math.min(100, Math.round(est / full * 100))) + '%"></div></div>' +
+          '<div class="gap-target">目标 <input type="number" min="0" max="' + full + '" value="' + (tgt == null ? '' : esc(tgt)) + '" data-tgt="' + esc(sid) + '"> 分 · ' + esc(gapTxt) + '</div></div>';
+      }).join('') + '<p class="view-note">目标分是你的自设目标，修改后自动保存；不是官方复试线。</p>';
+      $$('#gapCard [data-tgt]').forEach(function (inp) {
+        inp.addEventListener('change', function () {
+          var v = inp.value === '' ? null : Number(inp.value);
+          if (v == null) delete targets[inp.dataset.tgt]; else targets[inp.dataset.tgt] = v;
+          AtlasUser.save('goals', { targets: targets }).then(function () { toast('目标已保存'); renderAnalytics(body); }).catch(function (e) { toast('保存失败：' + e.message); });
+        });
+      });
+    }).catch(function () { var c = document.getElementById('gapCard'); if (c) c.innerHTML = '<div class="today-empty">目标加载失败。</div>'; });
+  }
+
+  /* ---------- 每日单词（App 内，规则与网页版一致） ---------- */
+  var vState = null, vWords = null, vQueue = [], vIdx = 0;
+  subRenderers.vocab = { title: '每日单词', render: function (body) { renderVocabHome(body); } };
+  function todayKey() { var t = new Date(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
+  function shuffleArr(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function vocabDueCount() {
+    if (!vState) return 0;
+    var now = Date.now(), n = 0, rec = vState.rec || {};
+    Object.keys(rec).forEach(function (w) { var r = rec[w]; if (r && (r.d || 0) <= now && (r.l || 0) < 5) n++; });
+    return n;
+  }
+  function renderVocabHome(body) {
+    Promise.all([
+      AtlasUser.load('vocab', { rec: {}, star: {}, days: {} }),
+      vWords ? Promise.resolve() : loadScript('assets/vocab-data.js?v=2').then(function () { vWords = (window.VOCAB && window.VOCAB.words) || {}; })
+    ]).then(function (res) {
+      if (subCurrent !== 'vocab') return;
+      vState = res[0] || { rec: {}, star: {}, days: {} };
+      if (!vState.rec) vState.rec = {};
+      if (!vState.star) vState.star = {};
+      if (!vState.days) vState.days = {};
+      state.vocabState = vState;
+      var rec = vState.rec, keys = Object.keys(rec);
+      var mastered = keys.filter(function (w) { return (rec[w].l || 0) >= 5; }).length;
+      body.innerHTML =
+        '<div class="card stats-strip">' +
+        '<div class="stat"><b>' + vocabDueCount() + '</b><span>到期复习</span></div>' +
+        '<div class="stat"><b>' + (vState.days[todayKey()] || 0) + '</b><span>今日已学</span></div>' +
+        '<div class="stat"><b>' + mastered + '</b><span>已掌握</span></div></div>' +
+        '<div class="card"><div class="row-title">大纲词汇共 ' + Object.keys(vWords || {}).length + ' 词 · 已学 ' + keys.length + ' · 收藏 ' + Object.keys(vState.star).length + '</div>' +
+        '<p class="view-note">按遗忘曲线排组：先复习到期词，再学生词。点卡片看释义，再按掌握程度选择；进度与网页版实时同步。</p></div>' +
+        '<button class="btn-main" id="vocabStart" type="button">开始一组（20 词）</button>';
+      document.getElementById('vocabStart').addEventListener('click', function () { startVocabSession(body); });
+    }).catch(function (e) {
+      body.innerHTML = '<div class="sub-loading">单词加载失败：' + esc(e.message || '') + '</div>';
+    });
+  }
+  function buildVocabQueue(n) {
+    var now = Date.now(), rec = vState.rec, due = [], fresh = [], later = [];
+    Object.keys(vWords).forEach(function (w) {
+      var r = rec[w.toLowerCase()];
+      if (r && (r.d || 0) <= now && (r.l || 0) < 5) due.push(w);
+      else if (!r) fresh.push(w);
+      else later.push(w);
+    });
+    return shuffleArr(due).concat(shuffleArr(fresh), shuffleArr(later)).slice(0, n);
+  }
+  function startVocabSession(body) {
+    vQueue = buildVocabQueue(20);
+    vIdx = 0;
+    if (!vQueue.length) { body.innerHTML = '<div class="sub-loading">词表为空。</div>'; return; }
+    paintVocabCard(body);
+  }
+  function paintVocabCard(body) {
+    if (vIdx >= vQueue.length) {
+      body.innerHTML = '<div class="card" style="text-align:center;padding:28px 18px"><div class="row-title">这一组完成了</div><p class="view-note" style="text-align:center">共学了 ' + vQueue.length + ' 个词，进度已同步。</p></div>' +
+        '<button class="btn-main" id="vocabAgain" type="button">再来一组</button>' +
+        '<button class="btn-sub" id="vocabDone" type="button" style="width:100%;height:46px;margin-top:10px">回单词首页</button>';
+      document.getElementById('vocabAgain').addEventListener('click', function () { startVocabSession(body); });
+      document.getElementById('vocabDone').addEventListener('click', function () { renderVocabHome(body); });
+      return;
+    }
+    var w = vQueue[vIdx], entry = vWords[w] || {};
+    var starred = !!vState.star[w.toLowerCase()];
+    body.innerHTML =
+      '<p class="view-note" style="margin:0 0 10px">第 ' + (vIdx + 1) + ' / ' + vQueue.length + ' 个</p>' +
+      '<div class="bar-track" style="margin:0 0 14px"><div class="bar-fill" style="width:' + Math.round(vIdx / vQueue.length * 100) + '%"></div></div>' +
+      '<div class="flash-card" id="flashCard">' +
+        '<button class="flash-star' + (starred ? ' on' : '') + '" id="flashStar" type="button">' + (starred ? '★' : '☆') + '</button>' +
+        '<div class="flash-word">' + esc(entry.w || w) + '</div>' +
+        '<div class="flash-meaning" id="flashMeaning" hidden>' + esc(entry.m || '') + '</div>' +
+        '<div class="flash-hint" id="flashHint">点卡片显示释义</div>' +
+      '</div>' +
+      '<div class="grade-btns">' +
+        '<button class="grade-btn bad" data-grade="unknown" type="button">不认识</button>' +
+        '<button class="grade-btn mid" data-grade="fuzzy" type="button">模糊</button>' +
+        '<button class="grade-btn good" data-grade="known" type="button">认识</button>' +
+      '</div>';
+    document.getElementById('flashCard').addEventListener('click', function (e) {
+      if (e.target.id === 'flashStar') return;
+      var m = document.getElementById('flashMeaning'), h = document.getElementById('flashHint');
+      if (m) m.hidden = false;
+      if (h) h.hidden = true;
+    });
+    document.getElementById('flashStar').addEventListener('click', function () {
+      var k = w.toLowerCase();
+      if (vState.star[k]) delete vState.star[k]; else vState.star[k] = 1;
+      AtlasUser.save('vocab', vState).catch(function () {});
+      paintVocabCard(body);
+    });
+    $$('.grade-btn', body).forEach(function (b) {
+      b.addEventListener('click', function () { gradeVocab(w, b.dataset.grade); vIdx++; paintVocabCard(body); });
+    });
+  }
+  function gradeVocab(word, level) {
+    var k = word.toLowerCase();
+    var r = vState.rec[k] || { l: 0, d: 0, seen: 0, ok: 0, w: 0 };
+    r.seen = (r.seen || 0) + 1;
+    if (level === 'known') { r.ok = (r.ok || 0) + 1; r.l = Math.min(5, (r.l || 0) + 1); }
+    else if (level === 'fuzzy') { r.l = Math.max(1, r.l || 0); }
+    else { r.l = 0; r.w = (r.w || 0) + 1; }
+    var days = [0, 1, 2, 4, 7, 15][r.l] || 15;
+    r.d = Date.now() + days * 86400000;
+    vState.rec[k] = r;
+    vState.days[todayKey()] = (vState.days[todayKey()] || 0) + 1;
+    state.vocabState = vState;
+    AtlasUser.save('vocab', vState).catch(function (e) { toast('同步失败：' + e.message); });
+  }
+
+  /* ---------- 错题本（App 内） ---------- */
+  var wbCache = null;
+  subRenderers.wrongbook = { title: '错题本', render: function (body) { renderWrongbook(body, 'all'); } };
+  function renderWrongbook(body, filter) {
+    var load = wbCache ? Promise.resolve(wbCache) : Promise.all([
+      AtlasQuestions.load('all'),
+      AtlasUser.json('/api/personal/questions').catch(function () { return { questions: [] }; }),
+      AtlasUser.load('practice', { rec: {} })
+    ]).then(function (res) {
+      var map = {};
+      (window.QUESTIONS.items || []).forEach(function (q) { map[q.id] = q; });
+      ((res[1] && res[1].questions) || []).forEach(function (q) { if (q && q.id) map[q.id] = q; });
+      state.practiceRec = (res[2] && res[2].rec) || state.practiceRec || {};
+      wbCache = { map: map };
+      return wbCache;
+    });
+    body.innerHTML = '<div class="sub-loading">正在整理错题…</div>';
+    load.then(function (data) {
+      if (subCurrent !== 'wrongbook') return;
+      var rows = Object.keys(state.practiceRec).filter(function (id) {
+        var r = state.practiceRec[id]; return r && r.wrong > 0 && data.map[id];
+      }).map(function (id) { return { q: data.map[id], r: state.practiceRec[id] }; })
+        .sort(function (a, b) { return (b.r.wrong - a.r.wrong) || ((b.r.last || 0) - (a.r.last || 0)); });
+      var subjects = [];
+      rows.forEach(function (x) { if (subjects.indexOf(x.q.subject) < 0) subjects.push(x.q.subject); });
+      var shown = filter === 'all' ? rows : rows.filter(function (x) { return x.q.subject === filter; });
+      var chips = '<div class="filter-chips"><button type="button" class="f-chip' + (filter === 'all' ? ' on' : '') + '" data-wf="all">全部 ' + rows.length + '</button>' +
+        subjects.map(function (sid) {
+          var n = rows.filter(function (x) { return x.q.subject === sid; }).length;
+          return '<button type="button" class="f-chip' + (filter === sid ? ' on' : '') + '" data-wf="' + esc(sid) + '">' + esc(SUBJECT_NAMES[sid] || sid) + ' ' + n + '</button>';
+        }).join('') + '</div>';
+      body.innerHTML = chips +
+        '<a class="btn-main" href="practice.html?review=1" style="margin-bottom:12px">开始错题复习</a>' +
+        '<div class="card">' + (shown.length ? shown.map(function (x, i) {
+          var q = x.q;
+          return '<div class="list-row"><div class="row-title">' + esc(snippet(q.text, 110)) + '</div>' +
+            '<div class="row-meta">' + esc(SUBJECT_NAMES[q.subject] || q.subject || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + ' · 错 ' + x.r.wrong + ' 次 · 做过 ' + (x.r.seen || 0) + ' 次</div>' +
+            '<div class="row-actions"><button type="button" class="btn-sub" data-wrong-toggle="' + i + '">看答案与解析</button></div>' +
+            '<div class="wrong-detail" id="wd-' + i + '" hidden><b>参考答案：</b>' + esc(q.answer || '暂无') +
+            ((q.steps && q.steps.length) ? '<ol>' + q.steps.map(function (st) { return '<li>' + esc(st) + '</li>'; }).join('') + '</ol>' : '') + '</div></div>';
+        }).join('') : '<div class="today-empty">这个分类下暂无错题。</div>') + '</div>';
+      $$('[data-wf]', body).forEach(function (b) { b.addEventListener('click', function () { renderWrongbook(body, b.dataset.wf); }); });
+      $$('[data-wrong-toggle]', body).forEach(function (b) {
+        b.addEventListener('click', function () {
+          var d = document.getElementById('wd-' + b.dataset.wrongToggle);
+          if (d) { d.hidden = !d.hidden; if (!d.hidden) gMath(d); }
+        });
+      });
+    }).catch(function (e) { body.innerHTML = '<div class="sub-loading">错题加载失败：' + esc(e.message || '') + '</div>'; });
+  }
+
+
+  /* ---------- 资料库（App 内） ---------- */
+  subRenderers.library = { title: '资料库', render: function (body) { renderLibrary(body); } };
+  function subjectLabelOf(sid, customs) {
+    if (SUBJECT_NAMES[sid]) return SUBJECT_NAMES[sid];
+    var c = (customs || []).filter(function (x) { return x.id === sid; })[0];
+    return c ? c.name : (sid || '未分类');
+  }
+  function renderLibrary(body) {
+    body.innerHTML = '<div class="sub-loading">正在加载资料库…</div>';
+    Promise.all([
+      AtlasUser.json('/api/library'),
+      AtlasUser.json('/api/personal/questions').catch(function () { return { questions: [] }; }),
+      AtlasUser.json('/api/subjects').catch(function () { return { subjects: [] }; })
+    ]).then(function (res) {
+      if (subCurrent !== 'library') return;
+      var files = (res[0] && res[0].files) || [];
+      var questions = (res[1] && res[1].questions) || [];
+      var customs = (res[2] && res[2].subjects) || [];
+      var opts = SUBJECT_ORDER.map(function (sid) { return '<option value="' + sid + '">' + SUBJECT_NAMES[sid] + '</option>'; }).join('') +
+        customs.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>'; }).join('');
+      var html = '<div class="card"><div class="row-title">上传资料</div>' +
+        '<label class="f-label">选择文件（PDF / 图片 / 文本，≤25 MiB）</label>' +
+        '<input class="f-input" type="file" id="libFile">' +
+        '<label class="f-label">科目</label><select class="f-select" id="libSubject">' + opts + '</select>' +
+        '<label class="f-label">分类（可选，如「真题」「讲义」）</label><input class="f-input" id="libCat" maxlength="30" placeholder="可不填">' +
+        '<button class="btn-main" id="libUpload" type="button" style="margin-top:14px">上传</button>' +
+        '<p class="view-note">上传后可在网页版资料库对文件抽题导入个人题库；抽出的题目会自动出现在刷题里。</p></div>';
+      html += '<h2 class="sec-title">我的资料（' + files.length + '）</h2><div class="card">' + (files.length ? files.map(function (f) {
+        var meta = [subjectLabelOf(f.subject, customs), f.category || '', (f.size / 1048576).toFixed(2) + ' MiB', f.status || ''].filter(Boolean).join(' · ');
+        return '<div class="list-row"><div class="row-title">' + esc(f.name) + '</div><div class="row-meta">' + esc(meta) + '</div>' +
+          '<div class="row-actions"><a class="btn-sub" href="/api/library/' + encodeURIComponent(f.id) + '" target="_blank" rel="noopener">查看原文件</a>' +
+          '<a class="btn-sub" href="library.html">抽题导入</a>' +
+          '<button type="button" class="btn-sub danger" data-lib-del="' + esc(f.id) + '" data-lib-name="' + esc(f.name) + '">删除</button></div></div>';
+      }).join('') : '<div class="today-empty">还没有资料，上传第一份吧。</div>') + '</div>';
+      html += '<h2 class="sec-title">个人题库（' + questions.length + ' 道）</h2><div class="card">' + (questions.length ? questions.slice(0, 60).map(function (q) {
+        return '<div class="list-row"><div class="row-title" style="font-weight:500">' + esc(snippet(q.text, 90)) + '</div>' +
+          '<div class="row-meta">' + esc(subjectLabelOf(q.subject, customs)) + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</div>' +
+          '<div class="row-actions"><button type="button" class="btn-sub danger" data-q-del="' + esc(q.draftId || String(q.id || '').replace(/^personal-/, '')) + '">删除这道题</button></div></div>';
+      }).join('') + (questions.length > 60 ? '<p class="view-note">仅显示前 60 道，全部题目在刷题时可用。</p>' : '') : '<div class="today-empty">个人题库还是空的，抽题导入后会出现在这里。</div>') + '</div>';
+      body.innerHTML = html;
+      document.getElementById('libUpload').addEventListener('click', function () {
+        var fi = document.getElementById('libFile');
+        var file = fi.files && fi.files[0];
+        if (!file) { toast('先选择一个文件'); return; }
+        var btn = this;
+        btn.disabled = true; btn.textContent = '上传中…';
+        var fd = new FormData();
+        fd.append('file', file);
+        fd.append('subject', document.getElementById('libSubject').value);
+        fd.append('category', document.getElementById('libCat').value.trim());
+        fetch('/api/library', { method: 'POST', credentials: 'include', body: fd }).then(function (r) { return r.json(); }).then(function (j) {
+          if (!j || j.ok === false) throw new Error((j && j.error) || '上传失败');
+          toast('上传完成');
+          renderLibrary(body);
+        }).catch(function (e) { toast('上传失败：' + e.message); btn.disabled = false; btn.textContent = '上传'; });
+      });
+      $$('[data-lib-del]', body).forEach(function (b) {
+        b.addEventListener('click', function () {
+          showConfirm({ title: '删除资料？', text: '删除「' + b.dataset.libName + '」？它抽出的草稿和已导入的题目会一并删除，无法恢复。', okText: '删除', danger: true }).then(function (ok) {
+            if (!ok) return;
+            AtlasUser.json('/api/library/' + encodeURIComponent(b.dataset.libDel), 'DELETE').then(function (out) {
+              toast('已删除' + (out && out.questions ? '，连同 ' + out.questions + ' 道已导入题目' : ''));
+              wbCache = null;
+              renderLibrary(body);
+            }).catch(function (e) { toast('删除失败：' + e.message); });
+          });
+        });
+      });
+      $$('[data-q-del]', body).forEach(function (b) {
+        b.addEventListener('click', function () {
+          showConfirm({ title: '删除这道题？', text: '把这道题从个人题库删除？', okText: '删除', danger: true }).then(function (ok) {
+            if (!ok) return;
+            AtlasUser.json('/api/personal/questions', 'DELETE', { draftId: b.dataset.qDel }).then(function () {
+              toast('已从个人题库删除');
+              wbCache = null;
+              renderLibrary(body);
+            }).catch(function (e) { toast('删除失败：' + e.message); });
+          });
+        });
+      });
+    }).catch(function (e) { body.innerHTML = '<div class="sub-loading">资料库加载失败：' + esc(e.message || '') + '</div>'; });
+  }
+
+  /* ---------- 社区（App 内） ---------- */
+  var cmState = { shares: [], myFiles: [], q: '', subject: '' };
+  subRenderers.community = { title: '社区', render: function (body) { renderCommunity(body); } };
+  function cmApi(method, bodyObj, query) { return AtlasUser.json('/api/community' + (query || ''), method, bodyObj); }
+  function cmAvatar(uid, at, name, size) {
+    if (at) return '<img class="cm-avatar" src="/api/profile/avatar?uid=' + encodeURIComponent(uid) + '&v=' + at + '" style="width:' + size + 'px;height:' + size + 'px" alt="">';
+    return '<span class="cm-avatar cm-avatar-fb" style="width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * 0.42) + 'px">' + esc(String(name || '同').slice(0, 1)) + '</span>';
+  }
+  function cmDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    return isNaN(d) ? '' : d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function cmCardHtml(x) {
+    var meta = [SUBJECT_NAMES[x.subject] || x.subject || '', x.questions ? x.questions + ' 道题' : '暂无题目', '已被导入 ' + (x.imports || 0) + ' 次', cmDate(x.createdAt)].filter(Boolean).join(' · ');
+    var side = x.mine ? '<span class="tag-chip">我的分享</span>' : (x.imported ? '<span class="tag-chip">已导入</span>' : '<button type="button" class="btn-sub" data-cm-import="' + esc(x.id) + '">导入到我的账号</button>');
+    return '<article class="cm-card" data-cm-card="' + esc(x.id) + '">' +
+      '<div class="cm-head">' + cmAvatar(x.ownerUid, x.ownerAvatarAt, x.owner, 36) +
+      '<div class="cm-owner"><b>' + esc(x.owner || '同学') + '</b>' + (x.ownerMotto ? '<span>「' + esc(x.ownerMotto) + '」</span>' : '') + '</div>' +
+      '<div>' + side + '</div></div>' +
+      '<h3 class="cm-title">' + esc(x.title || '') + '</h3>' +
+      (x.note ? '<p class="cm-note">' + esc(x.note) + '</p>' : '') +
+      '<div class="row-meta">' + esc(meta) + '</div>' +
+      '<div class="cm-actions">' +
+      '<button type="button" class="cm-act' + (x.liked ? ' on' : '') + '" data-cm-like="' + esc(x.id) + '">' + (x.liked ? '♥' : '♡') + ' <span>' + (x.likeCount || 0) + '</span></button>' +
+      '<button type="button" class="cm-act" data-cm-comments="' + esc(x.id) + '">评论 <span>' + (x.commentCount || 0) + '</span></button>' +
+      '</div>' +
+      '<div class="cm-comments" data-cm-zone="' + esc(x.id) + '" hidden>' +
+      '<div data-cm-list><p class="row-meta">正在加载评论…</p></div>' +
+      '<form class="cm-form" data-cm-form="' + esc(x.id) + '"><input maxlength="300" placeholder="写一句鼓励或提问…" autocomplete="off"><button class="btn-sub" type="submit">发送</button></form>' +
+      '</div></article>';
+  }
+  function renderCommunity(body) {
+    body.innerHTML = '<div class="sub-loading">正在加载社区…</div>';
+    cmApi('GET').then(function (data) {
+      if (subCurrent !== 'community') return;
+      cmState.shares = data.shares || [];
+      cmState.myFiles = data.myFiles || [];
+      paintCommunity(body);
+    }).catch(function (e) { body.innerHTML = '<div class="sub-loading">社区加载失败：' + esc(e.message || '') + '</div>'; });
+  }
+  function paintCommunity(body) {
+    var q = cmState.q.toLowerCase();
+    var list = cmState.shares.filter(function (x) {
+      if (cmState.subject && (x.subject || '') !== cmState.subject) return false;
+      if (q && (x.title + ' ' + (x.note || '') + ' ' + (x.owner || '')).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    var subjChips = [''].concat(SUBJECT_ORDER.filter(function (sid) { return cmState.shares.some(function (x) { return x.subject === sid; }); }));
+    body.innerHTML =
+      '<input class="f-input" id="cmSearch" placeholder="搜索分享标题、说明或作者" value="' + esc(cmState.q) + '">' +
+      '<div class="filter-chips" style="margin-top:10px">' + subjChips.map(function (sid) {
+        return '<button type="button" class="f-chip' + (cmState.subject === sid ? ' on' : '') + '" data-cm-subject="' + esc(sid) + '">' + (sid ? (SUBJECT_NAMES[sid] || sid) : '全部') + '</button>';
+      }).join('') + '</div>' +
+      '<div id="cmList">' + (list.length ? list.map(cmCardHtml).join('') : '<div class="card"><div class="today-empty">' + (cmState.shares.length ? '没有符合筛选的分享，换个关键词试试。' : '广场还空着，来做第一个分享的人吧。') + '</div></div>') + '</div>' +
+      '<h2 class="sec-title">我的资料（分享到广场）</h2><div class="card">' + (cmState.myFiles.length ? cmState.myFiles.map(function (f) {
+        var meta = [SUBJECT_NAMES[f.subject] || f.subject || '', f.questions ? '含 ' + f.questions + ' 道已导入题' : '暂无已导入题', (f.size / 1048576).toFixed(2) + ' MiB'].filter(Boolean).join(' · ');
+        return '<div class="list-row"><div class="row-title">' + esc(f.name) + '</div><div class="row-meta">' + esc(meta) + '</div>' +
+          '<div class="row-actions">' + (f.shareId
+            ? '<button type="button" class="btn-sub danger" data-cm-unshare="' + esc(f.shareId) + '">取消分享</button>'
+            : '<button type="button" class="btn-sub" data-cm-share="' + esc(f.id) + '" data-cm-name="' + esc(f.name) + '">分享到广场</button>') + '</div></div>';
+      }).join('') : '<div class="today-empty">你还没有上传过资料，先到资料库上传一份。</div>') + '</div>';
+    var search = document.getElementById('cmSearch');
+    var timer = null;
+    search.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { cmState.q = search.value.trim(); paintCommunity(body); var s2 = document.getElementById('cmSearch'); if (s2) { s2.focus(); s2.setSelectionRange(s2.value.length, s2.value.length); } }, 350);
+    });
+    $$('[data-cm-subject]', body).forEach(function (b) { b.addEventListener('click', function () { cmState.subject = b.dataset.cmSubject; paintCommunity(body); }); });
+    wireCommunityList(body);
+    $$('[data-cm-share]', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        showForm({ title: '分享到广场', okText: '发布分享', fields: [
+          { id: 'title', label: '标题', value: b.dataset.cmName, maxlength: 60 },
+          { id: 'note', label: '说明（可选）', value: '', placeholder: '这份资料适合谁、怎么用', maxlength: 200 }
+        ] }).then(function (v) {
+          if (!v || !v.title) return;
+          cmApi('POST', { action: 'share', fileId: b.dataset.cmShare, title: v.title, note: v.note }).then(function () {
+            toast('已分享到广场');
+            renderCommunity(body);
+          }).catch(function (e) { toast('分享失败：' + e.message); });
+        });
+      });
+    });
+    $$('[data-cm-unshare]', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        showConfirm({ title: '取消分享？', text: '已导入到别人账号的副本不会被收回。', okText: '取消分享', danger: true }).then(function (ok) {
+          if (!ok) return;
+          cmApi('POST', { action: 'unshare', id: b.dataset.cmUnshare }).then(function () { toast('已取消分享'); renderCommunity(body); })
+            .catch(function (e) { toast('取消失败：' + e.message); });
+        });
+      });
+    });
+  }
+  function wireCommunityList(scope) {
+    $$('[data-cm-like]', scope).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.dataset.cmLike;
+        cmApi('POST', { action: 'like', id: id }).then(function (out) {
+          var x = cmState.shares.filter(function (s2) { return String(s2.id) === String(id); })[0];
+          if (x) { x.liked = out.liked; x.likeCount = out.likeCount; }
+          b.classList.toggle('on', !!out.liked);
+          b.innerHTML = (out.liked ? '♥' : '♡') + ' <span>' + (out.likeCount || 0) + '</span>';
+        }).catch(function (e) { toast('点赞失败：' + e.message); });
+      });
+    });
+    $$('[data-cm-import]', scope).forEach(function (b) {
+      b.addEventListener('click', function () {
+        b.disabled = true; b.textContent = '导入中…';
+        cmApi('POST', { action: 'import', id: b.dataset.cmImport }).then(function (out) {
+          toast('导入完成：' + (out.imported || 0) + ' 道题已进入你的个人题库');
+          wbCache = null;
+          renderCommunity(document.getElementById('subBody'));
+        }).catch(function (e) { toast('导入失败：' + e.message); b.disabled = false; b.textContent = '导入到我的账号'; });
+      });
+    });
+    $$('[data-cm-comments]', scope).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.dataset.cmComments;
+        var zone = document.querySelector('[data-cm-zone="' + CSS.escape(id) + '"]');
+        if (!zone) return;
+        zone.hidden = !zone.hidden;
+        if (!zone.hidden) loadCmComments(id);
+      });
+    });
+    $$('[data-cm-form]', scope).forEach(function (f) {
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var id = f.dataset.cmForm;
+        var input = f.querySelector('input');
+        var text = input.value.trim();
+        if (!text) return;
+        cmApi('POST', { action: 'comment', id: id, text: text }).then(function () {
+          input.value = '';
+          loadCmComments(id);
+        }).catch(function (err) { toast('评论失败：' + err.message); });
+      });
+    });
+  }
+  function loadCmComments(id) {
+    var zone = document.querySelector('[data-cm-zone="' + CSS.escape(id) + '"]');
+    if (!zone) return;
+    var list = zone.querySelector('[data-cm-list]');
+    cmApi('GET', null, '?comments=' + encodeURIComponent(id)).then(function (data) {
+      var comments = data.comments || [];
+      list.innerHTML = comments.length ? comments.map(function (c) {
+        return '<div class="cm-comment">' + cmAvatar(c.authorUid, c.authorAvatarAt, c.author, 24) +
+          '<div style="flex:1;min-width:0"><b>' + esc(c.author || '同学') + '</b> <span class="row-meta">' + esc(cmDate(c.createdAt)) + '</span><div>' + esc(c.text || '') + '</div></div>' +
+          (c.mine ? '<button type="button" class="del" data-cm-delcomment="' + esc(c.id) + '" data-cm-shareid="' + esc(id) + '">删除</button>' : '') + '</div>';
+      }).join('') : '<p class="row-meta">还没有评论，来做第一个留言的人吧。</p>';
+      $$('[data-cm-delcomment]', list).forEach(function (b) {
+        b.addEventListener('click', function () {
+          cmApi('POST', { action: 'uncomment', commentId: b.dataset.cmDelcomment }).then(function () { loadCmComments(b.dataset.cmShareid); })
+            .catch(function (e) { toast('删除失败：' + e.message); });
+        });
+      });
+    }).catch(function (e) { list.innerHTML = '<p class="row-meta">评论加载失败：' + esc(e.message || '') + '</p>'; });
+  }
+
+  /* ---------- 学习计划（App 内） ---------- */
+  subRenderers.plan = { title: '学习计划', render: function (body) { renderPlan(body); } };
+  function dayKeyOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function phaseOf(daysLeft) {
+    if (daysLeft > 45) return { name: '强化推进期', paperEvery: 4, newShare: 0.75 };
+    if (daysLeft >= 20) return { name: '真题强化期', paperEvery: 3, newShare: 0.65 };
+    if (daysLeft >= 8) return { name: '套卷冲刺期', paperEvery: 2, newShare: 0.45 };
+    if (daysLeft >= 0) return { name: '考前复盘期', paperEvery: 2, newShare: 0.3 };
+    return { name: '初试已结束', paperEvery: 3, newShare: 0.5 };
+  }
+  function renderPlan(body) {
+    AtlasUser.load('plan', {}).then(function (plan) {
+      if (subCurrent !== 'plan') return;
+      state.planState = plan || {};
+      paintPlan(body, state.planState);
+    }).catch(function () { body.innerHTML = '<div class="sub-loading">计划加载失败。</div>'; });
+  }
+  function paintPlan(body, plan) {
+    var key = dayKeyOf(new Date());
+    var day = plan && plan.days ? plan.days[key] : null;
+    if (!day || !day.tasks) {
+      body.innerHTML = '<div class="card"><div class="row-title">还没有本周计划</div><p class="view-note">按你的目标科目、每日时长与最近成绩薄弱点，生成 7 天滚动计划：错题复习打头，套卷日与新题推进交替，英语带单词复习。</p></div>' +
+        '<button class="btn-main" id="planGen" type="button">生成本周计划</button>';
+      document.getElementById('planGen').addEventListener('click', function () {
+        var btn = this;
+        btn.disabled = true; btn.textContent = '生成中…';
+        generatePlan().then(function (p) { state.planState = p; paintPlan(body, p); toast('计划已生成'); renderToday(); })
+          .catch(function (e) { toast('生成失败：' + e.message); btn.disabled = false; btn.textContent = '生成本周计划'; });
+      });
+      return;
+    }
+    var doneN = day.tasks.filter(function (t) { return day.done && day.done[t.id]; }).length;
+    var tmr = new Date(); tmr.setDate(tmr.getDate() + 1);
+    var tDay = plan.days[dayKeyOf(tmr)];
+    body.innerHTML =
+      '<div class="card"><div class="row-title">' + esc(plan.phase || '') + ' · 每日 ' + (plan.dailyMinutes || '') + ' 分钟</div>' +
+      '<div class="row-meta">今日已完成 ' + doneN + ' / ' + day.tasks.length + ' 项</div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + (day.tasks.length ? Math.round(doneN / day.tasks.length * 100) : 0) + '%"></div></div></div>' +
+      '<div class="card">' + day.tasks.map(function (t) {
+        var done = !!(day.done && day.done[t.id]);
+        return '<div class="plan-task' + (done ? ' done' : '') + '"><button type="button" class="plan-check' + (done ? ' done' : '') + '" data-plan-toggle="' + esc(t.id) + '">' + (done ? '✓' : '') + '</button>' +
+          '<div class="plan-task-main"><div class="row-title">' + esc(t.label) + (t.mins ? ' <span class="tag-chip">' + t.mins + ' 分钟</span>' : '') + '</div>' +
+          '<div class="row-meta">' + esc(t.detail || '') + '</div>' +
+          '<div class="row-actions">' + (t.kind === 'vocab' ? '<button type="button" class="btn-sub" data-sub="vocab">去完成</button>' : (t.href ? '<a class="btn-sub" href="' + esc(t.href) + '">去完成</a>' : '')) + '</div></div></div>';
+      }).join('') + '</div>' +
+      (tDay && tDay.tasks ? '<p class="view-note">明日预告：' + tDay.tasks.slice(0, 3).map(function (t) { return esc(t.label); }).join(' · ') + '</p>' : '') +
+      '<button class="btn-sub" id="planRegen" type="button">重新生成本周计划</button>';
+    $$('[data-plan-toggle]', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.dataset.planToggle;
+        day.done = day.done || {};
+        if (day.done[id]) delete day.done[id]; else day.done[id] = true;
+        AtlasUser.save('plan', plan).then(function () { state.planState = plan; paintPlan(body, plan); renderToday(); }).catch(function (e) { toast('保存失败：' + e.message); });
+      });
+    });
+    document.getElementById('planRegen').addEventListener('click', function () {
+      showConfirm({ title: '重新生成计划？', text: '会覆盖当前 7 天计划与勾选进度。', okText: '重新生成' }).then(function (ok) {
+        if (!ok) return;
+        generatePlan().then(function (p) { state.planState = p; paintPlan(body, p); toast('计划已更新'); renderToday(); });
+      });
+    });
+  }
+  function generatePlan() {
+    var profile = state.profile || {};
+    var subjects = (profile.subjects || []).filter(function (x) { return SUBJECT_NAMES[x]; });
+    if (!subjects.length) subjects = ['math', 'english', 'mechanics', 'politics'];
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var exam = profile.examDate ? new Date(profile.examDate + 'T00:00:00') : new Date(today.getTime() + 40 * 86400000);
+    var daysLeft = Math.round((exam - today) / 86400000);
+    var phase = phaseOf(daysLeft);
+    var daily = Math.max(60, Number(profile.dailyMinutes) || 240);
+    var latest = {};
+    paperAttempts().forEach(function (a) { if (!latest[a.subject]) latest[a.subject] = a; });
+    var weights = subjects.map(function (x) {
+      var a = latest[x];
+      var rate = a ? summarizeAttempt(a).rate : null;
+      var weak = rate == null ? 0.3 : Math.min(0.85, Math.max(0.05, 1 - rate));
+      return 0.7 + weak;
+    });
+    var wsum = weights.reduce(function (a, b) { return a + b; }, 0);
+    var reviewDue = 0;
+    try {
+      var rev = state.reviewState || {}, now = Date.now();
+      Object.keys(rev).forEach(function (k) { var e = rev[k]; if (e && typeof e.due === 'number' && e.due <= now) reviewDue++; });
+      if (!reviewDue) reviewDue = Object.keys(state.practiceRec || {}).filter(function (id) { return state.practiceRec[id].wrong > 0; }).length;
+    } catch (_) { /* 忽略 */ }
+    var vocabDue = 0;
+    try {
+      var vr = (state.vocabState && state.vocabState.rec) || {}, n2 = Date.now();
+      Object.keys(vr).forEach(function (w) { var e = vr[w]; if (e && e.d <= n2 && e.l < 5) vocabDue++; });
+    } catch (_) { /* 忽略 */ }
+    var days = {};
+    for (var i = 0; i < 7; i++) {
+      var key = dayKeyOf(new Date(today.getTime() + i * 86400000));
+      var tasks = [];
+      tasks.push({ id: 'review', kind: 'review', label: '错题复习', detail: i === 0 && reviewDue ? reviewDue + ' 道到期错题（艾宾浩斯回流）' : '清掉当天到期的错题，没有到期就跳过', href: 'practice.html?review=1' });
+      var paperSubject = (i % phase.paperEvery === phase.paperEvery - 1) ? subjects[Math.floor(i / phase.paperEvery) % subjects.length] : null;
+      subjects.forEach(function (x, si) {
+        if (paperSubject === x) {
+          tasks.push({ id: 'paper-' + x, kind: 'paper', subject: x, label: SUBJECT_NAMES[x] + ' · 套卷日', detail: '做一整套卷，限时完成，交卷后看套卷分析', mins: Math.round(daily * 0.45), href: 'practice.html?subject=' + x });
+        } else {
+          var mins = Math.round(daily * phase.newShare * weights[si] / wsum / 5) * 5;
+          if (mins >= 20) tasks.push({ id: 'new-' + x, kind: 'new', subject: x, label: SUBJECT_NAMES[x] + ' · 新题推进', detail: '优先练薄弱章节与高频考点', mins: mins, href: 'practice.html?subject=' + x });
+        }
+      });
+      if (subjects.indexOf('english') >= 0 || subjects.indexOf('english2') >= 0) {
+        tasks.push({ id: 'vocab', kind: 'vocab', label: '单词复习', detail: i === 0 && vocabDue ? vocabDue + ' 个单词到期' : '按遗忘曲线复习到期单词', mins: 20, href: 'vocab.html' });
+      }
+      days[key] = { tasks: tasks, done: {} };
+    }
+    var plan = { generatedAt: new Date().toISOString(), examDate: profile.examDate || '', daysLeft: daysLeft, phase: phase.name, dailyMinutes: daily, days: days };
+    return AtlasUser.save('plan', plan).then(function () { return plan; });
+  }
+
+  /* ---------- 档案（App 内基础编辑） ---------- */
+  subRenderers.profile = { title: '档案设置', render: function (body) { renderProfileEdit(body); } };
+  function cropAvatarBlob(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        URL.revokeObjectURL(url);
+        var side = Math.min(im.width, im.height);
+        var c = document.createElement('canvas');
+        c.width = 256; c.height = 256;
+        c.getContext('2d').drawImage(im, (im.width - side) / 2, (im.height - side) / 2, side, side, 0, 0, 256, 256);
+        c.toBlob(function (b) { if (b) resolve(b); else reject(new Error('图片处理失败')); }, 'image/jpeg', 0.88);
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); reject(new Error('图片读取失败')); };
+      im.src = url;
+    });
+  }
+  function renderProfileEdit(body) {
+    AtlasUser.json('/api/profile').then(function (r) {
+      if (subCurrent !== 'profile') return;
+      var p = r.profile || {};
+      state.profile = p;
+      var target = [p.school || p.university, p.code || p.programCode, p.major || p.majorName].filter(Boolean).join(' · ');
+      var avatarHtml = p.avatarAt
+        ? '<img src="/api/profile/avatar?v=' + p.avatarAt + '" alt="">'
+        : '<span class="profile-avatar-fb">' + esc((p.nickname || '观').charAt(0)) + '</span>';
+      body.innerHTML =
+        '<div class="card"><div class="profile-avatar-row">' + avatarHtml +
+          '<div><button class="btn-sub" id="pfAvatarBtn" type="button">更换头像</button>' +
+          '<p class="view-note" style="margin:6px 0 0">正方形裁剪后上传，与社区、名片同步。</p></div></div>' +
+          '<input type="file" id="pfAvatarFile" accept="image/*" hidden></div>' +
+        '<div class="card">' +
+          '<label class="f-label">昵称</label><input class="f-input" id="pfNick" maxlength="24" value="' + esc(p.nickname || '') + '">' +
+          '<label class="f-label">座右铭（60 字内）</label><input class="f-input" id="pfMotto" maxlength="60" value="' + esc(p.motto || '') + '">' +
+          '<label class="f-label">初试日期</label><input class="f-input" id="pfExam" type="date" value="' + esc(p.examDate || '') + '">' +
+          '<label class="f-label">每日学习时长（分钟）</label><input class="f-input" id="pfDaily" type="number" min="30" max="1440" step="10" value="' + esc(p.dailyMinutes || 240) + '">' +
+          '<label class="f-label">目标院校专业</label><div class="row-title" style="font-weight:500">' + esc(target || '尚未选择') + '</div>' +
+          '<p class="view-note">院校专业（全国 2027 目录）选择在网页版档案里完成：<a href="index.html#profile" style="color:var(--gold);font-weight:700">打开网页版档案</a></p>' +
+        '</div>' +
+        '<button class="btn-main" id="pfSave" type="button">保存档案</button>';
+      document.getElementById('pfAvatarBtn').addEventListener('click', function () { document.getElementById('pfAvatarFile').click(); });
+      document.getElementById('pfAvatarFile').addEventListener('change', function () {
+        var f = this.files && this.files[0];
+        this.value = '';
+        if (!f) return;
+        cropAvatarBlob(f).then(function (blob) {
+          return fetch('/api/profile/avatar', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'image/jpeg' }, body: blob });
+        }).then(function (res) { return res.json(); }).then(function (d) {
+          if (!d.ok) throw new Error(d.error || '上传失败');
+          toast('头像已更新');
+          renderProfileEdit(body);
+          AtlasUser.json('/api/profile').then(function (r2) { state.profile = r2.profile || state.profile; renderHero(); }).catch(function () {});
+        }).catch(function (e) { toast('头像上传失败：' + e.message); });
+      });
+      document.getElementById('pfSave').addEventListener('click', function () {
+        var btn = this;
+        var merged = Object.assign({}, p, {
+          nickname: document.getElementById('pfNick').value.trim(),
+          motto: document.getElementById('pfMotto').value.trim(),
+          examDate: document.getElementById('pfExam').value || p.examDate,
+          dailyMinutes: Number(document.getElementById('pfDaily').value) || p.dailyMinutes
+        });
+        btn.disabled = true;
+        AtlasUser.json('/api/profile', 'PUT', merged).then(function () {
+          state.profile = merged;
+          renderHero();
+          toast('档案已保存');
+          btn.disabled = false;
+        }).catch(function (e) { toast('保存失败：' + e.message); btn.disabled = false; });
+      });
+    }).catch(function (e) { body.innerHTML = '<div class="sub-loading">档案加载失败：' + esc(e.message || '') + '</div>'; });
+  }
+
+  /* ---------- 账号设置（App 内） ---------- */
+  subRenderers.settings = { title: '账号设置', render: function (body) { renderSettings(body); } };
+  function renderSettings(body) {
+    var u = state.user || {};
+    body.innerHTML =
+      '<div class="card"><div class="row-title">我的账号</div>' +
+      '<div class="row-meta">昵称：' + esc(u.nickname || '—') + '<br>手机号：' + esc(u.phone || '—') + (u.createdAt ? '<br>注册时间：' + esc(String(u.createdAt).slice(0, 10)) : '') + '</div></div>' +
+      '<div class="card"><div class="row-title">修改密码</div>' +
+      '<label class="f-label">旧密码</label><input class="f-input" id="stOld" type="password" maxlength="32" autocomplete="current-password">' +
+      '<label class="f-label">新密码（8–32 位，需含字母和数字）</label><input class="f-input" id="stNew" type="password" maxlength="32" autocomplete="new-password">' +
+      '<label class="f-label">确认新密码</label><input class="f-input" id="stNew2" type="password" maxlength="32" autocomplete="new-password">' +
+      '<button class="btn-main" id="stPwBtn" type="button" style="margin-top:14px">保存新密码</button></div>' +
+      '<div class="card"><div class="row-title">我的数据</div><p class="view-note" style="margin:6px 0 12px">导出账号全部个人数据（档案、刷题与批改记录、个人题库、笔记、教练对话）为 JSON 文件。资料库原文件请在资料库中单独下载。</p>' +
+      '<a class="btn-sub" href="/api/auth/export" style="display:block;text-align:center;height:44px;line-height:44px;padding:0">导出我的数据</a></div>' +
+      '<div class="card"><div class="row-title" style="color:var(--ver)">注销账号</div><p class="view-note" style="margin:6px 0 0">注销将永久删除账号及全部个人数据，不可恢复。如只是暂时不用，无需注销。</p>' +
+      '<label class="f-label">输入密码确认</label><input class="f-input" id="stDelPw" type="password" maxlength="32" autocomplete="current-password">' +
+      '<button class="btn-main" id="stDelBtn" type="button" style="margin-top:12px;background:var(--ver)">永久注销账号</button></div>';
+    document.getElementById('stPwBtn').addEventListener('click', function () {
+      var btn = this;
+      var oldPw = document.getElementById('stOld').value, nw = document.getElementById('stNew').value, nw2 = document.getElementById('stNew2').value;
+      if (!oldPw || !nw) { toast('请填写完整'); return; }
+      if (nw !== nw2) { toast('两次新密码不一致'); return; }
+      btn.disabled = true;
+      AtlasUser.json('/api/auth/password', 'POST', { oldPassword: oldPw, newPassword: nw }).then(function () {
+        toast('密码已修改');
+        document.getElementById('stOld').value = '';
+        document.getElementById('stNew').value = '';
+        document.getElementById('stNew2').value = '';
+        btn.disabled = false;
+      }).catch(function (e) { toast('改密失败：' + e.message); btn.disabled = false; });
+    });
+    document.getElementById('stDelBtn').addEventListener('click', function () {
+      var pw = document.getElementById('stDelPw').value;
+      if (!pw) { toast('请输入密码确认'); return; }
+      showConfirm({ title: '永久注销账号？', text: '账号及全部个人数据将被永久删除，不可恢复。', okText: '确认注销', danger: true }).then(function (ok) {
+        if (!ok) return;
+        AtlasUser.json('/api/auth/delete', 'POST', { password: pw }).then(function () { location.replace('login.html'); })
+          .catch(function (e) { toast('注销失败：' + e.message); });
+      });
+    });
+  }
+
+  /* ---------- 版本更新入口（原生桥） ---------- */
+  if (window.AtlasApp && window.AtlasApp.versionName) {
+    try {
+      var vEntry = document.getElementById('versionEntry');
+      if (vEntry) {
+        vEntry.hidden = false;
+        document.getElementById('versionText').textContent = '当前 v' + window.AtlasApp.versionName();
+        vEntry.addEventListener('click', function (e) { e.preventDefault(); window.AtlasApp.checkUpdate(); });
+      }
+    } catch (_) { /* 忽略 */ }
+  }
+
   /* ---------- 小说式阅读器 ----------
    * 结构来自 assets/data.js（window.ATLAS），正文按章懒加载 web/<章节id>.js
    * （window.ATLAS_CH，与网页版阅读器同一份讲义）。全屏沉浸阅读：
@@ -650,7 +1430,8 @@
       AtlasUser.load('review', {}).then(function (d) { state.reviewState = d || {}; renderToday(); }).catch(function () {});
       AtlasUser.load('plan', {}).then(function (d) { state.planState = d || {}; renderToday(); }).catch(function () {});
       AtlasUser.json('/api/attempts').then(function (r) {
-        renderRecent(r.attempts || r || []);
+        state.attempts = r.attempts || r || [];
+        renderRecent(state.attempts);
       }).catch(function () {
         $('#recentEmpty').textContent = '成绩加载失败，稍后重试。';
       });

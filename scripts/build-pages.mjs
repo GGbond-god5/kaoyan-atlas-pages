@@ -19,6 +19,7 @@ const FILES = [
   "wrongbook.html",
   "app.html",
   "manifest.webmanifest",
+  "app-version.json",
   "sw.js",
   "_headers",
 ];
