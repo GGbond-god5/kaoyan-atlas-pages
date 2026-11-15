@@ -1,7 +1,7 @@
 /* 后台批改续跑 + 消息中心（全站共享）
  * 交卷后批改进度存 localStorage：用户离开刷题页去用其他功能时，
  * 任意页面打开都会接着把没批完的题批完；全部完成时写入站内消息（inbox 状态）
- * 并发系统通知。批改结果本来就存服务器，套卷分析下次打开即是最新数据。 */
+ * 并发系统通知。批改结果本来就存服务器，学情分析下次打开即是最新数据。 */
 (function () {
   if (!window.AtlasUser) return;
   var KEY = 'atlasGradeQueue.v1';
@@ -54,7 +54,7 @@
     if (!rec.notified) {
       rec.notified = true;
       await inboxAdd({ id: 'g' + rec.attemptId, kind: 'grade', attemptId: rec.attemptId, title: rec.title || '套卷', at: Date.now(), read: false });
-      sysNotify('批改完成', '「' + (rec.title || '套卷') + '」已全部批改，去套卷分析看成绩和解析');
+      sysNotify('批改完成', '「' + (rec.title || '套卷') + '」已全部批改，去学情分析看成绩和解析');
     }
     lastDoneId = rec.attemptId;
     showPill('✓ 批改完成，点此看这套的评分与解析');

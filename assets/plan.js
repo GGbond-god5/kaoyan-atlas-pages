@@ -116,7 +116,7 @@
         if (paperSubject === s) {
           tasks.push({
             id: 'paper-' + s, kind: 'paper', subject: s, label: SUBJECT_NAMES[s] + ' · 套卷日',
-            detail: '做一整套卷，限时完成，交卷后看套卷分析', mins: Math.round(daily * 0.45),
+            detail: '做一整套卷，限时完成，交卷后看学情分析', mins: Math.round(daily * 0.45),
             href: 'practice.html?subject=' + s,
           });
         } else {

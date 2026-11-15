@@ -320,8 +320,8 @@
    * 与网页版同一位小观、同一套讲题口径。 */
   var gMsgs = [], gCid = null, gImage = null, gBusy = false;
   var gScene = { type: 'home', title: '' };
-  var HOME_CHIPS = ['怎么上传自己的资料？', '套卷分析在哪看？', '按我的进度，今天先复习什么？', '错题复习是怎么安排的？'];
-  var GREETING = '你好，我是小观。可以问我站内功能怎么用（比如上传资料、看套卷分析），也可以直接发题目——打字或点「图片」拍照，我按步骤给你讲。';
+  var HOME_CHIPS = ['怎么上传自己的资料？', '学情分析在哪看？', '按我的进度，今天先复习什么？', '错题复习是怎么安排的？'];
+  var GREETING = '你好，我是小观。可以问我站内功能怎么用（比如上传资料、看学情分析），也可以直接发题目——打字或点「图片」拍照，我按步骤给你讲。';
 
   function gFmt(s) { return esc(window.AtlasPlain ? window.AtlasPlain.clean(s) : s); }
   function gMath(el) {
@@ -681,8 +681,8 @@ async function clearPaperRecordsApp(qids) {
     return t.length > n ? t.slice(0, n) + '…' : t;
   }
 
-  /* ---------- 套卷分析（App 内） ---------- */
-  subRenderers.analytics = { title: '套卷分析', render: function (body) { renderAnalytics(body); } };
+  /* ---------- 学情分析（App 内） ---------- */
+  subRenderers.analytics = { title: '学情分析', render: function (body) { renderAnalytics(body); } };
   function paperAttempts() {
     return (state.attempts || []).filter(function (a) { return a.mode === 'paper' || a.mode === 'mock' || a.mode === 'diagnostic'; })
       .slice().sort(function (x, y) { return String(y.createdAt || '') > String(x.createdAt || '') ? 1 : -1; });
@@ -781,7 +781,7 @@ async function clearPaperRecordsApp(qids) {
         '<span class="qd-kp">' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' + chip + '<span class="qd-arrow">▾</span></div>' +
         '<div class="qd-body" id="qdBody' + idx + '" hidden><div class="sub-loading">加载题目…</div></div></div>';
     }).join('') + '</div>' +
-    '<div class="card"><div class="row-title">数据管理</div><p class="view-note">重置后这套卷的作答与批改记录会被删除，套卷分析、错题统计同步更新，可以干净地二刷；按知识点练习的记录不受影响。删除后不能恢复。</p>' +
+    '<div class="card"><div class="row-title">数据管理</div><p class="view-note">重置后这套卷的作答与批改记录会被删除，学情分析、错题统计同步更新，可以干净地二刷；按知识点练习的记录不受影响。删除后不能恢复。</p>' +
     '<button type="button" class="btn-sub danger" id="qdReset">重置这套（删除记录）</button></div>';
     var anaBtn = document.getElementById('qdAnalysisBtn');
     if (anaBtn) anaBtn.addEventListener('click', function () {
@@ -1812,7 +1812,7 @@ async function clearPaperRecordsApp(qids) {
       var paperSubject = (paperEvery !== 99 && i % paperEvery === paperEvery - 1) ? subjects[Math.floor(i / paperEvery) % subjects.length] : null;
       subjects.forEach(function (x, si) {
         if (paperSubject === x) {
-          tasks.push({ id: 'paper-' + x, kind: 'paper', subject: x, label: SUBJECT_NAMES[x] + ' · 套卷日', detail: '做一整套卷，限时完成，交卷后看套卷分析', mins: Math.round(daily * 0.45), href: 'practice.html?subject=' + x });
+          tasks.push({ id: 'paper-' + x, kind: 'paper', subject: x, label: SUBJECT_NAMES[x] + ' · 套卷日', detail: '做一整套卷，限时完成，交卷后看学情分析', mins: Math.round(daily * 0.45), href: 'practice.html?subject=' + x });
         } else {
           var mins = Math.round(daily * newShare * weights[si] / wsum / 5) * 5;
           if (mins >= 20) tasks.push({ id: 'new-' + x, kind: 'new', subject: x, label: SUBJECT_NAMES[x] + ' · 新题推进', detail: '优先练薄弱章节与高频考点', mins: mins, href: 'practice.html?subject=' + x });

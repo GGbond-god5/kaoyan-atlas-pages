@@ -60,7 +60,7 @@
     p.setAttribute('aria-label', 'AI 向导');
     p.innerHTML = '<div class="gd-head"><span class="m">观</span><div><b>小观 · AI 向导</b><small>功能引导 · 解题答疑</small></div><button type="button" class="gd-close" aria-label="关闭">✕</button></div>'
       + '<div class="gd-msgs"></div>'
-      + '<div class="gd-chips"><button type="button" class="gd-chip">怎么上传自己的资料？</button><button type="button" class="gd-chip">套卷分析在哪看？</button><button type="button" class="gd-chip">拍照发题给我，我来解</button></div>'
+      + '<div class="gd-chips"><button type="button" class="gd-chip">怎么上传自己的资料？</button><button type="button" class="gd-chip">学情分析在哪看？</button><button type="button" class="gd-chip">拍照发题给我，我来解</button></div>'
       + '<div class="gd-input"><div class="gd-preview"><img alt="待发送图片预览"><button type="button">移除图片</button></div>'
       + '<div class="gd-row"><button type="button" class="gd-icon" title="上传题目照片">图片</button><textarea rows="1" placeholder="问功能，或把题目打出来 / 拍照发我…"></textarea><button type="button" class="gd-send">发送</button></div>'
       + '<input type="file" accept="image/*" hidden></div>';
@@ -68,7 +68,7 @@
     els = { panel: p, msgs: p.querySelector('.gd-msgs'), input: p.querySelector('textarea'), send: p.querySelector('.gd-send'), preview: p.querySelector('.gd-preview'), file: p.querySelector('input[type=file]') };
     fab.addEventListener('click', function () {
       p.style.display = 'flex'; fab.style.display = 'none';
-      if (!msgs.length) addMsg('assistant', '你好，我是小观。可以问我站内功能怎么用（比如上传资料、看套卷分析），也可以直接发题目——打字或点「图片」拍照，我按步骤给你讲。');
+      if (!msgs.length) addMsg('assistant', '你好，我是小观。可以问我站内功能怎么用（比如上传资料、看学情分析），也可以直接发题目——打字或点「图片」拍照，我按步骤给你讲。');
       els.input.focus();
     });
     p.querySelector('.gd-close').addEventListener('click', function () { p.style.display = 'none'; fab.style.display = 'inline-flex'; });

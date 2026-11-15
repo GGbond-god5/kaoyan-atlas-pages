@@ -26,10 +26,11 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <link rel="stylesheet" href="assets/lazy.css?v=7">
 <link rel="stylesheet" href="assets/profile.css?v=5">
   <link rel="stylesheet" href="assets/account-hub.css?v=2">
+<link rel="stylesheet" href="assets/sidebar.css?v=1">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">
+  <div class="brand" id="brandBtn" title="打开学习中心（学习计划 · 学情 · 目录）" role="button" tabindex="0">
     <div class="mark">观</div>
     <div>
       <div class="brand-title">考研科目大观</div>
@@ -37,15 +38,17 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
     </div>
   </div>
   <nav class="subject-nav" id="subjectNav" aria-label="科目切换"></nav>
+  <div class="top-search"><input id="topSearchInput" type="text" placeholder="搜索知识点或功能…" autocomplete="off" spellcheck="false"><div class="top-search-results" id="topSearchResults" hidden></div></div>
   <div class="actions">
     <a class="btn ghost" href="practice.html">刷题</a>
-    <a class="btn ghost" href="analytics.html">套卷分析</a>
     <a class="btn ghost" href="community.html">社区</a>
     <button class="btn ghost" id="lazyBtn" type="button">笔记库</button>
+    <a class="btn ghost" href="library.html">资料上传</a>
     <button class="btn ghost" id="tourBtn" type="button">功能引导</button>
+    <button class="btn ghost bell-btn" id="bellBtn" type="button" aria-label="意见反馈、公告与消息通知"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="bell-dot" id="bellDot" hidden></span></button>
     <a class="btn ghost auth-chip" href="login.html" id="authChip">登录</a>
-    <button class="btn ghost" id="listBtn">目录</button>
-    <button class="btn" id="searchBtn">搜索 <kbd>/</kbd></button>
+    <button class="btn ghost" id="listBtn" hidden>目录</button>
+    <button class="btn" id="searchBtn" hidden>搜索 <kbd>/</kbd></button>
   </div>
 </header>
 
@@ -76,6 +79,39 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
     </div>
   </div>
 </main>
+
+<aside id="sidePanel" aria-label="学习中心">
+  <div class="side-head"><div><div class="kicker">STUDY CENTER</div><h2>学习中心</h2></div><button id="sideClose" type="button" aria-label="收起侧边栏">收起 »</button></div>
+  <div class="side-scroll">
+    <div id="planSlot"></div>
+    <section class="side-card" id="sideStudy">
+      <div class="side-card-head"><h3>学情分析</h3><a href="analytics.html">完整分析 →</a></div>
+      <div id="sideStudyBody"><p class="side-muted">加载中…</p></div>
+    </section>
+    <nav class="side-books" aria-label="错题与收藏">
+      <a href="wrongbook.html"><b>错题本</b><span>错题复盘 · 打印导出</span></a>
+      <a href="wrongbook.html?scope=fav"><b>我的收藏</b><span>收藏的题目都在这里</span></a>
+      <a href="analytics.html"><b>学情分析</b><span>成绩走势 · 能力雷达</span></a>
+    </nav>
+    <div class="side-sec-title">目录 · 科目与章节</div>
+    <div id="listSlot"></div>
+  </div>
+</aside>
+<div id="sideScrim" hidden></div>
+
+<div id="bellPanel" hidden>
+  <div class="bell-tabs" role="tablist">
+    <button type="button" data-btab="feedback">意见反馈</button>
+    <button type="button" data-btab="notice" class="on">公告</button>
+    <button type="button" data-btab="inbox">消息通知<span class="bell-count" id="bellCount" hidden></span></button>
+  </div>
+  <div class="bell-pane" data-bpane="feedback" hidden>
+    <p class="bell-note">功能建议、内容勘误、使用问题，都可以写给站主，提交后会直接寄到站主邮箱。</p>
+    <button type="button" class="bell-primary" id="bellFeedbackBtn">写意见反馈</button>
+  </div>
+  <div class="bell-pane" data-bpane="notice"></div>
+  <div class="bell-pane" data-bpane="inbox" hidden></div>
+</div>
 
 <div id="homeCards">
 <div id="planCard" hidden></div>
@@ -122,7 +158,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <script src="assets/config.js?v=2027-11-07"></script>
 <script src="assets/data.js?v=16"></script>
 <script src="assets/lazy-index.js"></script>
-<script src="assets/user-state.js"></script><script src="assets/grading-bg.js?v=2"></script><script src="assets/ai-config.js?v=1"></script>
+<script src="assets/user-state.js"></script><script src="assets/grading-bg.js?v=3"></script><script src="assets/ai-config.js?v=1"></script>
 <script src="assets/assessment.js?v=8"></script>
 <script src="assets/profile-boot.js?v=15"></script>
 <script src="assets/lazy.js?v=8"></script>
@@ -141,12 +177,12 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
   else setTimeout(start, 1000);
 })();
 </script>
-<script src="assets/onboarding.js?v=3"></script>
+<script src="assets/onboarding.js?v=4"></script>
 <script src="assets/plain-text.js?v=1"></script>
-<script src="assets/guide.js?v=3"></script>
+<script src="assets/guide.js?v=4"></script>
 <script src="assets/review.js?v=1"></script>
 <script src="assets/today.js?v=2"></script>
-<script src="assets/plan.js?v=3"></script>
+<script src="assets/plan.js?v=4"></script>
 <script>
 /* 站点公告：管理员在后台发布后，首页顶部展示一条 */
 fetch('/api/announcement', { credentials: 'include' })
@@ -161,5 +197,6 @@ fetch('/api/announcement', { credentials: 'include' })
   .catch(function () {});
 </script>
 <script src="assets/pwa.js?v=1"></script>
+<script src="assets/sidebar.js?v=1"></script>
 </body>
 </html>

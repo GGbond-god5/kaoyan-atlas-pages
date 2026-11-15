@@ -1142,7 +1142,7 @@
         const wbSet = new Set(Object.keys(marks.wb || {}));
         const pool = ITEMS.filter(q => (rec[q.id] && rec[q.id].wrong > 0) || wbSet.has(q.id));
         if (pool.length) start(pool, "错题本 · 全部重练");
-        else $("#pintro").textContent = "错题本还是空的：做错的题会自动进来，也可以在套卷分析的做题详情里手动把题目加入错题本。";
+        else $("#pintro").textContent = "错题本还是空的：做错的题会自动进来，也可以在学情分析的做题详情里手动把题目加入错题本。";
       } catch (err) { console.error("错题本加载失败", err); }
     }
     /* 错题艾宾浩斯回流：?review=1 直接组今日到期错题开练；平时在设置区提示到期数量 */

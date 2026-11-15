@@ -55,7 +55,7 @@
     });
     $('#wbSummary').textContent = list.length
       ? '共 ' + list.length + (isFav ? ' 道收藏题' : ' 道错题') + (state.mode === 'blank' ? '（自测版式：不含答案，打印后先做再回刷题页核对）' : '（带答案解析版式）')
-      : (isFav ? '当前筛选下没有收藏题。在套卷分析的做题详情里点「☆ 收藏」就能把题目收进来。' : '当前筛选下没有错题。');
+      : (isFav ? '当前筛选下没有收藏题。在学情分析的做题详情里点「☆ 收藏」就能把题目收进来。' : '当前筛选下没有错题。');
     $('#wbList').innerHTML = list.map(function (w, i) {
       var q = w.q, r = w.rec;
       var meta = [SUBJECT_NAMES[q.subject] || q.subjectName || q.subject, q.chapterTitle || '', q.kpName || '']
@@ -132,6 +132,7 @@
   }
 
   $('#wbSubject').addEventListener('change', function () { state.subject = this.value; render(); });
+  try { var q = new URLSearchParams(location.search); if (q.get('scope') === 'fav') { state.scope = 'fav'; $('#wbScope').value = 'fav'; } } catch (e) {}
   $('#wbScope').addEventListener('change', function () { state.scope = this.value; render(); });
   $('#wbMode').addEventListener('change', function () { state.mode = this.value; render(); });
   $('#wbPrint').addEventListener('click', function () { window.print(); });
