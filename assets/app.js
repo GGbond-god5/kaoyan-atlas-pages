@@ -607,15 +607,26 @@
       state.vocabState = vState;
       var rec = vState.rec, keys = Object.keys(rec);
       var mastered = keys.filter(function (w) { return (rec[w].l || 0) >= 5; }).length;
+      var quota = vState.dailyNew || 20;
+      var log = (vState.dayLog && vState.dayLog[todayKey()]) || { new: 0, review: 0 };
+      var dueN = vocabDueCount();
+      var newDone = Math.min(log.new || 0, quota);
+      var taskDone = dueN === 0 && (log.new || 0) >= quota;
       body.innerHTML =
+        '<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px">' +
+        '<div class="row-title">每日学习任务</div><button type="button" class="btn-sub" id="vocabSetBtn">设置任务量</button></div>' +
+        '<div class="row-meta" style="margin-top:6px">新词 ' + (log.new || 0) + ' / ' + quota + ' · 待复习 ' + dueN + ' 词' + (taskDone ? ' · 今日任务已完成 ✓' : '') + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(newDone / quota * 100) + '%"></div></div>' +
+        '<div class="row-meta">复习按遗忘曲线到期自动排入，先复习再学新词。</div></div>' +
         '<div class="card stats-strip">' +
-        '<div class="stat"><b>' + vocabDueCount() + '</b><span>到期复习</span></div>' +
+        '<div class="stat"><b>' + dueN + '</b><span>到期复习</span></div>' +
         '<div class="stat"><b>' + (vState.days[todayKey()] || 0) + '</b><span>今日已学</span></div>' +
         '<div class="stat"><b>' + mastered + '</b><span>已掌握</span></div></div>' +
         '<div class="card"><div class="row-title">大纲词汇共 ' + Object.keys(vWords || {}).length + ' 词 · 已学 ' + keys.length + ' · 收藏 ' + Object.keys(vState.star).length + '</div>' +
-        '<p class="view-note">按遗忘曲线排组：先复习到期词，再学生词。点卡片看释义，再按掌握程度选择；进度与网页版实时同步。</p></div>' +
-        '<button class="btn-main" id="vocabStart" type="button">开始一组（20 词）</button>';
-      document.getElementById('vocabStart').addEventListener('click', function () { startVocabSession(body); });
+        '<p class="view-note">点卡片看释义，再按掌握程度选择；进度与网页版实时同步。</p></div>' +
+        '<button class="btn-main" id="vocabStart" type="button">' + (taskDone ? '今日任务已完成 · 超额再学一组' : '开始今日任务') + '</button>';
+      document.getElementById('vocabStart').addEventListener('click', function () { startVocabSession(body, taskDone); });
+      document.getElementById('vocabSetBtn').addEventListener('click', function () { renderVocabSettings(body); });
     }).catch(function (e) {
       body.innerHTML = '<div class="sub-loading">单词加载失败：' + esc(e.message || '') + '</div>';
     });
@@ -630,18 +641,83 @@
     });
     return shuffleArr(due).concat(shuffleArr(fresh), shuffleArr(later)).slice(0, n);
   }
-  function startVocabSession(body) {
-    vQueue = buildVocabQueue(20);
+  function buildTaskQueue() {
+    var now = Date.now(), rec = vState.rec, due = [], fresh = [];
+    Object.keys(vWords).forEach(function (w) {
+      var r = rec[w.toLowerCase()];
+      if (r && (r.d || 0) <= now && (r.l || 0) < 5) due.push(w);
+      else if (!r) fresh.push(w);
+    });
+    var quota = vState.dailyNew || 20;
+    var log = (vState.dayLog && vState.dayLog[todayKey()]) || { new: 0, review: 0 };
+    var newLeft = Math.max(0, quota - (log.new || 0));
+    var reviewCap = Math.max(20, quota * 3 + 10);
+    return shuffleArr(due).slice(0, reviewCap).concat(shuffleArr(fresh).slice(0, newLeft));
+  }
+  function startVocabSession(body, extra) {
+    vQueue = extra ? buildVocabQueue(20) : buildTaskQueue();
     vIdx = 0;
-    if (!vQueue.length) { body.innerHTML = '<div class="sub-loading">词表为空。</div>'; return; }
+    if (!vQueue.length) {
+      body.innerHTML = '<div class="card" style="text-align:center;padding:28px 18px"><div class="row-title">今日任务已完成</div><p class="view-note" style="text-align:center">到期复习和今日新词都学完了。</p></div>' +
+        '<button class="btn-main" id="vocabExtra" type="button">超额再学一组</button>' +
+        '<button class="btn-sub" id="vocabBack" type="button" style="width:100%;height:46px;margin-top:10px">回单词首页</button>';
+      document.getElementById('vocabExtra').addEventListener('click', function () { startVocabSession(body, true); });
+      document.getElementById('vocabBack').addEventListener('click', function () { renderVocabHome(body); });
+      return;
+    }
     paintVocabCard(body);
+  }
+  /* 每日任务量设置（扇贝式）：每日新词量 + 按剩余词数算预计完成日期 */
+  function renderVocabSettings(body) {
+    subBackHook = function () { renderVocabHome(body); return true; };
+    var cur = vState.dailyNew || 20;
+    var total = Object.keys(vWords || {}).length;
+    var learned = Object.keys(vState.rec || {}).length;
+    var presets = [10, 20, 30, 50, 80, 100, 150];
+    function estimate(n) {
+      var left = Math.max(0, total - learned);
+      if (!n || n <= 0) return '—';
+      var days = Math.ceil(left / n);
+      var d = new Date(); d.setDate(d.getDate() + days);
+      return '剩余 ' + left + ' 词 · 约 ' + days + ' 天学完 · 预计 ' + d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日';
+    }
+    body.innerHTML =
+      '<div class="card"><div class="row-title">每日新词量</div>' +
+      '<p class="view-note">复习词按遗忘曲线到期自动排入（通常约为新词的 2–3 倍），不占新词额度。</p>' +
+      '<div class="filter-chips" style="padding-top:6px">' + presets.map(function (n) {
+        return '<button type="button" class="f-chip' + (n === cur ? ' on' : '') + '" data-vq="' + n + '">' + n + ' 词/天</button>';
+      }).join('') + '</div>' +
+      '<label class="f-label">自定义（词/天）</label><input class="f-input" id="vqCustom" type="number" min="1" max="500" value="' + cur + '">' +
+      '<div class="row-meta" id="vqEstimate" style="margin-top:10px">' + esc(estimate(cur)) + '</div></div>' +
+      '<button class="btn-main" id="vqSave" type="button">保存任务量</button>';
+    var picked = cur;
+    function paintEst() { document.getElementById('vqEstimate').textContent = estimate(picked); }
+    $$('[data-vq]', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        picked = Number(b.dataset.vq);
+        document.getElementById('vqCustom').value = picked;
+        $$('[data-vq]', body).forEach(function (x) { x.classList.toggle('on', Number(x.dataset.vq) === picked); });
+        paintEst();
+      });
+    });
+    document.getElementById('vqCustom').addEventListener('input', function () {
+      picked = Number(this.value) || 0;
+      $$('[data-vq]', body).forEach(function (x) { x.classList.toggle('on', Number(x.dataset.vq) === picked); });
+      paintEst();
+    });
+    document.getElementById('vqSave').addEventListener('click', function () {
+      if (!picked || picked < 1) { toast('请填写有效的每日新词量'); return; }
+      vState.dailyNew = picked;
+      AtlasUser.save('vocab', vState).then(function () { toast('任务量已保存'); renderVocabHome(body); })
+        .catch(function (e) { toast('保存失败：' + e.message); });
+    });
   }
   function paintVocabCard(body) {
     if (vIdx >= vQueue.length) {
       body.innerHTML = '<div class="card" style="text-align:center;padding:28px 18px"><div class="row-title">这一组完成了</div><p class="view-note" style="text-align:center">共学了 ' + vQueue.length + ' 个词，进度已同步。</p></div>' +
         '<button class="btn-main" id="vocabAgain" type="button">再来一组</button>' +
         '<button class="btn-sub" id="vocabDone" type="button" style="width:100%;height:46px;margin-top:10px">回单词首页</button>';
-      document.getElementById('vocabAgain').addEventListener('click', function () { startVocabSession(body); });
+      document.getElementById('vocabAgain').addEventListener('click', function () { startVocabSession(body, true); });
       document.getElementById('vocabDone').addEventListener('click', function () { renderVocabHome(body); });
       return;
     }
@@ -679,6 +755,7 @@
   }
   function gradeVocab(word, level) {
     var k = word.toLowerCase();
+    var isNew = !vState.rec[k];
     var r = vState.rec[k] || { l: 0, d: 0, seen: 0, ok: 0, w: 0 };
     r.seen = (r.seen || 0) + 1;
     if (level === 'known') { r.ok = (r.ok || 0) + 1; r.l = Math.min(5, (r.l || 0) + 1); }
@@ -688,6 +765,10 @@
     r.d = Date.now() + days * 86400000;
     vState.rec[k] = r;
     vState.days[todayKey()] = (vState.days[todayKey()] || 0) + 1;
+    if (!vState.dayLog) vState.dayLog = {};
+    var dl = vState.dayLog[todayKey()] || { new: 0, review: 0 };
+    if (isNew) dl.new += 1; else dl.review += 1;
+    vState.dayLog[todayKey()] = dl;
     state.vocabState = vState;
     AtlasUser.save('vocab', vState).catch(function (e) { toast('同步失败：' + e.message); });
   }
