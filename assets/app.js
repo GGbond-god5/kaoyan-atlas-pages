@@ -1044,6 +1044,7 @@
         '<label class="f-label">选择文件（PDF / 图片 / 文本，≤25 MiB）</label>' +
         '<input class="f-input" type="file" id="libFile">' +
         '<label class="f-label">科目</label><select class="f-select" id="libSubject">' + opts + '</select>' +
+        '<button class="btn-sub" id="libAddSubject" type="button" style="margin-top:8px">＋ 新增科目</button>' +
         '<label class="f-label">分类（可选，如「真题」「讲义」）</label><input class="f-input" id="libCat" maxlength="30" placeholder="可不填">' +
         '<button class="btn-main" id="libUpload" type="button" style="margin-top:14px">上传</button>' +
         '<p class="view-note">上传后可在网页版资料库对文件抽题导入个人题库；抽出的题目会自动出现在刷题里。</p></div>';
@@ -1060,6 +1061,23 @@
           '<div class="row-actions"><button type="button" class="btn-sub danger" data-q-del="' + esc(q.draftId || String(q.id || '').replace(/^personal-/, '')) + '">删除这道题</button></div></div>';
       }).join('') + (questions.length > 60 ? '<p class="view-note">仅显示前 60 道，全部题目在刷题时可用。</p>' : '') : '<div class="today-empty">个人题库还是空的，抽题导入后会出现在这里。</div>') + '</div>';
       body.innerHTML = html;
+      document.getElementById('libAddSubject').addEventListener('click', function () {
+        showForm({ title: '新增科目', okText: '添加', fields: [
+          { id: 'name', label: '科目名称（1–30 字）', value: '', placeholder: '如：材料科学基础、808 自命题', maxlength: 30 }
+        ] }).then(function (v) {
+          if (!v || !v.name) return;
+          AtlasUser.json('/api/subjects', 'POST', { name: v.name }).then(function (r) {
+            if (r && r.subject) {
+              var sel = document.getElementById('libSubject');
+              var o = document.createElement('option');
+              o.value = r.subject.id; o.textContent = r.subject.name;
+              sel.appendChild(o); sel.value = r.subject.id;
+              customs.push(r.subject);
+              toast('已添加并选中「' + r.subject.name + '」');
+            }
+          }).catch(function (e) { toast('添加失败：' + e.message); });
+        });
+      });
       document.getElementById('libUpload').addEventListener('click', function () {
         var fi = document.getElementById('libFile');
         var file = fi.files && fi.files[0];
