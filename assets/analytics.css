@@ -46,3 +46,8 @@
 .bd-track i { display: block; height: 100%; background: #B8860B; border-radius: 99px; }
 .bd-row b { min-width: 64px; text-align: right; }
 .bd-comment { margin: 2px 0 8px; color: #8A8172; font-size: 13px; }
+
+/* 条形基础样式（此前缺失，导致汇总卡/目标差距/薄弱考点的横条不显示） */
+.bar { height: 8px; background: #EFE9D8; border-radius: 99px; overflow: hidden; margin: 6px 0 2px; }
+.bar i { display: block; height: 100%; background: #B8860B; border-radius: 99px; }
+.bar.good i { background: #3E7A4E; }
