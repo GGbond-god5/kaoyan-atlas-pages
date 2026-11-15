@@ -13,6 +13,8 @@ const FILES = [
   "register.html",
   "library.html",
   "analytics.html",
+  "settings.html",
+  "admin.html",
   "_headers",
 ];
 

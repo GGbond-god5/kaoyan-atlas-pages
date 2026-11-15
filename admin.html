@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/transitions.css?v=2">
+<script>if(/[?&]motion=0/.test(location.search))document.documentElement.classList.add("motion-off");</script>
+<title>管理后台 · 考研科目大观</title>
+<link rel="stylesheet" href="assets/theme.css?v=1">
+<link rel="stylesheet" href="assets/panel.css?v=1">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html" style="text-decoration:none;color:inherit">
+    <span class="mark">观</span>
+    <span><b>考研科目大观</b><small>管理后台</small></span>
+  </a>
+  <nav>
+    <a class="btn ghost" href="index.html">返回首页</a>
+  </nav>
+</header>
+
+<main class="panel">
+  <div class="alert" id="alert" role="status" aria-live="polite"></div>
+  <div class="card" id="denied" hidden>
+    <h2>无管理员权限</h2>
+    <p class="note">当前账号不是管理员。如需开通，请在 Cloudflare D1 控制台对账号数据库执行一次：<br>
+    <code>UPDATE users SET role='admin' WHERE phone='你的手机号';</code></p>
+  </div>
+
+  <div id="adminBody" hidden>
+    <section class="card">
+      <h2>今日概览</h2>
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <section class="card">
+      <h2>用户（最近 200 个）</h2>
+      <div class="table-wrap">
+        <table class="tbl" id="usersTbl">
+          <thead><tr><th>用户</th><th>注册</th><th>最近登录</th><th>今日 AI</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>邀请码</h2>
+      <form id="invForm" class="row">
+        <input id="invCount" type="number" min="1" max="50" value="5" style="width:80px">
+        <input id="invNote" type="text" maxlength="40" placeholder="备注（如：第一批内测）" style="flex:1;min-width:160px">
+        <button class="btn" type="submit">生成邀请码</button>
+      </form>
+      <div id="invNew" class="note"></div>
+      <div class="table-wrap">
+        <table class="tbl" id="invTbl">
+          <thead><tr><th>邀请码</th><th>备注</th><th>状态</th><th>生成时间</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="note">邀请制开关：Cloudflare 控制台给 Pages 项目设置环境变量 <code>INVITE_REQUIRED=1</code> 后，注册必须持未使用的邀请码。</p>
+    </section>
+
+    <section class="card">
+      <h2>站点公告</h2>
+      <form id="annForm">
+        <div class="field">
+          <label for="annText">公告内容（留空保存即撤下公告，最多 200 字）</label>
+          <input id="annText" type="text" maxlength="200" placeholder="如：本周日凌晨维护 30 分钟">
+        </div>
+        <button class="btn" type="submit">保存公告</button>
+      </form>
+    </section>
+  </div>
+</main>
+
+<script src="assets/config.js?v=2027-11-12"></script>
+<script src="assets/auth.js?v=4"></script>
+<script src="assets/admin.js?v=1"></script>
+</body>
+</html>

@@ -71,6 +71,12 @@
                  autocomplete="new-password" placeholder="再输入一次">
         </div>
 
+        <div class="field">
+          <label for="invite">邀请码（内测期间需要）</label>
+          <input id="invite" name="invite" type="text" maxlength="16"
+                 autocomplete="off" placeholder="如 KY-XXXX-XXXX；未开启邀请制时可留空">
+        </div>
+
         <label class="check" style="margin:2px 0 18px">
           <input type="checkbox" id="agree">
           <span>我已阅读并同意《用户说明》，了解本站仅用于个人复习存档，不对外提供真题版权内容。</span>
@@ -107,6 +113,7 @@
   var nickname = document.getElementById('nickname');
   var password = document.getElementById('password');
   var password2 = document.getElementById('password2');
+  var invite = document.getElementById('invite');
   var agree = document.getElementById('agree');
   var submitBtn = document.getElementById('submitBtn');
   var codeHint = document.getElementById('codeHint');
@@ -206,6 +213,7 @@
         code: code.value,
         nickname: nick,
         password: password.value,
+        invite: invite.value.trim(),
       });
       try {
         if (registration.user && registration.user.id) localStorage.setItem('atlas.welcome.pending', registration.user.id);

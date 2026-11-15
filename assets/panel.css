@@ -1,0 +1,45 @@
+/* 设置页 / 管理后台共用样式（纸墨风，配合 theme.css 的令牌） */
+body { margin: 0; }
+.panel { max-width: 860px; margin: 0 auto; padding: 20px 16px 64px; }
+.panel .card {
+  background: var(--surface, #fffdf8);
+  border: 1px solid var(--line, rgba(60, 48, 30, .14));
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin: 16px 0;
+  box-shadow: 0 1px 3px rgba(60, 48, 30, .06);
+}
+.panel .card h2 { margin: 0 0 14px; font-size: 17px; }
+.panel .card.danger { border-color: rgba(179, 38, 30, .35); }
+.panel .field { margin: 0 0 14px; display: flex; flex-direction: column; gap: 6px; }
+.panel .field label { font-size: 13px; opacity: .8; }
+.panel input[type="text"], .panel input[type="password"], .panel input[type="number"] {
+  padding: 10px 12px; border-radius: 9px; font-size: 14px;
+  border: 1px solid var(--line, rgba(60, 48, 30, .25));
+  background: var(--bg, #faf7f0); color: inherit;
+}
+.panel input:focus { outline: 2px solid rgba(179, 64, 42, .35); outline-offset: 1px; }
+.panel .note { font-size: 13px; line-height: 1.7; opacity: .75; margin: 10px 0; }
+.panel .alert {
+  display: none; padding: 10px 14px; border-radius: 9px; font-size: 14px;
+  background: #fbeae8; color: #8f1d17; border: 1px solid rgba(179, 38, 30, .3);
+}
+.panel .alert.show { display: block; }
+.panel .alert.ok { background: #e9f5e6; color: #2c5b21; border-color: rgba(60, 130, 50, .3); }
+.panel .kv { display: grid; grid-template-columns: 90px 1fr; gap: 8px 14px; margin: 0; font-size: 14px; }
+.panel .kv dt { opacity: .65; }
+.panel .kv dd { margin: 0; }
+.panel .danger-btn { background: #b3261e; color: #fff; border-color: #b3261e; }
+.panel .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.panel .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; }
+.panel .stat { text-align: center; padding: 12px 6px; border: 1px solid var(--line, rgba(60,48,30,.12)); border-radius: 10px; }
+.panel .stat b { display: block; font-size: 20px; margin-bottom: 4px; }
+.panel .stat span { font-size: 12px; opacity: .65; }
+.panel .table-wrap { overflow-x: auto; }
+.panel .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.panel .tbl th, .panel .tbl td { padding: 8px 8px; border-bottom: 1px solid var(--line, rgba(60,48,30,.12)); text-align: left; vertical-align: top; }
+.panel .tag { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: rgba(60,48,30,.08); }
+.panel .tag.ok { background: #e9f5e6; color: #2c5b21; }
+.panel .tag.bad { background: #fbeae8; color: #8f1d17; }
+.panel .btn.small { padding: 4px 10px; font-size: 12px; }
+.panel code { font-size: 12.5px; background: rgba(60,48,30,.07); padding: 1px 5px; border-radius: 5px; }

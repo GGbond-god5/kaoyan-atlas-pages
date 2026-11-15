@@ -13,3 +13,14 @@
 
 /*.html
   Cache-Control: no-cache
+
+# 安全响应头（全站）：HSTS、禁止 MIME 嗅探、来源策略、禁止被嵌套。
+# CSP：站点大量使用内联脚本，现阶段放行 'unsafe-inline'，主要封堵外源脚本/资源注入；
+# 后续若做 nonce 化改造可再收紧 script-src。
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; media-src 'self' blob: data:; frame-ancestors 'none'; base-uri 'self'

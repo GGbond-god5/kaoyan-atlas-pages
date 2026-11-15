@@ -38,11 +38,14 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
     <button class="btn ghost" id="lazyBtn" type="button">笔记库</button>
     <button class="btn ghost" id="profileBtn" type="button">档案</button>
     <button class="btn ghost" id="tourBtn" type="button">功能引导</button>
+    <a class="btn ghost" href="settings.html">设置</a>
     <a class="btn ghost auth-chip" href="login.html" id="authChip">登录</a>
     <button class="btn ghost" id="listBtn">目录</button>
     <button class="btn" id="searchBtn">搜索 <kbd>/</kbd></button>
   </div>
 </header>
+
+<div id="announceBar" hidden style="padding:8px 16px;text-align:center;font-size:13px;line-height:1.6;background:#f3ecd9;border-bottom:1px solid rgba(120,96,40,.25);color:#5c4a1f"></div>
 
 <main class="stage" id="stage">
   <div class="stage-bg" aria-hidden="true">
@@ -131,5 +134,18 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 </script>
 <script src="assets/onboarding.js?v=1"></script>
 <script src="assets/guide.js?v=1"></script>
+<script>
+/* 站点公告：管理员在后台发布后，首页顶部展示一条 */
+fetch('/api/announcement', { credentials: 'include' })
+  .then(function (r) { return r.ok ? r.json() : null; })
+  .then(function (d) {
+    if (d && d.announcement) {
+      var bar = document.getElementById('announceBar');
+      bar.textContent = d.announcement;
+      bar.hidden = false;
+    }
+  })
+  .catch(function () {});
+</script>
 </body>
 </html>

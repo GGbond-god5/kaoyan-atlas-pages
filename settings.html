@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/transitions.css?v=2">
+<script>if(/[?&]motion=0/.test(location.search))document.documentElement.classList.add("motion-off");</script>
+<title>账号设置 · 考研科目大观</title>
+<link rel="stylesheet" href="assets/theme.css?v=1">
+<link rel="stylesheet" href="assets/panel.css?v=1">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html" style="text-decoration:none;color:inherit">
+    <span class="mark">观</span>
+    <span><b>考研科目大观</b><small>账号设置</small></span>
+  </a>
+  <nav>
+    <a class="btn ghost" href="index.html">返回首页</a>
+  </nav>
+</header>
+
+<main class="panel">
+  <div class="alert" id="alert" role="status" aria-live="polite"></div>
+
+  <section class="card">
+    <h2>我的账号</h2>
+    <dl class="kv">
+      <dt>昵称</dt><dd id="accNick">—</dd>
+      <dt>手机号</dt><dd id="accPhone">—</dd>
+      <dt>注册时间</dt><dd id="accCreated">—</dd>
+    </dl>
+  </section>
+
+  <section class="card">
+    <h2>修改密码</h2>
+    <form id="pwForm">
+      <div class="field">
+        <label for="oldPw">旧密码</label>
+        <input id="oldPw" type="password" maxlength="32" autocomplete="current-password" placeholder="当前密码">
+      </div>
+      <div class="field">
+        <label for="newPw">新密码</label>
+        <input id="newPw" type="password" maxlength="32" autocomplete="new-password" placeholder="8–32 位，需含字母和数字">
+      </div>
+      <div class="field">
+        <label for="newPw2">确认新密码</label>
+        <input id="newPw2" type="password" maxlength="32" autocomplete="new-password" placeholder="再输入一次新密码">
+      </div>
+      <button class="btn" type="submit" id="pwBtn">保存新密码</button>
+      <p class="note">改密后已登录的设备仍保持登录；如需强制下线，请在各设备上退出登录后再用新密码登录。</p>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>我的数据</h2>
+    <p class="note">导出账号的全部个人数据（档案、刷题与批改记录、个人题库、自建科目、笔记、教练对话）为 JSON 文件。资料库上传的原文件不在导出内，请在资料库中单独下载。</p>
+    <button class="btn" type="button" id="exportBtn">导出我的数据</button>
+  </section>
+
+  <section class="card danger">
+    <h2>注销账号</h2>
+    <p class="note">注销将永久删除账号及全部个人数据（进度、错题、个人题库、笔记与上传文件），<b>不可恢复</b>。如只是暂时不用，无需注销。</p>
+    <form id="delForm">
+      <div class="field">
+        <label for="delPw">输入密码确认</label>
+        <input id="delPw" type="password" maxlength="32" autocomplete="current-password" placeholder="当前密码">
+      </div>
+      <button class="btn danger-btn" type="submit" id="delBtn">永久注销账号</button>
+    </form>
+  </section>
+</main>
+
+<script src="assets/config.js?v=2027-11-12"></script>
+<script src="assets/auth.js?v=4"></script>
+<script src="assets/settings.js?v=1"></script>
+</body>
+</html>

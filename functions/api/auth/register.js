@@ -10,6 +10,7 @@ import {
   sessionCookie,
   isSecureRequest,
 } from "../../_lib/security.js";
+import { ensureLayer1, getInvite, markInviteUsed } from "../../_lib/layer1.js";
 
 export async function onRequestPost({ request, env }) {
   if (!env.SESSION_SECRET) return fail(500, "站点配置缺失：未设置 SESSION_SECRET");
@@ -40,6 +41,20 @@ export async function onRequestPost({ request, env }) {
   const bad = await consumeCode(env, phone, code);
   if (bad) return fail(bad.status, bad.error);
 
+  // 邀请制（内测）：环境变量 INVITE_REQUIRED=1 时，注册必须持未使用的邀请码
+  let inviteCode = "";
+  if (env.INVITE_REQUIRED === "1") {
+    inviteCode = String(body.invite || "").trim().toUpperCase();
+    if (!inviteCode) return fail(400, "内测期间注册需要邀请码，请向管理员索取");
+    try {
+      await ensureLayer1(env);
+      const inv = await getInvite(env, inviteCode);
+      if (!inv || inv.used_by) return fail(403, "邀请码无效或已被使用");
+    } catch {
+      return fail(503, "邀请码校验失败，请稍后再试");
+    }
+  }
+
   const salt = randomHex(16);
   const rounds = pbkdf2Rounds(env);
   const hash = await hashPassword(password, salt, rounds);
@@ -52,6 +67,15 @@ export async function onRequestPost({ request, env }) {
     if (String(err.message || err).includes("UNIQUE")) return fail(409, "该手机号已注册，请直接登录");
     console.error("[auth] 注册失败", err);
     return fail(500, "注册失败，请稍后再试");
+  }
+
+  if (inviteCode) {
+    try {
+      await markInviteUsed(env, inviteCode, phone);
+    } catch {
+      // 标记失败不回滚注册，管理员可在后台核对邀请码列表
+      console.error("[auth] 邀请码标记已用失败", inviteCode);
+    }
   }
 
   const token = await signSession({ uid: user.id, phone }, env.SESSION_SECRET);
