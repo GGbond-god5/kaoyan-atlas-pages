@@ -518,3 +518,20 @@ button { font-family: inherit; }
 .hist-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hist-meta { color: var(--ink3); font-size: 12px; margin-top: 3px; }
 .hist-del { flex: none; }
+
+/* 做题详情 */
+.recent-row[data-att] { cursor: pointer; }
+.qd-score { display: flex; align-items: baseline; gap: 10px; margin-top: 8px; }
+.qd-score b { font-size: 30px; color: var(--gold); }
+.qd-score span { color: var(--ink3); font-size: 13px; }
+.qd-head { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.qd-head b { font-size: 15px; }
+.qd-kp { flex: 1; color: var(--ink3); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qd-arrow { color: var(--ink3); font-size: 12px; }
+.qd-body { border-top: 1px solid var(--rule); margin-top: 10px; padding-top: 10px; }
+.qd-sec { margin-bottom: 10px; }
+.qd-sec > span { display: block; font-size: 12px; color: var(--gold); font-weight: 700; margin-bottom: 3px; }
+.qd-sec p { font-size: 14px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; }
+.bd-row { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; padding: 3px 0; }
+.bd-row b { color: var(--gold); white-space: nowrap; }
+.bd-comment { color: var(--ink3); font-size: 12.5px !important; margin: 0 0 4px; }

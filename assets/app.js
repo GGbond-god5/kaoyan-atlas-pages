@@ -116,7 +116,7 @@
       var s = summarizeAttempt(a);
       var rate = s.rate == null ? '待批改' : Math.round(s.rate * 100) + '%';
       var cls = s.rate == null ? 'mid' : s.rate >= 0.8 ? 'good' : s.rate >= 0.5 ? 'mid' : 'low';
-      return '<div class="recent-row"><span class="recent-title">' + esc(attemptTitle(a)) + '</span>' +
+      return '<div class="recent-row"' + (a.id ? ' data-att="' + esc(a.id) + '"' : '') + '><span class="recent-title">' + esc(attemptTitle(a)) + '</span>' +
         '<span class="recent-rate ' + cls + '">' + rate + '</span>' +
         '<span class="recent-date">' + esc(attemptDate(a)) + '</span></div>';
     }).join('');
@@ -659,7 +659,7 @@
       var sm = summarizeAttempt(a);
       var rate = sm.rate == null ? '待批改' : Math.round(sm.rate * 100) + '%';
       var cls = sm.rate == null ? 'mid' : sm.rate >= 0.8 ? 'good' : sm.rate >= 0.5 ? 'mid' : 'low';
-      return '<div class="recent-row"><span class="recent-title">' + esc(attemptTitle(a)) + '</span><span class="recent-rate ' + cls + '">' + rate + '</span><span class="recent-date">' + esc(attemptDate(a)) + '</span></div>';
+      return '<div class="recent-row"' + (a.id ? ' data-att="' + esc(a.id) + '"' : '') + '><span class="recent-title">' + esc(attemptTitle(a)) + '</span><span class="recent-rate ' + cls + '">' + rate + '</span><span class="recent-date">' + esc(attemptDate(a)) + '</span></div>';
     }).join('') : '<div class="today-empty">还没有套卷或模考成绩。</div>') + '</div>';
     body.innerHTML = html;
     AtlasUser.load('goals', { targets: {} }).then(function (g) {
@@ -688,6 +688,93 @@
         });
       });
     }).catch(function () { var c = document.getElementById('gapCard'); if (c) c.innerHTML = '<div class="today-empty">目标加载失败。</div>'; });
+  }
+
+  /* ---------- 做题详情：点最近成绩/成绩明细进入 ---------- */
+  var attemptDetailId = '';
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-att]');
+    if (!t) return;
+    attemptDetailId = t.dataset.att;
+    openSub('attemptDetail');
+  });
+  subRenderers.attemptDetail = { title: '做题详情', render: function (body) { renderAttemptDetail(body); } };
+  function attemptFullTime(a) {
+    var d = new Date(a.createdAt || a.time || 0);
+    if (isNaN(d)) return '';
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+  function renderAttemptDetail(body) {
+    var id = attemptDetailId;
+    body.innerHTML = '<div class="sub-loading">正在加载详情…</div>';
+    var cached = (state.attempts || []).filter(function (x) { return x.id === id; })[0] || null;
+    AtlasUser.json('/api/attempts/' + encodeURIComponent(id)).then(function (r) {
+      paintAttemptDetail(body, (r && r.attempt) || cached);
+    }).catch(function () { paintAttemptDetail(body, cached); });
+  }
+  function paintAttemptDetail(body, a) {
+    if (!a) { body.innerHTML = '<div class="sub-loading">这条成绩找不到了。</div>'; return; }
+    var sm = summarizeAttempt(a);
+    var qs = a.questions || [];
+    var score = 0, max = 0;
+    qs.forEach(function (q) {
+      var r = (a.results || {})[q.id];
+      if (r && r.status === 'graded' && Number(r.maxScore) > 0) { score += Number(r.score); max += Number(r.maxScore); }
+    });
+    var rate = sm.rate == null ? '待批改' : Math.round(sm.rate * 100) + '%';
+    var head = '<div class="card"><div class="row-title">' + esc(attemptTitle(a)) + '</div>' +
+      '<div class="row-meta">' + esc(attemptFullTime(a)) + ' · 共 ' + qs.length + ' 题 · 已批改 ' + sm.graded + ' 题</div>' +
+      '<div class="qd-score"><b>' + rate + '</b><span>' + (max > 0 ? '得分 ' + (Math.round(score * 10) / 10) + ' / ' + (Math.round(max * 10) / 10) + ' 分' : '等待 AI 批改') + '</span></div></div>';
+    body.innerHTML = head + '<div id="qdList">' + qs.map(function (q, idx) {
+      var r = (a.results || {})[q.id];
+      var graded = r && r.status === 'graded';
+      var chip = graded
+        ? '<span class="recent-rate ' + (Number(r.maxScore) > 0 && Number(r.score) >= Number(r.maxScore) ? 'good' : Number(r.score) > 0 ? 'mid' : 'low') + '">' + (Math.round(Number(r.score) * 10) / 10) + ' / ' + (Math.round(Number(r.maxScore) * 10) / 10) + '</span>'
+        : '<span class="recent-rate mid">待批改</span>';
+      return '<div class="card qd-card"><div class="qd-head" data-qd="' + idx + '"><b>第 ' + (idx + 1) + ' 题</b>' +
+        '<span class="qd-kp">' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' + chip + '<span class="qd-arrow">▾</span></div>' +
+        '<div class="qd-body" id="qdBody' + idx + '" hidden><div class="sub-loading">加载题目…</div></div></div>';
+    }).join('') + '</div>';
+    $$('[data-qd]', body).forEach(function (h) {
+      h.addEventListener('click', function () {
+        var box = document.getElementById('qdBody' + h.dataset.qd);
+        if (box) box.hidden = !box.hidden;
+      });
+    });
+    var subjects = [];
+    qs.forEach(function (q) { if (q.subject && subjects.indexOf(q.subject) < 0) subjects.push(q.subject); });
+    Promise.all(subjects.map(function (sj) { return AtlasQuestions.load(sj).catch(function () {}); })).then(function () {
+      var byId = {};
+      ((window.QUESTIONS && window.QUESTIONS.items) || []).forEach(function (it) { byId[it.id] = it; });
+      qs.forEach(function (q, idx) {
+        var box = document.getElementById('qdBody' + idx);
+        if (!box) return;
+        var r = (a.results || {})[q.id] || {};
+        var it = byId[q.id];
+        var html = '';
+        if (it && it.text) html += '<div class="qd-sec"><span>题干</span><p>' + esc(cleanText(it.text)) + '</p></div>';
+        if (it && it.answer) html += '<div class="qd-sec"><span>参考答案</span><p>' + esc(cleanText(it.answer)) + '</p></div>';
+        if (r.level) html += '<div class="qd-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
+        if (r.comments) html += '<div class="qd-sec"><span>AI 总评</span><p>' + esc(cleanText(r.comments)) + '</p></div>';
+        if (Array.isArray(r.breakdown) && r.breakdown.length) {
+          html += '<div class="qd-sec"><span>得分点</span>' + r.breakdown.map(function (b) {
+            return '<div class="bd-row"><span>' + esc(b.point || '') + '</span><b>' +
+              (b.score == null ? '' : Math.round(Number(b.score) * 10) / 10) + (b.max == null ? '' : ' / ' + Math.round(Number(b.max) * 10) / 10) + '</b></div>' +
+              (b.comment ? '<p class="bd-comment">' + esc(cleanText(b.comment)) + '</p>' : '');
+          }).join('') + '</div>';
+        }
+        if (r.dimensions && Object.keys(r.dimensions).length) {
+          html += '<div class="qd-sec"><span>维度评分</span><p>' + Object.keys(r.dimensions).map(function (k) {
+            var v = r.dimensions[k];
+            return esc(k) + ' ' + (typeof v === 'object' ? esc(v.score != null ? v.score : JSON.stringify(v)) : esc(v));
+          }).join(' · ') + '</p></div>';
+        }
+        if (r.missing) html += '<div class="qd-sec"><span>缺失要点</span><p>' + esc(cleanText(r.missing)) + '</p></div>';
+        if (r.suggestions) html += '<div class="qd-sec"><span>改进建议</span><p>' + esc(cleanText(r.suggestions)) + '</p></div>';
+        box.innerHTML = html || '<div class="sub-loading">这道题暂无更多详情。</div>';
+        if (window.AtlasKatex) AtlasKatex.render(box);
+      });
+    });
   }
 
   /* ---------- 每日单词（App 内，规则与网页版一致） ---------- */
