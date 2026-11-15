@@ -1,7 +1,7 @@
 {
-  "versionCode": 6,
-  "versionName": "6.0",
+  "versionCode": 7,
+  "versionName": "7.0",
   "apkUrl": "/assets/app/kaoyan-atlas.apk",
-  "size": 124626,
-  "notes": "修复刷题等功能页返回总跳到图谱的问题：返回与系统返回键统一回 App 首页；笔记库改为 App 内阅读（分章列表 → 全屏单栏阅读，可新建/编辑自己的笔记）。"
+  "size": 124698,
+  "notes": "底部导航栏改为全局常驻：无论在刷题、图谱还是任何页面，底部五栏都在，点「首页」随时回 App 首页；同时包含刷题返回修复、笔记库 App 内阅读、单词每日任务量设置。"
 }

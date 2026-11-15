@@ -35,7 +35,9 @@
     window.scrollTo(0, 0);
     if (name === 'bank') renderBankSubjects();
     if (name === 'wrong') renderWrong();
+    if (window.AtlasApp && window.AtlasApp.setTab) { try { window.AtlasApp.setTab(name); } catch (e) {} }
   }
+  window.__atlasSwitch = switchView;
   $$('#appTabs button').forEach(function (b) {
     b.addEventListener('click', function () { switchView(b.dataset.tab); });
   });
