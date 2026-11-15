@@ -2231,14 +2231,8 @@
   });
 
   function wireReaderBank(article) {
-    $$('.kp-bank', article).forEach(function (a) {
-      var u = new URL('practice.html', location.href);
-      u.searchParams.set('subject', a.dataset.bankSubject || '');
-      u.searchParams.set('chapter', a.dataset.bankChapter || '');
-      u.searchParams.set('kp', a.dataset.bankKp || '');
-      a.href = u.toString();
-      a.removeAttribute('hidden');
-    });
+    // 逐考点按钮取消：阅读器只保留底部「练本章题」（章级）。
+    $$('.kp-bank', article).forEach(function (x) { x.remove(); });
   }
   function renderReaderMath(article) {
     try {
@@ -2293,9 +2287,10 @@
     applyFont();
     paintNavBtn($('#readerPrev'), ch.prev, '上一章');
     paintNavBtn($('#readerNext'), ch.next, '下一章');
-    var first = article.querySelector('.kp-bank');
     var pr = $('#readerPractice');
-    if (first && first.getAttribute('href')) { pr.href = first.getAttribute('href'); pr.hidden = false; }
+    var pSub = (reader.subject && reader.subject.id) || ch.subject || '';
+    var pCh = (meta && meta.id) || ch.id || '';
+    if (pSub && pCh) { pr.href = 'practice.html?subject=' + encodeURIComponent(pSub) + '&chapter=' + encodeURIComponent(pCh); pr.hidden = false; }
     else pr.hidden = true;
     $('#readerBody').scrollTop = 0;
     $('#readerProgressBar').style.width = '0%';

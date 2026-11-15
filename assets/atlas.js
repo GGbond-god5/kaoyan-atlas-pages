@@ -478,7 +478,8 @@
     const right = ch.next
       ? `<a class="right" href="#read=${esc(ch.next.id)}" data-read="${esc(ch.next.id)}"><span>下一章</span><b>${esc(ch.next.title)}</b></a>`
       : `<span class="empty"></span>`;
-    return `<div class="reader-nav">${left}${right}</div>`;
+    const practice = `<a class="reader-practice" href="practice.html?subject=${esc(ch.subject || "")}&chapter=${esc(ch.id)}">刷本章题 →</a>`;
+    return practice + `<div class="reader-nav">${left}${right}</div>`;
   }
 
   function readerTocHtml(ch) {
@@ -504,19 +505,8 @@
   }
 
   function wireBank() {
-    const base = "practice.html";
-    const links = [...readerArticle.querySelectorAll(".kp-bank")];
-    if (!base) { links.forEach(a => a.remove()); return; }
-    links.forEach(a => {
-      const u = new URL(base, location.href);
-      u.searchParams.set("subject", a.dataset.bankSubject || "");
-      u.searchParams.set("chapter", a.dataset.bankChapter || "");
-      u.searchParams.set("kp", a.dataset.bankKp || "");
-      const difficulty = new URLSearchParams(location.search).get("difficulty");
-      if (difficulty) u.searchParams.set("difficulty", difficulty);
-      a.href = u.toString();
-      a.removeAttribute("hidden");
-    });
+    // 逐考点的「去题库练这个考点」按钮已取消：讲义里只保留章末的「刷本章题」。
+    readerArticle.querySelectorAll(".kp-bank").forEach(a => a.remove());
   }
 
   function showReader(ch, kpId, fromRoute) {
