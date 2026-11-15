@@ -17,7 +17,7 @@
   }
   async function json(path, method = 'GET', body) {
     const options = { method, credentials: 'include', headers: {} };
-    if (body !== undefined) { options.headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(body); }
+    if (body !== undefined && body !== null) { options.headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(body); }
     const res = await fetch(path, options);
     let data = {}; try { data = await res.json(); } catch (_) {}
     if (!res.ok || data.ok === false) { const e = new Error(data.error || `请求失败（${res.status}）`); e.status = res.status; e.data = data; throw e; }

@@ -120,3 +120,4 @@
 - 安卓 App v1.0 内测版发布：站内更新通道、GitHub 发布页、社区发布帖三通道分发，引导/小观/公告同步。
 - 仓库改为公开并添加 MIT LICENSE，全部开源。
 - 内置 AI 改为四档模型路由（deepseek-v4.1-flash-1017 / glm-5.3 / kimi-k3.1-pro / qwen3.8-max-0902 按难度选用，失败自动顺延、qwen3-vl-plus 兜底）。
+- 修复社区动态与评论读取失效：AtlasUser.json 对 null body 的 GET 请求误带请求体导致 fetch 抛错被吞为空列表，已根治并刷新缓存版本。
