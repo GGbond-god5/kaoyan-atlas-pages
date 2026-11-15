@@ -1,0 +1,51 @@
+/* 首页卡片栈：计划卡 + 今日任务卡共用左下角容器 */
+#homeCards {
+  position: fixed; left: 16px; bottom: 16px; z-index: 40;
+  display: flex; flex-direction: column; gap: 10px;
+  width: 330px; max-width: calc(100vw - 32px);
+}
+#homeCards #todayCard { position: static; width: auto; max-width: none; }
+
+#planCard {
+  background: #fffdf6; color: #2a2620;
+  border: 1px solid rgba(120, 96, 40, .35); border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(60, 48, 16, .18);
+  padding: 12px 14px 10px;
+  font-size: 13px; line-height: 1.55;
+}
+#planCard .phead { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+#planCard .phead b { font-size: 14px; letter-spacing: .04em; }
+#planCard .pdays { color: #7a5b12; font-weight: 600; font-size: 12px; }
+#planCard .phead button {
+  margin-left: auto; border: 0; background: transparent; font-size: 18px; line-height: 1;
+  color: #8a7a52; cursor: pointer; padding: 2px 6px;
+}
+#planCard .pprogress { color: #6d6250; font-size: 12px; margin-bottom: 2px; }
+#planCard .prow {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 0; border-top: 1px dashed rgba(120, 96, 40, .25);
+}
+#planCard .prow.done .plabel, #planCard .prow.done .pdetail { color: #a2936f; text-decoration: line-through; }
+#planCard .pcheck { flex: none; display: flex; }
+#planCard .pcheck input { width: 16px; height: 16px; accent-color: #7a5b12; cursor: pointer; }
+#planCard .pmeta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+#planCard .plabel { font-weight: 600; }
+#planCard .pmins { color: #7a5b12; font-weight: 600; font-size: 12px; }
+#planCard .pdetail { color: #6d6250; font-size: 12px; }
+#planCard .pgo {
+  flex: none; color: #7a5b12; text-decoration: none; font-weight: 600;
+  border: 1px solid rgba(120, 96, 40, .4); border-radius: 999px; padding: 3px 10px;
+  background: #f7efdb;
+}
+#planCard .pgo:hover { background: #f1e5c6; }
+#planCard .ptomorrow { color: #6d6250; font-size: 12px; padding-top: 7px; border-top: 1px dashed rgba(120, 96, 40, .25); }
+#planCard .pfoot { display: flex; align-items: center; gap: 10px; padding-top: 8px; }
+#planCard .pbtn {
+  border: 1px solid rgba(120, 96, 40, .4); background: #17161A; color: #F5F0E6;
+  border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 12px; cursor: pointer;
+}
+#planCard .pbtn:disabled { opacity: .6; }
+#planCard .pnote { color: #a2936f; font-size: 11px; }
+@media (max-width: 720px) {
+  #homeCards { left: 10px; right: 10px; bottom: 10px; width: auto; }
+}
