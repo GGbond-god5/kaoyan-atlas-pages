@@ -281,9 +281,29 @@
         return html + '</div>';
       }).join('');
       sec.innerHTML = '<h2>' + esc(paperTitle(a)) + ' · 做题详情</h2>' +
-        '<p class="sub">每道题的参考答案、解析与批改详情都在这里。</p>' + cards +
+        '<p class="sub">每道题的参考答案、解析与批改详情都在这里。</p>' +
+        '<div class="ad-analysis-bar"><button type="button" class="btn ghost" id="adAnalysisBtn">AI 教学分析</button><span class="sub">按考点归组丢分、错因分类，并给出复盘动作与下一阶段安排。</span></div>' +
+        '<div id="adAnalysis" class="ad-analysis" hidden></div>' + cards +
         '<button type="button" class="btn ghost" id="paperDetailClose">收起详情</button>';
       sec.querySelector('#paperDetailClose').addEventListener('click', function () { sec.hidden = true; });
+      var anaBtn = sec.querySelector('#adAnalysisBtn');
+      if (anaBtn) anaBtn.addEventListener('click', function () {
+        var box = sec.querySelector('#adAnalysis');
+        box.hidden = false;
+        box.innerHTML = '<p class="sub">正在生成教学分析…</p>';
+        anaBtn.disabled = true;
+        var lines = ['科目：' + (a.subject || '') + '，共 ' + (a.questions || []).length + ' 题。'];
+        (a.questions || []).forEach(function (q, i) {
+          var r = (a.results || {})[q.id] || {};
+          lines.push('第' + (i + 1) + '题 考点：' + (q.kpName || q.kp || '未知') + '，题型：' + (q.kind || '') + '，' + (r.status === 'graded' ? ('得分 ' + r.score + '/' + r.maxScore + (r.level ? '，等级 ' + r.level : '') + (r.missing ? '，缺失要点：' + r.missing : '')) : '未批改'));
+        });
+        window.AtlasUser.json('/api/coach', 'POST', { context: { source: 'attempt-analysis', attemptId: a.id }, messages: [{ role: 'user', content: lines.join('\n') }] }).then(function (r) {
+          box.innerHTML = '<div class="ad-sec"><span>AI 教学分析</span><p>' + esc(clean(r.reply || '')) + '</p></div>';
+          if (window.AtlasKatex) window.AtlasKatex.render(box);
+        }).catch(function (e) {
+          box.innerHTML = '<p class="sub">分析生成失败：' + esc(e.message) + '</p>';
+        }).then(function () { anaBtn.disabled = false; });
+      });
       if (window.AtlasMarks) window.AtlasMarks.wire(sec);
       if (window.AtlasKatex) window.AtlasKatex.render(sec);
     } catch (err) {

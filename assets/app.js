@@ -736,7 +736,9 @@
     var rate = sm.rate == null ? '待批改' : Math.round(sm.rate * 100) + '%';
     var head = '<div class="card"><div class="row-title">' + esc(attemptTitle(a)) + '</div>' +
       '<div class="row-meta">' + esc(attemptFullTime(a)) + ' · 共 ' + qs.length + ' 题 · 已批改 ' + sm.graded + ' 题</div>' +
-      '<div class="qd-score"><b>' + rate + '</b><span>' + (max > 0 ? '得分 ' + (Math.round(score * 10) / 10) + ' / ' + (Math.round(max * 10) / 10) + ' 分' : '等待 AI 批改') + '</span></div></div>';
+      '<div class="qd-score"><b>' + rate + '</b><span>' + (max > 0 ? '得分 ' + (Math.round(score * 10) / 10) + ' / ' + (Math.round(max * 10) / 10) + ' 分' : '等待 AI 批改') + '</span></div>' +
+      '<div class="row-actions"><button type="button" class="btn-sub" id="qdAnalysisBtn">AI 教学分析</button></div>' +
+      '<div class="qd-analysis" id="qdAnalysis" hidden></div></div>';
     body.innerHTML = head + '<div id="qdList">' + qs.map(function (q, idx) {
       var r = (a.results || {})[q.id];
       var graded = r && r.status === 'graded';
@@ -749,6 +751,25 @@
     }).join('') + '</div>' +
     '<div class="card"><div class="row-title">数据管理</div><p class="view-note">重置后这套卷的作答与批改记录会被删除，套卷分析、错题统计同步更新，可以干净地二刷；按知识点练习的记录不受影响。删除后不能恢复。</p>' +
     '<button type="button" class="btn-sub danger" id="qdReset">重置这套（删除记录）</button></div>';
+    var anaBtn = document.getElementById('qdAnalysisBtn');
+    if (anaBtn) anaBtn.addEventListener('click', function () {
+      var box = document.getElementById('qdAnalysis');
+      if (!box) return;
+      box.hidden = false;
+      box.innerHTML = '<div class="sub-loading">正在生成教学分析…</div>';
+      anaBtn.disabled = true;
+      var lines = ['科目：' + (SUBJECT_NAMES[a.subject] || a.subject || '') + '，共 ' + qs.length + ' 题，已批改 ' + sm.graded + ' 题，总得分率 ' + rate + '。'];
+      qs.forEach(function (q, i) {
+        var r = (a.results || {})[q.id] || {};
+        lines.push('第' + (i + 1) + '题 考点：' + (q.kpName || q.kp || '未知') + '，题型：' + (q.kind || '') + '，' + (r.status === 'graded' ? ('得分 ' + r.score + '/' + r.maxScore + (r.level ? '，等级 ' + r.level : '') + (r.missing ? '，缺失要点：' + r.missing : '')) : '未批改'));
+      });
+      AtlasUser.json('/api/coach', 'POST', { context: { source: 'attempt-analysis', attemptId: a.id }, messages: [{ role: 'user', content: lines.join('\n') }] }).then(function (r) {
+        box.innerHTML = '<div class="qd-sec"><span>AI 教学分析</span><p>' + esc(cleanText(r.reply || '')) + '</p></div>';
+        gMath(box);
+      }).catch(function (e) {
+        box.innerHTML = '<div class="sub-loading">分析生成失败：' + esc(e.message || '') + '</div>';
+      }).then(function () { anaBtn.disabled = false; });
+    });
     var resetBtn = document.getElementById('qdReset');
     if (resetBtn) resetBtn.addEventListener('click', function () {
       showConfirm({ title: '重置这套卷', text: '确定删除这套卷的作答与批改记录吗？删除后不能恢复。', okText: '删除重置' }).then(function (yes) {

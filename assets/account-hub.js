@@ -69,6 +69,7 @@
         '<form id="hubDelForm"><b class="danger">注销账号</b>' +
           '<input type="password" id="hubDelPw" placeholder="输入密码确认注销">' +
           '<button type="submit" class="hub-act danger">永久注销并删除数据</button></form>' +
+        '<div id="hubAiCfg"></div>' +
       "</div>" +
       '<p class="hub-msg" id="hubMsg"></p>' +
       '<button type="button" class="hub-logout" id="hubLogout">退出登录</button>';
@@ -88,6 +89,7 @@
       var inboxItem = panel.querySelector("#hubInboxItem");
       if (inboxItem) inboxItem.addEventListener("click", function () { window.AtlasGradeBg.markAllRead().catch(function () {}); });
     }
+    if (window.AtlasAiCfg) { var aiMount = panel.querySelector('#hubAiCfg'); if (aiMount) window.AtlasAiCfg.renderSettings(aiMount); }
     panel.querySelector("#hubEdit").onclick = function () {
       closePanel();
       if (window.AtlasProfile && typeof window.AtlasProfile.open === "function") window.AtlasProfile.open();
