@@ -255,7 +255,7 @@ async function dispatch(request,env,uid,action,params) {
     if (action === 'file' && method === 'GET') {
       if (!env.LIBRARY_FILES) return fail(503,'资料存储未配置');
       const obj = await env.LIBRARY_FILES.get(f.object_key); if (!obj) return notFound();
-      return new Response(obj.body,{headers:{'Content-Type':f.mime,'Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(f.name)}`,'X-Content-Type-Options':'nosniff','Cache-Control':'private, no-store'}});
+      return new Response(obj.body,{headers:{'Content-Type':f.mime,'Content-Disposition':`inline; filename*=UTF-8''${encodeURIComponent(f.name)}`,'Content-Length':String(obj.size || f.size || ''),'X-Content-Type-Options':'nosniff','Cache-Control':'private, no-store'}});
     }
     if (action === 'file' && method === 'DELETE') {
       const qc = await row(db,'SELECT COUNT(*) AS n FROM platform_questions WHERE uid=? AND file_id=?',uid,fid);
@@ -347,7 +347,7 @@ async function dispatch(request,env,uid,action,params) {
     return ok({deleted:changes(r) > 0});
   }
   if (action === 'state') {
-    const ns = params.namespace; if (!['practice','vocab','review','goals','onboarding','plan'].includes(ns)) return notFound();
+    const ns = params.namespace; if (!['practice','vocab','review','goals','onboarding','plan','inbox'].includes(ns)) return notFound();
     const read = async () => {const r = await row(db,'SELECT data,revision FROM platform_state WHERE uid=? AND namespace=?',uid,ns); return r ? {data:parse(r.data),revision:r.revision} : {data:null,revision:0};};
     if (method === 'GET') return ok(await read());
     if (method === 'PUT') {const b=await body(); if (!b || !Number.isInteger(b.revision) || b.revision < 0 || !Object.hasOwn(b,'data')) return fail(400,'状态或版本无效');
