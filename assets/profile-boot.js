@@ -110,7 +110,7 @@
         </div>
         <div class="pf-row">
           <label class="pf-field"><span>初试日期</span><input type="date" name="examDate"></label>
-          <label class="pf-field"><span>每日学习（分钟）</span><input type="number" name="dailyMinutes" min="30" max="900" step="10"></label>
+          <label class="pf-field"><span>每日学习（小时）</span><input type="number" name="dailyHours" min="0.5" max="24" step="0.5"></label>
         </div>
         <label class="pf-field"><span>作息类型</span><select name="chronotype">
           <option value="morning">早起型</option><option value="normal">常规型</option><option value="night">夜猫型</option>
@@ -374,7 +374,7 @@
     form.majorCode.value = profile.majorCode || "";
     form.majorName.value = profile.majorName || "";
     form.examDate.value = profile.examDate || "";
-    form.dailyMinutes.value = profile.dailyMinutes || 240;
+    form.dailyHours.value = Math.round(((profile.dailyMinutes || 240) / 60) * 10) / 10;
     form.chronotype.value = profile.chronotype || "normal";
     const chosen = new Set(profile.subjects || []);
     form.querySelectorAll('input[name="subject"]').forEach(c => { c.checked = chosen.has(c.value); });
@@ -406,7 +406,7 @@
         code: row.querySelector('[name="customCode"]').value.trim(),
         fullScore: Number(row.querySelector('[name="customScore"]').value) || 150,
       })).filter(x => x.name),
-      dailyMinutes: Number(form.dailyMinutes.value),
+      dailyMinutes: Math.max(30, Math.min(1440, Math.round((Number(form.dailyHours.value) || 4) * 60))),
       chronotype: form.chronotype.value,
       motto: form.motto ? form.motto.value.trim() : "",
     };

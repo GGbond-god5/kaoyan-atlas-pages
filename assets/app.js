@@ -1103,7 +1103,7 @@
     var tmr = new Date(); tmr.setDate(tmr.getDate() + 1);
     var tDay = plan.days[dayKeyOf(tmr)];
     body.innerHTML =
-      '<div class="card"><div class="row-title">' + esc(plan.phase || '') + ' · 每日 ' + (plan.dailyMinutes || '') + ' 分钟</div>' +
+      '<div class="card"><div class="row-title">' + esc(plan.phase || '') + ' · 每日 ' + fmtHMin(plan.dailyMinutes) + '</div>' +
       '<div class="row-meta">今日已完成 ' + doneN + ' / ' + day.tasks.length + ' 项</div>' +
       '<div class="bar-track"><div class="bar-fill" style="width:' + (day.tasks.length ? Math.round(doneN / day.tasks.length * 100) : 0) + '%"></div></div></div>' +
       '<div class="card">' + day.tasks.map(function (t) {
@@ -1114,7 +1114,8 @@
           '<div class="row-actions">' + (t.kind === 'vocab' ? '<button type="button" class="btn-sub" data-sub="vocab">去完成</button>' : (t.href ? '<a class="btn-sub" href="' + esc(t.href) + '">去完成</a>' : '')) + '</div></div></div>';
       }).join('') + '</div>' +
       (tDay && tDay.tasks ? '<p class="view-note">明日预告：' + tDay.tasks.slice(0, 3).map(function (t) { return esc(t.label); }).join(' · ') + '</p>' : '') +
-      '<button class="btn-sub" id="planRegen" type="button">重新生成本周计划</button>';
+      '<div style="display:flex;gap:10px"><button class="btn-sub" id="planSettings" type="button" style="flex:1">计划设置</button>' +
+      '<button class="btn-sub" id="planRegen" type="button" style="flex:1">重新生成本周计划</button></div>';
     $$('[data-plan-toggle]', body).forEach(function (b) {
       b.addEventListener('click', function () {
         var id = b.dataset.planToggle;
@@ -1123,6 +1124,7 @@
         AtlasUser.save('plan', plan).then(function () { state.planState = plan; paintPlan(body, plan); renderToday(); }).catch(function (e) { toast('保存失败：' + e.message); });
       });
     });
+    document.getElementById('planSettings').addEventListener('click', function () { renderPlanSettings(body); });
     document.getElementById('planRegen').addEventListener('click', function () {
       showConfirm({ title: '重新生成计划？', text: '会覆盖当前 7 天计划与勾选进度。', okText: '重新生成' }).then(function (ok) {
         if (!ok) return;
@@ -1130,7 +1132,25 @@
       });
     });
   }
-  function generatePlan() {
+  /* 计划设置：与网页版 plan.js 规则一致，存 plan.settings */
+  function psetNorm(raw) {
+    raw = raw || {};
+    return {
+      hours: Math.max(0, Math.min(24, Number(raw.hours) || 0)),
+      paperEvery: [0, 2, 3, 4, 5, 99].indexOf(Number(raw.paperEvery)) >= 0 ? Number(raw.paperEvery) : 0,
+      newSharePct: Math.max(0, Math.min(90, Number(raw.newSharePct) || 0)),
+      includeReview: raw.includeReview !== false,
+      includeVocab: raw.includeVocab !== false,
+      restWeekday: Number(raw.restWeekday) >= -1 && Number(raw.restWeekday) <= 6 ? Number(raw.restWeekday) : -1,
+      focus: Array.isArray(raw.focus) ? raw.focus.filter(function (x) { return SUBJECT_NAMES[x]; }) : []
+    };
+  }
+  function fmtHMin(min) {
+    var h = Math.round((Number(min) || 0) / 60 * 10) / 10;
+    return String(h).replace(/\.0$/, '') + ' 小时';
+  }
+  function generatePlan(stRaw) {
+    var st = psetNorm(stRaw != null ? stRaw : (state.planState && state.planState.settings));
     var profile = state.profile || {};
     var subjects = (profile.subjects || []).filter(function (x) { return SUBJECT_NAMES[x]; });
     if (!subjects.length) subjects = ['math', 'english', 'mechanics', 'politics'];
@@ -1138,14 +1158,18 @@
     var exam = profile.examDate ? new Date(profile.examDate + 'T00:00:00') : new Date(today.getTime() + 40 * 86400000);
     var daysLeft = Math.round((exam - today) / 86400000);
     var phase = phaseOf(daysLeft);
-    var daily = Math.max(60, Number(profile.dailyMinutes) || 240);
+    var daily = st.hours > 0 ? Math.max(60, Math.round(st.hours * 60)) : Math.max(60, Number(profile.dailyMinutes) || 240);
+    var paperEvery = st.paperEvery || phase.paperEvery;
+    var newShare = st.newSharePct > 0 ? st.newSharePct / 100 : phase.newShare;
     var latest = {};
     paperAttempts().forEach(function (a) { if (!latest[a.subject]) latest[a.subject] = a; });
     var weights = subjects.map(function (x) {
       var a = latest[x];
       var rate = a ? summarizeAttempt(a).rate : null;
       var weak = rate == null ? 0.3 : Math.min(0.85, Math.max(0.05, 1 - rate));
-      return 0.7 + weak;
+      var w = 0.7 + weak;
+      if (st.focus.indexOf(x) >= 0) w *= 1.5;
+      return w;
     });
     var wsum = weights.reduce(function (a, b) { return a + b; }, 0);
     var reviewDue = 0;
@@ -1161,25 +1185,75 @@
     } catch (_) { /* 忽略 */ }
     var days = {};
     for (var i = 0; i < 7; i++) {
-      var key = dayKeyOf(new Date(today.getTime() + i * 86400000));
+      var date = new Date(today.getTime() + i * 86400000);
+      var key = dayKeyOf(date);
+      if (st.restWeekday >= 0 && date.getDay() === st.restWeekday) {
+        days[key] = { tasks: [{ id: 'rest', kind: 'rest', label: '休息日', detail: '按你的设置今天不安排任务，自由活动或补觉' }], done: {} };
+        continue;
+      }
       var tasks = [];
-      tasks.push({ id: 'review', kind: 'review', label: '错题复习', detail: i === 0 && reviewDue ? reviewDue + ' 道到期错题（艾宾浩斯回流）' : '清掉当天到期的错题，没有到期就跳过', href: 'practice.html?review=1' });
-      var paperSubject = (i % phase.paperEvery === phase.paperEvery - 1) ? subjects[Math.floor(i / phase.paperEvery) % subjects.length] : null;
+      if (st.includeReview) tasks.push({ id: 'review', kind: 'review', label: '错题复习', detail: i === 0 && reviewDue ? reviewDue + ' 道到期错题（艾宾浩斯回流）' : '清掉当天到期的错题，没有到期就跳过', href: 'practice.html?review=1' });
+      var paperSubject = (paperEvery !== 99 && i % paperEvery === paperEvery - 1) ? subjects[Math.floor(i / paperEvery) % subjects.length] : null;
       subjects.forEach(function (x, si) {
         if (paperSubject === x) {
           tasks.push({ id: 'paper-' + x, kind: 'paper', subject: x, label: SUBJECT_NAMES[x] + ' · 套卷日', detail: '做一整套卷，限时完成，交卷后看套卷分析', mins: Math.round(daily * 0.45), href: 'practice.html?subject=' + x });
         } else {
-          var mins = Math.round(daily * phase.newShare * weights[si] / wsum / 5) * 5;
+          var mins = Math.round(daily * newShare * weights[si] / wsum / 5) * 5;
           if (mins >= 20) tasks.push({ id: 'new-' + x, kind: 'new', subject: x, label: SUBJECT_NAMES[x] + ' · 新题推进', detail: '优先练薄弱章节与高频考点', mins: mins, href: 'practice.html?subject=' + x });
         }
       });
-      if (subjects.indexOf('english') >= 0 || subjects.indexOf('english2') >= 0) {
+      if (st.includeVocab && (subjects.indexOf('english') >= 0 || subjects.indexOf('english2') >= 0)) {
         tasks.push({ id: 'vocab', kind: 'vocab', label: '单词复习', detail: i === 0 && vocabDue ? vocabDue + ' 个单词到期' : '按遗忘曲线复习到期单词', mins: 20, href: 'vocab.html' });
       }
       days[key] = { tasks: tasks, done: {} };
     }
-    var plan = { generatedAt: new Date().toISOString(), examDate: profile.examDate || '', daysLeft: daysLeft, phase: phase.name, dailyMinutes: daily, days: days };
+    var plan = { generatedAt: new Date().toISOString(), examDate: profile.examDate || '', daysLeft: daysLeft, phase: phase.name, dailyMinutes: daily, days: days, settings: st };
     return AtlasUser.save('plan', plan).then(function () { return plan; });
+  }
+  /* 计划设置页（App 内） */
+  function renderPlanSettings(body) {
+    subBackHook = function () { paintPlan(body, state.planState); return true; };
+    var st = psetNorm(state.planState && state.planState.settings);
+    var profile = state.profile || {};
+    var subjects = (profile.subjects || []).filter(function (x) { return SUBJECT_NAMES[x]; });
+    if (!subjects.length) subjects = ['math', 'english', 'mechanics', 'politics'];
+    var profileHours = Math.round(((profile.dailyMinutes || 240) / 60) * 10) / 10;
+    function opts(list, cur) {
+      return list.map(function (o) { return '<option value="' + o[0] + '"' + (String(o[0]) === String(cur) ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+    }
+    body.innerHTML =
+      '<div class="card"><div class="row-title">计划设置</div>' +
+      '<label class="f-label">每日学习时长（小时，留空用档案的 ' + profileHours + ' 小时）</label>' +
+      '<input class="f-input" id="pstHours" type="number" min="0" max="24" step="0.5" value="' + (st.hours || '') + '" placeholder="' + profileHours + '">' +
+      '<label class="f-label">套卷频率</label><select class="f-input" id="pstPaper">' + opts([[0, '自动（按阶段）'], [2, '每 2 天一套'], [3, '每 3 天一套'], [4, '每 4 天一套'], [5, '每 5 天一套'], [99, '不安排套卷']], st.paperEvery) + '</select>' +
+      '<label class="f-label">新题推进占比</label><select class="f-input" id="pstShare">' + opts([[0, '自动（按阶段）'], [30, '30%'], [45, '45%'], [60, '60%'], [75, '75%'], [90, '90%']], st.newSharePct) + '</select>' +
+      '<label class="f-label">每周休息日</label><select class="f-input" id="pstRest">' + opts([[-1, '不休息'], [1, '周一'], [2, '周二'], [3, '周三'], [4, '周四'], [5, '周五'], [6, '周六'], [0, '周日']], st.restWeekday) + '</select>' +
+      '<label class="f-label">任务包含</label><div class="filter-chips">' +
+      '<button type="button" class="f-chip' + (st.includeReview ? ' on' : '') + '" id="pstReview">错题复习</button>' +
+      '<button type="button" class="f-chip' + (st.includeVocab ? ' on' : '') + '" id="pstVocab">单词复习</button></div>' +
+      '<label class="f-label">重点科目（多排时间）</label><div class="filter-chips">' + subjects.map(function (x) {
+        return '<button type="button" class="f-chip pst-focus' + (st.focus.indexOf(x) >= 0 ? ' on' : '') + '" data-fs="' + x + '">' + SUBJECT_NAMES[x] + '</button>';
+      }).join('') + '</div></div>' +
+      '<button class="btn-main" id="pstSave" type="button">保存并重新生成</button>';
+    [['pstReview'], ['pstVocab']].forEach(function (pair) {
+      var el = document.getElementById(pair[0]);
+      el.addEventListener('click', function () { el.classList.toggle('on'); });
+    });
+    $$('.pst-focus', body).forEach(function (b) { b.addEventListener('click', function () { b.classList.toggle('on'); }); });
+    document.getElementById('pstSave').addEventListener('click', function () {
+      var next = psetNorm({
+        hours: Number(document.getElementById('pstHours').value) || 0,
+        paperEvery: Number(document.getElementById('pstPaper').value),
+        newSharePct: Number(document.getElementById('pstShare').value),
+        restWeekday: Number(document.getElementById('pstRest').value),
+        includeReview: document.getElementById('pstReview').classList.contains('on'),
+        includeVocab: document.getElementById('pstVocab').classList.contains('on'),
+        focus: $$('.pst-focus.on', body).map(function (b) { return b.dataset.fs; })
+      });
+      var btn = this; btn.disabled = true; btn.textContent = '生成中…';
+      generatePlan(next).then(function (p) { state.planState = p; subBackHook = null; paintPlan(body, p); toast('计划设置已保存'); renderToday(); })
+        .catch(function (e) { toast('保存失败：' + e.message); btn.disabled = false; btn.textContent = '保存并重新生成'; });
+    });
   }
 
   /* ---------- 档案（App 内基础编辑） ---------- */
@@ -1217,7 +1291,7 @@
           '<label class="f-label">昵称</label><input class="f-input" id="pfNick" maxlength="24" value="' + esc(p.nickname || '') + '">' +
           '<label class="f-label">座右铭（60 字内）</label><input class="f-input" id="pfMotto" maxlength="60" value="' + esc(p.motto || '') + '">' +
           '<label class="f-label">初试日期</label><input class="f-input" id="pfExam" type="date" value="' + esc(p.examDate || '') + '">' +
-          '<label class="f-label">每日学习时长（分钟）</label><input class="f-input" id="pfDaily" type="number" min="30" max="1440" step="10" value="' + esc(p.dailyMinutes || 240) + '">' +
+          '<label class="f-label">每日学习时长（小时）</label><input class="f-input" id="pfDaily" type="number" min="0.5" max="24" step="0.5" value="' + esc(Math.round(((p.dailyMinutes || 240) / 60) * 10) / 10) + '">' +
           '<label class="f-label">目标院校专业</label><div class="row-title" style="font-weight:500">' + esc(target || '尚未选择') + '</div>' +
           '<p class="view-note">院校专业（全国 2027 目录）选择在网页版档案里完成：<a href="index.html#profile" style="color:var(--gold);font-weight:700">打开网页版档案</a></p>' +
         '</div>' +
@@ -1242,7 +1316,7 @@
           nickname: document.getElementById('pfNick').value.trim(),
           motto: document.getElementById('pfMotto').value.trim(),
           examDate: document.getElementById('pfExam').value || p.examDate,
-          dailyMinutes: Number(document.getElementById('pfDaily').value) || p.dailyMinutes
+          dailyMinutes: Math.max(30, Math.min(1440, Math.round((Number(document.getElementById('pfDaily').value) || 4) * 60)))
         });
         btn.disabled = true;
         AtlasUser.json('/api/profile', 'PUT', merged).then(function () {

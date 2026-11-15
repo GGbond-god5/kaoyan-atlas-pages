@@ -49,3 +49,10 @@
 @media (max-width: 720px) {
   #homeCards { left: 10px; right: 10px; bottom: 10px; width: auto; }
 }
+
+#planCard .pset-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px dashed rgba(120,96,40,.25); font-size: 13px; }
+#planCard .pset-row select, #planCard .pset-row input[type="number"] { font-size: 13px; padding: 4px 6px; border: 1px solid rgba(120,96,40,.4); border-radius: 8px; background: #fff; max-width: 130px; }
+#planCard .pset-row input[type="number"] { width: 64px; }
+#planCard .pset-ctrl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+#planCard .pset-ctrl em { font-style: normal; color: #8a7a52; font-size: 11px; width: 100%; text-align: right; }
+#planCard .pbtn-ghost { background: transparent; border: 1px solid rgba(120,96,40,.45); color: #7a5b12; }
