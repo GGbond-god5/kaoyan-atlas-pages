@@ -122,3 +122,4 @@
 - 内置 AI 改为四档模型路由（deepseek-v4.1-flash-1017 / glm-5.3 / kimi-k3.1-pro / qwen3.8-max-0902 按难度选用，失败自动顺延、qwen3-vl-plus 兜底）。
 - 修复社区动态与评论读取失效：AtlasUser.json 对 null body 的 GET 请求误带请求体导致 fetch 抛错被吞为空列表，已根治并刷新缓存版本。
 - 内置 AI 每日额度定版：批改 80 题/日、对话 60 次/日、抽题 20 次/日（管理员不限额），超额提示引导接入自有 API。
+- 发布《阿里云学生 300 元代金券领取与 API 接入教程》（docs/aliyun-student-api-guide.pdf，含 B 站视频 BV1DRj46MEuS）；站长公告与社区置顶必读帖同步上线，引导用户接入自有 API。
