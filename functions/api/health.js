@@ -1,6 +1,7 @@
 // GET /api/health —— 部署完先访问这里，确认配置齐了再点「获取验证码」
 import { ok } from "../_lib/http.js";
 import { smsMode, missingConfig } from "../_lib/sms.js";
+import { modelChain } from "../_lib/platform.js";
 
 export async function onRequestGet({ env }) {
   const mode = smsMode(env);
@@ -15,6 +16,7 @@ export async function onRequestGet({ env }) {
     ai: {
       host: aiHost,
       model: env.AI_MODEL || "qwen3-vl-plus",
+      routing: { cheap: modelChain(env, "cheap"), mid: modelChain(env, "mid"), strong: modelChain(env, "strong"), vision: modelChain(env, "vision") },
       key: Boolean(env.AI_API_KEY || env.DASHSCOPE_API_KEY),
       maxTokens: Number(env.AI_MAX_TOKENS || 3000),
       reasoningEffort: env.AI_REASONING_EFFORT || null,

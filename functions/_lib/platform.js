@@ -57,13 +57,36 @@ export function userAiConfig(request) {
   return { base, key, model };
 }
 
-export async function ai(env, messages, jsonMode = false, userCfg = null) {
+/* 内置通道模型路由（千问 MaaS 网关）：按任务难度选模型、性价比优先、正确率兜底。
+ * 某模型调用失败（报错 / 空回复 / 格式无效）自动顺延链上下一个，最终兜底 env.AI_MODEL（现网验证过的模型）。 */
+const MODEL_CHAINS = {
+  cheap: ['deepseek-v4.1-flash-1017'],
+  mid: ['glm-5.3', 'kimi-k3.1-pro', 'deepseek-v4.1-flash-1017'],
+  strong: ['qwen3.8-max-0902', 'glm-5.3', 'kimi-k3.1-pro'],
+  vision: ['qwen3.8-max-0902', 'kimi-k3.1-pro', 'glm-5.3'],
+};
+export function modelChain(env, tier) {
+  const dflt = (env && env.AI_MODEL) || 'qwen3-vl-plus';
+  const base = MODEL_CHAINS[tier] || MODEL_CHAINS.mid;
+  return [...base, dflt].filter((m, i, a) => a.indexOf(m) === i);
+}
+
+export async function ai(env, messages, jsonMode = false, userCfg = null, tier = 'mid') {
   const key = userCfg ? userCfg.key : (env.AI_API_KEY || env.DASHSCOPE_API_KEY);
   if (!key) throw new Error('AI 服务未配置');
   let base = (userCfg ? userCfg.base : (env.AI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1')).replace(/\/+$/, '');
   // 只填了域名（没带路径）时，自动补上兼容模式路径，避免所有 AI 调用 404（内置接口的既有行为）
   if (!userCfg) { try { if (new URL(base).pathname === '/') base += '/compatible-mode/v1'; } catch (_) {} }
-  const model = userCfg ? userCfg.model : (env.AI_MODEL || 'qwen3-vl-plus');
+  const models = userCfg ? [userCfg.model] : modelChain(env, tier);
+  let lastErr = null;
+  for (const model of models) {
+    try { return await aiAttempt(env, base, key, model, messages, jsonMode, userCfg); }
+    catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('AI 服务连接失败');
+}
+
+async function aiAttempt(env, base, key, model, messages, jsonMode, userCfg) {
   const payload = {
     model,
     messages,
@@ -163,6 +186,7 @@ if (!str(p.question).trim()) throw new Error('缺少题目');
 const unverified = ['pending', 'needs_review'].includes(p.reviewStatus);
 const canScore = max!== null &&!unverified && (essay ||!!str(p.answer).trim());
 const objective = ['选择题','单选题','多选题','阅读','完形','新题型'].includes(p.kind);
+const gradeTier = ['解答题','证明题','综合题','计算题','论述题','材料分析题','大作文'].includes(p.kind) || (max != null && max >= 15) ? 'strong' : objective ? 'cheap' : 'mid';
 const letters = value => /^[A-H](?:[A-H,，、\s]*[A-H])?$/i.test(value.trim())? [...new Set(value.toUpperCase().replace(/[^A-H]/g, '').split(''))].sort().join(''): null;
 const expected = letters(str(p.answer)), chosen = letters(selected);
 
@@ -176,7 +200,7 @@ const t = await ai(env, [
 { type: 'text', text: '请转写这张学生作答照片。'},
 { type: 'image_url', image_url: { url: p.image}},
 ]},
-], true, userCfg);
+], true, userCfg, 'vision');
 if (t && typeof t === 'object' &&!Array.isArray(t)) {
 transcript = str(t.transcript);
 illegible = Array.isArray(t.illegible)? t.illegible.map(str).filter(Boolean).slice(0, 8): [];
@@ -189,9 +213,9 @@ const content = [{ type: 'text', text: JSON.stringify({ kind: p.kind, subject: p
 // 没有转写结果（客观题或转写失败）时按原样带图评分；转写有看不清处时也带图复核。
 if (p.image && (!transcript || illegible.length)) content.push({ type: 'image_url', image_url: { url: p.image}});
 const messages = [{ role: 'system', content: gradeSystemFor(p.subject, p.kind)}, { role: 'user', content}];
-let out = await ai(env, messages, true, userCfg);
+let out = await ai(env, messages, true, userCfg, gradeTier);
 if (canScore && (!out || typeof out!== 'object' || out.score == null || out.score === '')) {
-out = await ai(env, [...messages, { role: 'user', content: '请重新只返回 JSON，并给出 0 到 maxScore 之间的具体数字 score，不要返回 null。'}], true, userCfg);
+out = await ai(env, [...messages, { role: 'user', content: '请重新只返回 JSON，并给出 0 到 maxScore 之间的具体数字 score，不要返回 null。'}], true, userCfg, gradeTier);
 }
 if (!out || typeof out!== 'object' || Array.isArray(out)) throw new Error('AI 评分格式无效');
 const numeric = out.score == null || out.score === ''? null: Number(out.score);
@@ -261,7 +285,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
   if (action === 'aiTest' && method === 'POST') {
     const t0 = Date.now();
     try {
-      const reply = await ai(env, [{ role: 'user', content: '请只回复四个字：连接正常' }], false, userCfg);
+      const reply = await ai(env, [{ role: 'user', content: '请只回复四个字：连接正常' }], false, userCfg, 'cheap');
       return ok({ reply: String(reply).slice(0, 60), model: userCfg ? userCfg.model : (env.AI_MODEL || 'qwen3-vl-plus'), custom: !!userCfg, ms: Date.now() - t0 });
     } catch (e) { return fail(502, e.message); }
   }
@@ -329,7 +353,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
         }
         const content = [{type:'text',text:JSON.stringify({page:p.page,text:p.text})}]; if (p.image) content.push({type:'image_url',image_url:{url:p.image}});
         { const blocked = await checkQuota(env, await me(), 'extract'); if (blocked) return fail(429, blocked); }
-        let output; try { output = await ai(env,[{role:'system',content:IMPORT_PROMPT},{role:'user',content}],true,userCfg); } catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
+        let output; try { output = await ai(env,[{role:'system',content:IMPORT_PROMPT},{role:'user',content}],true,userCfg,'cheap'); } catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
         await noteUsage(env, uid, 'extract');
         if (!Array.isArray(output?.items) || output.items.length > 100) return fail(502,'AI 抽题格式无效');
         const rawDrafts = await Promise.all(output.items.map(async (q,index) => normalizeDraft(q,f.subject,p.page,await digest(`${extractionDigest}:${index}`))));
@@ -438,9 +462,9 @@ async function dispatch(request,env,uid,action,params,userCfg) {
             msgs.push({role:'user',content:parts});
           } else msgs.push({role:m.role,content:m.content});
         }
-        reply = await ai(env, msgs, false, userCfg);
+        reply = await ai(env, msgs, false, userCfg, b.messages.some(m => Array.isArray(m.images) && m.images.length) ? 'vision' : 'mid');
       } else {
-        reply = await ai(env, [{role:'system',content:system}, {role:'user',content:JSON.stringify({context:b.context,messages:b.messages})}], false, userCfg);
+        reply = await ai(env, [{role:'system',content:system}, {role:'user',content:JSON.stringify({context:b.context,messages:b.messages})}], false, userCfg, isAnalysis ? 'strong' : 'mid');
       }
     } catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502, e.message); }
     if (!userCfg) await noteUsage(env, uid, 'coach');
