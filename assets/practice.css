@@ -375,3 +375,10 @@ button.q-opt:hover{background:rgba(120,110,90,.06)}
 @media (max-width: 600px) {
   .exam-grid .sheet, .exam-grid.paper-mode .sheet { top: 100px; height: calc(100vh - 100px); height: calc(100dvh - 100px); }
 }
+
+/* 全真模考纯净模式：只留计时/目录/交卷/退出考试，杜绝一切跳出入口 */
+body.exam-pure .etop .eback,
+body.exam-pure .hub-btn,
+body.exam-pure #pklink,
+body.exam-pure #psource,
+body.exam-pure .gd-fab { display: none !important; }

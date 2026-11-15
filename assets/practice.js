@@ -340,6 +340,11 @@
     return stratified(single, state.count || 500).sort((a,b) => paperNo(a) - paperNo(b));
   }
   const sealed = () => session && session.mode !== "knowledge" && !session.ended;
+  function setExamPure(on) {
+    document.body.classList.toggle("exam-pure", !!on);
+    try { if (window.AtlasApp && AtlasApp.setExamMode) AtlasApp.setExamMode(!!on); } catch (e) {}
+  }
+
   function start(poolOverride, poolTitle) {
     if ((state.mode === "paper" || state.mode === "mock") && state.subject === "all") return;
     if (state.mode === "paper") {
@@ -370,6 +375,7 @@
     $("#exitBtn").hidden = false;
     $("#bankLink").hidden = true;
     $("#examGrid").classList.toggle("paper-mode", state.mode === "paper");
+    setExamPure(state.mode === "mock");
     document.body.classList.toggle("paper-run", state.mode === "paper");
     // 套卷模式也给题号目录：默认收起，点「目录」展开
     $("#tocBtn").hidden = false;
@@ -497,13 +503,13 @@
       if (["english", "english2"].includes(q.subject) && /翻译|作文/.test(q.kind)) { $("#aiAsk").hidden = false; $("#aiAsk").textContent = "AI 多轮指导"; }
     } else $("#reveal").textContent = "显示解析（Space）";
     const readCh = q.topicChapter || (q.kp ? q.chapter : "");
-    $("#pklink").hidden = !readCh;
+    $("#pklink").hidden = !readCh || state.mode === "mock";
     $("#pklink").href = `index.html#read=${encodeURIComponent(readCh)}` +
       (q.kp ? `&kp=${encodeURIComponent(q.kp)}` : "");
     $("#pbig").hidden = !q.pageImage;
     if (q.sourcePdf) {
       $("#psource").href = encodeURI(q.sourcePdf) + "#page=" + (q.sourcePage || 1);
-      $("#psource").hidden = false;
+      $("#psource").hidden = state.mode === "mock";
     } else {
       $("#psource").hidden = true;
     }
@@ -660,7 +666,7 @@
   }
   function finishSubmit() {
     session.ended = true; session.endTime = Date.now(); if (timerId) clearInterval(timerId);
-    $("#submitBtn").hidden = true; $("#exitBtn").hidden = true; $("#tocBtn").hidden = true; $("#exam").hidden = true; $("#result").hidden = false; $("#bankLink").hidden = false; document.body.classList.remove("paper-run"); renderResult();
+    $("#submitBtn").hidden = true; $("#exitBtn").hidden = true; $("#tocBtn").hidden = true; $("#exam").hidden = true; $("#result").hidden = false; $("#bankLink").hidden = false; document.body.classList.remove("paper-run"); setExamPure(false); renderResult();
   }
   function qStatus(q) {
     const results = session.attempt && session.attempt.results || {};
@@ -733,6 +739,7 @@
       $("#setup").hidden = false;
       $("#bankLink").hidden = false;
       document.body.classList.remove("paper-run");
+      setExamPure(false);
       updateCount();
     });
   }
