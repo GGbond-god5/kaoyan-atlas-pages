@@ -121,3 +121,4 @@
 - 仓库改为公开并添加 MIT LICENSE，全部开源。
 - 内置 AI 改为四档模型路由（deepseek-v4.1-flash-1017 / glm-5.3 / kimi-k3.1-pro / qwen3.8-max-0902 按难度选用，失败自动顺延、qwen3-vl-plus 兜底）。
 - 修复社区动态与评论读取失效：AtlasUser.json 对 null body 的 GET 请求误带请求体导致 fetch 抛错被吞为空列表，已根治并刷新缓存版本。
+- 内置 AI 每日额度定版：批改 80 题/日、对话 60 次/日、抽题 20 次/日（管理员不限额），超额提示引导接入自有 API。

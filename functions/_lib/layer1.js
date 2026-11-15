@@ -61,7 +61,7 @@ export function isAdminUser(env, user) {
 export const QUOTA_KINDS = ["grade", "coach", "extract"];
 
 export function quotaLimit(env, kind) {
-  const defaults = { grade: 30, coach: 60, extract: 20 };
+  const defaults = { grade: 80, coach: 60, extract: 20 };
   const envKey = { grade: "AI_GRADE_DAILY", coach: "AI_COACH_DAILY", extract: "AI_EXTRACT_DAILY" }[kind];
   const n = Number(env?.[envKey]);
   return Number.isFinite(n) && n > 0 ? n : defaults[kind] || 30;
@@ -90,7 +90,7 @@ export async function checkQuota(env, user, kind) {
     const limit = quotaLimit(env, kind);
     if (used >= limit) {
       const label = { grade: "AI 批改", coach: "AI 教练", extract: "AI 抽题" }[kind] || "AI 功能";
-      return `今日${label}次数已达上限（${limit} 次），明天再来吧`;
+      return `今日${label}次数已达上限（${limit} 次）。急着用的话，可在「账号设置 → AI 接口」接入自己的 API（不占内置额度），或明天再来`;
     }
   } catch (err) {
     console.error("[layer1] 配额检查失败，放行", err);
