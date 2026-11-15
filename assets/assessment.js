@@ -2,15 +2,34 @@
   "use strict";
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   function renderMastery(host, questions, results) {
-    // 题型映射仅呈现已评分题的得分侧面，不把题型得分当成独立能力测量。
-    const dimensions = [
-      {name:"客观辨析", kinds:["选择题","单选题","多选题","单项选择题","多项选择题"]},
-      {name:"信息理解", kinds:["完形","阅读","新题型"]},
-      {name:"翻译表达", kinds:["翻译"]},
-      {name:"写作表达", kinds:["小作文","大作文"]},
-      {name:"计算求解", kinds:["计算题","填空题"]},
-      {name:"论证分析", kinds:["证明题","解答题","分析题","简答题"]}
-    ].map(d => ({...d, count:0, graded:0, score:0, max:0}));
+    // 分科能力指标：每个科目用自己的指标体系（数学没有写作、英语没有协调方程）。
+    // 数据优先用批改返回的 dimensions（分科能力评分），其次用同名得分点，最后按题型归入对应指标。
+    const SETS = {
+      math: { dims: ["概念与定理理解", "方法与思路选择", "推导与计算准确", "步骤规范与结论"], short: ["概念", "方法", "计算", "规范"],
+        kindMap: {"选择题": "概念与定理理解", "单选题": "概念与定理理解", "多选题": "概念与定理理解", "单项选择题": "概念与定理理解", "多项选择题": "概念与定理理解", "填空题": "推导与计算准确", "计算题": "推导与计算准确", "解答题": "方法与思路选择", "证明题": "步骤规范与结论"} },
+      mechanics: { dims: ["受力分析与平衡方程", "协调与几何关系", "公式与计算", "量纲与量级"], short: ["平衡", "协调", "公式", "量纲"],
+        kindMap: {"选择题": "公式与计算", "单选题": "公式与计算", "多选题": "公式与计算", "填空题": "公式与计算", "计算题": "公式与计算", "解答题": "受力分析与平衡方程", "分析题": "受力分析与平衡方程"} },
+      politics: { dims: ["知识点定位", "采分点覆盖", "材料结合", "条理与表述"], short: ["定位", "覆盖", "材料", "条理"],
+        kindMap: {"单选题": "知识点定位", "多选题": "知识点定位", "选择题": "知识点定位", "单项选择题": "知识点定位", "多项选择题": "知识点定位", "简答题": "采分点覆盖", "辨析题": "采分点覆盖", "分析题": "材料结合", "材料分析题": "材料结合", "论述题": "条理与表述"} },
+      english: { dims: ["定位与理解", "推理与排除", "语言基础", "意群与句法", "写作表达"], short: ["定位", "推理", "语言", "句法", "写作"],
+        dimMap: {"定位与理解": "定位与理解", "推理与排除": "推理与排除", "语言基础": "语言基础", "意群理解": "意群与句法", "句法处理": "意群与句法", "词义准确": "意群与句法", "表达通顺": "意群与句法", "内容要点": "写作表达", "内容": "写作表达", "格式与语域": "写作表达", "结构": "写作表达", "连贯与衔接": "写作表达", "语言准确性": "语言基础", "语言丰富度": "语言基础", "语法与拼写": "语言基础"},
+        kindMap: {"阅读": "定位与理解", "阅读理解": "定位与理解", "完形": "定位与理解", "完形填空": "定位与理解", "新题型": "定位与理解", "选择题": "定位与理解", "单选题": "定位与理解", "翻译": "意群与句法", "小作文": "写作表达", "大作文": "写作表达"} },
+      generic: { dims: ["知识理解", "方法运用", "表达规范"], short: ["理解", "运用", "表达"],
+        kindMap: {"选择题": "知识理解", "单选题": "知识理解", "多选题": "知识理解", "填空题": "知识理解", "解答题": "方法运用", "计算题": "方法运用", "分析题": "方法运用", "简答题": "表达规范"} }
+    };
+    SETS.math2 = SETS.math; SETS.english2 = SETS.english;
+    const SUBJECT_NAMES = { math: "数学一", math2: "数学二", english: "英语一", english2: "英语二", mechanics: "807 材料力学", politics: "政治" };
+    const radarQ = questions[0] || {};
+    const radarSubject = radarQ.subject || "";
+    const R = SETS[radarSubject] || SETS.generic;
+    const dimensions = R.dims.map(name => ({ name, count: 0, graded: 0, score: 0, max: 0 }));
+    const byName = {}; dimensions.forEach(d => { byName[d.name] = d; });
+    function dimValue(v, qMax) {
+      if (v && typeof v === "object") { const sc = Number(v.score), mx = Number(v.max); if (Number.isFinite(sc) && Number.isFinite(mx) && mx > 0) return [sc, mx]; if (Number.isFinite(sc)) return [sc, qMax]; return null; }
+      if (typeof v === "string") { const m = v.match(/([\d.]+)\s*\/\s*([\d.]+)/); if (m) return [Number(m[1]), Number(m[2])]; const n = Number(v); if (Number.isFinite(n)) return n <= 1 ? [n * qMax, qMax] : [n, qMax]; return null; }
+      if (typeof v === "number" && Number.isFinite(v)) return v <= 1 ? [v * qMax, qMax] : [v, qMax];
+      return null;
+    }
     const topics = new Map();
     function add(target, result) {
       target.count++;
@@ -22,37 +41,57 @@
       const name = q.topicTitle || q.chapterTitle || q.kpName || "未分类";
       if (!topics.has(name)) topics.set(name, {count:0, graded:0, score:0, max:0});
       const result = results[q.id]; add(topics.get(name), result);
-      const dim = dimensions.find(d => d.kinds.includes(q.kind)); if (dim) add(dim, result);
+      if ((q.subject || "") !== radarSubject) return;
+      const graded = result && result.status === "graded" && Number(result.maxScore) > 0 && Number.isFinite(Number(result.score));
+      let fed = false;
+      if (graded && result.dimensions && typeof result.dimensions === "object") {
+        Object.keys(result.dimensions).forEach(k => {
+          const target = (R.dimMap && R.dimMap[k]) || (byName[k] ? k : null);
+          if (!target) return;
+          const dv = dimValue(result.dimensions[k], Number(result.maxScore));
+          if (!dv) return;
+          const d = byName[target]; d.count++; d.graded++; d.score += dv[0]; d.max += dv[1]; fed = true;
+        });
+      }
+      if (graded && !fed && Array.isArray(result.breakdown)) {
+        result.breakdown.forEach(b => {
+          if (!b || !byName[b.point]) return;
+          const sc = Number(b.score), mx = Number(b.max);
+          if (!Number.isFinite(sc) || !Number.isFinite(mx) || mx <= 0) return;
+          const d = byName[b.point]; d.count++; d.graded++; d.score += sc; d.max += mx; fed = true;
+        });
+      }
+      if (!fed) {
+        const target = R.kindMap[q.kind];
+        if (target && byName[target]) { const d = byName[target]; d.count++; if (graded) { d.graded++; d.score += Number(result.score); d.max += Number(result.maxScore); } }
+      }
     });
-    const axes = dimensions.map((d,i) => {
-      const angle = Math.PI * 2 * i / 6 - Math.PI / 2;
-      const x = 100 + 80*Math.cos(angle), y = 100 + 80*Math.sin(angle);
-      return `<line x1="100" y1="100" x2="${x}" y2="${y}" stroke="#cbbba7"/>`;
-    }).join("");
+    const N = dimensions.length;
+    const angleOf = i => Math.PI * 2 * i / N - Math.PI / 2;
+    const pt = (i, r) => [100 + r * Math.cos(angleOf(i)), 100 + r * Math.sin(angleOf(i))];
+    const ring = r => `<polygon points="${dimensions.map((d, i) => pt(i, r).map(v => v.toFixed(1)).join(",")).join(" ")}" fill="none" stroke="#cbbba7"/>`;
+    const axes = dimensions.map((d, i) => { const [x, y] = pt(i, 80); return `<line x1="100" y1="100" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#cbbba7"/>`; }).join("");
     const ratioOf = d => d.max ? Math.max(0, Math.min(1, d.score / d.max)) : 0;
     const covered = dimensions.filter(d => d.max).length;
-    const short = ["客观", "理解", "翻译", "写作", "计算", "论证"];
-    const angleOf = i => Math.PI * 2 * i / 6 - Math.PI / 2;
-    const positions = dimensions.map((d, i) => {
-      const angle = angleOf(i), radius = 80 * ratioOf(d);
-      return [100 + radius * Math.cos(angle), 100 + radius * Math.sin(angle)];
-    });
-    const polygon = covered >= 3 ? `<polygon points="${positions.map(p => p.join(",")).join(" ")}" fill="#ad493d55" stroke="#a53b30"/>` : "";
+    const positions = dimensions.map((d, i) => pt(i, 80 * ratioOf(d)));
+    const polygon = covered >= 3 ? `<polygon points="${positions.map(p => p.map(v => v.toFixed(1)).join(",")).join(" ")}" fill="#ad493d55" stroke="#a53b30"/>` : "";
     const sectors = covered > 0 && covered < 3 ? dimensions.map((d, i) => {
       const ratio = ratioOf(d); if (!ratio) return "";
-      const angle = angleOf(i), a0 = angle - Math.PI / 6, a1 = angle + Math.PI / 6, r = Math.max(10, 80 * ratio);
+      const angle = angleOf(i), a0 = angle - Math.PI / N, a1 = angle + Math.PI / N, r = Math.max(10, 80 * ratio);
       const x0 = 100 + r * Math.cos(a0), y0 = 100 + r * Math.sin(a0);
       const x1 = 100 + r * Math.cos(a1), y1 = 100 + r * Math.sin(a1);
       return `<path d="M100,100 L${x0.toFixed(1)},${y0.toFixed(1)} A${r.toFixed(1)},${r.toFixed(1)} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="#ad493d55" stroke="#a53b30"/>`;
     }).join("") : "";
-    const dots = covered >= 3 ? positions.map(([x, y], i) => dimensions[i].max ? `<circle cx="${x}" cy="${y}" r="3" fill="#a53b30"/>` : "").join("") : "";
+    const dots = covered >= 3 ? positions.map(([x, y], i) => dimensions[i].max ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#a53b30"/>` : "").join("") : "";
     const labels = dimensions.map((d, i) => {
-      const angle = angleOf(i), x = 100 + 90 * Math.cos(angle), y = 100 + 90 * Math.sin(angle);
-      return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="7.5" text-anchor="middle" dominant-baseline="middle" fill="#8a7d6b">${short[i]}</text>`;
+      const [x, y] = pt(i, 92);
+      return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="7.5" text-anchor="middle" dominant-baseline="middle" fill="#8a7d6b">${esc(R.short[i] || d.name)}</text>`;
     }).join("");
-    const basis = v => v.max ? `已评分 ${v.graded} 题，${v.score} / ${v.max} 分（${Math.round(v.score/v.max*100)}%）` : "待评估（没有可计分结果）";
+    const fmt = v => Math.round(v * 10) / 10;
+    const basis = v => v.max ? `已评分 ${v.graded} 题，${fmt(v.score)} / ${fmt(v.max)} 分（${Math.round(v.score / v.max * 100)}%）` : "待评估（没有可计分结果）";
     const list = [...topics.entries()];
-    host.innerHTML = `<h3>能力与知识点覆盖</h3><button type="button" id="masteryOpen">查看能力与知识点图</button><dialog id="masteryDialog"><h3>能力与知识点依据</h3><p>按题型归入六个能力侧面，数值为已评分题的得分比例，并非独立能力测量。面积越大表示该维度得分比例越高；至少 3 个维度有已评分数据时画雷达面积，不足时用扇形面积展示。实际覆盖 ${questions.length} 题。</p><svg viewBox="0 0 200 200" width="180" height="180" role="img" aria-label="按下列顺序排列的六个具名能力侧面，详细题数与得分见文字"><polygon points="100,20 169,60 169,140 100,180 31,140 31,60" fill="none" stroke="#cbbba7"/>${axes}${sectors}${polygon}${dots}${labels}</svg><ol>${dimensions.map(d => `<li><b>${esc(d.name)}</b>（${esc(d.kinds.join("、"))}）：覆盖 ${d.count} 题；${basis(d)}</li>`).join("")}</ol><h3>知识点掌握</h3><ul>${list.map(([name,v]) => `<li>${esc(name)}：覆盖 ${v.count} 题；${basis(v)}${v.max ? `<div role="img" aria-label="得分比例 ${Math.round(v.score/v.max*100)}%" style="height:6px;max-width:220px;background:#eadfd1"><div style="height:100%;width:${Math.max(0,Math.min(100,v.score/v.max*100))}%;background:#a53b30"></div></div>` : ""}</li>`).join("")}</ul><button type="button" id="masteryClose">关闭</button></dialog>`;
+    const subjectLabel = radarQ.subjectName || SUBJECT_NAMES[radarSubject] || radarSubject || "本套";
+    host.innerHTML = `<h3>能力与知识点覆盖</h3><button type="button" id="masteryOpen">查看能力与知识点图</button><dialog id="masteryDialog"><h3>能力与知识点依据</h3><p>能力指标按科目区分：${esc(subjectLabel)}采用「${R.dims.join("、")}」。数值来自批改的能力维度评分（已评分题的得分比例）；暂无维度评分的题按题型归入对应指标，并非独立能力测量。面积越大表示该指标得分比例越高；至少 3 个指标有已评分数据时画雷达面积，不足时用扇形面积展示。实际覆盖 ${questions.length} 题。</p><svg viewBox="0 0 200 200" width="180" height="180" role="img" aria-label="${esc(subjectLabel)}能力雷达图，详细题数与得分见文字">${ring(80)}${ring(40)}${axes}${sectors}${polygon}${dots}${labels}</svg><ol>${dimensions.map(d => `<li><b>${esc(d.name)}</b>：覆盖 ${d.count} 题；${basis(d)}</li>`).join("")}</ol><h3>知识点掌握</h3><ul>${list.map(([name,v]) => `<li>${esc(name)}：覆盖 ${v.count} 题；${basis(v)}${v.max ? `<div role="img" aria-label="得分比例 ${Math.round(v.score/v.max*100)}%" style="height:6px;max-width:220px;background:#eadfd1"><div style="height:100%;width:${Math.max(0,Math.min(100,v.score/v.max*100))}%;background:#a53b30"></div></div>` : ""}</li>`).join("")}</ul><button type="button" id="masteryClose">关闭</button></dialog>`;
     const dialog = host.querySelector("dialog"); host.querySelector("#masteryOpen").onclick = () => dialog.showModal(); host.querySelector("#masteryClose").onclick = () => dialog.close();
   }
   function ensureCoachCss() {
