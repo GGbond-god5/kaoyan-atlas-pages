@@ -617,11 +617,14 @@
     }
     const answers = {};
     for (const q of session.queue) answers[q.id] = {work:session.notes[q.id] || "", selected:session.picks[q.id] || [], image:await photoGet(q.id) || ""};
+    try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch (e) {}
     const id = crypto.randomUUID();
     try {
       const data = await window.AtlasUser.json("/api/attempts", "POST", {id, subject:session.queue[0].subject, mode:session.mode, questions:session.queue, answers});
       session.attempt = data.attempt;
-      session.gradeQueue = session.queue.map(q => q.id);
+      const hasAnswer = q => (session.picks[q.id] || []).length || String(session.notes[q.id] || "").trim() || (answers[q.id] && answers[q.id].image);
+      session.gradeQueue = session.queue.filter(q => hasAnswer(q)).map(q => q.id);
+      session.gradeSkipped = session.queue.length - session.gradeQueue.length;
       session.gradeTotal = session.gradeQueue.length;
       session.gradeDone = 0;
       finishSubmit();
@@ -649,6 +652,7 @@
       updateResultStatus();
       const host = document.getElementById("mastery");
       if (host) window.AtlasAssessment.renderMastery(host, session.queue, session.attempt.results || {});
+      notifyGradeDone();
     }
   }
   async function gradeAttempt(id) {
@@ -687,7 +691,59 @@
     });
     return {score, max, completed, missingMax};
   }
+  function ensureGradePill() {
+    let pill = document.getElementById("gradePill");
+    if (pill) return pill;
+    pill = document.createElement("button");
+    pill.id = "gradePill"; pill.type = "button"; pill.hidden = true;
+    pill.addEventListener("click", () => {
+      pill.hidden = true;
+      const box = $("#rprogress");
+      if (box) box.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    document.body.appendChild(pill);
+    return pill;
+  }
+  function progressVisible() {
+    const box = $("#rprogress");
+    if (!box || !$("#result") || $("#result").hidden) return false;
+    const r = box.getBoundingClientRect();
+    return r.bottom > 0 && r.top < window.innerHeight;
+  }
+  function updateGradePill() {
+    const pill = ensureGradePill();
+    if (!session || !session.gradeTotal) { pill.hidden = true; return; }
+    const running = (session.gradeQueue && session.gradeQueue.length) || session.grading;
+    const done = Math.min(session.gradeDone || 0, session.gradeTotal || 0);
+    if (running) {
+      pill.dataset.state = "run";
+      pill.textContent = `AI 批改中 ${done} / ${session.gradeTotal} · 点此看进度`;
+      pill.hidden = progressVisible();
+    } else if (pill.dataset.state === "run" && done >= session.gradeTotal) {
+      pill.dataset.state = "done";
+      pill.textContent = "✓ 批改完成，点此查看成绩";
+      pill.hidden = false;
+      setTimeout(() => { if (pill.dataset.state === "done") pill.hidden = true; }, 10000);
+    } else if (!running) pill.hidden = true;
+  }
+  window.addEventListener("scroll", () => { if (session && session.gradeTotal) updateGradePill(); }, { passive: true });
+  function notifyGradeDone() {
+    if (!document.hidden && progressVisible()) return;
+    const bodyTxt = `共 ${session.gradeTotal} 题已批改完成${session.gradeSkipped ? `（未作答 ${session.gradeSkipped} 题未计分）` : ""}，回来看成绩吧。`;
+    try { if (window.AtlasApp && AtlasApp.notify) { AtlasApp.notify("批改完成", bodyTxt); return; } } catch (e) {}
+    try {
+      if ("Notification" in window && Notification.permission === "granted") { new Notification("批改完成", { body: bodyTxt }); return; }
+      if (document.hidden) {
+        const old = document.title;
+        document.title = "✓ 批改完成 · " + old;
+        document.addEventListener("visibilitychange", function h() {
+          if (!document.hidden) { document.title = old; document.removeEventListener("visibilitychange", h); }
+        });
+      }
+    } catch (e) {}
+  }
   function updateResultStatus() {
+    updateGradePill();
     if (!session || $("#result").hidden) return;
     const {score, max, completed, missingMax} = resultTotals();
     const total = session.gradeTotal || 0, done = Math.min(session.gradeDone || 0, total);
@@ -695,7 +751,7 @@
     const sum = $("#rsummary");
     const results = session.attempt && session.attempt.results || {};
     const assumedCount = session.queue.filter(q => { const r = results[q.id]; return r && r.maxScoreAssumed; }).length;
-    if (sum) sum.textContent = `已评分 ${completed} / ${session.queue.length} 题 · 已核分值范围 ${score} / ${max} 分 · ${missingMax} 题满分待核${assumedCount ? ` · ${assumedCount} 题按试卷结构估算满分` : ""}`;
+    if (sum) sum.textContent = `已评分 ${completed} / ${session.queue.length} 题 · 已核分值范围 ${score} / ${max} 分 · ${missingMax} 题满分待核${assumedCount ? ` · ${assumedCount} 题按试卷结构估算满分` : ""}${session.gradeSkipped ? ` · 未作答 ${session.gradeSkipped} 题（不批改、记 0 分）` : ""}`;
     const box = $("#rprogress");
     if (box) {
       box.hidden = !total;
@@ -710,8 +766,19 @@
       if (b) b.className = qStatus(q);
     });
     const errBox = $("#rerrors");
-    if (errBox) errBox.innerHTML = Object.entries(session.errors || {}).map(([id, error]) => `<p class="rerr">评分失败：${esc(error)} <button type="button" data-retry="${esc(id)}">重试该题</button></p>`).join("");
-    errBox && errBox.querySelectorAll("[data-retry]").forEach(b => b.onclick = () => gradeAttempt(b.dataset.retry));
+    if (errBox) {
+      const errs = Object.keys(session.errors || {});
+      errBox.innerHTML = errs.length ? `<p class="rerr">${errs.length} 道题批改未成功（多为网络波动） <button type="button" data-retry-all>重试这 ${errs.length} 道</button></p>` : "";
+      const rb = errBox.querySelector("[data-retry-all]");
+      if (rb) rb.onclick = () => {
+        const ids = Object.keys(session.errors || {});
+        ids.forEach(id => delete session.errors[id]);
+        session.gradeQueue = (session.gradeQueue || []).concat(ids);
+        session.gradeDone = Math.max(0, (session.gradeTotal || 0) - session.gradeQueue.length);
+        updateResultStatus();
+        runGradeQueue(session.attempt.id);
+      };
+    }
     const back = $("#backSetup");
     if (back) back.disabled = Boolean(running);
   }

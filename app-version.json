@@ -1,7 +1,7 @@
 {
-  "versionCode": 9,
-  "versionName": "9.0",
+  "versionCode": 10,
+  "versionName": "10.0",
   "apkUrl": "/assets/app/kaoyan-atlas.apk",
   "size": 124698,
-  "notes": "全真模考纯净模式：考试中自动隐藏底部导航，系统返回键不退出考试；交卷或退出考试后恢复。"
+  "notes": "批改完成通知：交卷后批改完成时发系统通知提醒回来看成绩（首次会请求通知权限）。含 v9 模考纯净模式。"
 }

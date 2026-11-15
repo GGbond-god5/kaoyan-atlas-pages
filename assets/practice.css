@@ -382,3 +382,9 @@ body.exam-pure .hub-btn,
 body.exam-pure #pklink,
 body.exam-pure #psource,
 body.exam-pure .gd-fab { display: none !important; }
+
+/* 批改悬浮进度丸：批改中离开进度条时常驻，点回进度 */
+#gradePill { position: fixed; left: 50%; transform: translateX(-50%); bottom: 18px; z-index: 300;
+  background: var(--ink); color: #F7F2E7; border: 0; border-radius: 999px; padding: 11px 18px;
+  font-size: 14px; font-weight: 700; box-shadow: 0 8px 24px rgba(23,22,26,.35); cursor: pointer; }
+html.atlas-app #gradePill { bottom: 84px; }
