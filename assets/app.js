@@ -452,6 +452,7 @@
     var r = subRenderers[name];
     if (!r) return;
     subCurrent = name;
+    subBackHook = null;
     $('#subTitle').textContent = r.title;
     var body = $('#subBody');
     body.innerHTML = '<div class="sub-loading">正在加载…</div>';
@@ -463,16 +464,22 @@
   function closeSub() {
     $('#subView').hidden = true;
     subCurrent = null;
+    subBackHook = null;
     if ($('#readerView').hidden && $('#guideView').hidden) document.body.style.overflow = '';
   }
-  $('#subBack').addEventListener('click', closeSub);
+  var subBackHook = null;
+  $('#subBack').addEventListener('click', function () {
+    if (subBackHook && subBackHook()) return;
+    closeSub();
+  });
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-sub]');
     if (!t) return;
     e.preventDefault();
     openSub(t.dataset.sub);
   });
-  $('#quickGuide').addEventListener('click', function (e) { e.preventDefault(); openGuide({ type: 'home', title: '' }); });
+  var quickGuideEl = document.getElementById('quickGuide');
+  if (quickGuideEl) quickGuideEl.addEventListener('click', function (e) { e.preventDefault(); openGuide({ type: 'home', title: '' }); });
 
   /* 通用弹窗（确认 / 表单），替代原生 confirm/prompt */
   var modalResolve = null;
@@ -1218,6 +1225,261 @@
         vEntry.addEventListener('click', function (e) { e.preventDefault(); window.AtlasApp.checkUpdate(); });
       }
     } catch (_) { /* 忽略 */ }
+  }
+
+
+  /* ---------- 笔记库（App 内阅读） ----------
+   * 替代网页版 Lazy 笔记浮层：列表 → 分章 → 全屏单栏阅读，内容不再被
+   * 浮层与列表遮挡。内置笔记为预渲染 HTML（assets/lazy/<章节>.json），
+   * 我的笔记走 /api/notes（Markdown，公式按 KaTeX 渲染）。 */
+  var notesState = { index: null, groupCache: {}, userNotes: [], view: 'home', groupId: null, query: '' };
+  subRenderers.notes = { title: '笔记库', render: function (body) { renderNotesHome(body); } };
+  function notesGroupList() {
+    var idx = notesState.index;
+    if (!idx) return [];
+    return (idx.order || []).map(function (gid) {
+      var g = idx.groups[gid];
+      return g ? { id: gid, subject: g.subject, title: g.title, count: g.count, notes: g.notes || [] } : null;
+    }).filter(Boolean);
+  }
+  function loadNotesIndex() {
+    if (notesState.index) return Promise.resolve(notesState.index);
+    return loadScript('assets/lazy-index.js').then(function () {
+      notesState.index = window.LAZY_INDEX || { order: [], groups: {} };
+      return notesState.index;
+    });
+  }
+  function loadUserNotesList() {
+    return AtlasUser.json('/api/notes').then(function (d) { notesState.userNotes = d.notes || []; })
+      .catch(function () { notesState.userNotes = []; });
+  }
+  function loadGroupJson(gid) {
+    if (notesState.groupCache[gid]) return Promise.resolve(notesState.groupCache[gid]);
+    return fetch('assets/lazy/' + encodeURIComponent(gid) + '.json', { credentials: 'include' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { notesState.groupCache[gid] = d; return d; });
+  }
+  function renderNotesHome(body) {
+    subBackHook = null;
+    notesState.view = 'home';
+    body.innerHTML = '<div class="sub-loading">正在加载笔记…</div>';
+    Promise.all([loadNotesIndex(), loadUserNotesList()]).then(function () {
+      if (subCurrent !== 'notes') return;
+      paintNotesHome(body);
+    }).catch(function (e) { body.innerHTML = '<div class="sub-loading">笔记加载失败：' + esc(e.message || '') + '</div>'; });
+  }
+  function noteRowHtml(n, gid, mine) {
+    return '<div class="list-row"><button type="button" class="note-link" data-note-open="' + esc(n.id) + '" data-note-group="' + esc(gid || '') + '" data-note-mine="' + (mine ? '1' : '') + '">' + esc(n.title) + '</button>' +
+      '<div class="row-meta">' + (mine ? '我的 · ' : '内置 · ') + esc(n.type || '笔记') + '</div></div>';
+  }
+  function paintNotesHome(body) {
+    var q = notesState.query.trim().toLowerCase();
+    var html = '<input class="f-input" id="notesSearch" placeholder="搜索笔记标题…" value="' + esc(notesState.query) + '">';
+    if (q) {
+      var hits = [];
+      notesGroupList().forEach(function (g) { g.notes.forEach(function (n) { if (n.title.toLowerCase().indexOf(q) >= 0) hits.push({ g: g, n: n, mine: false }); }); });
+      notesState.userNotes.forEach(function (n) { if ((n.title || '').toLowerCase().indexOf(q) >= 0) hits.push({ g: null, n: n, mine: true }); });
+      html += '<div class="card" style="margin-top:12px">' + (hits.length ? hits.map(function (h) {
+        return '<div class="list-row"><button type="button" class="note-link" data-note-open="' + esc(h.n.id) + '" data-note-group="' + esc(h.g ? h.g.id : (h.n.chapter || '')) + '" data-note-mine="' + (h.mine ? '1' : '') + '">' + esc(h.n.title) + '</button>' +
+          '<div class="row-meta">' + (h.mine ? '我的 · ' : '内置 · ') + esc(h.n.type || '笔记') + (h.g ? ' · ' + esc(h.g.subject + ' ' + h.g.title) : '') + '</div></div>';
+      }).join('') : '<div class="today-empty">没有匹配的笔记。</div>') + '</div>';
+      body.innerHTML = html;
+      wireNotesHome(body);
+      return;
+    }
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin:16px 2px 8px"><h2 class="sec-title" style="margin:0">我的笔记</h2><button type="button" class="btn-sub" id="noteNew">＋ 新建笔记</button></div>';
+    html += '<div class="card">' + (notesState.userNotes.length ? notesState.userNotes.map(function (n) {
+      var g = notesState.index && notesState.index.groups[n.chapter];
+      return '<div class="list-row"><button type="button" class="note-link" data-note-open="' + esc(n.id) + '" data-note-group="' + esc(n.chapter || '') + '" data-note-mine="1">' + esc(n.title) + '</button>' +
+        '<div class="row-meta">我的 · ' + esc(n.type || '笔记') + (g ? ' · ' + esc(g.subject + ' ' + g.title) : '') + '</div></div>';
+    }).join('') : '<div class="today-empty">还没有自己的笔记，点右上角新建一篇。</div>') + '</div>';
+    var bySubject = {};
+    notesGroupList().forEach(function (g) { (bySubject[g.subject] = bySubject[g.subject] || []).push(g); });
+    Object.keys(bySubject).forEach(function (subj) {
+      html += '<h2 class="sec-title">' + esc(subj) + '</h2><div class="card">' + bySubject[subj].map(function (g) {
+        var mineN = notesState.userNotes.filter(function (n) { return n.chapter === g.id; }).length;
+        return '<button type="button" class="note-group-row" data-note-group-open="' + esc(g.id) + '"><span class="note-group-title">' + esc(g.title) + '</span><span class="note-group-count">' + (g.count + mineN) + '</span></button>';
+      }).join('') + '</div>';
+    });
+    body.innerHTML = html;
+    wireNotesHome(body);
+  }
+  function wireNotesHome(body) {
+    var search = document.getElementById('notesSearch');
+    if (search) {
+      var t = null;
+      search.addEventListener('input', function () {
+        clearTimeout(t);
+        t = setTimeout(function () {
+          notesState.query = search.value;
+          paintNotesHome(body);
+          var s2 = document.getElementById('notesSearch');
+          if (s2) { s2.focus(); s2.setSelectionRange(s2.value.length, s2.value.length); }
+        }, 300);
+      });
+    }
+    var nb = document.getElementById('noteNew');
+    if (nb) nb.addEventListener('click', function () { openNoteEditor(body, null, null); });
+    $$('[data-note-group-open]', body).forEach(function (b) { b.addEventListener('click', function () { renderNotesGroup(body, b.dataset.noteGroupOpen); }); });
+    wireNoteOpenButtons(body);
+  }
+  function wireNoteOpenButtons(body) {
+    $$('[data-note-open]', body).forEach(function (b) {
+      b.addEventListener('click', function () { openNoteReader(body, b.dataset.noteGroup, b.dataset.noteOpen, b.dataset.noteMine === '1'); });
+    });
+  }
+  function renderNotesGroup(body, gid) {
+    var g = notesState.index && notesState.index.groups[gid];
+    if (!g) { renderNotesHome(body); return; }
+    notesState.view = 'group';
+    notesState.groupId = gid;
+    subBackHook = function () { renderNotesHome(body); return true; };
+    var mine = notesState.userNotes.filter(function (n) { return n.chapter === gid; });
+    body.innerHTML = '<div class="sub-loading">正在加载本章笔记…</div>';
+    loadGroupJson(gid).then(function (data) {
+      if (subCurrent !== 'notes') return;
+      var notes = (data && data.notes) || [];
+      body.innerHTML = '<p class="view-note" style="margin:0 0 8px">' + esc(g.subject + ' · ' + g.title) + '</p>' +
+        '<div class="card">' +
+        mine.map(function (n) { return noteRowHtml(n, gid, true); }).join('') +
+        (notes.length ? notes.map(function (n) { return noteRowHtml(n, gid, false); }).join('') : (mine.length ? '' : '<div class="today-empty">本章暂无笔记。</div>')) +
+        '</div>' +
+        '<button class="btn-sub" id="noteNewInGroup" type="button" style="width:100%;height:46px">＋ 在本章新建笔记</button>';
+      wireNoteOpenButtons(body);
+      document.getElementById('noteNewInGroup').addEventListener('click', function () { openNoteEditor(body, null, gid); });
+    }).catch(function (e) { body.innerHTML = '<div class="sub-loading">本章笔记加载失败：' + esc(e.message || '') + '</div>'; });
+  }
+  function openNoteReader(body, gid, noteId, mine) {
+    notesState.view = 'read';
+    subBackHook = function () {
+      if (!notesState.query && gid && notesState.index && notesState.index.groups[gid]) renderNotesGroup(body, gid);
+      else renderNotesHome(body);
+      return true;
+    };
+    if (mine) {
+      body.innerHTML = '<div class="sub-loading">正在打开笔记…</div>';
+      AtlasUser.json('/api/notes/' + encodeURIComponent(noteId)).then(function (d) {
+        if (subCurrent !== 'notes') return;
+        var n = d.note;
+        if (!n) throw new Error('笔记不存在');
+        paintNoteReader(body, gid, { id: n.id, title: n.title, type: n.type, mine: true, html: mdToHtmlLite(n.markdown || '') });
+      }).catch(function (e) { body.innerHTML = '<div class="sub-loading">笔记加载失败：' + esc(e.message || '') + '</div>'; });
+      return;
+    }
+    loadGroupJson(gid).then(function (data) {
+      if (subCurrent !== 'notes') return;
+      var n = ((data && data.notes) || []).filter(function (x) { return String(x.id) === String(noteId); })[0];
+      if (!n) throw new Error('笔记不存在');
+      paintNoteReader(body, gid, { id: n.id, title: n.title, type: n.type, mine: false, html: n.html || '' });
+    }).catch(function (e) { body.innerHTML = '<div class="sub-loading">笔记加载失败：' + esc(e.message || '') + '</div>'; });
+  }
+  function paintNoteReader(body, gid, note) {
+    var prev = null, next = null;
+    if (!note.mine && gid && notesState.groupCache[gid]) {
+      var arr = notesState.groupCache[gid].notes || [];
+      var i = arr.findIndex(function (x) { return String(x.id) === String(note.id); });
+      if (i > 0) prev = arr[i - 1];
+      if (i >= 0 && i < arr.length - 1) next = arr[i + 1];
+    }
+    body.innerHTML =
+      '<div class="note-meta-line">' + esc(note.type || '笔记') + (note.mine ? ' · 我的笔记' : ' · 内置') + '</div>' +
+      '<h1 class="note-h1">' + esc(note.title) + '</h1>' +
+      (note.mine ? '<div class="row-actions" style="margin-bottom:12px"><button type="button" class="btn-sub" id="noteEdit">编辑</button><button type="button" class="btn-sub danger" id="noteDel">删除</button></div>' : '') +
+      '<article class="note-article" id="noteArticle">' + note.html + '</article>' +
+      ((prev || next) ? '<div class="reader-bottom in-sub">' +
+        '<button type="button" class="reader-nav-btn" id="notePrev"' + (prev ? '' : ' disabled') + '>← 上一篇</button>' +
+        '<button type="button" class="reader-nav-btn" id="noteNext"' + (next ? '' : ' disabled') + '>下一篇 →</button></div>' : '');
+    var art = document.getElementById('noteArticle');
+    if (art) renderReaderMath(art);
+    body.scrollTop = 0;
+    if (prev) document.getElementById('notePrev').addEventListener('click', function () { openNoteReader(body, gid, prev.id, false); });
+    if (next) document.getElementById('noteNext').addEventListener('click', function () { openNoteReader(body, gid, next.id, false); });
+    if (note.mine) {
+      document.getElementById('noteEdit').addEventListener('click', function () {
+        AtlasUser.json('/api/notes/' + encodeURIComponent(note.id)).then(function (d) { openNoteEditor(body, d.note, null); })
+          .catch(function (e) { toast('打开编辑失败：' + e.message); });
+      });
+      document.getElementById('noteDel').addEventListener('click', function () {
+        showConfirm({ title: '删除这篇笔记？', text: '删除后无法恢复。', okText: '删除', danger: true }).then(function (ok) {
+          if (!ok) return;
+          AtlasUser.json('/api/notes/' + encodeURIComponent(note.id), 'DELETE').then(function () {
+            toast('已删除');
+            loadUserNotesList().then(function () { renderNotesHome(body); });
+          }).catch(function (e) { toast('删除失败：' + e.message); });
+        });
+      });
+    }
+  }
+  function openNoteEditor(body, note, presetGroup) {
+    notesState.view = 'edit';
+    subBackHook = function () { renderNotesHome(body); return true; };
+    var groups = notesGroupList();
+    var curGroup = note ? note.chapter : (presetGroup || (groups[0] && groups[0].id) || '');
+    var types = ['笔记', '基础知识', '方法', '公式', '错题', '作文模板'];
+    body.innerHTML =
+      '<label class="f-label">章节</label><select class="f-select" id="neChapter">' + groups.map(function (g) { return '<option value="' + esc(g.id) + '"' + (g.id === curGroup ? ' selected' : '') + '>' + esc(g.subject + ' · ' + g.title) + '</option>'; }).join('') + '</select>' +
+      '<label class="f-label">类型</label><select class="f-select" id="neType">' + types.map(function (t) { return '<option' + (note && note.type === t ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select>' +
+      '<label class="f-label">标题</label><input class="f-input" id="neTitle" maxlength="80" placeholder="例如：我的极限计算错题" value="' + esc(note ? note.title : '') + '">' +
+      '<label class="f-label">内容（Markdown，公式用 $...$ 或 $$...$$）</label><textarea class="f-input f-textarea" id="neBody" placeholder="写下你的笔记…">' + esc(note ? (note.markdown || '') : '') + '</textarea>' +
+      '<button class="btn-main" id="neSave" type="button" style="margin-top:14px">保存笔记</button>';
+    document.getElementById('neSave').addEventListener('click', function () {
+      var payload = {
+        chapter: document.getElementById('neChapter').value,
+        type: document.getElementById('neType').value,
+        title: document.getElementById('neTitle').value.trim(),
+        markdown: document.getElementById('neBody').value
+      };
+      if (!payload.title || !payload.markdown.trim()) { toast('标题和内容不能为空'); return; }
+      var btn = this;
+      btn.disabled = true;
+      var req = note ? AtlasUser.json('/api/notes/' + encodeURIComponent(note.id), 'PUT', payload) : AtlasUser.json('/api/notes', 'POST', payload);
+      req.then(function (d) {
+        toast('已保存');
+        loadUserNotesList().then(function () {
+          var saved = d && d.note;
+          if (saved && saved.id) openNoteReader(body, saved.chapter, saved.id, true);
+          else renderNotesHome(body);
+        });
+      }).catch(function (e) { toast('保存失败：' + e.message); btn.disabled = false; });
+    });
+  }
+  /* 轻量 Markdown 渲染（我的笔记用）：标题/列表/引用/代码/粗斜体/链接/图片 + 公式占位保护 */
+  function mdToHtmlLite(md) {
+    var stash = [];
+    var s = String(md || '').replace(/\r\n/g, '\n');
+    s = s.replace(/\$\$([\s\S]+?)\$\$/g, function (_, m) { stash.push('\\[' + esc(m.trim()) + '\\]'); return '\u0000M' + (stash.length - 1) + '\u0000'; });
+    s = s.replace(/\$([^$\n]+?)\$/g, function (_, m) { stash.push('\\(' + esc(m.trim()) + '\\)'); return '\u0000M' + (stash.length - 1) + '\u0000'; });
+    function inline(t) {
+      t = esc(t);
+      t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+      t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      t = t.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+      t = t.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, '<img alt="$1" src="$2">');
+      t = t.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      return t;
+    }
+    var out = [], inUl = false, inOl = false, inCode = false, codeBuf = [];
+    function closeLists() { if (inUl) { out.push('</ul>'); inUl = false; } if (inOl) { out.push('</ol>'); inOl = false; } }
+    s.split('\n').forEach(function (ln) {
+      if (/^```/.test(ln)) {
+        if (inCode) { out.push('<pre><code>' + esc(codeBuf.join('\n')) + '</code></pre>'); codeBuf = []; inCode = false; }
+        else { closeLists(); inCode = true; }
+        return;
+      }
+      if (inCode) { codeBuf.push(ln); return; }
+      var m;
+      if ((m = /^(#{1,4})\s+(.*)$/.exec(ln))) { closeLists(); var lv = Math.min(4, m[1].length + 1); out.push('<h' + lv + '>' + inline(m[2]) + '</h' + lv + '>'); return; }
+      if (/^\s*(-{3,}|\*{3,})\s*$/.test(ln)) { closeLists(); out.push('<hr>'); return; }
+      if ((m = /^>\s?(.*)$/.exec(ln))) { closeLists(); out.push('<blockquote>' + inline(m[1]) + '</blockquote>'); return; }
+      if ((m = /^\s*[-*·]\s+(.*)$/.exec(ln))) { if (!inUl) { closeLists(); out.push('<ul>'); inUl = true; } out.push('<li>' + inline(m[1]) + '</li>'); return; }
+      if ((m = /^\s*\d+[.、]\s+(.*)$/.exec(ln))) { if (!inOl) { closeLists(); out.push('<ol>'); inOl = true; } out.push('<li>' + inline(m[1]) + '</li>'); return; }
+      if (!ln.trim()) { closeLists(); return; }
+      closeLists();
+      out.push('<p>' + inline(ln) + '</p>');
+    });
+    if (inCode) out.push('<pre><code>' + esc(codeBuf.join('\n')) + '</code></pre>');
+    closeLists();
+    return out.join('\n').replace(/\u0000M(\d+)\u0000/g, function (_, i) { return stash[+i]; });
   }
 
   /* ---------- 小说式阅读器 ----------
