@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#17161A">
 <title>套卷分析 · 考研科目大观</title>
 <meta name="description" content="历年真题与模拟卷的错题、知识点与得分趋势分析。">
 <link rel="stylesheet" href="assets/transitions.css?v=2">
@@ -34,6 +36,13 @@
     <h2>得分率走势</h2>
     <p class="sub">按提交先后排列，只统计已批改的题。</p>
     <div class="trend" id="trend"></div>
+  </section>
+
+  <section class="card" id="gapCard" hidden>
+    <h2>目标差距</h2>
+    <p class="sub">按每科最近一套的得分率折算到满分，与自设目标分对比。目标线是自设目标、不是官方复试线；输入框改完即自动保存。</p>
+    <div id="gapList"></div>
+    <div id="gapTotal" class="sub" style="margin-top:10px"></div>
   </section>
 
   <section class="card" id="kpCard" hidden>
@@ -73,5 +82,6 @@
 <script src="assets/config.js?v=2027-11-08"></script>
 <script src="assets/user-state.js"></script>
 <script src="assets/analytics.js?v=1"></script>
+<script src="assets/pwa.js?v=1"></script>
 </body>
 </html>

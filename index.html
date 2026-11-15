@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#17161A">
 <link rel="stylesheet" href="assets/transitions.css?v=2">
 <script>if(/[?&]motion=0/.test(location.search))document.documentElement.classList.add("motion-off");</script>
 <script>
@@ -15,6 +17,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <link rel="stylesheet" href="assets/theme.css?v=1">
 <link rel="stylesheet" href="assets/onboarding.css?v=1">
 <link rel="stylesheet" href="assets/guide.css?v=1">
+<link rel="stylesheet" href="assets/today.css?v=1">
 <link rel="stylesheet" href="assets/atlas.css?v=18">
 <link rel="stylesheet" href="assets/web.css?v=15">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
@@ -35,6 +38,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
   <div class="actions">
     <a class="btn ghost" href="practice.html">刷题</a>
     <a class="btn ghost" href="analytics.html">套卷分析</a>
+    <a class="btn ghost" href="community.html">社区</a>
     <button class="btn ghost" id="lazyBtn" type="button">笔记库</button>
     <button class="btn ghost" id="profileBtn" type="button">档案</button>
     <button class="btn ghost" id="tourBtn" type="button">功能引导</button>
@@ -72,6 +76,8 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
     </div>
   </div>
 </main>
+
+<div id="todayCard" hidden></div>
 
 <div class="overlay" id="searchOverlay" hidden>
   <div class="search-box">
@@ -134,6 +140,8 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 </script>
 <script src="assets/onboarding.js?v=1"></script>
 <script src="assets/guide.js?v=1"></script>
+<script src="assets/review.js?v=1"></script>
+<script src="assets/today.js?v=1"></script>
 <script>
 /* 站点公告：管理员在后台发布后，首页顶部展示一条 */
 fetch('/api/announcement', { credentials: 'include' })
@@ -147,5 +155,6 @@ fetch('/api/announcement', { credentials: 'include' })
   })
   .catch(function () {});
 </script>
+<script src="assets/pwa.js?v=1"></script>
 </body>
 </html>

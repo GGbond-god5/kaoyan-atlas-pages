@@ -11,6 +11,9 @@ const PUBLIC = [
   /^\/api\/health$/,
   /^\/assets\/(auth\.(js|css)|config\.js|transitions\.css)$/,
   /^\/assets\/remotion\//,
+  /^\/assets\/icons\//,
+  /^\/sw\.js$/,
+  /^\/manifest\.webmanifest$/,
   /^\/favicon\.ico$/,
 ];
 

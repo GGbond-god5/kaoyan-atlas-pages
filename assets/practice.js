@@ -328,7 +328,7 @@
     return stratified(single, state.count || 500).sort((a,b) => paperNo(a) - paperNo(b));
   }
   const sealed = () => session && session.mode !== "knowledge" && !session.ended;
-  function start(poolOverride) {
+  function start(poolOverride, poolTitle) {
     if ((state.mode === "paper" || state.mode === "diagnostic") && state.subject === "all") return;
     if (state.mode === "paper") {
       const arc = archiveOf(state.paper);
@@ -347,9 +347,9 @@
     $("#sideSubmit").hidden = false;
     session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, startTime: Date.now(), ended: false, mode: state.mode, structure: $("#structureInfo").hidden ? "" : $("#structureInfo").textContent };
     const sub = SUBJECTS.find(s => s.id === state.subject);
-    const title = poolOverride ? "错题重练" : (state.mode === "diagnostic" ? `${sub ? sub.name : state.subject} · 能力自测` : state.mode === "paper" ? pool[0].chapterTitle
+    const title = poolTitle || (poolOverride ? "错题重练" : (state.mode === "diagnostic" ? `${sub ? sub.name : state.subject} · 能力自测` : state.mode === "paper" ? pool[0].chapterTitle
       : (state.chapter !== "all" ? pool[0].chapterTitle
-        : (sub ? sub.name : "全科综合")));
+        : (sub ? sub.name : "全科综合"))));
     $("#paperTitle").textContent = `${title} · ${pool.length} 题`;
     $("#setup").hidden = true;
     $("#result").hidden = true;
@@ -537,6 +537,7 @@
     r.seen += 1; r.last = Date.now();
     if (kind === "ok") r.ok += 1; else if (kind === "wrong") r.wrong += 1;
     store.rec[q.id] = r; save();
+    if (window.AtlasReview) window.AtlasReview.note(q.id, kind);
     if ($("#solution").hidden) showSolution(false);
     $$("#gradebar button").forEach(b => { b.disabled = true; });
     const btn = $(`#gradebar button[data-grade="${kind}"]`);
@@ -577,7 +578,7 @@
     if (session.submitting) return;
     session.submitting = true;
     if (session.mode === "knowledge") {
-      session.queue.forEach(q => { const ans = answerLetters(q), picks = session.picks[q.id] || []; if (!session.status[q.id] && ans && picks.length) { const kind = picks.slice().sort().join("") === ans.split("").sort().join("") ? "ok" : "wrong"; session.status[q.id] = kind; const r = store.rec[q.id] || {seen:0, ok:0, wrong:0, last:0}; r.seen++; r[kind]++; r.last = Date.now(); store.rec[q.id] = r; } }); save();
+      session.queue.forEach(q => { const ans = answerLetters(q), picks = session.picks[q.id] || []; if (!session.status[q.id] && ans && picks.length) { const kind = picks.slice().sort().join("") === ans.split("").sort().join("") ? "ok" : "wrong"; session.status[q.id] = kind; const r = store.rec[q.id] || {seen:0, ok:0, wrong:0, last:0}; r.seen++; r[kind]++; r.last = Date.now(); store.rec[q.id] = r; if (window.AtlasReview) window.AtlasReview.note(q.id, kind); } }); save();
       finishSubmit(); return;
     }
     const answers = {};
@@ -981,6 +982,20 @@
       mine.forEach(q => { if (q.subject && !SUBJECT_NAMES[q.subject]) { SUBJECT_NAMES[q.subject] = q.subjectName || q.subject; SUBJECTS.push({id:q.subject, name:SUBJECT_NAMES[q.subject], count:0}); } });
       ITEMS.push(...mine); } catch (err) { console.error("个人题库加载失败", err); }
     init();
+    /* 错题艾宾浩斯回流：?review=1 直接组今日到期错题开练；平时在设置区提示到期数量 */
+    if (window.AtlasReview) {
+      try {
+        const dueIds = await window.AtlasReview.due();
+        const link = $("#reviewLink");
+        if (link && dueIds.length) { link.hidden = false; const b = $("#reviewDue"); if (b) b.textContent = `（${dueIds.length} 道到期）`; }
+        if (new URLSearchParams(location.search).get("review")) {
+          const dueSet = new Set(dueIds);
+          const pool = ITEMS.filter(q => dueSet.has(q.id));
+          if (pool.length) start(pool, "错题复习 · 艾宾浩斯回流");
+          else $("#pintro").textContent = "今日没有到期的错题，状态很好。可以从下方选一种刷法继续推进。";
+        }
+      } catch (err) { console.error("错题复习加载失败", err); }
+    }
   }
   bootstrap().catch(err => { $("#pintro").textContent = `加载失败：${err.message}`; $("#pstart").disabled = true; });
 })();

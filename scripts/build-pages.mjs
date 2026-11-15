@@ -15,6 +15,9 @@ const FILES = [
   "analytics.html",
   "settings.html",
   "admin.html",
+  "community.html",
+  "manifest.webmanifest",
+  "sw.js",
   "_headers",
 ];
 

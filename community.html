@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#17161A">
+<link rel="stylesheet" href="assets/transitions.css?v=2">
+<script>if(/[?&]motion=0/.test(location.search))document.documentElement.classList.add("motion-off");</script>
+<title>社区共享 · 考研科目大观</title>
+<link rel="stylesheet" href="assets/theme.css?v=1">
+<link rel="stylesheet" href="assets/panel.css?v=1">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html" style="text-decoration:none;color:inherit">
+    <span class="mark">观</span>
+    <span><b>考研科目大观</b><small>社区共享</small></span>
+  </a>
+  <nav>
+    <a class="btn ghost" href="library.html">我的资料</a>
+    <a class="btn ghost" href="index.html">返回首页</a>
+  </nav>
+</header>
+
+<main class="panel">
+  <div class="alert" id="alert" role="status" aria-live="polite"></div>
+
+  <section class="card">
+    <h2>共享广场</h2>
+    <p class="note">大家分享出来的资料与自建题集。导入后，资料会出现在你的「我的资料」里，题目会进入你的个人题库，可以直接在刷题页练习。</p>
+    <div id="shareList"><p class="note">正在加载…</p></div>
+  </section>
+
+  <section class="card">
+    <h2>分享我的资料</h2>
+    <p class="note">选一份你上传的资料分享到广场。连同它已导入的题目一起分享；随时可以取消分享（已导入到别人账号的副本不会被收回）。</p>
+    <div id="myFiles"><p class="note">正在加载…</p></div>
+  </section>
+</main>
+
+<script src="assets/user-state.js"></script>
+<script src="assets/community.js?v=1"></script>
+<script src="assets/pwa.js?v=1"></script>
+</body>
+</html>

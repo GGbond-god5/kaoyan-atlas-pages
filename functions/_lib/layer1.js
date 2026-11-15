@@ -19,6 +19,10 @@ export async function ensureLayer1(env) {
        used_by TEXT, used_at TEXT, created_at TEXT NOT NULL)`,
     `CREATE TABLE IF NOT EXISTS platform_meta (
        key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
+    `CREATE TABLE IF NOT EXISTS platform_shares (
+       id TEXT PRIMARY KEY, uid TEXT NOT NULL, file_id TEXT NOT NULL,
+       title TEXT NOT NULL, subject TEXT NOT NULL DEFAULT '', note TEXT NOT NULL DEFAULT '',
+       imports INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL)`,
     `ALTER TABLE users ADD COLUMN banned INTEGER NOT NULL DEFAULT 0`,
     `ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'`,
   ];

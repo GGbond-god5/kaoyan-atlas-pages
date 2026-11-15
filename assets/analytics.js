@@ -4,7 +4,7 @@
   'use strict';
   var SUBJECT_NAMES = { math: '数学一', math2: '数学二', mechanics: '807 材料力学', english: '英语一', english2: '英语二', politics: '政治' };
   function subjectName(id, attempts) { if (SUBJECT_NAMES[id]) return SUBJECT_NAMES[id]; for (var i = 0; i < (attempts || []).length; i++) { var qs = attempts[i].questions || []; for (var j = 0; j < qs.length; j++) if (qs[j].subject === id && qs[j].subjectName) return qs[j].subjectName; } return id; }
-  var state = { subject: 'all', attempts: [] };
+  var state = { subject: 'all', attempts: [], targets: {} };
   var $ = function (s) { return document.querySelector(s); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var pct = function (x) { return Math.round(x * 100) + '%'; };
@@ -102,7 +102,7 @@
       .map(function (a) { var s = paperStats(a); s._attempt = a; return s; })
       .filter(function (p) { return p.graded > 0; });
     var has = papers.length > 0;
-    ['#overview', '#trendCard', '#kpCard', '#kindCard', '#papersCard', '#adviceCard'].forEach(function (s) { $(s).hidden = !has; });
+    ['#overview', '#trendCard', '#gapCard', '#kpCard', '#kindCard', '#papersCard', '#adviceCard'].forEach(function (s) { $(s).hidden = !has; });
     $('#emptyCard').hidden = has;
     if (!has) return;
 
@@ -121,6 +121,40 @@
       var h = Math.max(4, Math.round((p.rate || 0) * 100));
       return '<div class="tbar"><em>' + pct(p.rate || 0) + '</em><i style="height:' + h + '%"></i><small title="' + esc(p.title) + '">' + esc(p.title) + '</small></div>';
     }).join('');
+
+    /* 目标差距：每科取最近一套的得分率，折算到满分后与自设目标分对比 */
+    var FULL = { math: 150, math2: 150, mechanics: 150, english: 100, english2: 100, politics: 100 };
+    var bySubject = {};
+    papers.forEach(function (p) { bySubject[p.subject] = p; });
+    var gapRows = [], estSum = 0, tgtSum = 0, allTgt = true;
+    Object.keys(bySubject).forEach(function (sid) {
+      var p = bySubject[sid], full = FULL[sid] || 100;
+      var est = p.rate === null ? null : Math.round(p.rate * full * 10) / 10;
+      if (est !== null) estSum += est;
+      var tgt = state.targets[sid];
+      if (tgt == null || tgt === '') allTgt = false; else tgtSum += Number(tgt) || 0;
+      gapRows.push({ sid: sid, name: subjectName(sid, state.attempts), rate: p.rate, est: est, full: full, tgt: tgt });
+    });
+    if (!gapRows.length) allTgt = false;
+    $('#gapList').innerHTML = gapRows.map(function (r) {
+      var gap = (r.tgt != null && r.tgt !== '' && r.est !== null) ? Math.round((Number(r.tgt) - r.est) * 10) / 10 : null;
+      var gapTxt = gap === null ? '未设目标' : (gap > 0 ? '还差 ' + gap + ' 分' : '已超过目标 ' + Math.abs(gap) + ' 分');
+      return '<div class="row"><div class="rhead"><b>' + esc(r.name) + '</b><span>最近得分率 ' + (r.rate === null ? '—' : pct(r.rate)) + ' · 折算 ' + (r.est === null ? '—' : r.est) + ' / ' + r.full + '</span></div>' +
+        '<div class="rmeta">目标 <input type="number" min="0" max="' + r.full + '" step="1" value="' + (r.tgt == null ? '' : esc(r.tgt)) + '" data-target="' + esc(r.sid) + '" style="width:76px;padding:2px 6px"> 分 · ' + gapTxt + '</div>' +
+        '<div class="bar"><i style="width:' + Math.round((r.est || 0) / r.full * 100) + '%"></i></div></div>';
+    }).join('') || '<p class="sub">暂无数据。</p>';
+    $('#gapTotal').textContent = gapRows.length
+      ? '预估总分（已做科目按最近一套折算）约 ' + (Math.round(estSum * 10) / 10) + ' 分' +
+        (allTgt ? ' · 目标总分 ' + tgtSum + ' 分 · ' + (tgtSum - estSum > 0 ? '还差 ' + (Math.round((tgtSum - estSum) * 10) / 10) + ' 分' : '已达到目标总分') : ' · 把各科目标都设上后，这里会显示总分差距')
+      : '';
+    $('#gapList').querySelectorAll('input[data-target]').forEach(function (inp) {
+      inp.addEventListener('change', function () {
+        var sid = inp.getAttribute('data-target');
+        if (inp.value === '') delete state.targets[sid];
+        else state.targets[sid] = Math.max(0, Number(inp.value) || 0);
+        window.AtlasUser.save('goals', { targets: state.targets }).then(function () { render(); }).catch(function () {});
+      });
+    });
 
     var kps = aggregate(papers, function (q) { return q.kp || q.kpName ? (q.subject + '|' + (q.kp || q.kpName)) : ''; }, function (q) { return q.kpName || q.kp || '未标注考点'; })
       .sort(function (x, y) { return y.missRate - x.missRate || y.n - x.n; });
@@ -181,6 +215,7 @@
       var data = await window.AtlasUser.json('/api/attempts', 'GET');
       state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'diagnostic') && Array.isArray(a.questions); });
       var subjects = Array.from(new Set(state.attempts.map(function (a) { return a.subject; })));
+      try { var g = await window.AtlasUser.load('goals', { targets: {} }); state.targets = (g && g.targets) || {}; } catch (e) {}
       renderTabs(subjects);
       render();
     } catch (err) {

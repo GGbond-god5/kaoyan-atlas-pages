@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="assets/site-tools.css?v=4">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#17161A">
 <link rel="stylesheet" href="assets/transitions.css?v=2">
 <script>if(/[?&]motion=0/.test(location.search))document.documentElement.classList.add("motion-off");</script>
 <title>大观题库 · 考研科目大观</title>
@@ -55,6 +57,7 @@
       <button class="start" id="pstart">开始答题</button>
       <span class="pool-count" id="pcount"></span>
       <a class="pool-count" id="paperSol" href="#" target="_blank" rel="noopener" hidden>打开解析 ↗</a>
+      <a class="pool-count" id="reviewLink" href="practice.html?review=1" hidden>今日错题复习 <b id="reviewDue"></b> ↗</a>
       <a class="pool-count" href="analytics.html">套卷分析 ↗</a>
     </div>
     <p class="setup-note" id="structureInfo" aria-live="polite" hidden></p>
@@ -144,8 +147,10 @@
 <script src="assets/papers.js?v=3"></script>
 <script src="assets/config.js?v=2027-11-08"></script>
 <script src="assets/user-state.js"></script>
+<script src="assets/review.js?v=1"></script>
 <script src="assets/assessment.js?v=6"></script>
-<script src="assets/practice.js?v=38"></script>
+<script src="assets/practice.js?v=39"></script>
 <script src="assets/site-tools.js?v=4"></script>
+<script src="assets/pwa.js?v=1"></script>
 </body>
 </html>
