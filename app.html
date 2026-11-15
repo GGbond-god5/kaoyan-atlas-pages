@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>考研科目大观 · App</title>
 <link rel="icon" href="assets/icons/icon-192.png">
-<link rel="stylesheet" href="assets/app.css?v=1">
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/app.css?v=2">
 </head>
 <body>
 <header class="app-top">
@@ -162,6 +163,30 @@
   </section>
 </main>
 
+<!-- 小说式阅读器：全屏沉浸阅读，目录为左侧抽屉，底部上一章/下一章 -->
+<div class="reader" id="readerView" hidden>
+  <div class="reader-top">
+    <button class="reader-top-btn" id="readerBack" type="button">← 题库</button>
+    <div class="reader-title" id="readerTitle">章节阅读</div>
+    <button class="reader-top-btn" id="readerFontBtn" type="button">字号</button>
+    <button class="reader-top-btn" id="readerTocBtn" type="button">目录</button>
+  </div>
+  <div class="reader-progress"><i id="readerProgressBar"></i></div>
+  <div class="reader-body" id="readerBody">
+    <article class="reader-article" id="readerArticle"></article>
+  </div>
+  <div class="reader-bottom">
+    <button class="reader-nav-btn" id="readerPrev" type="button">上一章</button>
+    <a class="reader-practice" id="readerPractice" href="practice.html" hidden>练本章题</a>
+    <button class="reader-nav-btn" id="readerNext" type="button">下一章</button>
+  </div>
+  <div class="reader-scrim" id="readerScrim" hidden></div>
+  <aside class="reader-drawer" id="readerDrawer" aria-hidden="true">
+    <div class="drawer-head" id="drawerHead">目录</div>
+    <div class="drawer-list" id="drawerList"></div>
+  </aside>
+</div>
+
 <nav class="app-tabs" id="appTabs">
   <button type="button" data-tab="home" class="on">
     <svg viewBox="0 0 24 24"><path d="M10,20v-6h4v6h5v-8h3L12,3 2,12h3v8z"/></svg><span>首页</span>
@@ -184,6 +209,7 @@
 
 <script src="assets/user-state.js"></script>
 <script src="assets/questions-loader.js?v=1"></script>
-<script src="assets/app.js?v=1"></script>
+<script src="assets/katex-loader.js?v=1"></script>
+<script src="assets/app.js?v=2"></script>
 </body>
 </html>

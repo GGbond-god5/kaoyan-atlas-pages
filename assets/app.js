@@ -248,7 +248,7 @@
         var k = ch.kps[kid];
         var href = 'practice.html?subject=' + encodeURIComponent(subject) +
           '&chapter=' + encodeURIComponent(ck) + '&kp=' + encodeURIComponent(kid);
-        return '<div class="kp-row"><span class="kp-name">' + esc(k.name) + '</span>' +
+        return '<div class="kp-row"><button type="button" class="kp-name-btn" data-read-kp="' + esc(kid) + '" data-chapter="' + esc(ck) + '" data-title="' + esc(ch.title) + '">' + esc(k.name) + '</button>' +
           '<span class="kp-count">' + k.count + ' 题</span>' +
           '<a class="kp-go" href="' + href + '">练这个考点</a></div>';
       }).join('');
@@ -257,10 +257,20 @@
         '<span class="chapter-name">' + esc(ch.title) + '</span>' +
         '<span class="chapter-meta">' + ch.kpOrder.length + ' 考点 · ' + ch.count + ' 题</span>' +
         '<span class="chapter-chev">›</span></button>' +
-        '<div class="chapter-kps">' + kps + '<a class="chapter-all" href="' + allHref + '">练整章 →</a></div></div>';
+        '<div class="chapter-kps"><button type="button" class="kp-read-btn" data-read-chapter="' + esc(ck) + '" data-title="' + esc(ch.title) + '">阅读本章</button>' + kps + '<a class="chapter-all" href="' + allHref + '">练整章 →</a></div></div>';
     }).join('');
     $$('.chapter-head', box).forEach(function (h) {
       h.addEventListener('click', function () { h.parentElement.classList.toggle('open'); });
+    });
+    $$('[data-read-chapter]', box).forEach(function (b) {
+      b.addEventListener('click', function () {
+        openReader(subject, b.dataset.readChapter, b.dataset.title, null);
+      });
+    });
+    $$('[data-read-kp]', box).forEach(function (b) {
+      b.addEventListener('click', function () {
+        openReader(subject, b.dataset.chapter, b.dataset.title, b.dataset.readKp);
+      });
     });
   }
   $('#bankBack').addEventListener('click', function () {
@@ -289,6 +299,196 @@
     AtlasUser.json('/api/auth/logout', 'POST').catch(function () {}).then(function () {
       location.replace('login.html');
     });
+  });
+
+  /* ---------- 小说式阅读器 ----------
+   * 结构来自 assets/data.js（window.ATLAS），正文按章懒加载 web/<章节id>.js
+   * （window.ATLAS_CH，与网页版阅读器同一份讲义）。全屏沉浸阅读：
+   * 左侧抽屉目录（章 + 当前章考点锚点）、底部上一章/下一章、字号三档、阅读进度。 */
+  var scriptCache = {};
+  function loadScript(src) {
+    if (scriptCache[src]) return scriptCache[src];
+    scriptCache[src] = new Promise(function (resolve, reject) {
+      var sc = document.createElement('script');
+      sc.src = src;
+      sc.onload = resolve;
+      sc.onerror = reject;
+      document.head.appendChild(sc);
+    });
+    return scriptCache[src];
+  }
+  var atlasData = null;
+  function ensureAtlas() {
+    if (atlasData) return Promise.resolve(atlasData);
+    return loadScript('assets/data.js').then(function () {
+      atlasData = window.ATLAS || null;
+      return atlasData;
+    });
+  }
+  var chPending = {};
+  function ensureChapterContent(id) {
+    if (window.ATLAS_CH && window.ATLAS_CH[id]) return Promise.resolve(window.ATLAS_CH[id]);
+    if (chPending[id]) return chPending[id];
+    chPending[id] = loadScript('web/' + encodeURIComponent(id) + '.js').then(function () {
+      var ch = (window.ATLAS_CH || {})[id];
+      delete chPending[id];
+      if (!ch) throw new Error('讲义加载失败');
+      return ch;
+    }).catch(function (e) { delete chPending[id]; throw e; });
+    return chPending[id];
+  }
+  function resolveChapterMeta(subjectId, key, title) {
+    if (!atlasData) return null;
+    var subj = (atlasData.subjects || []).filter(function (s) { return s.id === subjectId; })[0];
+    if (!subj) return null;
+    var chs = subj.chapters || [];
+    var found = chs.filter(function (c) { return c.id === key; })[0]
+      || chs.filter(function (c) { return c.title === title; })[0]
+      || chs.filter(function (c) { return title && (c.title.indexOf(title) >= 0 || title.indexOf(c.title) >= 0); })[0];
+    return found ? { subject: subj, chapter: found } : null;
+  }
+
+  var reader = { subject: null, meta: null, content: null, fontIdx: 1 };
+  var FONT_SIZES = [16, 17.5, 19];
+  var FONT_LABELS = ['字号·小', '字号·标准', '字号·大'];
+  try {
+    var savedFont = parseInt(localStorage.getItem('atlas.app.readerFont') || '1', 10);
+    if (!isNaN(savedFont)) reader.fontIdx = Math.min(2, Math.max(0, savedFont));
+  } catch (_) { /* 忽略 */ }
+  function applyFont() {
+    $('#readerArticle').style.fontSize = FONT_SIZES[reader.fontIdx] + 'px';
+    $('#readerFontBtn').textContent = FONT_LABELS[reader.fontIdx];
+  }
+  $('#readerFontBtn').addEventListener('click', function () {
+    reader.fontIdx = (reader.fontIdx + 1) % FONT_SIZES.length;
+    try { localStorage.setItem('atlas.app.readerFont', String(reader.fontIdx)); } catch (_) { /* 忽略 */ }
+    applyFont();
+  });
+
+  function wireReaderBank(article) {
+    $$('.kp-bank', article).forEach(function (a) {
+      var u = new URL('practice.html', location.href);
+      u.searchParams.set('subject', a.dataset.bankSubject || '');
+      u.searchParams.set('chapter', a.dataset.bankChapter || '');
+      u.searchParams.set('kp', a.dataset.bankKp || '');
+      a.href = u.toString();
+      a.removeAttribute('hidden');
+    });
+  }
+  function renderReaderMath(article) {
+    try {
+      if (window.AtlasKatex && window.AtlasKatex.render) { window.AtlasKatex.render(article); return; }
+      if (window.renderMathInElement) {
+        window.renderMathInElement(article, {
+          delimiters: [
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+          ],
+          throwOnError: false
+        });
+      }
+    } catch (_) { /* 公式渲染失败时保留原文 */ }
+  }
+  function jumpToKp(kpId) {
+    if (!kpId) return;
+    var t = document.getElementById(kpId);
+    if (!t) {
+      t = $$('#readerArticle [id]').filter(function (n) {
+        return n.id && n.id.slice(-kpId.length) === kpId;
+      })[0] || null;
+    }
+    if (t) setTimeout(function () { t.scrollIntoView({ block: 'start' }); }, 80);
+  }
+  function openReader(subjectId, chapterKey, chapterTitle, kpId) {
+    $('#readerView').hidden = false;
+    document.body.style.overflow = 'hidden';
+    $('#readerArticle').innerHTML = '<div class="reader-loading">正在打开讲义…</div>';
+    $('#readerTitle').textContent = chapterTitle || '章节阅读';
+    closeDrawer();
+    ensureAtlas().then(function () {
+      var resolved = resolveChapterMeta(subjectId, chapterKey, chapterTitle);
+      if (!resolved) throw new Error('未找到这一章');
+      reader.subject = resolved.subject;
+      reader.meta = resolved.chapter;
+      return ensureChapterContent(resolved.chapter.id);
+    }).then(function (content) {
+      reader.content = content;
+      paintReader(kpId);
+    }).catch(function () {
+      $('#readerArticle').innerHTML = '<div class="reader-loading">讲义加载失败，检查网络后重试。</div>';
+    });
+  }
+  function paintReader(kpId) {
+    var ch = reader.content, meta = reader.meta;
+    $('#readerTitle').textContent = (ch.subjectName || (reader.subject && reader.subject.name) || '') + ' · ' + (ch.title || (meta && meta.title) || '');
+    var article = $('#readerArticle');
+    article.innerHTML = ch.html || '<div class="reader-loading">这一章暂无讲义内容。</div>';
+    wireReaderBank(article);
+    renderReaderMath(article);
+    applyFont();
+    paintNavBtn($('#readerPrev'), ch.prev, '上一章');
+    paintNavBtn($('#readerNext'), ch.next, '下一章');
+    var first = article.querySelector('.kp-bank');
+    var pr = $('#readerPractice');
+    if (first && first.getAttribute('href')) { pr.href = first.getAttribute('href'); pr.hidden = false; }
+    else pr.hidden = true;
+    $('#readerBody').scrollTop = 0;
+    $('#readerProgressBar').style.width = '0%';
+    buildDrawer();
+    if (kpId) jumpToKp(kpId);
+  }
+  function paintNavBtn(btn, target, label) {
+    if (target && target.id) {
+      btn.disabled = false;
+      btn.textContent = label + ' · ' + (target.title || '');
+      btn.onclick = function () { openReader(reader.subject.id, target.id, target.title, null); };
+    } else {
+      btn.disabled = true;
+      btn.textContent = '没有' + label;
+      btn.onclick = null;
+    }
+  }
+  function buildDrawer() {
+    if (!reader.subject || !reader.meta) return;
+    $('#drawerHead').textContent = (reader.subject.name || '') + ' · 目录';
+    var cur = reader.meta.id;
+    $('#drawerList').innerHTML = (reader.subject.chapters || []).map(function (c) {
+      var on = c.id === cur;
+      var kps = '';
+      if (on && c.kps && c.kps.length) {
+        kps = '<div class="drawer-kps">' + c.kps.map(function (k) {
+          return '<button type="button" class="drawer-kp" data-kp="' + esc(k.id) + '">' + esc(k.name) + '</button>';
+        }).join('') + '</div>';
+      }
+      return '<button type="button" class="drawer-ch' + (on ? ' on' : '') + '" data-ch="' + esc(c.id) + '" data-title="' + esc(c.title) + '"><span class="no">' + esc(c.no || '') + '</span><span>' + esc(c.title) + '</span></button>' + kps;
+    }).join('');
+    $$('#drawerList [data-ch]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (b.dataset.ch === cur) { closeDrawer(); return; }
+        openReader(reader.subject.id, b.dataset.ch, b.dataset.title, null);
+      });
+    });
+    $$('#drawerList [data-kp]').forEach(function (b) {
+      b.addEventListener('click', function () { closeDrawer(); jumpToKp(b.dataset.kp); });
+    });
+  }
+  function openDrawer() { $('#readerDrawer').classList.add('open'); $('#readerScrim').hidden = false; }
+  function closeDrawer() {
+    var d = $('#readerDrawer');
+    if (d) d.classList.remove('open');
+    var sc = $('#readerScrim');
+    if (sc) sc.hidden = true;
+  }
+  $('#readerTocBtn').addEventListener('click', openDrawer);
+  $('#readerScrim').addEventListener('click', closeDrawer);
+  $('#readerBack').addEventListener('click', function () {
+    $('#readerView').hidden = true;
+    document.body.style.overflow = '';
+  });
+  $('#readerBody').addEventListener('scroll', function () {
+    var b = $('#readerBody');
+    var max = b.scrollHeight - b.clientHeight;
+    $('#readerProgressBar').style.width = (max > 0 ? Math.min(100, Math.round(b.scrollTop / max * 100)) : 0) + '%';
   });
 
   /* ---------- 启动 ---------- */
