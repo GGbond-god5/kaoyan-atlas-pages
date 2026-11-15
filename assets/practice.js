@@ -1025,7 +1025,16 @@
     state.kp = params.get("kp") || "";
     if ([...$("#fDiff").options].some(o => o.value === params.get("difficulty"))) { state.diff = params.get("difficulty"); $("#fDiff").value = state.diff; }
     updateCount();
-    setMode("knowledge");
+    const wantMode = ["knowledge", "paper", "mock"].includes(params.get("mode")) ? params.get("mode") : "knowledge";
+    setMode(wantMode);
+    if (wantMode === "paper" && params.get("paper")) {
+      const pv = params.get("paper");
+      if ([...$("#fPaper").options].some(o => o.value === pv)) { state.paper = pv; $("#fPaper").value = pv; updateCount(); }
+    }
+    if (params.get("autostart") === "1") {
+      /* App 直达：参数齐全时自动点开始（模考会先弹考试须知确认） */
+      setTimeout(() => { const b = $("#pstart"); if (b && !b.disabled) b.click(); }, 80);
+    }
   }
 
   async function bootstrap() {

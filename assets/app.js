@@ -1176,6 +1176,127 @@
 
   /* ---------- 学习计划（App 内） ---------- */
   subRenderers.plan = { title: '学习计划', render: function (body) { renderPlan(body); } };
+
+  /* ---------- 刷题直达：App 内先选科目/章节/难度/套卷，进作答页自动开始 ---------- */
+  var startSel = { mode: 'knowledge', subject: '', chapter: 'all', kp: '', diff: 'all', paper: '' };
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-start-mode]');
+    if (!t) return;
+    e.preventDefault();
+    startSel = { mode: t.dataset.startMode, subject: '', chapter: 'all', kp: '', diff: 'all', paper: '' };
+    var subs = ((state.profile || {}).subjects || []).filter(function (x) { return SUBJECT_NAMES[x]; });
+    if (subs.length) startSel.subject = subs[0];
+    openSub('start');
+  });
+  subRenderers.start = { title: '开始刷题', render: function (body) { renderStartPicker(body); } };
+  function startUrl() {
+    var q = ['mode=' + startSel.mode, 'subject=' + encodeURIComponent(startSel.subject), 'autostart=1'];
+    if (startSel.mode === 'knowledge') {
+      if (startSel.chapter && startSel.chapter !== 'all') q.push('chapter=' + encodeURIComponent(startSel.chapter));
+      if (startSel.kp) q.push('kp=' + encodeURIComponent(startSel.kp));
+      if (startSel.diff && startSel.diff !== 'all') q.push('difficulty=' + encodeURIComponent(startSel.diff));
+    }
+    if (startSel.mode === 'paper') q.push('paper=' + encodeURIComponent(startSel.paper));
+    return 'practice.html?' + q.join('&');
+  }
+  function renderStartPicker(body) {
+    var modes = [['knowledge', '按知识点'], ['paper', '按套卷'], ['mock', '全真模考']];
+    var profSubs = ((state.profile || {}).subjects || []).filter(function (x) { return SUBJECT_NAMES[x]; });
+    var ordered = profSubs.concat(Object.keys(SUBJECT_NAMES).filter(function (x) { return profSubs.indexOf(x) < 0; }));
+    if (!startSel.subject || !SUBJECT_NAMES[startSel.subject]) startSel.subject = ordered[0];
+    body.innerHTML =
+      '<div class="filter-chips" style="padding-top:2px">' + modes.map(function (m) {
+        return '<button type="button" class="f-chip' + (startSel.mode === m[0] ? ' on' : '') + '" data-sm="' + m[0] + '">' + m[1] + '</button>';
+      }).join('') + '</div>' +
+      '<label class="f-label">科目</label><div class="filter-chips">' + ordered.map(function (x) {
+        return '<button type="button" class="f-chip' + (startSel.subject === x ? ' on' : '') + '" data-ss="' + x + '">' + SUBJECT_NAMES[x] + '</button>';
+      }).join('') + '</div>' +
+      '<div id="startExtra"><div class="sub-loading">正在加载题库…</div></div>' +
+      '<button class="btn-main" id="startGo" type="button" disabled>' + (startSel.mode === 'mock' ? '开始全真模考' : '开始刷题') + '</button>' +
+      '<p class="view-note">在 App 里选好，进作答页自动开始，不用再到网页里二次选择。</p>';
+    $$('[data-sm]', body).forEach(function (b) { b.addEventListener('click', function () { startSel.mode = b.dataset.sm; startSel.paper = ''; renderStartPicker(body); }); });
+    $$('[data-ss]', body).forEach(function (b) { b.addEventListener('click', function () { startSel.subject = b.dataset.ss; startSel.chapter = 'all'; startSel.kp = ''; startSel.paper = ''; renderStartPicker(body); }); });
+    document.getElementById('startGo').addEventListener('click', function () { location.href = startUrl(); });
+    var wantSubject = startSel.subject;
+    AtlasQuestions.load(wantSubject).then(function () {
+      if (subCurrent !== 'start' || startSel.subject !== wantSubject) return;
+      paintStartExtra(body, ((window.QUESTIONS && window.QUESTIONS.items) || []).filter(function (i) { return i.subject === wantSubject; }));
+    }).catch(function () {
+      var ex = document.getElementById('startExtra');
+      if (ex) ex.innerHTML = '<div class="sub-loading">题库加载失败，检查网络后重试。</div>';
+    });
+  }
+  function paintStartExtra(body, items) {
+    var ex = document.getElementById('startExtra');
+    var go = document.getElementById('startGo');
+    if (!ex || !go) return;
+    if (startSel.mode === 'mock') {
+      ex.innerHTML = '<div class="card"><div class="row-title">' + esc(SUBJECT_NAMES[startSel.subject]) + ' · 全真模考</div>' +
+        '<div class="row-meta">按正式考试结构组卷 · 限时 180 分钟 · 到时自动交卷。点开始后先确认考试须知。</div></div>';
+      go.disabled = false;
+      return;
+    }
+    if (startSel.mode === 'paper') {
+      var byChapter = {};
+      items.forEach(function (i) {
+        var c = byChapter[i.chapter] || (byChapter[i.chapter] = { id: i.chapter, title: i.chapterTitle || i.chapter, count: 0, year: 0, mock: false });
+        c.count++; if (i.isMock) c.mock = true;
+        var y = Number(i.year) || (String(c.title).match(/(19|20)\d{2}/) || [0])[0];
+        c.year = Math.max(c.year, Number(y) || 0);
+      });
+      var papers = Object.keys(byChapter).map(function (k) { return byChapter[k]; })
+        .sort(function (a, b) { return b.year - a.year || b.count - a.count; });
+      if (!papers.length) { ex.innerHTML = '<div class="sub-loading">这个科目暂时没有成套卷。</div>'; go.disabled = true; return; }
+      ex.innerHTML = '<label class="f-label">选择套卷</label>' + papers.map(function (p) {
+        return '<div class="hist-row" data-paper="' + esc(p.id) + '"><div class="hist-main"><div class="hist-title">' + esc(p.title) + '</div>' +
+          '<div class="hist-meta">' + p.count + ' 题' + (p.mock ? ' · 模拟卷' : ' · 真题') + '</div></div>' +
+          (startSel.paper === p.id ? '<span class="tag-chip">已选</span>' : '') + '</div>';
+      }).join('');
+      $$('[data-paper]', ex).forEach(function (row) {
+        row.addEventListener('click', function () { startSel.paper = row.dataset.paper; paintStartExtra(body, items); });
+      });
+      go.disabled = !startSel.paper;
+      return;
+    }
+    /* knowledge：章节 → 知识点 → 难度 */
+    var byTopic = {};
+    items.forEach(function (i) {
+      var key = i.topicChapter || i.chapter;
+      var c = byTopic[key] || (byTopic[key] = { id: key, title: i.topicTitle || i.chapterTitle || key, count: 0 });
+      c.count++;
+    });
+    var chapters = Object.keys(byTopic).map(function (k) { return byTopic[k]; });
+    var html = '<label class="f-label">章节</label><div class="filter-chips">' +
+      '<button type="button" class="f-chip' + (startSel.chapter === 'all' ? ' on' : '') + '" data-sc="all">全部章节</button>' +
+      chapters.map(function (c) {
+        return '<button type="button" class="f-chip' + (startSel.chapter === c.id ? ' on' : '') + '" data-sc="' + esc(c.id) + '">' + esc(c.title) + ' · ' + c.count + '</button>';
+      }).join('') + '</div>';
+    if (startSel.chapter !== 'all') {
+      var kps = {};
+      items.forEach(function (i) {
+        if ((i.topicChapter || i.chapter) !== startSel.chapter || !i.kp) return;
+        var k = kps[i.kp] || (kps[i.kp] = { id: i.kp, name: i.kpName || i.kp, count: 0 });
+        k.count++;
+      });
+      var kpList = Object.keys(kps).map(function (k) { return kps[k]; });
+      if (kpList.length) {
+        html += '<label class="f-label">知识点</label><div class="filter-chips">' +
+          '<button type="button" class="f-chip' + (!startSel.kp ? ' on' : '') + '" data-sk="">整个章节</button>' +
+          kpList.map(function (k) {
+            return '<button type="button" class="f-chip' + (startSel.kp === k.id ? ' on' : '') + '" data-sk="' + esc(k.id) + '">' + esc(k.name) + ' · ' + k.count + '</button>';
+          }).join('') + '</div>';
+      }
+    }
+    html += '<label class="f-label">难度</label><div class="filter-chips">' +
+      [['all', '全部难度'], ['易', '易'], ['中', '中'], ['难', '难']].map(function (d) {
+        return '<button type="button" class="f-chip' + (startSel.diff === d[0] ? ' on' : '') + '" data-sd="' + d[0] + '">' + d[1] + '</button>';
+      }).join('') + '</div>';
+    ex.innerHTML = html;
+    $$('[data-sc]', ex).forEach(function (b) { b.addEventListener('click', function () { startSel.chapter = b.dataset.sc; startSel.kp = ''; paintStartExtra(body, items); }); });
+    $$('[data-sk]', ex).forEach(function (b) { b.addEventListener('click', function () { startSel.kp = b.dataset.sk; paintStartExtra(body, items); }); });
+    $$('[data-sd]', ex).forEach(function (b) { b.addEventListener('click', function () { startSel.diff = b.dataset.sd; paintStartExtra(body, items); }); });
+    go.disabled = false;
+  }
   function dayKeyOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function phaseOf(daysLeft) {
     if (daysLeft > 45) return { name: '强化推进期', paperEvery: 4, newShare: 0.75 };
