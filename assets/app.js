@@ -271,7 +271,8 @@
           '<span class="chapter-name">' + esc(ch.title) + '</span>' +
           '<span class="chapter-meta">' + esc(meta) + '</span>' +
           '<span class="chapter-chev">›</span></button>' +
-          '<div class="chapter-kps"><button type="button" class="kp-read-btn" data-read-chapter="' + esc(ch.id) + '" data-title="' + esc(ch.title) + '">阅读本章讲义</button>' + kps + '</div></div>';
+          '<div class="chapter-kps"><div class="chapter-actions"><button type="button" class="kp-read-btn" data-read-chapter="' + esc(ch.id) + '" data-title="' + esc(ch.title) + '">阅读本章讲义</button>' +
+          '<a class="kp-practice-btn" href="practice.html?subject=' + esc(subjectId) + '&chapter=' + esc(ch.id) + '&autostart=1">刷本章题 →</a></div>' + kps + '</div></div>';
       }).join('') || '<div class="today-empty">这一科暂无讲义章节。</div>';
       $$('.chapter-head', box).forEach(function (hd) {
         hd.addEventListener('click', function () { hd.parentElement.classList.toggle('open'); });

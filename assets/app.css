@@ -570,3 +570,8 @@ button { font-family: inherit; }
 /* 收藏 / 错题本标记按钮（App） */
 .qd-actions { margin-top: 10px; display: flex; gap: 8px; }
 .qd-actions .btn-sub.on, .row-actions .btn-sub.on { background: var(--gold, #B8860B); color: #fff; border-color: var(--gold, #B8860B); }
+
+/* 知识库章节双入口：讲义 / 刷本章题 */
+.chapter-actions { display: flex; gap: 8px; margin-bottom: 8px; }
+.chapter-actions .kp-read-btn { flex: 1; }
+.kp-practice-btn { flex: 1; text-align: center; padding: 10px; border-radius: 10px; background: var(--gold, #B8860B); color: #fff; font-weight: 700; text-decoration: none; font-size: 14.5px; }
