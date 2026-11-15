@@ -55,7 +55,6 @@
       '<div class="hub-menu">' +
         '<button type="button" class="hub-item" id="hubEdit">编辑档案<span>头像 · 格言 · 目标院校</span></button>' +
         '<a class="hub-item" href="community.html">我的社区分享<span>广场与我分享的资料</span></a>' +
-        '<a class="hub-item" href="topics.html">知识点选题<span>按知识点进入题库刷题</span></a>' +
         '<a class="hub-item" id="hubAdmin" href="admin.html" hidden>管理控制台<span>站点管理</span></a>' +
         '<button type="button" class="hub-item" id="hubSettingsBtn">账号设置<span>改密码 · 导出数据 · 注销</span></button>' +
       "</div>" +
