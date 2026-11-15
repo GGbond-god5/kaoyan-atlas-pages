@@ -1928,7 +1928,9 @@
       '<a class="btn-sub" href="/api/auth/export" style="display:block;text-align:center;height:44px;line-height:44px;padding:0">导出我的数据</a></div>' +
       '<div class="card"><div class="row-title" style="color:var(--ver)">注销账号</div><p class="view-note" style="margin:6px 0 0">注销将永久删除账号及全部个人数据，不可恢复。如只是暂时不用，无需注销。</p>' +
       '<label class="f-label">输入密码确认</label><input class="f-input" id="stDelPw" type="password" maxlength="32" autocomplete="current-password">' +
-      '<button class="btn-main" id="stDelBtn" type="button" style="margin-top:12px;background:var(--ver)">永久注销账号</button></div>';
+      '<button class="btn-main" id="stDelBtn" type="button" style="margin-top:12px;background:var(--ver)">永久注销账号</button></div>' +
+      '<div id="aiCfgMount"></div>';
+    if (window.AtlasAiCfg) window.AtlasAiCfg.renderSettings(document.getElementById('aiCfgMount'));
     document.getElementById('stPwBtn').addEventListener('click', function () {
       var btn = this;
       var oldPw = document.getElementById('stOld').value, nw = document.getElementById('stNew').value, nw2 = document.getElementById('stNew2').value;
