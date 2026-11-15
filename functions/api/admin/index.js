@@ -2,9 +2,9 @@
 // 管理员判定：users.role = 'admin'，或手机号在环境变量 ADMIN_PHONES（逗号分隔）里。
 // 引导：站长在 Cloudflare D1 控制台执行一次
 //   UPDATE users SET role='admin' WHERE phone='站长手机号';
-import { ok, fail, readJson, maskPhone } from "../../../_lib/http.js";
-import { getUser } from "../../../_lib/db.js";
-import { currentSession } from "../../../_lib/security.js";
+import { ok, fail, readJson, maskPhone } from "../../_lib/http.js";
+import { getUser } from "../../_lib/db.js";
+import { currentSession } from "../../_lib/security.js";
 import {
   ensureLayer1,
   isAdminUser,
@@ -12,7 +12,7 @@ import {
   newInviteCode,
   getMeta,
   setMeta,
-} from "../../../_lib/layer1.js";
+} from "../../_lib/layer1.js";
 
 async function requireAdmin(request, env) {
   if (!env.SESSION_SECRET) return { error: fail(500, "站点配置缺失：未设置 SESSION_SECRET") };
