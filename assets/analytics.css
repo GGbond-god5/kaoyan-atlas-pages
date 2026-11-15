@@ -19,3 +19,30 @@
 .ad-analysis-bar { display: flex; align-items: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
 .ad-analysis { border: 1px solid #E7DFC9; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; background: #FFFDF6; }
 .ad-analysis p { line-height: 1.8; white-space: pre-wrap; }
+
+/* 套卷复盘可视化（与 App 做题详情对齐） */
+.bar.mid i { background: #D9A62E; }
+.bar.low i { background: #C0453E; }
+.ad-sum { display: flex; gap: 18px; align-items: center; background: #FBF7EA; border: 1px solid #E7DFC9; border-radius: 12px; padding: 14px 16px; margin: 10px 0 14px; flex-wrap: wrap; }
+.ad-sum-rate { text-align: center; min-width: 92px; }
+.ad-sum-rate b { display: block; font-size: 34px; line-height: 1.1; }
+.ad-sum-rate span { color: #8A8172; font-size: 12.5px; }
+.ad-sum-main { flex: 1; min-width: 240px; }
+.ad-sum-line { margin-bottom: 8px; }
+.ad-strip { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.ad-cell { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #D8CFB4; background: #fff; font-size: 13px; cursor: pointer; padding: 0; }
+.ad-cell.sc-full { background: #E4F0E7; border-color: #9CC3A6; color: #2F6B3E; }
+.ad-cell.sc-good { background: #EDF5EF; border-color: #BFD8C6; color: #3E7A4E; }
+.ad-cell.sc-mid { background: #FBF0D3; border-color: #E3C878; color: #8A6414; }
+.ad-cell.sc-low { background: #F9E3E1; border-color: #DFA49F; color: #A03A34; }
+.ad-cell.sc-none { background: #F1EEE6; color: #8A8172; }
+.ad-head { cursor: pointer; }
+.ad-caret { margin-left: auto; color: #8A8172; }
+.ad-score.sc-full { color: #2F6B3E; } .ad-score.sc-good { color: #3E7A4E; }
+.ad-score.sc-mid { color: #8A6414; } .ad-score.sc-low { color: #A03A34; } .ad-score.sc-none { color: #8A8172; }
+.bd-row { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+.bd-point { flex: 0 0 34%; color: #4A4436; }
+.bd-track { flex: 1; height: 8px; background: #EFE9D8; border-radius: 99px; overflow: hidden; }
+.bd-track i { display: block; height: 100%; background: #B8860B; border-radius: 99px; }
+.bd-row b { min-width: 64px; text-align: right; }
+.bd-comment { margin: 2px 0 8px; color: #8A8172; font-size: 13px; }

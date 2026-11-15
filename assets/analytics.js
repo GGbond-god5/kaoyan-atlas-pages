@@ -178,6 +178,7 @@
       }).join('') : '<span class="chip" style="border-color:#BFD8C6;color:#3E7A4E;background:#EDF5EF">全部满分</span>';
       return '<div class="paper"><h3><button type="button" class="paper-open" data-open-paper="' + esc(p.id || '') + '">' + esc(p.title) + '</button></h3><div class="pmeta">' +
         (p.mode === 'mock' ? '全真模考 · ' : p.mode === 'diagnostic' ? '能力自测 · ' : '套卷 · ') + '已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '（' + (p.rate === null ? '—' : pct(p.rate)) + '）</div>' +
+        '<div class="bar ' + (p.rate === null ? '' : p.rate >= 0.8 ? 'good' : p.rate >= 0.5 ? 'mid' : 'low') + '" style="margin-top:8px"><i style="width:' + Math.round((p.rate || 0) * 100) + '%"></i></div>' +
         '<div class="chips">' + chips + '</div>' +
         '<div style="margin-top:10px"><button type="button" class="btn ghost danger" data-reset-paper="' + esc(p.id || '') + '">重置这套（删除记录，二刷用）</button></div></div>';
     }).join('');
@@ -259,33 +260,74 @@
       var byId = {};
       ((window.QUESTIONS && window.QUESTIONS.items) || []).forEach(function (it) { byId[it.id] = it; });
       var clean = function (x) { return window.AtlasPlain ? window.AtlasPlain.clean(String(x == null ? '' : x)) : String(x == null ? '' : x); };
+      function rateCls(rt) { return rt === null ? 'sc-none' : rt >= 1 ? 'sc-full' : rt >= 0.8 ? 'sc-good' : rt >= 0.5 ? 'sc-mid' : 'sc-low'; }
+      var sumGraded = 0, sumScore = 0, sumMax = 0;
+      (a.questions || []).forEach(function (q) { var rr = (a.results || {})[q.id] || {}; if (rr.status === 'graded' && Number(rr.maxScore) > 0) { sumGraded++; sumScore += Number(rr.score); sumMax += Number(rr.maxScore); } });
+      var sumRate = sumMax > 0 ? sumScore / sumMax : null;
+      var strip = (a.questions || []).map(function (q, idx) {
+        var rr = (a.results || {})[q.id] || {};
+        var rt = rate(rr);
+        return '<button type="button" class="ad-cell ' + rateCls(rt) + '" data-goto="' + idx + '" title="第 ' + (idx + 1) + ' 题' + (q.kpName ? ' · ' + esc(q.kpName) : '') + (rt === null ? ' · 待批改' : ' · ' + Math.round(Number(rr.score) * 10) / 10 + '/' + Math.round(Number(rr.maxScore) * 10) / 10) + '">' + (idx + 1) + '</button>';
+      }).join('');
       var cards = (a.questions || []).map(function (q, idx) {
         var r = (a.results || {})[q.id] || {};
         var it = byId[q.id] || {};
         var graded = r.status === 'graded';
-        var html = '<div class="ad-card"><div class="ad-head"><b>第 ' + (idx + 1) + ' 题</b><span>' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' +
-          '<b class="ad-score">' + (graded ? (Math.round(Number(r.score) * 10) / 10) + ' / ' + (Math.round(Number(r.maxScore) * 10) / 10) : '待批改') + '</b></div>';
+        var rt = rate(r);
+        var open = !(graded && rt >= 1);
+        var html = '<div class="ad-card" id="adCard' + idx + '"><div class="ad-head" data-toggle="' + idx + '"><b>第 ' + (idx + 1) + ' 题</b><span>' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' +
+          '<b class="ad-score ' + rateCls(rt) + '">' + (graded ? (Math.round(Number(r.score) * 10) / 10) + ' / ' + (Math.round(Number(r.maxScore) * 10) / 10) : '待批改') + '</b><span class="ad-caret">' + (open ? '▾' : '▸') + '</span></div><div class="ad-body"' + (open ? '' : ' hidden') + '>';
         if (it.text) html += '<div class="ad-sec"><span>题干</span><p>' + esc(clean(it.text)) + '</p></div>';
         if (it.answer) html += '<div class="ad-sec"><span>参考答案</span><p>' + esc(clean(it.answer)) + '</p></div>';
         if (it.steps && it.steps.length) html += '<div class="ad-sec"><span>解析</span>' + it.steps.map(function (st) { return '<p>' + esc(clean(st)) + '</p>'; }).join('') + '</div>';
         if (r.level) html += '<div class="ad-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
         if (r.comments) html += '<div class="ad-sec"><span>AI 总评</span><p>' + esc(clean(r.comments)) + '</p></div>';
         if (Array.isArray(r.breakdown) && r.breakdown.length) html += '<div class="ad-sec"><span>得分点</span>' + r.breakdown.map(function (b) {
-          return '<p>' + esc(b.point || '') + '：' + (b.score == null ? '' : Math.round(Number(b.score) * 10) / 10) + (b.max == null ? '' : ' / ' + Math.round(Number(b.max) * 10) / 10) + (b.comment ? '（' + esc(clean(b.comment)) + '）' : '') + '</p>';
+          var bpct = (b.max != null && Number(b.max) > 0 && b.score != null) ? Math.max(0, Math.min(100, Math.round(Number(b.score) / Number(b.max) * 100))) : 0;
+          return '<div class="bd-row"><span class="bd-point">' + esc(b.point || '') + '</span><span class="bd-track"><i style="width:' + bpct + '%"></i></span><b>' + (b.score == null ? '' : Math.round(Number(b.score) * 10) / 10) + (b.max == null ? '' : ' / ' + Math.round(Number(b.max) * 10) / 10) + '</b></div>' + (b.comment ? '<p class="bd-comment">' + esc(clean(b.comment)) + '</p>' : '');
+        }).join('') + '</div>';
+        if (r.dimensions && Object.keys(r.dimensions).length) html += '<div class="ad-sec"><span>维度评分</span>' + Object.keys(r.dimensions).map(function (k) {
+          var v = r.dimensions[k], frac = null, txt = '';
+          if (v && typeof v === 'object') { if (v.max != null && Number(v.max) > 0 && v.score != null) frac = Number(v.score) / Number(v.max); txt = (v.score != null ? v.score : '') + (v.max != null ? ' / ' + v.max : ''); }
+          else if (typeof v === 'string' && /^\s*[\d.]+\s*\/\s*[\d.]+\s*$/.test(v)) { var pp = v.split('/'); frac = Number(pp[0]) / Number(pp[1]); txt = v.trim(); }
+          else if (typeof v === 'number') { frac = v > 1 ? null : v; txt = v > 1 ? String(v) : Math.round(v * 100) + '%'; }
+          else txt = String(v == null ? '' : v);
+          return '<div class="bd-row"><span class="bd-point">' + esc(k) + '</span>' + (frac !== null ? '<span class="bd-track"><i style="width:' + Math.round(Math.max(0, Math.min(1, frac)) * 100) + '%"></i></span>' : '<span class="bd-track"></span>') + '<b>' + esc(txt) + '</b></div>';
         }).join('') + '</div>';
         if (r.missing) html += '<div class="ad-sec"><span>缺失要点</span><p>' + esc(clean(r.missing)) + '</p></div>';
         if (r.suggestions) html += '<div class="ad-sec"><span>改进建议</span><p>' + esc(clean(r.suggestions)) + '</p></div>';
         if (r.revised) html += '<div class="ad-sec"><span>作文指导 · 修改稿</span><p>' + esc(clean(r.revised)) + '</p></div>';
         if (Array.isArray(r.grammar) && r.grammar.length) html += '<div class="ad-sec"><span>作文指导 · 语法与表达</span>' + r.grammar.map(function (g) { return '<p>' + esc(clean(typeof g === 'string' ? g : (g.issue || g.text || g.comment || ''))) + '</p>'; }).join('') + '</div>';
         html += '<div class="ad-actions"><button type="button" class="mark-btn" data-mark-fav="' + esc(q.id) + '">☆ 收藏</button><button type="button" class="mark-btn" data-mark-wb="' + esc(q.id) + '">＋ 加入错题本</button></div>';
-        return html + '</div>';
+        return html + '</div></div>';
       }).join('');
       sec.innerHTML = '<h2>' + esc(paperTitle(a)) + ' · 做题详情</h2>' +
-        '<p class="sub">每道题的参考答案、解析与批改详情都在这里。</p>' +
+        '<div class="ad-sum"><div class="ad-sum-rate"><b>' + (sumRate === null ? '—' : pct(sumRate)) + '</b><span>得分率</span></div>' +
+        '<div class="ad-sum-main"><div class="ad-sum-line">得分 <b>' + (Math.round(sumScore * 10) / 10) + ' / ' + (Math.round(sumMax * 10) / 10) + '</b> · 已批改 ' + sumGraded + ' / ' + (a.questions || []).length + ' 题</div>' +
+        '<div class="bar ' + (sumRate === null ? '' : sumRate >= 0.8 ? 'good' : sumRate >= 0.5 ? 'mid' : 'low') + '"><i style="width:' + Math.round((sumRate || 0) * 100) + '%"></i></div>' +
+        '<div class="ad-strip">' + strip + '</div><p class="sub" style="margin:6px 0 0">逐题得分条：点任意题号跳到该题；满分题默认折叠，丢分题自动展开。</p></div></div>' +
         '<div class="ad-analysis-bar"><button type="button" class="btn ghost" id="adAnalysisBtn">AI 教学分析</button><span class="sub">按考点归组丢分、错因分类，并给出复盘动作与下一阶段安排。</span></div>' +
         '<div id="adAnalysis" class="ad-analysis" hidden></div>' + cards +
         '<button type="button" class="btn ghost" id="paperDetailClose">收起详情</button>';
       sec.querySelector('#paperDetailClose').addEventListener('click', function () { sec.hidden = true; });
+      sec.querySelectorAll('[data-toggle]').forEach(function (h) {
+        h.addEventListener('click', function () {
+          var card = document.getElementById('adCard' + h.dataset.toggle);
+          if (!card) return;
+          var body = card.querySelector('.ad-body');
+          var caret = h.querySelector('.ad-caret');
+          if (body) { body.hidden = !body.hidden; if (caret) caret.textContent = body.hidden ? '▸' : '▾'; }
+        });
+      });
+      sec.querySelectorAll('[data-goto]').forEach(function (c) {
+        c.addEventListener('click', function () {
+          var card = document.getElementById('adCard' + c.dataset.goto);
+          if (!card) return;
+          var body = card.querySelector('.ad-body');
+          if (body && body.hidden) { body.hidden = false; var ct = card.querySelector('.ad-caret'); if (ct) ct.textContent = '▾'; }
+          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
       var anaBtn = sec.querySelector('#adAnalysisBtn');
       if (anaBtn) anaBtn.addEventListener('click', function () {
         var box = sec.querySelector('#adAnalysis');
