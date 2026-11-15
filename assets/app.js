@@ -470,9 +470,35 @@
   }
   var subBackHook = null;
   $('#subBack').addEventListener('click', function () {
-    if (subBackHook && subBackHook()) return;
+    var h = subBackHook; subBackHook = null;
+    if (h) { try { if (h()) { reportLayer(); return; } } catch (e) { /* 钩子异常时直接关 */ } }
     closeSub();
   });
+  /* 浮层（子页面/阅读器/向导/弹窗）状态上报原生壳：系统返回键先关最上层浮层，而不是跳页 */
+  function anyLayerOpen() {
+    return !$('#modalScrim').hidden || !$('#guideView').hidden || !$('#readerView').hidden || !$('#subView').hidden;
+  }
+  function reportLayer() {
+    if (window.AtlasApp && window.AtlasApp.setLayerOpen) { try { window.AtlasApp.setLayerOpen(anyLayerOpen()); } catch (e) {} }
+  }
+  window.__atlasBack = function () {
+    try {
+      if (!$('#modalScrim').hidden) closeModal(null);
+      else if (!$('#guideView').hidden) closeGuide();
+      else if (!$('#readerView').hidden) { $('#readerView').hidden = true; document.body.style.overflow = ''; }
+      else if (!$('#subView').hidden) { document.getElementById('subBack').click(); return true; }
+      else return false;
+      reportLayer();
+      return true;
+    } catch (e) { return false; }
+  };
+  if (window.MutationObserver) {
+    var layerObserver = new MutationObserver(function () { reportLayer(); });
+    ['subView', 'readerView', 'guideView', 'modalScrim'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) layerObserver.observe(el, { attributes: true, attributeFilter: ['hidden'] });
+    });
+  }
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-sub]');
     if (!t) return;
