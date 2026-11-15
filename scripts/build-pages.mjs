@@ -17,6 +17,7 @@ const FILES = [
   "admin.html",
   "community.html",
   "wrongbook.html",
+  "app.html",
   "manifest.webmanifest",
   "sw.js",
   "_headers",

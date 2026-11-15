@@ -1,0 +1,206 @@
+/* 考研科目大观 · App（移动端独立结构）
+   与网页版共用后端与数据，界面结构独立：底部五栏导航 + 卡片式首页，
+   目录收进题库逐级展开，内容区底部留白，功能区不遮挡内容。 */
+:root {
+  --paper: #F3EEE1;
+  --sheet: #FFFDF7;
+  --ink: #17161A;
+  --ink2: #4A4438;
+  --ink3: #8A8172;
+  --rule: #E0D7C3;
+  --gold: #B8860B;
+  --gold-bg: #FBF3E2;
+  --ver: #A8342A;
+  --green: #3E7A4C;
+  --radius: 14px;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+
+/* 顶部小栏 */
+.app-top {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 54px; padding: 0 14px;
+  background: rgba(243, 238, 225, .94);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+.app-brand { display: flex; align-items: center; gap: 9px; }
+.app-mark {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--ink); color: var(--paper);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: Georgia, "Songti SC", serif; font-size: 16px; font-weight: 700;
+}
+.app-brand-text b { display: block; font-size: 14.5px; line-height: 1.2; letter-spacing: .02em; }
+.app-brand-text small { display: block; font-size: 8.5px; letter-spacing: .18em; color: var(--ink3); }
+.app-avatar {
+  width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--rule);
+  background: var(--sheet); overflow: hidden; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: Georgia, "Songti SC", serif; font-size: 14px; color: var(--ink2);
+}
+.app-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* 内容区：底部留足导航栏高度，内容不被遮挡 */
+.app-main { padding: 14px 14px calc(84px + env(safe-area-inset-bottom)); max-width: 640px; margin: 0 auto; }
+.view[hidden] { display: none; }
+
+.sec-title { font-size: 13px; letter-spacing: .12em; color: var(--ink3); margin: 20px 2px 9px; font-weight: 600; }
+.sec-title.first { margin-top: 2px; }
+
+.card {
+  display: block; background: var(--sheet);
+  border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 15px 16px; margin-bottom: 10px;
+}
+
+/* 首页 · 倒计时卡 */
+.hero { padding: 18px; }
+.hero-main { display: flex; gap: 16px; align-items: center; }
+.hero-days { text-align: center; min-width: 74px; }
+.hero-days b { display: block; font-family: Georgia, serif; font-size: 40px; line-height: 1; color: var(--ink); }
+.hero-days span { font-size: 11px; color: var(--ink3); letter-spacing: .1em; }
+.hero-side { border-left: 1px solid var(--rule); padding-left: 16px; min-width: 0; }
+.hero-hello { font-size: 16.5px; font-weight: 700; }
+.hero-motto { font-size: 13px; color: var(--ink2); margin-top: 3px; }
+.hero-target { font-size: 12px; color: var(--gold); margin-top: 5px; font-weight: 600; }
+
+/* 今日任务 */
+.today-row { display: flex; align-items: center; gap: 9px; padding: 9px 0; }
+.today-row + .today-row { border-top: 1px dashed var(--rule); }
+.today-dot { flex: 0 0 8px; width: 8px; height: 8px; border-radius: 50%; }
+.dot-red { background: var(--ver); }
+.dot-gold { background: var(--gold); }
+.dot-green { background: var(--green); }
+.today-text { flex: 1; font-size: 14px; color: var(--ink2); }
+.today-go { flex: 0 0 auto; font-size: 13px; font-weight: 700; color: var(--gold); padding: 6px 4px; }
+.today-empty { font-size: 13.5px; color: var(--ink3); padding: 6px 0; }
+
+/* 快捷入口 */
+.quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 2px; padding: 14px 10px; }
+.quick { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 8px 2px; border-radius: 10px; font-size: 12.5px; color: var(--ink2); }
+.quick:active { background: var(--gold-bg); }
+.quick-mark {
+  width: 42px; height: 42px; border-radius: 12px;
+  border: 1px solid var(--rule); background: var(--paper);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: Georgia, "Songti SC", serif; font-size: 17px; font-weight: 700; color: var(--ink);
+}
+.quick-mark.mark-ver { background: var(--ver); border-color: var(--ver); color: #FFF6EC; }
+
+/* 最近成绩 */
+.recent-row { display: flex; align-items: baseline; gap: 10px; padding: 9px 0; }
+.recent-row + .recent-row { border-top: 1px dashed var(--rule); }
+.recent-title { flex: 1; font-size: 14px; color: var(--ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recent-rate { font-family: Georgia, serif; font-size: 17px; font-weight: 700; }
+.recent-rate.good { color: var(--green); }
+.recent-rate.mid { color: var(--gold); }
+.recent-rate.low { color: var(--ver); }
+.recent-date { font-size: 11.5px; color: var(--ink3); }
+.more-link { display: block; text-align: right; font-size: 13px; font-weight: 700; color: var(--gold); padding-top: 8px; }
+
+/* 题库 */
+.link-card { display: flex; align-items: center; gap: 10px; }
+.link-card-title { font-weight: 700; font-size: 15px; }
+.link-card-desc { flex: 1; font-size: 12.5px; color: var(--ink3); }
+.link-card-arrow { color: var(--gold); font-weight: 700; }
+.subject-row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; cursor: pointer; }
+.subject-row:active { background: var(--gold-bg); }
+.subject-name { flex: 1; font-size: 16px; font-weight: 700; }
+.subject-count { font-size: 12.5px; color: var(--ink3); }
+.subject-arrow { color: var(--gold); font-size: 18px; font-weight: 700; }
+.back-btn { background: none; border: 0; color: var(--gold); font-size: 14px; font-weight: 700; padding: 6px 2px 0; cursor: pointer; }
+.chapter-block { background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); margin-bottom: 9px; overflow: hidden; }
+.chapter-head { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; padding: 14px 15px; cursor: pointer; }
+.chapter-name { flex: 1; font-size: 14.5px; font-weight: 600; line-height: 1.45; }
+.chapter-meta { font-size: 11.5px; color: var(--ink3); white-space: nowrap; }
+.chapter-chev { color: var(--ink3); transition: transform .18s; }
+.chapter-block.open .chapter-chev { transform: rotate(90deg); }
+.chapter-kps { display: none; border-top: 1px dashed var(--rule); padding: 4px 15px 10px; }
+.chapter-block.open .chapter-kps { display: block; }
+.kp-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+.kp-row + .kp-row { border-top: 1px solid #F0E9D8; }
+.kp-name { flex: 1; font-size: 13.5px; color: var(--ink2); line-height: 1.45; }
+.kp-count { font-size: 11.5px; color: var(--ink3); white-space: nowrap; }
+.kp-go { flex: 0 0 auto; background: var(--ink); color: var(--paper); border-radius: 8px; padding: 7px 13px; font-size: 12.5px; font-weight: 700; }
+.chapter-all { display: inline-block; font-size: 12.5px; font-weight: 700; color: var(--gold); padding: 8px 0 2px; }
+
+/* 刷题模式卡 */
+.mode-card { position: relative; padding: 16px 16px 15px 76px; min-height: 76px; }
+.mode-card:active { background: var(--gold-bg); }
+.mode-badge {
+  position: absolute; left: 15px; top: 16px;
+  width: 46px; height: 46px; border-radius: 12px;
+  border: 1px solid var(--rule); background: var(--paper);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--ink2); text-align: center; line-height: 1.25;
+}
+.mode-badge.badge-ver { background: var(--ver); border-color: var(--ver); color: #FFF6EC; }
+.mode-title { display: block; font-size: 15.5px; font-weight: 700; }
+.mode-desc { display: block; font-size: 12.5px; color: var(--ink3); margin-top: 3px; line-height: 1.5; }
+.view-note { font-size: 12px; color: var(--ink3); line-height: 1.6; margin: 12px 4px 0; }
+.view-note.center { text-align: center; }
+
+/* 错题统计 */
+.stats-strip { display: flex; padding: 16px 6px; }
+.stat { flex: 1; text-align: center; }
+.stat + .stat { border-left: 1px solid var(--rule); }
+.stat b { display: block; font-family: Georgia, serif; font-size: 24px; line-height: 1.15; }
+.stat span { font-size: 11.5px; color: var(--ink3); }
+
+/* 我的 */
+.me-card { display: flex; gap: 14px; align-items: center; padding: 18px 16px; }
+.me-avatar {
+  flex: 0 0 56px; width: 56px; height: 56px; border-radius: 50%;
+  border: 1px solid var(--rule); background: var(--paper); overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: Georgia, "Songti SC", serif; font-size: 22px; color: var(--ink2);
+}
+.me-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.me-name { font-size: 17px; font-weight: 700; }
+.me-motto { font-size: 12.5px; color: var(--ink2); margin-top: 2px; }
+.me-target { font-size: 12px; color: var(--gold); font-weight: 600; margin-top: 4px; }
+.entry-list { padding: 4px 16px; }
+.entry { display: flex; align-items: center; min-height: 52px; font-size: 14.5px; }
+.entry + .entry { border-top: 1px solid #F0E9D8; }
+.entry span:first-child { flex: 1; }
+.entry-arrow { color: var(--ink3); font-size: 18px; }
+.logout-btn {
+  width: 100%; height: 48px; margin-top: 12px;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius);
+  color: var(--ver); font-size: 14.5px; font-weight: 700; cursor: pointer;
+}
+
+/* 底部导航：固定五栏，内容区已留白，不遮挡 */
+.app-tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: flex; background: var(--ink);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -6px 18px rgba(23, 22, 26, .18);
+}
+.app-tabs button {
+  flex: 1; background: none; border: 0; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  height: 58px; color: #A79E8D; font-size: 10.5px;
+}
+.app-tabs button svg { width: 22px; height: 22px; fill: currentColor; }
+.app-tabs button.on { color: #D9A62E; }
+
+.app-toast {
+  position: fixed; left: 50%; bottom: calc(76px + env(safe-area-inset-bottom));
+  transform: translateX(-50%); z-index: 60;
+  background: var(--ink); color: var(--paper);
+  font-size: 13px; padding: 9px 16px; border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(23, 22, 26, .3);
+}

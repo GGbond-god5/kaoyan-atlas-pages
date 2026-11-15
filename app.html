@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>考研科目大观 · App</title>
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="stylesheet" href="assets/app.css?v=1">
+</head>
+<body>
+<header class="app-top">
+  <div class="app-brand">
+    <span class="app-mark">观</span>
+    <div class="app-brand-text"><b>考研科目大观</b><small>KAOYAN ATLAS · 2027</small></div>
+  </div>
+  <button class="app-avatar" id="topAvatar" type="button" aria-label="我的">
+    <img id="topAvatarImg" alt="" hidden>
+    <span id="topAvatarChar">观</span>
+  </button>
+</header>
+
+<main class="app-main">
+  <!-- 首页 -->
+  <section class="view" id="view-home">
+    <div class="card hero">
+      <div class="hero-main">
+        <div class="hero-days"><b id="heroDays">--</b><span>天后初试</span></div>
+        <div class="hero-side">
+          <div class="hero-hello" id="heroHello">你好</div>
+          <div class="hero-motto" id="heroMotto">上岸不是终点，是新的起点。</div>
+          <div class="hero-target" id="heroTarget"></div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="sec-title">今日任务</h2>
+    <div class="card" id="todayCard">
+      <div class="today-row" id="todayReview" hidden>
+        <span class="today-dot dot-red"></span><span class="today-text"></span>
+        <a class="today-go" href="practice.html?review=1">去复习</a>
+      </div>
+      <div class="today-row" id="todayVocab" hidden>
+        <span class="today-dot dot-gold"></span><span class="today-text"></span>
+        <a class="today-go" href="vocab.html">去背词</a>
+      </div>
+      <div class="today-row" id="todayPlan" hidden>
+        <span class="today-dot dot-green"></span><span class="today-text"></span>
+        <a class="today-go" href="index.html">看计划</a>
+      </div>
+      <div class="today-empty" id="todayEmpty">正在加载今日任务…</div>
+    </div>
+
+    <h2 class="sec-title">快捷入口</h2>
+    <div class="card quick-grid">
+      <a class="quick" href="practice.html"><span class="quick-mark mark-ver">考</span><span>全真模考</span></a>
+      <a class="quick" href="analytics.html"><span class="quick-mark">析</span><span>套卷分析</span></a>
+      <a class="quick" href="library.html"><span class="quick-mark">料</span><span>资料库</span></a>
+      <a class="quick" href="community.html"><span class="quick-mark">区</span><span>社区</span></a>
+      <a class="quick" href="index.html"><span class="quick-mark">谱</span><span>图谱总览</span></a>
+      <a class="quick" href="vocab.html"><span class="quick-mark">词</span><span>每日单词</span></a>
+      <a class="quick" href="wrongbook.html"><span class="quick-mark">本</span><span>错题本</span></a>
+      <a class="quick" href="index.html"><span class="quick-mark">记</span><span>笔记库</span></a>
+    </div>
+
+    <h2 class="sec-title">最近成绩</h2>
+    <div class="card" id="recentCard">
+      <div class="today-empty" id="recentEmpty">正在加载…</div>
+      <div id="recentList"></div>
+      <a class="more-link" href="analytics.html" id="recentMore" hidden>查看全部分析 →</a>
+    </div>
+  </section>
+
+  <!-- 题库 -->
+  <section class="view" id="view-bank" hidden>
+    <div id="bankSubjects">
+      <h2 class="sec-title first">科目题库</h2>
+      <div id="subjectList"><div class="today-empty">正在加载题库…</div></div>
+      <a class="card link-card" href="index.html">
+        <span class="link-card-title">图谱总览</span>
+        <span class="link-card-desc">在知识图谱里阅读考点与讲义</span>
+        <span class="link-card-arrow">→</span>
+      </a>
+    </div>
+    <div id="bankDetail" hidden>
+      <button class="back-btn" id="bankBack" type="button">← 全部科目</button>
+      <h2 class="sec-title" id="bankDetailTitle">章节</h2>
+      <div id="chapterList"><div class="today-empty">正在加载章节…</div></div>
+    </div>
+  </section>
+
+  <!-- 刷题 -->
+  <section class="view" id="view-practice" hidden>
+    <h2 class="sec-title first">选一种刷法</h2>
+    <a class="card mode-card" href="practice.html">
+      <span class="mode-badge">知识点</span>
+      <span class="mode-title">按知识点刷</span>
+      <span class="mode-desc">选题即判、即时看解析，答题卡目录随行</span>
+    </a>
+    <a class="card mode-card" href="practice.html">
+      <span class="mode-badge">套卷</span>
+      <span class="mode-title">按套卷刷</span>
+      <span class="mode-desc">整套真题原卷与模拟卷，纯净全屏作答</span>
+    </a>
+    <a class="card mode-card" href="practice.html">
+      <span class="mode-badge badge-ver">模考</span>
+      <span class="mode-title">全真模考</span>
+      <span class="mode-desc">按正式结构组卷 · 限时 180 分钟 · 到时自动交卷</span>
+    </a>
+    <a class="card mode-card" href="practice.html?review=1">
+      <span class="mode-badge">复习</span>
+      <span class="mode-title">错题复习</span>
+      <span class="mode-desc">按艾宾浩斯节奏回流到期错题</span>
+    </a>
+    <p class="view-note">进入刷题页后，在顶部切换模式；模考与套卷交卷后统一 AI 批改。</p>
+  </section>
+
+  <!-- 错题 -->
+  <section class="view" id="view-wrong" hidden>
+    <h2 class="sec-title first">错题复习</h2>
+    <div class="card stats-strip">
+      <div class="stat"><b id="statWrong">--</b><span>错题总数</span></div>
+      <div class="stat"><b id="statSeen">--</b><span>累计做题</span></div>
+      <div class="stat"><b id="statRate">--</b><span>正确率</span></div>
+    </div>
+    <a class="card mode-card" href="practice.html?review=1">
+      <span class="mode-badge badge-ver">复习</span>
+      <span class="mode-title">开始今日复习</span>
+      <span class="mode-desc">到期错题自动组队，答对逐级拉长间隔</span>
+    </a>
+    <a class="card mode-card" href="wrongbook.html">
+      <span class="mode-badge">错题本</span>
+      <span class="mode-title">打开错题本</span>
+      <span class="mode-desc">全部错题清单，可筛选科目、导出打印</span>
+    </a>
+  </section>
+
+  <!-- 我的 -->
+  <section class="view" id="view-me" hidden>
+    <div class="card me-card">
+      <div class="me-avatar">
+        <img id="meAvatarImg" alt="" hidden>
+        <span id="meAvatarChar">观</span>
+      </div>
+      <div class="me-info">
+        <div class="me-name" id="meName">考研人</div>
+        <div class="me-motto" id="meMotto"></div>
+        <div class="me-target" id="meTarget"></div>
+      </div>
+    </div>
+    <div class="card entry-list">
+      <a class="entry" href="index.html#profile"><span>档案设置</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="analytics.html"><span>套卷分析</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="library.html"><span>我的资料库</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="community.html"><span>社区分享</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="vocab.html"><span>每日单词</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="wrongbook.html"><span>错题本</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="settings.html"><span>账号设置</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="admin.html" id="adminEntry" hidden><span>管理控制台</span><span class="entry-arrow">›</span></a>
+    </div>
+    <button class="logout-btn" id="logoutBtn" type="button">退出登录</button>
+    <p class="view-note center">考研科目大观 · App 结构与网页版独立，数据互通</p>
+  </section>
+</main>
+
+<nav class="app-tabs" id="appTabs">
+  <button type="button" data-tab="home" class="on">
+    <svg viewBox="0 0 24 24"><path d="M10,20v-6h4v6h5v-8h3L12,3 2,12h3v8z"/></svg><span>首页</span>
+  </button>
+  <button type="button" data-tab="bank">
+    <svg viewBox="0 0 24 24"><path d="M12,5c-2,-1.5 -4.5,-2 -8,-2v16c3.5,0 6,0.5 8,2 2,-1.5 4.5,-2 8,-2V3c-3.5,0 -6,0.5 -8,2z"/></svg><span>题库</span>
+  </button>
+  <button type="button" data-tab="practice">
+    <svg viewBox="0 0 24 24"><path d="M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25zM20.71,7.04c-0.39,-0.39 -1.02,-0.39 -1.41,0l-2.34,2.34 3.75,3.75 2.34,-2.34c0.39,-0.39 0.39,-1.02 0,-1.41z"/></svg><span>刷题</span>
+  </button>
+  <button type="button" data-tab="wrong">
+    <svg viewBox="0 0 24 24"><path d="M12,2a10,10 0 1 0,0 20 10,10 0 0 0,0-20zm5,13.6L15.6,17 12,13.4 8.4,17 7,15.6 10.6,12 7,8.4 8.4,7 12,10.6 15.6,7 17,8.4 13.4,12z"/></svg><span>错题</span>
+  </button>
+  <button type="button" data-tab="me">
+    <svg viewBox="0 0 24 24"><path d="M12,12a5,5 0 1 0,0-10 5,5 0 0 0,0 10zm0,2c-3.3,0-10,1.7-10,5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg><span>我的</span>
+  </button>
+</nav>
+
+<div class="app-toast" id="appToast" hidden></div>
+
+<script src="assets/user-state.js"></script>
+<script src="assets/questions-loader.js?v=1"></script>
+<script src="assets/app.js?v=1"></script>
+</body>
+</html>
