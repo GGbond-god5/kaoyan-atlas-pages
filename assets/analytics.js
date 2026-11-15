@@ -192,7 +192,7 @@
           context: { source: 'paper-analytics', subject: state.subject },
           messages: [{ role: 'user', content: summaryText(papers, kps, kinds, advice.length) }],
         });
-        box.textContent = data.reply || '教练没有返回内容，请重试。';
+        box.textContent = (window.AtlasPlain ? window.AtlasPlain.clean(data.reply) : (data.reply || '')) || '教练没有返回内容，请重试。';
       } catch (err) {
         box.textContent = '教练暂时不可用：' + err.message;
       }

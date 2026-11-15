@@ -19,6 +19,9 @@ const OUTPUT_CONTRACT = `只返回 JSON（不要用 markdown 代码块包裹）�
 - grammar、upgrades：仅英语作文使用，其余科目返回空数组。`;
 
 // ---------- 照片转写（图像评分第一段） ----------
+export const PLAIN_STYLE = `
+【输出风格 · 硬性要求】所有面向学生的文字（评语、建议、总结、讲解）只用纯文本和自然段落，像老师当面说话一样亲切、具体、有条理。禁止使用任何 Markdown 符号：不要加粗符号、不要 # 标题、不要 --- 分隔线、不要 > 引用、不要用 - 或 * 开头的列表、不要反引号、不要装饰性表情符号。需要分点时，用「第一，」「第二，」或「一是」「二是」这样的中文衔接词写进段落里。`;
+
 export const TRANSCRIBE_SYSTEM = `你是作答转写员，只做转写，不做评分，也不评价对错。
 规则：
 1. 按学生书写的先后顺序逐行转写全部内容，包括公式、数字、单位、勾选和涂改后的最终结果。
@@ -128,12 +131,12 @@ ${OUTPUT_CONTRACT}`;
 /** 按科目与题型选用评分提示词：grade() 用它替换原来的二选一逻辑 */
 export function gradeSystemFor(subject, kind) {
   const s = String(subject || "");
-  if (/^english/.test(s) && ["小作文", "大作文"].includes(kind)) return essaySystem(kind) + RUBRIC_NORM;
-  if (s === "mechanics") return MECHANICS_SYSTEM + RUBRIC_NORM;
-  if (s === "math" || s === "math2") return MATH_SYSTEM + RUBRIC_NORM;
-  if (s === "politics") return POLITICS_SYSTEM + RUBRIC_NORM;
-  if (/^english/.test(s)) return ENGLISH_SYSTEM + RUBRIC_NORM;
-  return GENERIC_SYSTEM + RUBRIC_NORM;
+  if (/^english/.test(s) && ["小作文", "大作文"].includes(kind)) return essaySystem(kind) + RUBRIC_NORM + PLAIN_STYLE;
+  if (s === "mechanics") return MECHANICS_SYSTEM + RUBRIC_NORM + PLAIN_STYLE;
+  if (s === "math" || s === "math2") return MATH_SYSTEM + RUBRIC_NORM + PLAIN_STYLE;
+  if (s === "politics") return POLITICS_SYSTEM + RUBRIC_NORM + PLAIN_STYLE;
+  if (/^english/.test(s)) return ENGLISH_SYSTEM + RUBRIC_NORM + PLAIN_STYLE;
+  return GENERIC_SYSTEM + RUBRIC_NORM + PLAIN_STYLE;
 }
 
 // ---------- 解析生成（给题目生成/补全 steps 时使用） ----------

@@ -463,7 +463,7 @@
         const parts = [result.comments, result.missing, result.suggestions, result.revised];
         if (Array.isArray(result.grammar) && result.grammar.length) parts.push("语法问题：\n" + result.grammar.map(g => `${g.original} → ${g.corrected}${g.reason ? `（${g.reason}）` : ""}`).join("\n"));
         if (Array.isArray(result.upgrades) && result.upgrades.length) parts.push("句子升级：\n" + result.upgrades.map(u => `${u.original} → ${u.upgraded}${u.note ? `（${u.note}）` : ""}`).join("\n"));
-        $("#aiResult").hidden = false; $("#aiResult").textContent = parts.filter(Boolean).join("\n\n");
+        $("#aiResult").hidden = false; $("#aiResult").textContent = parts.filter(Boolean).map(function (t) { return window.AtlasPlain ? window.AtlasPlain.clean(t) : t; }).join("\n\n");
       }
       $("#reveal").textContent = "返回结果";
       if (["english", "english2"].includes(q.subject) && /翻译|作文/.test(q.kind)) { $("#aiAsk").hidden = false; $("#aiAsk").textContent = "AI 多轮指导"; }
@@ -824,10 +824,10 @@
       const score = data.score != null ? `<span class="score">${data.score}${data.maxScore ? " / " + data.maxScore : ""}</span>` : "";
       const assumed = data.maxScoreAssumed ? ` <span class="ai-note">（按试卷结构估算满分 ${data.maxScore} 分）</span>` : "";
       const lvl = data.level ? `<b>${esc(data.level)}</b> · ` : "";
-      let html = score + assumed + lvl + esc(data.comments || "评核完成");
-      if (data.missing) html += `<div class="ai-sec"><b>缺失/错误</b><br>${esc(data.missing).replace(/\n/g, "<br>")}</div>`;
-      if (data.suggestions) html += `<div class="ai-sec"><b>修改建议</b><br>${esc(data.suggestions).replace(/\n/g, "<br>")}</div>`;
-      if (data.revised) html += `<div class="ai-sec"><b>润色参考</b><div class="ai-revised">${esc(data.revised).replace(/\n/g, "<br>")}</div></div>`;
+      let html = score + assumed + lvl + esc(window.AtlasPlain ? window.AtlasPlain.clean(data.comments) : (data.comments || "评核完成"));
+      if (data.missing) html += `<div class="ai-sec"><b>缺失/错误</b><br>${esc(window.AtlasPlain ? window.AtlasPlain.clean(data.missing) : data.missing).replace(/\n/g, "<br>")}</div>`;
+      if (data.suggestions) html += `<div class="ai-sec"><b>修改建议</b><br>${esc(window.AtlasPlain ? window.AtlasPlain.clean(data.suggestions) : data.suggestions).replace(/\n/g, "<br>")}</div>`;
+      if (data.revised) html += `<div class="ai-sec"><b>润色参考</b><div class="ai-revised">${esc(window.AtlasPlain ? window.AtlasPlain.clean(data.revised) : data.revised).replace(/\n/g, "<br>")}</div></div>`;
       if (Array.isArray(data.grammar) && data.grammar.length) html += `<div class="ai-sec"><b>语法问题</b><br>${data.grammar.map(g => `${esc(g.original)} → ${esc(g.corrected)}${g.reason ? `（${esc(g.reason)}）` : ""}`).join("<br>")}</div>`;
       if (Array.isArray(data.upgrades) && data.upgrades.length) html += `<div class="ai-sec"><b>句子升级</b><br>${data.upgrades.map(u => `${esc(u.original)} → ${esc(u.upgraded)}${u.note ? `（${esc(u.note)}）` : ""}`).join("<br>")}</div>`;
       box.innerHTML = html;

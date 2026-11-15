@@ -4,7 +4,7 @@
   var msgs = [], cid = null, image = null, busy = false, els = {};
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function fmt(s) { return esc(s).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>'); }
+  function fmt(s) { return esc(window.AtlasPlain ? window.AtlasPlain.clean(s) : s); }
   function math(el) { if (window.renderMathInElement) { try { window.renderMathInElement(el, { delimiters: [{ left: '\\(', right: '\\)', display: false }, { left: '\\[', right: '\\]', display: true }] }); } catch (e) {} } }
   function addMsg(role, text, img) {
     var d = document.createElement('div');
