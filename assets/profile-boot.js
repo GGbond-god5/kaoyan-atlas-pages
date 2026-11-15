@@ -101,7 +101,7 @@
           <p class="pf-quote" id="pfQuote"></p>
           <label class="pf-field"><span>我的格言</span><input name="motto" maxlength="60" placeholder="一句陪你上岸的话，如：山海可平，功不唐捐"></label>
         </div>
-        <label class="pf-field"><span>院校专业目录</span><input id="programSearch" maxlength="40" placeholder="搜索院校、专业或代码，如 华南理工 085500" autocomplete="off"></label>
+        <label class="pf-field"><span>院校专业目录</span><input id="programSearch" maxlength="40" placeholder="输入学校名或代码，从 2027 全国研招目录里选" autocomplete="off"></label>
         <div class="pf-programs" id="programResults" hidden></div>
         <label class="pf-field"><span>目标院校</span><input name="school" maxlength="40" placeholder="例如：华南理工大学"></label>
         <div class="pf-row">
@@ -217,20 +217,90 @@
     }
   }
 
+  let catalogIndex = null, catalogLoading = null;
+  const schoolCache = {};
+  function loadCatalogIndex() {
+    if (catalogIndex) return Promise.resolve(catalogIndex);
+    if (!catalogLoading) {
+      catalogLoading = fetch("/assets/catalog/index.json", { credentials: "include" })
+        .then(r => { if (!r.ok) throw new Error("catalog"); return r.json(); })
+        .then(list => { catalogIndex = list; return list; })
+        .catch(e => { catalogLoading = null; throw e; });
+    }
+    return catalogLoading;
+  }
+  function loadSchoolFile(dwdm) {
+    if (schoolCache[dwdm]) return Promise.resolve(schoolCache[dwdm]);
+    return fetch("/assets/catalog/" + encodeURIComponent(dwdm) + ".json", { credentials: "include" })
+      .then(r => { if (!r.ok) throw new Error("school"); return r.json(); })
+      .then(d => { schoolCache[dwdm] = d; return d; });
+  }
+  function mapCatalogSubjects(list, schoolName) {
+    const notes = [];
+    const subjects = (list || []).map(pair => {
+      const code = String(pair[0] || ""), name = String(pair[1] || "");
+      if (code === "101") return { kind: "politics", name: "101 思想政治理论", code, fullScore: 100 };
+      if (code === "201") return { kind: "english", variant: "english1", name: "201 英语（一）", code, fullScore: 100 };
+      if (code === "204") return { kind: "english", variant: "english2", name: "204 英语（二）", code, fullScore: 100 };
+      if (/^2\d\d$/.test(code)) { notes.push(`外语科目为 ${code} ${name}，已按英语一暂代，请按实际语种复习`); return { kind: "english", variant: "english1", name: `${code} ${name}`, code, fullScore: 100 }; }
+      if (code === "301") return { kind: "math", variant: "math1", name: "301 数学（一）", code, fullScore: 150 };
+      if (code === "302") return { kind: "math", variant: "math2", name: "302 数学（二）", code, fullScore: 150 };
+      if (code === "303") return { kind: "math", variant: "math3", name: "303 数学（三）", code, fullScore: 150 };
+      if (code === "199") return { kind: "professional", name: "199 管理类综合能力", code, fullScore: 200 };
+      if (code === "396") return { kind: "professional", name: "396 经济类综合能力", code, fullScore: 150 };
+      if (code === "807" && schoolName === "华南理工大学") return { kind: "professional", builtin: "mechanics", name: "807 材料力学", code, fullScore: 150 };
+      if (name.includes("数学")) { notes.push(`数学科目为 ${code} ${name}（院校自命题），已按数学一暂代`); return { kind: "math", variant: "math1", name: `${code} ${name}`, code, fullScore: 150 }; }
+      return { kind: "professional", name: `${code} ${name}`, code, fullScore: 150 };
+    });
+    return { subjects, note: notes.join("；") };
+  }
+
   function bindProgramSearch(dialog) {
     const input = dialog.querySelector("#programSearch");
     const results = dialog.querySelector("#programResults");
-    let timer = null, programs = [];
-    function render() {
-      results.innerHTML = programs.length
-        ? programs.map((p, i) => `<button type="button" class="pf-program" data-program="${i}">
-            <b>${esc(p.school)} · ${esc(p.majorCode)} ${esc(p.majorName)}</b>
-            <span>${esc(p.college || "")} · ${esc(p.degreeType || "")} · ${p.year || ""}</span></button>`).join("")
-        : `<p class="pf-hint">没有匹配的目录项，可以直接手动填写。</p>`;
-      results.hidden = false;
-      results.querySelectorAll("[data-program]").forEach(b => {
-        b.onclick = () => { applyProgram(programs[Number(b.dataset.program)]); results.hidden = true; input.value = ""; };
-      });
+    let timer = null;
+    function show(html) { results.innerHTML = html; results.hidden = false; }
+    function renderSchools(list, q) {
+      const hits = list.filter(x => x.name.includes(q) || x.dwdm.startsWith(q)).slice(0, 30);
+      if (!hits.length) { show(`<p class="pf-hint">目录里没有匹配的学校，可以直接手动填写。</p>`); return; }
+      show(hits.map(x => `<button type="button" class="pf-program" data-school="${esc(x.dwdm)}">
+        <b>${esc(x.name)}</b><span>${esc(x.province)} · ${x.n} 个专业${x.syl ? " · 双一流" : ""}${x.zhx ? " · 自划线" : ""}</span></button>`).join(""));
+      results.querySelectorAll("[data-school]").forEach(b => { b.onclick = () => openSchool(b.dataset.school); });
+    }
+    async function openSchool(dwdm) {
+      show(`<p class="pf-hint">正在加载该校专业目录…</p>`);
+      try {
+        const school = await loadSchoolFile(dwdm);
+        const progs = school.programs || [];
+        show(`<button type="button" class="pf-program" data-back="1"><b>← 换个学校</b><span>${esc(school.name)} · 共 ${progs.length} 个专业</span></button>` +
+          progs.map((p, i) => `<button type="button" class="pf-program" data-prog="${i}">
+            <b>${esc(p.code)} ${esc(p.name)}</b><span>${esc(p.type || "")} · ${p.colleges.reduce((n, c) => n + c.dirs.length, 0)} 个方向</span></button>`).join(""));
+        results.querySelector("[data-back]").onclick = () => { const q = input.value.trim(); if (q && catalogIndex) renderSchools(catalogIndex, q); };
+        results.querySelectorAll("[data-prog]").forEach(b => { b.onclick = () => openProgram(school, progs[Number(b.dataset.prog)]); });
+      } catch (e) { show(`<p class="pf-hint">该校目录加载失败，可以直接手动填写。</p>`); }
+    }
+    function openProgram(school, prog) {
+      const variants = new Map();
+      (prog.colleges || []).forEach(c => (c.dirs || []).forEach(d => {
+        const key = c.name + "|" + d.m + "|" + JSON.stringify(d.s);
+        if (!variants.has(key)) variants.set(key, { college: c.name, mode: d.m, subjects: d.s });
+      }));
+      const list = [...variants.values()];
+      const applyVariant = v => {
+        const mapped = mapCatalogSubjects(v.subjects, school.name);
+        applyProgram({
+          id: `cat-${school.dwdm}-${prog.code}`, school: school.name, college: v.college,
+          majorCode: prog.code, majorName: prog.name, degreeType: prog.type, studyMode: v.mode,
+          year: 2027, note: mapped.note, subjects: mapped.subjects,
+        });
+        results.hidden = true; input.value = "";
+      };
+      if (list.length === 1) { applyVariant(list[0]); return; }
+      show(`<button type="button" class="pf-program" data-back2="1"><b>← 换个专业</b><span>${esc(prog.code)} ${esc(prog.name)} · 按学院与学习方式选一套考试科目</span></button>` +
+        list.map((v, i) => `<button type="button" class="pf-program" data-var="${i}">
+          <b>${esc(v.college)} · ${esc(v.mode)}</b><span>${v.subjects.map(x => esc(x[0]) + " " + esc(x[1])).join(" / ")}</span></button>`).join(""));
+      results.querySelector("[data-back2]").onclick = () => openSchool(school.dwdm);
+      results.querySelectorAll("[data-var]").forEach(b => { b.onclick = () => applyVariant(list[Number(b.dataset.var)]); });
     }
     input.addEventListener("input", () => {
       clearTimeout(timer);
@@ -238,11 +308,20 @@
         const q = input.value.trim();
         if (!q) { results.hidden = true; return; }
         try {
-          const res = await fetch("/api/programs?q=" + encodeURIComponent(q), { credentials: "include" });
-          const data = await res.json();
-          programs = data.programs || [];
-          render();
-        } catch (e) { results.hidden = true; }
+          const list = await loadCatalogIndex();
+          renderSchools(list, q);
+        } catch (e) {
+          try {
+            const res = await fetch("/api/programs?q=" + encodeURIComponent(q), { credentials: "include" });
+            const data = await res.json();
+            const programs = data.programs || [];
+            show(programs.length ? programs.map((p, i) => `<button type="button" class="pf-program" data-fb="${i}">
+              <b>${esc(p.school)} · ${esc(p.majorCode)} ${esc(p.majorName)}</b>
+              <span>${esc(p.college || "")} · ${esc(p.degreeType || "")} · ${p.year || ""}</span></button>`).join("")
+              : `<p class="pf-hint">没有匹配的目录项，可以直接手动填写。</p>`);
+            results.querySelectorAll("[data-fb]").forEach(b => { b.onclick = () => { applyProgram(programs[Number(b.dataset.fb)]); results.hidden = true; input.value = ""; }; });
+          } catch (e2) { results.hidden = true; }
+        }
       }, 200);
     });
   }
