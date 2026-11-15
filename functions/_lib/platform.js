@@ -347,7 +347,7 @@ async function dispatch(request,env,uid,action,params) {
     return ok({deleted:changes(r) > 0});
   }
   if (action === 'state') {
-    const ns = params.namespace; if (!['practice','vocab','review','goals','onboarding','plan','inbox'].includes(ns)) return notFound();
+    const ns = params.namespace; if (!['practice','vocab','review','goals','onboarding','plan','inbox','marks'].includes(ns)) return notFound();
     const read = async () => {const r = await row(db,'SELECT data,revision FROM platform_state WHERE uid=? AND namespace=?',uid,ns); return r ? {data:parse(r.data),revision:r.revision} : {data:null,revision:0};};
     if (method === 'GET') return ok(await read());
     if (method === 'PUT') {const b=await body(); if (!b || !Number.isInteger(b.revision) || b.revision < 0 || !Object.hasOwn(b,'data')) return fail(400,'状态或版本无效');

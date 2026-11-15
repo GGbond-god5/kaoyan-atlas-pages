@@ -277,12 +277,14 @@
         if (r.suggestions) html += '<div class="ad-sec"><span>改进建议</span><p>' + esc(clean(r.suggestions)) + '</p></div>';
         if (r.revised) html += '<div class="ad-sec"><span>作文指导 · 修改稿</span><p>' + esc(clean(r.revised)) + '</p></div>';
         if (Array.isArray(r.grammar) && r.grammar.length) html += '<div class="ad-sec"><span>作文指导 · 语法与表达</span>' + r.grammar.map(function (g) { return '<p>' + esc(clean(typeof g === 'string' ? g : (g.issue || g.text || g.comment || ''))) + '</p>'; }).join('') + '</div>';
+        html += '<div class="ad-actions"><button type="button" class="mark-btn" data-mark-fav="' + esc(q.id) + '">☆ 收藏</button><button type="button" class="mark-btn" data-mark-wb="' + esc(q.id) + '">＋ 加入错题本</button></div>';
         return html + '</div>';
       }).join('');
       sec.innerHTML = '<h2>' + esc(paperTitle(a)) + ' · 做题详情</h2>' +
         '<p class="sub">每道题的参考答案、解析与批改详情都在这里。</p>' + cards +
         '<button type="button" class="btn ghost" id="paperDetailClose">收起详情</button>';
       sec.querySelector('#paperDetailClose').addEventListener('click', function () { sec.hidden = true; });
+      if (window.AtlasMarks) window.AtlasMarks.wire(sec);
       if (window.AtlasKatex) window.AtlasKatex.render(sec);
     } catch (err) {
       sec.innerHTML = '<h2>做题详情</h2><p class="sub">加载失败：' + esc(err.message) + '</p>';

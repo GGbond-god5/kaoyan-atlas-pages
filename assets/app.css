@@ -566,3 +566,7 @@ button { font-family: inherit; }
 .entry-badge[hidden] { display: none; }
 .entry .entry-badge + .entry-arrow { margin-left: 6px; }
 .inbox-dot { background: var(--ver); color: #fff; border-radius: 6px; font-size: 10.5px; padding: 1px 6px; vertical-align: 2px; }
+
+/* 收藏 / 错题本标记按钮（App） */
+.qd-actions { margin-top: 10px; display: flex; gap: 8px; }
+.qd-actions .btn-sub.on, .row-actions .btn-sub.on { background: var(--gold, #B8860B); color: #fff; border-color: var(--gold, #B8860B); }

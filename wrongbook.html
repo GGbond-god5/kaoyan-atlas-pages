@@ -38,6 +38,7 @@
         <select id="wbScope">
           <option value="all">全部错题</option>
           <option value="due">仅今日到期复习</option>
+          <option value="fav">收藏夹</option>
         </select>
       </label>
       <label>版式
@@ -46,6 +47,8 @@
           <option value="blank">只题目（自测）</option>
         </select>
       </label>
+      <a class="btn ghost" href="practice.html?review=1">去复盘（今日到期）</a>
+      <a class="btn ghost" href="practice.html?wrongbook=1">刷错题本</a>
       <button class="btn" id="wbPrint" type="button">打印 / 存 PDF</button>
     </div>
     <p class="note" id="wbSummary">正在加载错题…</p>
@@ -59,7 +62,8 @@
 <script src="assets/config.js?v=2027-11-08"></script>
 <script src="assets/user-state.js"></script><script src="assets/grading-bg.js?v=1"></script>
 <script src="assets/review.js?v=1"></script>
-<script src="assets/wrongbook.js?v=1"></script>
+<script src="assets/marks.js?v=1"></script>
+<script src="assets/wrongbook.js?v=2"></script>
 <script src="assets/pwa.js?v=1"></script>
 <script src="assets/account-hub.js?v=1"></script>
 </body>

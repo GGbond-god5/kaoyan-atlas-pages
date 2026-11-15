@@ -9,7 +9,7 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
     });
   }
-  var state = { items: new Map(), wrong: [], due: new Set(), subject: 'all', scope: 'all', mode: 'answers' };
+  var state = { items: new Map(), wrong: [], favs: [], due: new Set(), subject: 'all', scope: 'all', mode: 'answers' };
 
   function questionHTML(q) {
     var stem = [], opts = [];
@@ -46,14 +46,15 @@
   }
 
   function render() {
-    var list = state.wrong.filter(function (w) {
+    var isFav = state.scope === 'fav';
+    var list = (isFav ? state.favs : state.wrong).filter(function (w) {
       if (state.subject !== 'all' && w.q.subject !== state.subject) return false;
       if (state.scope === 'due' && !state.due.has(w.q.id)) return false;
       return true;
     });
     $('#wbSummary').textContent = list.length
-      ? '共 ' + list.length + ' 道错题' + (state.mode === 'blank' ? '（自测版式：不含答案，打印后先做再回刷题页核对）' : '（带答案解析版式）')
-      : '当前筛选下没有错题。';
+      ? '共 ' + list.length + (isFav ? ' 道收藏题' : ' 道错题') + (state.mode === 'blank' ? '（自测版式：不含答案，打印后先做再回刷题页核对）' : '（带答案解析版式）')
+      : (isFav ? '当前筛选下没有收藏题。在套卷分析的做题详情里点「☆ 收藏」就能把题目收进来。' : '当前筛选下没有错题。');
     $('#wbList').innerHTML = list.map(function (w, i) {
       var q = w.q, r = w.rec;
       var meta = [SUBJECT_NAMES[q.subject] || q.subjectName || q.subject, q.chapterTitle || '', q.kpName || '']
@@ -67,7 +68,9 @@
       }
       return '<article class="wb-item">' +
         '<div class="wb-meta"><span class="wb-no">第 ' + (i + 1) + ' 题</span><span>' + esc(meta) + '</span>' +
-        '<span class="wb-wrong">错 ' + (r.wrong || 0) + ' 次' + (r.last ? ' · 最近 ' + fmtDate(r.last) : '') + '</span></div>' +
+        (r.manual
+          ? '<span class="wb-wrong">手动加入' + (r.last ? ' · ' + fmtDate(r.last) : '') + '</span></div>'
+          : '<span class="wb-wrong">错 ' + (r.wrong || 0) + ' 次' + (r.last ? ' · 最近 ' + fmtDate(r.last) : '') + '</span></div>') +
         '<div class="wb-body">' + questionHTML(q) + '</div>' + ans + '</article>';
     }).join('');
     mathAll();
@@ -95,6 +98,21 @@
     state.wrong.sort(function (a, b) {
       return (b.rec.wrong || 0) - (a.rec.wrong || 0) || (b.rec.last || 0) - (a.rec.last || 0);
     });
+    if (window.AtlasMarks) {
+      try {
+        var marks = await window.AtlasMarks.load();
+        Object.keys(marks.wb || {}).forEach(function (id) {
+          var q = state.items.get(id);
+          if (q && !state.wrong.some(function (w) { return w.q.id === id; })) {
+            state.wrong.push({ q: q, rec: { wrong: 0, manual: true, last: marks.wb[id] } });
+          }
+        });
+        Object.keys(marks.fav || {}).forEach(function (id) {
+          var q = state.items.get(id);
+          if (q) state.favs.push({ q: q, rec: { wrong: 0, last: marks.fav[id] } });
+        });
+      } catch (e) {}
+    }
     var sel = $('#wbSubject');
     var subjects = [];
     state.wrong.forEach(function (w) { if (!subjects.includes(w.q.subject)) subjects.push(w.q.subject); });
@@ -104,7 +122,7 @@
       o.textContent = (SUBJECT_NAMES[s] || s) + '（' + state.wrong.filter(function (w) { return w.q.subject === s; }).length + '）';
       sel.appendChild(o);
     });
-    if (!state.wrong.length) {
+    if (!state.wrong.length && !state.favs.length) {
       $('#wbSummary').textContent = '你还没有错题记录，先去刷题页练一组，错题会自动收进这里。';
       return;
     }

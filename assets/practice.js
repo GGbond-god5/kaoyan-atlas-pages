@@ -1133,6 +1133,18 @@
       const warm = () => { window.AtlasQuestions.load("all").then(() => populateSubjects()).catch(() => {}); };
       if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 4000 }); else setTimeout(warm, 2500);
     }
+    /* 错题本整本重练：?wrongbook=1 组「做错过的题 + 手动加入错题本的题」开练 */
+    if (new URLSearchParams(location.search).get("wrongbook")) {
+      try {
+        const store = await AtlasUser.load("practice", { rec: {} });
+        const rec = (store && store.rec) || {};
+        const marks = window.AtlasMarks ? await window.AtlasMarks.load() : { wb: {} };
+        const wbSet = new Set(Object.keys(marks.wb || {}));
+        const pool = ITEMS.filter(q => (rec[q.id] && rec[q.id].wrong > 0) || wbSet.has(q.id));
+        if (pool.length) start(pool, "错题本 · 全部重练");
+        else $("#pintro").textContent = "错题本还是空的：做错的题会自动进来，也可以在套卷分析的做题详情里手动把题目加入错题本。";
+      } catch (err) { console.error("错题本加载失败", err); }
+    }
     /* 错题艾宾浩斯回流：?review=1 直接组今日到期错题开练；平时在设置区提示到期数量 */
     if (window.AtlasReview) {
       try {

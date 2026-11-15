@@ -798,7 +798,9 @@
         if (r.suggestions) html += '<div class="qd-sec"><span>改进建议</span><p>' + esc(cleanText(r.suggestions)) + '</p></div>';
         if (r.revised) html += '<div class="qd-sec"><span>作文指导 · 修改稿</span><p>' + esc(cleanText(r.revised)) + '</p></div>';
         if (Array.isArray(r.grammar) && r.grammar.length) html += '<div class="qd-sec"><span>作文指导 · 语法与表达</span>' + r.grammar.map(function (g) { return '<p>' + esc(cleanText(typeof g === 'string' ? g : (g.issue || g.text || g.comment || ''))) + '</p>'; }).join('') + '</div>';
+        html += '<div class="qd-actions"><button type="button" class="btn-sub" data-mark-fav="' + q.id + '">☆ 收藏</button><button type="button" class="btn-sub" data-mark-wb="' + q.id + '">＋ 加入错题本</button></div>';
         box.innerHTML = html || '<div class="sub-loading">这道题暂无更多详情。</div>';
+        if (window.AtlasMarks) window.AtlasMarks.wire(document.getElementById('subBody'));
         if (window.AtlasKatex) AtlasKatex.render(box);
       });
     });
@@ -998,16 +1000,18 @@
   var wbCache = null;
   subRenderers.wrongbook = { title: '错题本', render: function (body) { renderWrongbook(body, 'all'); } };
   function renderWrongbook(body, filter) {
+    var marksP = window.AtlasMarks ? window.AtlasMarks.load() : Promise.resolve({ fav: {}, wb: {} });
     var load = wbCache ? Promise.resolve(wbCache) : Promise.all([
       AtlasQuestions.load('all'),
       AtlasUser.json('/api/personal/questions').catch(function () { return { questions: [] }; }),
-      AtlasUser.load('practice', { rec: {} })
+      AtlasUser.load('practice', { rec: {} }),
+      marksP
     ]).then(function (res) {
       var map = {};
       (window.QUESTIONS.items || []).forEach(function (q) { map[q.id] = q; });
       ((res[1] && res[1].questions) || []).forEach(function (q) { if (q && q.id) map[q.id] = q; });
       state.practiceRec = (res[2] && res[2].rec) || state.practiceRec || {};
-      wbCache = { map: map };
+      wbCache = { map: map, marks: res[3] || { fav: {}, wb: {} } };
       return wbCache;
     });
     body.innerHTML = '<div class="sub-loading">正在整理错题…</div>';
@@ -1015,8 +1019,15 @@
       if (subCurrent !== 'wrongbook') return;
       var rows = Object.keys(state.practiceRec).filter(function (id) {
         var r = state.practiceRec[id]; return r && r.wrong > 0 && data.map[id];
-      }).map(function (id) { return { q: data.map[id], r: state.practiceRec[id] }; })
-        .sort(function (a, b) { return (b.r.wrong - a.r.wrong) || ((b.r.last || 0) - (a.r.last || 0)); });
+      }).map(function (id) { return { q: data.map[id], r: state.practiceRec[id] }; });
+      Object.keys((data.marks && data.marks.wb) || {}).forEach(function (id) {
+        if (data.map[id] && !rows.some(function (x) { return x.q.id === id; })) {
+          rows.push({ q: data.map[id], r: { wrong: 0, seen: 0, manual: true, last: data.marks.wb[id] } });
+        }
+      });
+      rows.sort(function (a, b) { return (b.r.wrong - a.r.wrong) || ((b.r.last || 0) - (a.r.last || 0)); });
+      var favRows = Object.keys((data.marks && data.marks.fav) || {}).filter(function (id) { return data.map[id]; })
+        .map(function (id) { return data.map[id]; });
       var subjects = [];
       rows.forEach(function (x) { if (subjects.indexOf(x.q.subject) < 0) subjects.push(x.q.subject); });
       var shown = filter === 'all' ? rows : rows.filter(function (x) { return x.q.subject === filter; });
@@ -1026,11 +1037,13 @@
           return '<button type="button" class="f-chip' + (filter === sid ? ' on' : '') + '" data-wf="' + esc(sid) + '">' + esc(SUBJECT_NAMES[sid] || sid) + ' ' + n + '</button>';
         }).join('') + '</div>';
       body.innerHTML = chips +
-        '<a class="btn-main" href="practice.html?review=1" style="margin-bottom:12px">开始错题复习</a>' +
+        '<a class="btn-main" href="practice.html?review=1" style="margin-bottom:10px">开始今日复盘（到期错题）</a>' +
+        '<a class="btn-main" href="practice.html?wrongbook=1" style="margin-bottom:10px">刷错题本（全部重练）</a>' +
+        '<a class="btn-sub" href="wrongbook.html" style="display:block;text-align:center;margin-bottom:12px">错题本打印版（可存 PDF）</a>' +
         '<div class="card">' + (shown.length ? shown.map(function (x, i) {
           var q = x.q;
           return '<div class="list-row"><div class="row-title">' + esc(snippet(q.text, 110)) + '</div>' +
-            '<div class="row-meta">' + esc(SUBJECT_NAMES[q.subject] || q.subject || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + ' · 错 ' + x.r.wrong + ' 次 · 做过 ' + (x.r.seen || 0) + ' 次</div>' +
+            '<div class="row-meta">' + esc(SUBJECT_NAMES[q.subject] || q.subject || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + (x.r.manual ? ' · 手动加入错题本' : ' · 错 ' + x.r.wrong + ' 次 · 做过 ' + (x.r.seen || 0) + ' 次') + '</div>' +
             '<div class="row-actions"><button type="button" class="btn-sub" data-wrong-toggle="' + i + '">看答案与解析</button></div>' +
             '<div class="wrong-detail" id="wd-' + i + '" hidden><b>参考答案：</b>' + esc(q.answer || '暂无') +
             ((q.steps && q.steps.length) ? '<ol>' + q.steps.map(function (st) { return '<li>' + esc(st) + '</li>'; }).join('') + '</ol>' : '') + '</div></div>';
@@ -1042,6 +1055,26 @@
           if (d) { d.hidden = !d.hidden; if (!d.hidden) gMath(d); }
         });
       });
+      if (favRows.length) {
+        var favCard = document.createElement('div');
+        favCard.className = 'card';
+        favCard.style.marginTop = '12px';
+        favCard.innerHTML = '<div class="row-title" style="margin-bottom:8px">我的收藏 · ' + favRows.length + ' 题</div>' + favRows.map(function (q, i) {
+          return '<div class="list-row"><div class="row-title">' + esc(snippet(q.text, 110)) + '</div>' +
+            '<div class="row-meta">' + esc(SUBJECT_NAMES[q.subject] || q.subject || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</div>' +
+            '<div class="row-actions"><button type="button" class="btn-sub" data-fav-toggle="' + i + '">看答案与解析</button> <button type="button" class="btn-sub" data-mark-fav="' + q.id + '">★ 已收藏</button></div>' +
+            '<div class="wrong-detail" id="fd-' + i + '" hidden><b>参考答案：</b>' + esc(q.answer || '暂无') +
+            ((q.steps && q.steps.length) ? '<ol>' + q.steps.map(function (st) { return '<li>' + esc(st) + '</li>'; }).join('') + '</ol>' : '') + '</div></div>';
+        }).join('');
+        body.appendChild(favCard);
+        $$('[data-fav-toggle]', favCard).forEach(function (b) {
+          b.addEventListener('click', function () {
+            var d = document.getElementById('fd-' + b.dataset.favToggle);
+            if (d) { d.hidden = !d.hidden; if (!d.hidden) gMath(d); }
+          });
+        });
+        if (window.AtlasMarks) window.AtlasMarks.wire(favCard);
+      }
     }).catch(function (e) { body.innerHTML = '<div class="sub-loading">错题加载失败：' + esc(e.message || '') + '</div>'; });
   }
 
