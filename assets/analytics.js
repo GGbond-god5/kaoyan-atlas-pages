@@ -176,11 +176,14 @@
       var chips = p.wrong.length ? p.wrong.map(function (w) {
         return '<span class="chip' + (w.rate > 0 ? ' part' : '') + '" title="' + esc(w.kpName || w.kind) + '">第' + w.no + '题' + (w.kpName ? ' · ' + esc(w.kpName) : '') + (w.rate > 0 ? '（部分分）' : '') + '</span>';
       }).join('') : '<span class="chip" style="border-color:#BFD8C6;color:#3E7A4E;background:#EDF5EF">全部满分</span>';
-      return '<div class="paper"><h3>' + esc(p.title) + '</h3><div class="pmeta">' +
+      return '<div class="paper"><h3><button type="button" class="paper-open" data-open-paper="' + esc(p.id || '') + '">' + esc(p.title) + '</button></h3><div class="pmeta">' +
         (p.mode === 'mock' ? '全真模考 · ' : p.mode === 'diagnostic' ? '能力自测 · ' : '套卷 · ') + '已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '（' + (p.rate === null ? '—' : pct(p.rate)) + '）</div>' +
         '<div class="chips">' + chips + '</div>' +
         '<div style="margin-top:10px"><button type="button" class="btn ghost danger" data-reset-paper="' + esc(p.id || '') + '">重置这套（删除记录，二刷用）</button></div></div>';
     }).join('');
+    document.querySelectorAll('#paperList [data-open-paper]').forEach(function (b) {
+      b.addEventListener('click', function () { if (b.dataset.openPaper) openPaperDetail(b.dataset.openPaper); });
+    });
     document.querySelectorAll('#paperList [data-reset-paper]').forEach(function (b) {
       b.addEventListener('click', async function () {
         if (!b.dataset.resetPaper) return;
@@ -236,5 +239,55 @@
       $('#emptyCard').hidden = false;
     }
   }
+  async function openPaperDetail(id) {
+    var main = document.querySelector('main') || document.body;
+    var sec = document.getElementById('paperDetail');
+    if (!sec) {
+      sec = document.createElement('section');
+      sec.id = 'paperDetail';
+      sec.className = 'card';
+      main.appendChild(sec);
+    }
+    sec.hidden = false;
+    sec.innerHTML = '<h2>做题详情</h2><p class="sub">正在加载…</p>';
+    sec.scrollIntoView({ behavior: 'smooth' });
+    try {
+      var data = await window.AtlasUser.json('/api/attempts/' + encodeURIComponent(id));
+      var a = data.attempt;
+      if (!a) throw new Error('记录不存在');
+      if (window.AtlasQuestions) { try { await window.AtlasQuestions.load(a.subject); } catch (e) {} }
+      var byId = {};
+      ((window.QUESTIONS && window.QUESTIONS.items) || []).forEach(function (it) { byId[it.id] = it; });
+      var clean = function (x) { return window.AtlasPlain ? window.AtlasPlain.clean(String(x == null ? '' : x)) : String(x == null ? '' : x); };
+      var cards = (a.questions || []).map(function (q, idx) {
+        var r = (a.results || {})[q.id] || {};
+        var it = byId[q.id] || {};
+        var graded = r.status === 'graded';
+        var html = '<div class="ad-card"><div class="ad-head"><b>第 ' + (idx + 1) + ' 题</b><span>' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' +
+          '<b class="ad-score">' + (graded ? (Math.round(Number(r.score) * 10) / 10) + ' / ' + (Math.round(Number(r.maxScore) * 10) / 10) : '待批改') + '</b></div>';
+        if (it.text) html += '<div class="ad-sec"><span>题干</span><p>' + esc(clean(it.text)) + '</p></div>';
+        if (it.answer) html += '<div class="ad-sec"><span>参考答案</span><p>' + esc(clean(it.answer)) + '</p></div>';
+        if (it.steps && it.steps.length) html += '<div class="ad-sec"><span>解析</span>' + it.steps.map(function (st) { return '<p>' + esc(clean(st)) + '</p>'; }).join('') + '</div>';
+        if (r.level) html += '<div class="ad-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
+        if (r.comments) html += '<div class="ad-sec"><span>AI 总评</span><p>' + esc(clean(r.comments)) + '</p></div>';
+        if (Array.isArray(r.breakdown) && r.breakdown.length) html += '<div class="ad-sec"><span>得分点</span>' + r.breakdown.map(function (b) {
+          return '<p>' + esc(b.point || '') + '：' + (b.score == null ? '' : Math.round(Number(b.score) * 10) / 10) + (b.max == null ? '' : ' / ' + Math.round(Number(b.max) * 10) / 10) + (b.comment ? '（' + esc(clean(b.comment)) + '）' : '') + '</p>';
+        }).join('') + '</div>';
+        if (r.missing) html += '<div class="ad-sec"><span>缺失要点</span><p>' + esc(clean(r.missing)) + '</p></div>';
+        if (r.suggestions) html += '<div class="ad-sec"><span>改进建议</span><p>' + esc(clean(r.suggestions)) + '</p></div>';
+        if (r.revised) html += '<div class="ad-sec"><span>作文指导 · 修改稿</span><p>' + esc(clean(r.revised)) + '</p></div>';
+        if (Array.isArray(r.grammar) && r.grammar.length) html += '<div class="ad-sec"><span>作文指导 · 语法与表达</span>' + r.grammar.map(function (g) { return '<p>' + esc(clean(typeof g === 'string' ? g : (g.issue || g.text || g.comment || ''))) + '</p>'; }).join('') + '</div>';
+        return html + '</div>';
+      }).join('');
+      sec.innerHTML = '<h2>' + esc(paperTitle(a)) + ' · 做题详情</h2>' +
+        '<p class="sub">每道题的参考答案、解析与批改详情都在这里。</p>' + cards +
+        '<button type="button" class="btn ghost" id="paperDetailClose">收起详情</button>';
+      sec.querySelector('#paperDetailClose').addEventListener('click', function () { sec.hidden = true; });
+      if (window.AtlasKatex) window.AtlasKatex.render(sec);
+    } catch (err) {
+      sec.innerHTML = '<h2>做题详情</h2><p class="sub">加载失败：' + esc(err.message) + '</p>';
+    }
+  }
+
   init();
 })();

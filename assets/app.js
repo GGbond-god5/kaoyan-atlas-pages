@@ -35,6 +35,7 @@
     window.scrollTo(0, 0);
     if (name === 'bank') renderBankSubjects();
     if (name === 'wrong') renderWrong();
+    if (name === 'me') refreshInboxBadge();
     if (window.AtlasApp && window.AtlasApp.setTab) { try { window.AtlasApp.setTab(name); } catch (e) {} }
   }
   window.__atlasSwitch = switchView;
@@ -777,6 +778,7 @@
         var html = '';
         if (it && it.text) html += '<div class="qd-sec"><span>题干</span><p>' + esc(cleanText(it.text)) + '</p></div>';
         if (it && it.answer) html += '<div class="qd-sec"><span>参考答案</span><p>' + esc(cleanText(it.answer)) + '</p></div>';
+        if (it && it.steps && it.steps.length) html += '<div class="qd-sec"><span>解析</span>' + it.steps.map(function (st) { return '<p>' + esc(cleanText(st)) + '</p>'; }).join('') + '</div>';
         if (r.level) html += '<div class="qd-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
         if (r.comments) html += '<div class="qd-sec"><span>AI 总评</span><p>' + esc(cleanText(r.comments)) + '</p></div>';
         if (Array.isArray(r.breakdown) && r.breakdown.length) {
@@ -794,6 +796,8 @@
         }
         if (r.missing) html += '<div class="qd-sec"><span>缺失要点</span><p>' + esc(cleanText(r.missing)) + '</p></div>';
         if (r.suggestions) html += '<div class="qd-sec"><span>改进建议</span><p>' + esc(cleanText(r.suggestions)) + '</p></div>';
+        if (r.revised) html += '<div class="qd-sec"><span>作文指导 · 修改稿</span><p>' + esc(cleanText(r.revised)) + '</p></div>';
+        if (Array.isArray(r.grammar) && r.grammar.length) html += '<div class="qd-sec"><span>作文指导 · 语法与表达</span>' + r.grammar.map(function (g) { return '<p>' + esc(cleanText(typeof g === 'string' ? g : (g.issue || g.text || g.comment || ''))) + '</p>'; }).join('') + '</div>';
         box.innerHTML = html || '<div class="sub-loading">这道题暂无更多详情。</div>';
         if (window.AtlasKatex) AtlasKatex.render(box);
       });
@@ -1147,6 +1151,32 @@
   /* ---------- 社区（App 内） ---------- */
   var cmState = { shares: [], myFiles: [], q: '', subject: '', posts: [], openPost: '', postComments: {}, replyTo: null, postSubject: '' };
   subRenderers.community = { title: '社区', render: function (body) { renderCommunity(body); } };
+  subRenderers.inbox = { title: '消息通知', render: function (body) { renderInbox(body); } };
+  function refreshInboxBadge() {
+    var badge = document.getElementById('inboxBadge');
+    if (!badge || !window.AtlasGradeBg) return;
+    window.AtlasGradeBg.inbox().then(function (list) {
+      var n = list.filter(function (m) { return !m.read; }).length;
+      badge.hidden = !n;
+      badge.textContent = n > 99 ? '99+' : String(n);
+    }).catch(function () {});
+  }
+  function renderInbox(body) {
+    body.innerHTML = '<div class="sub-loading">正在加载消息…</div>';
+    if (!window.AtlasGradeBg) { body.innerHTML = '<div class="sub-loading">消息功能不可用。</div>'; return; }
+    window.AtlasGradeBg.inbox().then(function (list) {
+      if (subCurrent !== 'inbox') return;
+      body.innerHTML = list.length ? list.map(function (m) {
+        return '<div class="card"><div class="row-title">' + (m.kind === 'grade' ? '批改完成' : '消息') + (m.read ? '' : ' <span class="inbox-dot">新</span>') + '</div>' +
+          '<div class="row-meta">' + esc(m.title || '') + ' · ' + esc(window.AtlasGradeBg.relTime(m.at || Date.now())) + '</div>' +
+          (m.attemptId ? '<div class="row-actions"><button type="button" class="btn-sub" data-inbox-open="' + esc(m.attemptId) + '">看这套的解析</button></div>' : '') + '</div>';
+      }).join('') : '<div class="card"><div class="today-empty">还没有消息。交卷后批改完成会在这里提醒你。</div></div>';
+      $$('[data-inbox-open]', body).forEach(function (b) {
+        b.addEventListener('click', function () { attemptDetailId = b.dataset.inboxOpen; openSub('attemptDetail'); });
+      });
+      window.AtlasGradeBg.markAllRead().then(function () { refreshInboxBadge(); });
+    }).catch(function () { body.innerHTML = '<div class="sub-loading">消息加载失败。</div>'; });
+  }
   function cmApi(method, bodyObj, query) { return AtlasUser.json('/api/community' + (query || ''), method, bodyObj); }
   function cmAvatar(uid, at, name, size) {
     if (at) return '<img class="cm-avatar" src="/api/profile/avatar?uid=' + encodeURIComponent(uid) + '&v=' + at + '" style="width:' + size + 'px;height:' + size + 'px" alt="">';

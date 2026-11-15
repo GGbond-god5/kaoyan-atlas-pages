@@ -6,7 +6,7 @@
 <title>考研科目大观 · App</title>
 <link rel="icon" href="assets/icons/icon-192.png">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
-<link rel="stylesheet" href="assets/app.css?v=8">
+<link rel="stylesheet" href="assets/app.css?v=9">
 </head>
 <body>
 <header class="app-top">
@@ -154,6 +154,7 @@
     </div>
     <div class="card entry-list">
       <a class="entry" href="#" data-sub="profile"><span>档案设置</span><span class="entry-arrow">›</span></a>
+      <a class="entry" href="#" data-sub="inbox"><span>消息通知</span><span class="entry-badge" id="inboxBadge" hidden></span><span class="entry-arrow">›</span></a>
       <a class="entry" href="#" data-sub="settings"><span>账号设置</span><span class="entry-arrow">›</span></a>
       <a class="entry" href="#" id="versionEntry" hidden><span>版本更新</span><span class="entry-note" id="versionText"></span><span class="entry-arrow">›</span></a>
       <a class="entry" href="admin.html" id="adminEntry" hidden><span>管理控制台</span><span class="entry-arrow">›</span></a>
@@ -262,10 +263,10 @@
 
 <div class="app-toast" id="appToast" hidden></div>
 
-<script src="assets/user-state.js"></script>
+<script src="assets/user-state.js"></script><script src="assets/grading-bg.js?v=1"></script>
 <script src="assets/questions-loader.js?v=1"></script>
 <script src="assets/katex-loader.js?v=1"></script>
 <script src="assets/plain-text.js?v=1"></script>
-<script src="assets/app.js?v=19"></script>
+<script src="assets/app.js?v=20"></script>
 </body>
 </html>

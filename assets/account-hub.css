@@ -60,3 +60,6 @@
   background: transparent; border: 1px solid #D8CFBB; font: inherit; font-size: 14px; color: #17161A;
 }
 .hub-logout:hover { border-color: #A33B2E; color: #A33B2E; }
+
+.hub-btn { position: relative; }
+.hub-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; border-radius: 50%; background: #C0392B; border: 2px solid #fff; }

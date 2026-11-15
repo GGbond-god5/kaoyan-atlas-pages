@@ -627,6 +627,7 @@
       session.gradeSkipped = session.queue.length - session.gradeQueue.length;
       session.gradeTotal = session.gradeQueue.length;
       session.gradeDone = 0;
+      if (window.AtlasGradeBg) window.AtlasGradeBg.save({ attemptId: id, title: (SUBJECT_NAMES[session.queue[0].subject] || '套卷') + (session.mode === "mock" ? " · 全真模考" : " · 套卷"), pending: session.gradeQueue.slice(), total: session.gradeTotal });
       finishSubmit();
       await runGradeQueue(id);
     } catch (err) { session.submitting = false; askConfirm("保存失败", `交卷未完成：${err.message}。请重试。`, () => {}); }
@@ -652,6 +653,7 @@
       updateResultStatus();
       const host = document.getElementById("mastery");
       if (host) window.AtlasAssessment.renderMastery(host, session.queue, session.attempt.results || {});
+      if (window.AtlasGradeBg) window.AtlasGradeBg.complete(attemptId);
       notifyGradeDone();
     }
   }
@@ -664,8 +666,9 @@
       const prev = session.attempt && session.attempt.results || {};
       session.attempt = Object.assign({}, data.attempt, {results:Object.assign({}, prev, data.attempt && data.attempt.results || {})});
       session.errors = session.errors || {}; delete session.errors[id];
+      if (window.AtlasGradeBg) window.AtlasGradeBg.done(id);
     }
-    catch (err) { if (session === active) { session.errors = session.errors || {}; session.errors[id] = err.message; } }
+    catch (err) { if (session === active) { session.errors = session.errors || {}; session.errors[id] = err.message; } if (window.AtlasGradeBg) window.AtlasGradeBg.fail(id); }
     finally { if (session === active) { session.grading = null; updateResultStatus(); } }
   }
   function finishSubmit() {

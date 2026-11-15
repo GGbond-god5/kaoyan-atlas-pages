@@ -55,6 +55,7 @@
       '<div class="hub-menu">' +
         '<button type="button" class="hub-item" id="hubEdit">编辑档案<span>头像 · 格言 · 目标院校</span></button>' +
         '<a class="hub-item" href="community.html">我的社区分享<span>广场与我分享的资料</span></a>' +
+        '<a class="hub-item" href="analytics.html" id="hubInboxItem">消息<span id="hubInboxText">批改完成等提醒</span></a>' +
         '<a class="hub-item" id="hubAdmin" href="admin.html" hidden>管理控制台<span>站点管理</span></a>' +
         '<button type="button" class="hub-item" id="hubSettingsBtn">账号设置<span>改密码 · 导出数据 · 注销</span></button>' +
       "</div>" +
@@ -72,6 +73,21 @@
       '<p class="hub-msg" id="hubMsg"></p>' +
       '<button type="button" class="hub-logout" id="hubLogout">退出登录</button>';
     document.body.appendChild(panel);
+    if (window.AtlasGradeBg) {
+      window.AtlasGradeBg.inbox().then(function (list) {
+        var unread = (list || []).filter(function (m) { return !m.read; });
+        if (!unread.length) return;
+        var t = panel.querySelector("#hubInboxText");
+        if (t) t.textContent = unread.length + " 条未读 · 最新：" + (unread[0].title || "批改完成");
+        if (btn && !btn.querySelector(".hub-dot")) {
+          var dot = document.createElement("span");
+          dot.className = "hub-dot";
+          btn.appendChild(dot);
+        }
+      }).catch(function () {});
+      var inboxItem = panel.querySelector("#hubInboxItem");
+      if (inboxItem) inboxItem.addEventListener("click", function () { window.AtlasGradeBg.markAllRead().catch(function () {}); });
+    }
     panel.querySelector("#hubEdit").onclick = function () {
       closePanel();
       if (window.AtlasProfile && typeof window.AtlasProfile.open === "function") window.AtlasProfile.open();

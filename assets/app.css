@@ -560,3 +560,9 @@ button { font-family: inherit; }
 .reply-hint button { background: none; border: 0; color: var(--ink3); cursor: pointer; }
 .comment-row { display: flex; gap: 8px; margin-top: 8px; }
 .comment-row .f-input { flex: 1; }
+
+/* 消息通知 */
+.entry-badge { background: var(--ver); color: #fff; border-radius: 999px; min-width: 20px; height: 20px; line-height: 20px; text-align: center; font-size: 11.5px; padding: 0 6px; margin-left: auto; }
+.entry-badge[hidden] { display: none; }
+.entry .entry-badge + .entry-arrow { margin-left: 6px; }
+.inbox-dot { background: var(--ver); color: #fff; border-radius: 6px; font-size: 10.5px; padding: 1px 6px; vertical-align: 2px; }
