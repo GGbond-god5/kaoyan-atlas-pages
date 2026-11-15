@@ -184,93 +184,102 @@
     if (!shown) $('#todayEmpty').textContent = '今天没有到期任务，去刷题页开一套新卷吧。';
   }
 
-  /* ---------- 题库 ---------- */
+  /* ---------- 知识库 ----------
+   * 定位与刷题分开：这里只做知识的查与读——科目 → 章节讲义 → 考点，
+   * 全部来自图谱数据（assets/data.js），点章节进小说式阅读器精读，
+   * 点考点直达讲义对应位置；练题入口留在讲义内与刷题页，不在这里重复。 */
   var bankRendered = false;
   function renderBankSubjects() {
     if (bankRendered) return;
     bankRendered = true;
-    AtlasQuestions.manifest.then(function (m) {
+    wireKbSearch();
+    ensureAtlas().then(function (data) {
       var box = $('#subjectList');
-      var subjects = (m && m.subjects) || {};
-      var rows = SUBJECT_ORDER.filter(function (s) { return subjects[s] > 0; }).map(function (s) {
-        return '<button type="button" class="subject-row" data-subject="' + s + '">' +
-          '<span class="subject-name">' + SUBJECT_NAMES[s] + '</span>' +
-          '<span class="subject-count">' + subjects[s] + ' 题</span>' +
+      if (!data || !data.subjects) { box.innerHTML = '<div class="today-empty">知识库加载失败，下拉刷新重试。</div>'; return; }
+      box.innerHTML = data.subjects.map(function (sub) {
+        var kpCount = (sub.chapters || []).reduce(function (n, c) { return n + ((c.kps || []).length); }, 0);
+        return '<button type="button" class="subject-row" data-subject="' + esc(sub.id) + '">' +
+          '<span class="subject-name">' + esc(sub.name) + '</span>' +
+          '<span class="subject-count">' + (sub.chapters || []).length + ' 章 · ' + kpCount + ' 考点</span>' +
           '<span class="subject-arrow">›</span></button>';
       }).join('');
-      box.innerHTML = rows || '<div class="today-empty">题库清单加载失败，下拉刷新重试。</div>';
       $$('.subject-row', box).forEach(function (b) {
         b.addEventListener('click', function () { openSubject(b.dataset.subject); });
       });
-    });
-  }
-
-  function openSubject(subject) {
-    $('#bankSubjects').hidden = true;
-    var detail = $('#bankDetail');
-    detail.hidden = false;
-    $('#bankDetailTitle').textContent = SUBJECT_NAMES[subject] + ' · 章节考点';
-    var box = $('#chapterList');
-    box.innerHTML = '<div class="today-empty">正在加载这一科的题库…</div>';
-    window.scrollTo(0, 0);
-    AtlasQuestions.load(subject).then(function () {
-      var items = (window.QUESTIONS.items || []).filter(function (i) { return i.subject === subject; });
-      // 个人题库一并计入（与刷题页口径一致）
-      renderChapters(subject, items, box);
     }).catch(function () {
-      box.innerHTML = '<div class="today-empty">题库加载失败，检查网络后重试。</div>';
+      $('#subjectList').innerHTML = '<div class="today-empty">知识库加载失败，检查网络后重试。</div>';
     });
   }
 
-  function renderChapters(subject, items, box) {
-    var chapters = {}, order = [];
-    items.forEach(function (i) {
-      var ck = i.topicChapter || i.chapter || '';
-      if (!ck) return;
-      if (!chapters[ck]) {
-        chapters[ck] = { key: ck, title: i.topicTitle || i.chapterTitle || ck, kps: {}, kpOrder: [], count: 0 };
-        order.push(ck);
-      }
-      var ch = chapters[ck];
-      ch.count++;
-      var kp = i.kp || '';
-      if (kp) {
-        if (!ch.kps[kp]) { ch.kps[kp] = { id: kp, name: i.kpName || kp, count: 0 }; ch.kpOrder.push(kp); }
-        ch.kps[kp].count++;
-      }
+  function wireKbSearch() {
+    var inp = document.getElementById('kbSearch');
+    if (!inp || inp.dataset.wired) return;
+    inp.dataset.wired = '1';
+    var timer = null;
+    inp.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { paintKbResults(inp.value.trim()); }, 250);
     });
-    if (!order.length) {
-      box.innerHTML = '<div class="today-empty">这一科暂无章节数据。</div>';
-      return;
-    }
-    box.innerHTML = order.map(function (ck, idx) {
-      var ch = chapters[ck];
-      var kps = ch.kpOrder.map(function (kid) {
-        var k = ch.kps[kid];
-        var href = 'practice.html?subject=' + encodeURIComponent(subject) +
-          '&chapter=' + encodeURIComponent(ck) + '&kp=' + encodeURIComponent(kid);
-        return '<div class="kp-row"><button type="button" class="kp-name-btn" data-read-kp="' + esc(kid) + '" data-chapter="' + esc(ck) + '" data-title="' + esc(ch.title) + '">' + esc(k.name) + '</button>' +
-          '<span class="kp-count">' + k.count + ' 题</span>' +
-          '<a class="kp-go" href="' + href + '">练这个考点</a></div>';
-      }).join('');
-      var allHref = 'practice.html?subject=' + encodeURIComponent(subject) + '&chapter=' + encodeURIComponent(ck);
-      return '<div class="chapter-block"><button type="button" class="chapter-head" data-ch="' + idx + '">' +
-        '<span class="chapter-name">' + esc(ch.title) + '</span>' +
-        '<span class="chapter-meta">' + ch.kpOrder.length + ' 考点 · ' + ch.count + ' 题</span>' +
-        '<span class="chapter-chev">›</span></button>' +
-        '<div class="chapter-kps"><button type="button" class="kp-read-btn" data-read-chapter="' + esc(ck) + '" data-title="' + esc(ch.title) + '">阅读本章</button>' + kps + '<a class="chapter-all" href="' + allHref + '">练整章 →</a></div></div>';
-    }).join('');
-    $$('.chapter-head', box).forEach(function (h) {
-      h.addEventListener('click', function () { h.parentElement.classList.toggle('open'); });
-    });
-    $$('[data-read-chapter]', box).forEach(function (b) {
-      b.addEventListener('click', function () {
-        openReader(subject, b.dataset.readChapter, b.dataset.title, null);
+  }
+  function paintKbResults(q) {
+    var box = document.getElementById('kbResults');
+    if (!box) return;
+    if (!q) { box.innerHTML = ''; return; }
+    if (!atlasData) { box.innerHTML = '<div class="today-empty">知识库还在加载，稍等一下再搜。</div>'; return; }
+    var hits = [];
+    (atlasData.subjects || []).forEach(function (sub) {
+      (sub.chapters || []).forEach(function (ch) {
+        if (ch.title && ch.title.indexOf(q) >= 0) hits.push({ sub: sub, ch: ch, kp: null });
+        (ch.kps || []).forEach(function (kp) {
+          if (kp.name && kp.name.indexOf(q) >= 0) hits.push({ sub: sub, ch: ch, kp: kp });
+        });
       });
     });
-    $$('[data-read-kp]', box).forEach(function (b) {
+    if (!hits.length) { box.innerHTML = '<div class="today-empty">没找到「' + esc(q) + '」相关的考点，换个关键词试试。</div>'; return; }
+    box.innerHTML = '<div class="card" style="margin-top:10px">' + hits.slice(0, 30).map(function (h2) {
+      return '<div class="list-row"><button type="button" class="kp-name-btn" data-kb-go="' + esc(h2.sub.id) + '|' + esc(h2.ch.id) + '|' + esc(h2.kp ? h2.kp.id : '') + '">' + esc(h2.kp ? h2.kp.name : h2.ch.title) + '</button>' +
+        '<div class="row-meta">' + esc(h2.sub.name) + ' · ' + esc(h2.ch.title) + (h2.kp ? '' : ' · 整章') + '</div></div>';
+    }).join('') + (hits.length > 30 ? '<p class="view-note">只显示前 30 条，换个更具体的词试试。</p>' : '') + '</div>';
+    $$('[data-kb-go]', box).forEach(function (b) {
       b.addEventListener('click', function () {
-        openReader(subject, b.dataset.chapter, b.dataset.title, b.dataset.readKp);
+        var parts = b.dataset.kbGo.split('|');
+        var meta = resolveChapterMeta(parts[0], parts[1], '');
+        openReader(parts[0], parts[1], meta ? meta.chapter.title : '', parts[2] || null);
+      });
+    });
+  }
+
+  function openSubject(subjectId) {
+    ensureAtlas().then(function (data) {
+      var subj = data && (data.subjects || []).filter(function (x) { return x.id === subjectId; })[0];
+      if (!subj) return;
+      $('#bankSubjects').hidden = true;
+      var detail = $('#bankDetail');
+      detail.hidden = false;
+      $('#bankDetailTitle').textContent = subj.name + ' · 章节讲义';
+      window.scrollTo(0, 0);
+      var box = $('#chapterList');
+      box.innerHTML = (subj.chapters || []).map(function (ch, idx) {
+        var kps = (ch.kps || []).map(function (kp) {
+          var tags = [kp.freq, kp.level].filter(Boolean).join(' · ');
+          return '<div class="kp-row"><button type="button" class="kp-name-btn" data-read-kp="' + esc(kp.id) + '" data-chapter="' + esc(ch.id) + '" data-title="' + esc(ch.title) + '">' + esc(kp.name) + '</button>' +
+            (tags ? '<span class="kp-count">' + esc(tags) + '</span>' : '') + '</div>';
+        }).join('');
+        var meta = [ch.priority, (ch.kps || []).length + ' 考点', ch.meta].filter(Boolean).join(' · ');
+        return '<div class="chapter-block"><button type="button" class="chapter-head" data-ch="' + idx + '">' +
+          '<span class="chapter-name">' + esc(ch.title) + '</span>' +
+          '<span class="chapter-meta">' + esc(meta) + '</span>' +
+          '<span class="chapter-chev">›</span></button>' +
+          '<div class="chapter-kps"><button type="button" class="kp-read-btn" data-read-chapter="' + esc(ch.id) + '" data-title="' + esc(ch.title) + '">阅读本章讲义</button>' + kps + '</div></div>';
+      }).join('') || '<div class="today-empty">这一科暂无讲义章节。</div>';
+      $$('.chapter-head', box).forEach(function (hd) {
+        hd.addEventListener('click', function () { hd.parentElement.classList.toggle('open'); });
+      });
+      $$('[data-read-chapter]', box).forEach(function (b) {
+        b.addEventListener('click', function () { openReader(subjectId, b.dataset.readChapter, b.dataset.title, null); });
+      });
+      $$('[data-read-kp]', box).forEach(function (b) {
+        b.addEventListener('click', function () { openReader(subjectId, b.dataset.chapter, b.dataset.title, b.dataset.readKp); });
       });
     });
   }

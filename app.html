@@ -86,13 +86,10 @@
   <!-- 题库 -->
   <section class="view" id="view-bank" hidden>
     <div id="bankSubjects">
-      <h2 class="sec-title first">科目题库</h2>
-      <div id="subjectList"><div class="today-empty">正在加载题库…</div></div>
-      <a class="card link-card" href="index.html">
-        <span class="link-card-title">图谱总览</span>
-        <span class="link-card-desc">在知识图谱里阅读考点与讲义</span>
-        <span class="link-card-arrow">→</span>
-      </a>
+      <h2 class="sec-title first">科目知识库</h2>
+      <input class="f-input" id="kbSearch" placeholder="搜索考点或章节，如：泰勒公式、曲率、定语从句">
+      <div id="kbResults"></div>
+      <div id="subjectList"><div class="today-empty">正在加载知识库…</div></div>
     </div>
     <div id="bankDetail" hidden>
       <button class="back-btn" id="bankBack" type="button">← 全部科目</button>
@@ -191,7 +188,7 @@
 <!-- 小说式阅读器：全屏沉浸阅读，目录为左侧抽屉，底部上一章/下一章 -->
 <div class="reader" id="readerView" hidden>
   <div class="reader-top">
-    <button class="reader-top-btn" id="readerBack" type="button">← 题库</button>
+    <button class="reader-top-btn" id="readerBack" type="button">← 知识库</button>
     <div class="reader-title" id="readerTitle">章节阅读</div>
     <button class="reader-top-btn" id="readerFontBtn" type="button">字号</button>
     <button class="reader-top-btn" id="readerGuideBtn" type="button">问小观</button>
@@ -250,7 +247,7 @@
     <svg viewBox="0 0 24 24"><path d="M10,20v-6h4v6h5v-8h3L12,3 2,12h3v8z"/></svg><span>首页</span>
   </button>
   <button type="button" data-tab="bank">
-    <svg viewBox="0 0 24 24"><path d="M12,5c-2,-1.5 -4.5,-2 -8,-2v16c3.5,0 6,0.5 8,2 2,-1.5 4.5,-2 8,-2V3c-3.5,0 -6,0.5 -8,2z"/></svg><span>题库</span>
+    <svg viewBox="0 0 24 24"><path d="M12,5c-2,-1.5 -4.5,-2 -8,-2v16c3.5,0 6,0.5 8,2 2,-1.5 4.5,-2 8,-2V3c-3.5,0 -6,0.5 -8,2z"/></svg><span>知识库</span>
   </button>
   <button type="button" data-tab="practice">
     <svg viewBox="0 0 24 24"><path d="M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25zM20.71,7.04c-0.39,-0.39 -1.02,-0.39 -1.41,0l-2.34,2.34 3.75,3.75 2.34,-2.34c0.39,-0.39 0.39,-1.02 0,-1.41z"/></svg><span>刷题</span>
@@ -269,6 +266,6 @@
 <script src="assets/questions-loader.js?v=1"></script>
 <script src="assets/katex-loader.js?v=1"></script>
 <script src="assets/plain-text.js?v=1"></script>
-<script src="assets/app.js?v=16"></script>
+<script src="assets/app.js?v=17"></script>
 </body>
 </html>
