@@ -14,5 +14,6 @@ if [ -z "$NODE_BIN" ]; then echo "未找到 Node.js，请先安装 Node 18+"; ex
 ln -sf "$NODE_BIN" /usr/bin/node
 cp "$SRC/worker/atlas-worker.service" /etc/systemd/system/
 systemctl daemon-reload
-systemctl enable --now atlas-worker
+systemctl enable atlas-worker
+systemctl restart atlas-worker
 systemctl status atlas-worker --no-pager | head -12

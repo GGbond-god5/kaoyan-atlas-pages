@@ -129,3 +129,4 @@
 - 管理后台新增「服务器批改」卡：worker 令牌状态查看与设置（浏览器环境无法调控制台，改走页面 UI）。
 - Android App v1.1（versionCode 13）：全部链接留在 App 内打开、不再跳 Chrome；app-version.json 补全 apkUrl/size，修复旧版 App 内更新。
 - worker 部署修复：install.sh 自适应 Node 路径（ECS 的 Node 在 /usr/local/bin）并健壮化 clone；worker 请求加 120 秒超时。
+- install.sh 改为显式 restart，确保更新 worker 代码后立即生效（enable --now 不重启已运行服务）。
