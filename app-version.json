@@ -1,6 +1,8 @@
 {
-  "versionCode": 12,
-  "versionName": "1.0",
+  "versionCode": 13,
+  "versionName": "1.1",
+  "apkUrl": "/assets/app/kaoyan-atlas.apk",
+  "size": 124698,
   "apkSize": 124698,
-  "notes": "v1.0 内测版正式发布：功能与网页版全面同步——知识库小说式阅读、刷题三模式与全真模考纯净模式、后台批改与消息通知、学情分析六维雷达、错题本复盘、每日单词任务、资料库与社区、小观 AI 向导与自带 API。欢迎在社区反馈内测问题。"
+  "notes": "v1.1：App 内所有网页链接（含 GitHub、B站等站外链接）都留在 App 内打开，不再跳到系统浏览器，App 与网页版彻底分离；同时补全更新通道地址，旧版本现在也能直接在 App 内检查更新升级到本版。"
 }
