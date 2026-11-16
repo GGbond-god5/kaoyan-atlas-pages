@@ -65,6 +65,19 @@
     </section>
 
     <section class="card">
+      <h2>服务器批改</h2>
+      <p class="note" id="workerTokenState">令牌状态读取中…</p>
+      <form id="workerForm">
+        <div class="field">
+          <label for="workerToken">worker 令牌（ECS 批改服务领卷用，至少 24 个字符；保存后不回显原文）</label>
+          <input id="workerToken" type="password" autocomplete="new-password" placeholder="粘贴令牌">
+        </div>
+        <button class="btn" type="submit">保存令牌</button>
+      </form>
+      <p class="note">更换令牌后，要同步更新 ECS 上 /opt/atlas-worker/worker.env 并重启 atlas-worker 服务。</p>
+    </section>
+
+    <section class="card">
       <h2>站点公告</h2>
       <form id="annForm">
         <div class="field">
@@ -79,7 +92,7 @@
 
 <script src="assets/config.js?v=2027-11-12"></script>
 <script src="assets/auth.js?v=4"></script>
-<script src="assets/admin.js?v=1"></script>
+<script src="assets/admin.js?v=2"></script>
 <script src="assets/ai-config.js?v=1"></script>
 <script src="assets/account-hub.js?v=3"></script>
 </body>

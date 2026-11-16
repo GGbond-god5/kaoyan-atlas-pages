@@ -86,6 +86,11 @@
     document.getElementById('annText').value = d.announcement || '';
   }
 
+  async function loadWorkerToken() {
+    var d = await get('workerToken');
+    document.getElementById('workerTokenState').textContent = d.set ? '令牌已设置，ECS 批改服务可领卷。' : '令牌尚未设置，服务器批改未启用。';
+  }
+
   document.getElementById('invForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     try {
@@ -96,6 +101,16 @@
       });
       document.getElementById('invNew').innerHTML = '新生成：<code>' + d.codes.map(esc).join('</code>、<code>') + '</code>';
       loadInvites();
+    } catch (err) { say(err.message); }
+  });
+
+  document.getElementById('workerForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    try {
+      await A.post('/api/admin', { action: 'workerToken.set', token: document.getElementById('workerToken').value.trim() });
+      document.getElementById('workerToken').value = '';
+      say('worker 令牌已保存', true);
+      loadWorkerToken();
     } catch (err) { say(err.message); }
   });
 
@@ -127,5 +142,6 @@
     loadUsers();
     loadInvites();
     loadAnnouncement();
+    loadWorkerToken();
   })();
 })();
