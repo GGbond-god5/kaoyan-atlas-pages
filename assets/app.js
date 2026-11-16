@@ -771,7 +771,8 @@ async function clearPaperRecordsApp(qids) {
       '<div class="row-meta">' + esc(attemptFullTime(a)) + ' · 共 ' + qs.length + ' 题 · 已批改 ' + sm.graded + ' 题</div>' +
       '<div class="qd-score"><b>' + rate + '</b><span>' + (max > 0 ? '得分 ' + (Math.round(score * 10) / 10) + ' / ' + (Math.round(max * 10) / 10) + ' 分' : '等待 AI 批改') + '</span></div>' +
       '<div class="row-actions"><button type="button" class="btn-sub" id="qdAnalysisBtn">AI 教学分析</button></div>' +
-      '<div class="qd-analysis" id="qdAnalysis" hidden></div></div>';
+      '<div class="qd-analysis" id="qdAnalysis" hidden></div></div>' +
+      '<div class="card"><div id="qdMastery"></div></div>';
     body.innerHTML = head + '<div id="qdList">' + qs.map(function (q, idx) {
       var r = (a.results || {})[q.id];
       var graded = r && r.status === 'graded';
@@ -784,6 +785,10 @@ async function clearPaperRecordsApp(qids) {
     }).join('') + '</div>' +
     '<div class="card"><div class="row-title">数据管理</div><p class="view-note">重置后这套卷的作答与批改记录会被删除，学情分析、错题统计同步更新，可以干净地二刷；按知识点练习的记录不受影响。删除后不能恢复。</p>' +
     '<button type="button" class="btn-sub danger" id="qdReset">重置这套（删除记录）</button></div>';
+    if (window.AtlasAssessment) {
+      var mh = document.getElementById('qdMastery');
+      if (mh) { try { window.AtlasAssessment.renderMastery(mh, qs.map(function (q) { return q.subject ? q : Object.assign({}, q, { subject: a.subject }); }), a.results || {}); } catch (e) {} }
+    }
     var anaBtn = document.getElementById('qdAnalysisBtn');
     if (anaBtn) anaBtn.addEventListener('click', function () {
       var box = document.getElementById('qdAnalysis');
@@ -831,10 +836,21 @@ async function clearPaperRecordsApp(qids) {
         if (!box) return;
         var r = (a.results || {})[q.id] || {};
         var it = byId[q.id];
+        var isEnglish = ['english', 'english2'].indexOf(q.subject || a.subject || '') >= 0;
         var html = '';
-        if (it && it.text) html += '<div class="qd-sec"><span>题干</span><p>' + esc(cleanText(it.text)) + '</p></div>';
-        if (it && it.answer) html += '<div class="qd-sec"><span>参考答案</span><p>' + esc(cleanText(it.answer)) + '</p></div>';
-        if (it && it.steps && it.steps.length) html += '<div class="qd-sec"><span>解析</span>' + it.steps.map(function (st) { return '<p>' + esc(cleanText(st)) + '</p>'; }).join('') + '</div>';
+        var stemText = (it && it.text) || q.text || '';
+        if (stemText) html += '<div class="qd-sec"><span>题干</span><p>' + esc(cleanText(stemText)) + '</p></div>';
+        var ans = (a.answers || {})[q.id] || {};
+        var sel = Array.isArray(ans.selected) ? ans.selected.filter(Boolean) : [];
+        if (sel.length) html += '<div class="qd-sec"><span>我的选择</span><p>' + esc(sel.join('、')) + '</p></div>';
+        var work = String(ans.work || '').trim();
+        if (work) {
+          var workLabel = '我的作答';
+          if (isEnglish && q.kind === '翻译') workLabel = '我的译文';
+          else if (isEnglish && /作文/.test(q.kind || '')) workLabel = '我的作文';
+          html += '<div class="qd-sec"><span>' + workLabel + '</span><p>' + esc(cleanText(work)) + '</p></div>';
+        }
+        if (ans.image) html += '<div class="qd-sec"><span>作答照片</span><img class="qd-photo" src="' + ans.image + '" alt="作答照片"></div>';
         if (r.level) html += '<div class="qd-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
         if (r.comments) html += '<div class="qd-sec"><span>AI 总评</span><p>' + esc(cleanText(r.comments)) + '</p></div>';
         if (Array.isArray(r.breakdown) && r.breakdown.length) {
@@ -852,10 +868,37 @@ async function clearPaperRecordsApp(qids) {
         }
         if (r.missing) html += '<div class="qd-sec"><span>缺失要点</span><p>' + esc(cleanText(r.missing)) + '</p></div>';
         if (r.suggestions) html += '<div class="qd-sec"><span>改进建议</span><p>' + esc(cleanText(r.suggestions)) + '</p></div>';
-        if (r.revised) html += '<div class="qd-sec"><span>作文指导 · 修改稿</span><p>' + esc(cleanText(r.revised)) + '</p></div>';
-        if (Array.isArray(r.grammar) && r.grammar.length) html += '<div class="qd-sec"><span>作文指导 · 语法与表达</span>' + r.grammar.map(function (g) { return '<p>' + esc(cleanText(typeof g === 'string' ? g : (g.issue || g.text || g.comment || ''))) + '</p>'; }).join('') + '</div>';
-        html += '<div class="qd-actions"><button type="button" class="btn-sub" data-mark-fav="' + q.id + '">☆ 收藏</button><button type="button" class="btn-sub" data-mark-wb="' + q.id + '">＋ 加入错题本</button></div>';
+        if (isEnglish && Array.isArray(r.grammar) && r.grammar.length) html += '<div class="qd-sec"><span>语法与表达</span>' + r.grammar.map(function (g) {
+          if (typeof g === 'string') return '<p>' + esc(cleanText(g)) + '</p>';
+          return '<p>' + esc(cleanText((g.original || '') + (g.corrected ? ' → ' + g.corrected : '') + (g.reason ? '（' + g.reason + '）' : ''))) + '</p>';
+        }).join('') + '</div>';
+        if (isEnglish && Array.isArray(r.upgrades) && r.upgrades.length) html += '<div class="qd-sec"><span>句子升级</span>' + r.upgrades.map(function (u) {
+          if (typeof u === 'string') return '<p>' + esc(cleanText(u)) + '</p>';
+          return '<p>' + esc(cleanText((u.original || '') + (u.upgraded ? ' → ' + u.upgraded : '') + (u.note ? '（' + u.note + '）' : ''))) + '</p>';
+        }).join('') + '</div>';
+        if (r.revised) html += '<div class="qd-sec"><span>' + (isEnglish ? (q.kind === '翻译' ? '参考译文' : '修改稿') : '订正要点') + '</span><p>' + esc(cleanText(r.revised)) + '</p></div>';
+        var refAns = (it && it.answer) || q.answer || '';
+        if (refAns) html += '<div class="qd-sec"><span>参考答案</span><p>' + esc(cleanText(refAns)) + '</p></div>';
+        var steps = (it && it.steps && it.steps.length) ? it.steps : (Array.isArray(q.steps) ? q.steps : []);
+        if (steps.length) html += '<div class="qd-sec"><span>解析</span>' + steps.map(function (st) { return '<p>' + esc(cleanText(st)) + '</p>'; }).join('') + '</div>';
+        if (r.deepExplain) html += '<div class="qd-sec"><span>AI 深度解析（强模型）</span><p>' + esc(cleanText(r.deepExplain)) + '</p></div>';
+        html += '<div class="qd-actions"><button type="button" class="btn-sub" data-mark-fav="' + q.id + '">☆ 收藏</button><button type="button" class="btn-sub" data-mark-wb="' + q.id + '">＋ 加入错题本</button>' +
+          (r.status === 'graded' ? '<button type="button" class="btn-sub" data-explain="' + q.id + '" data-explain-idx="' + idx + '">' + (r.deepExplain ? '重新生成深度解析' : 'AI 深度解析') + '</button>' : '') + '</div>' +
+          '<div class="qd-deep" id="qdDeep' + idx + '" hidden></div>';
         box.innerHTML = html || '<div class="sub-loading">这道题暂无更多详情。</div>';
+        $$('[data-explain]', box).forEach(function (b) {
+          b.addEventListener('click', function () {
+            var dbox = document.getElementById('qdDeep' + b.dataset.explainIdx);
+            if (!dbox) return;
+            dbox.hidden = false; dbox.innerHTML = '<div class="sub-loading">强模型正在生成深度解析，稍等…</div>';
+            b.disabled = true;
+            AtlasUser.json('/api/attempts/' + encodeURIComponent(a.id) + '/explain', 'POST', { questionId: b.dataset.explain, force: true }).then(function (out) {
+              dbox.innerHTML = '<div class="qd-sec"><span>AI 深度解析（强模型）</span><p>' + esc(cleanText(out.deepExplain || '')) + '</p></div>';
+              gMath(dbox);
+              b.textContent = '重新生成深度解析';
+            }).catch(function (e) { dbox.innerHTML = '<div class="sub-loading">生成失败：' + esc(e.message || '') + '</div>'; }).then(function () { b.disabled = false; });
+          });
+        });
         if (window.AtlasMarks) window.AtlasMarks.wire(document.getElementById('subBody'));
         if (window.AtlasKatex) AtlasKatex.render(box);
       });

@@ -579,3 +579,7 @@ button { font-family: inherit; }
 /* AI 教学分析（App） */
 .qd-analysis { margin-top: 10px; border-top: 1px solid var(--rule); padding-top: 10px; }
 .qd-analysis p { line-height: 1.8; white-space: pre-wrap; }
+.qd-photo{display:block;max-width:100%;border-radius:8px;margin-top:4px}
+
+.qd-deep{margin-top:6px}
+.qd-deep p{line-height:1.8;white-space:pre-wrap}

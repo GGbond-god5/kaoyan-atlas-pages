@@ -1260,6 +1260,25 @@
         else $("#pintro").textContent = "错题本还是空的：做错的题会自动进来，也可以在学情分析的做题详情里手动把题目加入错题本。";
       } catch (err) { console.error("错题本加载失败", err); }
     }
+    /* 自组卷：资料库组卷中心经 localStorage 递交题目清单（?custom=1） */
+    if (new URLSearchParams(location.search).get("custom")) {
+      try {
+        const paper = JSON.parse(localStorage.getItem("atlas.custompaper.v1") || "null");
+        if (paper && Array.isArray(paper.items) && paper.items.length) {
+          if (window.AtlasQuestions && paper.subject) { try { await window.AtlasQuestions.load(paper.subject); } catch (e) {} }
+          const byId = {}; ITEMS.forEach(q => { byId[q.id] = q; });
+          const pool = [];
+          for (const it of paper.items) {
+            const q = byId[it.id]; if (!q) continue;
+            const c = { ...q };
+            const sc = Number(it.score); if (Number.isFinite(sc) && sc > 0) c.maxScore = sc;
+            pool.push(c);
+          }
+          if (pool.length) { state.subject = paper.subject || pool[0].subject; setMode("paper"); start(pool, paper.title || "自组卷"); }
+          else $("#pintro").textContent = "自组卷的题目没能加载（可能已被删除），请回资料库重新组卷。";
+        }
+      } catch (err) { console.error("自组卷加载失败", err); }
+    }
     /* 错题艾宾浩斯回流：?review=1 直接组今日到期错题开练；平时在设置区提示到期数量 */
     if (window.AtlasReview) {
       try {

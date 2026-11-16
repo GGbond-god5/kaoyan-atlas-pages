@@ -250,16 +250,16 @@ async function clearPaperRecords(qids) {
 
     $('#paperList').innerHTML = papers.slice().reverse().map(function (p) {
       var chips = p.wrong.length ? p.wrong.map(function (w) {
-        return '<span class="chip' + (w.rate > 0 ? ' part' : '') + '" title="' + esc(w.kpName || w.kind) + '">第' + w.no + '题' + (w.kpName ? ' · ' + esc(w.kpName) : '') + (w.rate > 0 ? '（部分分）' : '') + '</span>';
+        return '<span class="chip' + (w.rate > 0 ? ' part' : '') + '" role="button" tabindex="0" data-open-paper="' + esc(p.id || '') + '" data-goto="' + (w.no - 1) + '" title="' + esc(w.kpName || w.kind) + '">第' + w.no + '题' + (w.kpName ? ' · ' + esc(w.kpName) : '') + (w.rate > 0 ? '（部分分）' : '') + '</span>';
       }).join('') : '<span class="chip" style="border-color:#BFD8C6;color:#3E7A4E;background:#EDF5EF">全部满分</span>';
       return '<div class="paper"><h3><button type="button" class="paper-open" data-open-paper="' + esc(p.id || '') + '">' + esc(p.title) + '</button></h3><div class="pmeta">' +
         (p.mode === 'mock' ? '全真模考 · ' : p.mode === 'diagnostic' ? '能力自测 · ' : '套卷 · ') + '已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '（' + (p.rate === null ? '—' : pct(p.rate)) + '）</div>' +
         '<div class="bar ' + (p.rate === null ? '' : p.rate >= 0.8 ? 'good' : p.rate >= 0.5 ? 'mid' : 'low') + '" style="margin-top:8px"><i style="width:' + Math.round((p.rate || 0) * 100) + '%"></i></div>' +
         '<div class="chips">' + chips + '</div>' +
-        '<div style="margin-top:10px"><button type="button" class="btn ghost danger" data-reset-paper="' + esc(p.id || '') + '">重置这套（删除记录，二刷用）</button></div></div>';
+        '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn ghost" data-open-paper="' + esc(p.id || '') + '">逐题详情（作答 · 评分 · 解析）→</button><button type="button" class="btn ghost danger" data-reset-paper="' + esc(p.id || '') + '">重置这套（删除记录，二刷用）</button></div></div>';
     }).join('');
     document.querySelectorAll('#paperList [data-open-paper]').forEach(function (b) {
-      b.addEventListener('click', function () { if (b.dataset.openPaper) openPaperDetail(b.dataset.openPaper); });
+      b.addEventListener('click', function () { if (b.dataset.openPaper) openPaperDetail(b.dataset.openPaper, b.dataset.goto != null && b.dataset.goto !== '' ? Number(b.dataset.goto) : null); });
     });
     document.querySelectorAll('#paperList [data-reset-paper]').forEach(function (b) {
       b.addEventListener('click', async function () {
@@ -321,7 +321,7 @@ async function clearPaperRecords(qids) {
       $('#emptyCard').hidden = false;
     }
   }
-  async function openPaperDetail(id) {
+  async function openPaperDetail(id, focusIdx) {
     var main = document.querySelector('main') || document.body;
     var sec = document.getElementById('paperDetail');
     if (!sec) {
@@ -350,17 +350,30 @@ async function clearPaperRecords(qids) {
         var rt = rate(rr);
         return '<button type="button" class="ad-cell ' + rateCls(rt) + '" data-goto="' + idx + '" title="第 ' + (idx + 1) + ' 题' + (q.kpName ? ' · ' + esc(q.kpName) : '') + (rt === null ? ' · 待批改' : ' · ' + Math.round(Number(rr.score) * 10) / 10 + '/' + Math.round(Number(rr.maxScore) * 10) / 10) + '">' + (idx + 1) + '</button>';
       }).join('');
+      var isEnglish = ['english', 'english2'].indexOf(a.subject || '') >= 0;
       var cards = (a.questions || []).map(function (q, idx) {
         var r = (a.results || {})[q.id] || {};
         var it = byId[q.id] || {};
         var graded = r.status === 'graded';
         var rt = rate(r);
         var open = !(graded && rt >= 1);
+        var ans = (a.answers || {})[q.id] || {};
+        var myAnswer = '';
+        var sel = Array.isArray(ans.selected) ? ans.selected.filter(Boolean) : [];
+        if (sel.length) myAnswer += '<div class="ad-sec"><span>我的选择</span><p>' + esc(sel.join('、')) + '</p></div>';
+        var work = String(ans.work || '').trim();
+        if (work) {
+          var workLabel = '我的作答';
+          if (isEnglish && q.kind === '翻译') workLabel = '我的译文';
+          else if (isEnglish && /作文/.test(q.kind || '')) workLabel = '我的作文';
+          myAnswer += '<div class="ad-sec"><span>' + workLabel + '</span><p>' + esc(clean(work)) + '</p></div>';
+        }
+        if (ans.image) myAnswer += '<div class="ad-sec"><span>作答照片</span><img class="ad-photo" src="' + ans.image + '" alt="作答照片"></div>';
         var html = '<div class="ad-card" id="adCard' + idx + '"><div class="ad-head" data-toggle="' + idx + '"><b>第 ' + (idx + 1) + ' 题</b><span>' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' +
           '<b class="ad-score ' + rateCls(rt) + '">' + (graded ? (Math.round(Number(r.score) * 10) / 10) + ' / ' + (Math.round(Number(r.maxScore) * 10) / 10) : '待批改') + '</b><span class="ad-caret">' + (open ? '▾' : '▸') + '</span></div><div class="ad-body"' + (open ? '' : ' hidden') + '>';
-        if (it.text) html += '<div class="ad-sec"><span>题干</span><p>' + esc(clean(it.text)) + '</p></div>';
-        if (it.answer) html += '<div class="ad-sec"><span>参考答案</span><p>' + esc(clean(it.answer)) + '</p></div>';
-        if (it.steps && it.steps.length) html += '<div class="ad-sec"><span>解析</span>' + it.steps.map(function (st) { return '<p>' + esc(clean(st)) + '</p>'; }).join('') + '</div>';
+        var stemText = it.text || q.text || '';
+        if (stemText) html += '<div class="ad-sec"><span>题干</span><p>' + esc(clean(stemText)) + '</p></div>';
+        html += myAnswer;
         if (r.level) html += '<div class="ad-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
         if (r.comments) html += '<div class="ad-sec"><span>AI 总评</span><p>' + esc(clean(r.comments)) + '</p></div>';
         if (Array.isArray(r.breakdown) && r.breakdown.length) html += '<div class="ad-sec"><span>得分点</span>' + r.breakdown.map(function (b) {
@@ -377,9 +390,23 @@ async function clearPaperRecords(qids) {
         }).join('') + '</div>';
         if (r.missing) html += '<div class="ad-sec"><span>缺失要点</span><p>' + esc(clean(r.missing)) + '</p></div>';
         if (r.suggestions) html += '<div class="ad-sec"><span>改进建议</span><p>' + esc(clean(r.suggestions)) + '</p></div>';
-        if (r.revised) html += '<div class="ad-sec"><span>作文指导 · 修改稿</span><p>' + esc(clean(r.revised)) + '</p></div>';
-        if (Array.isArray(r.grammar) && r.grammar.length) html += '<div class="ad-sec"><span>作文指导 · 语法与表达</span>' + r.grammar.map(function (g) { return '<p>' + esc(clean(typeof g === 'string' ? g : (g.issue || g.text || g.comment || ''))) + '</p>'; }).join('') + '</div>';
-        html += '<div class="ad-actions"><button type="button" class="mark-btn" data-mark-fav="' + esc(q.id) + '">☆ 收藏</button><button type="button" class="mark-btn" data-mark-wb="' + esc(q.id) + '">＋ 加入错题本</button></div>';
+        if (isEnglish && Array.isArray(r.grammar) && r.grammar.length) html += '<div class="ad-sec"><span>语法与表达</span>' + r.grammar.map(function (g) {
+          if (typeof g === 'string') return '<p>' + esc(clean(g)) + '</p>';
+          return '<p>' + esc(clean((g.original || '') + (g.corrected ? ' → ' + g.corrected : '') + (g.reason ? '（' + g.reason + '）' : ''))) + '</p>';
+        }).join('') + '</div>';
+        if (isEnglish && Array.isArray(r.upgrades) && r.upgrades.length) html += '<div class="ad-sec"><span>句子升级</span>' + r.upgrades.map(function (u) {
+          if (typeof u === 'string') return '<p>' + esc(clean(u)) + '</p>';
+          return '<p>' + esc(clean((u.original || '') + (u.upgraded ? ' → ' + u.upgraded : '') + (u.note ? '（' + u.note + '）' : ''))) + '</p>';
+        }).join('') + '</div>';
+        if (r.revised) html += '<div class="ad-sec"><span>' + (isEnglish ? (q.kind === '翻译' ? '参考译文' : '修改稿') : '订正要点') + '</span><p>' + esc(clean(r.revised)) + '</p></div>';
+        var refAns = it.answer || q.answer || '';
+        if (refAns) html += '<div class="ad-sec"><span>参考答案</span><p>' + esc(clean(refAns)) + '</p></div>';
+        var steps = (it.steps && it.steps.length) ? it.steps : (Array.isArray(q.steps) ? q.steps : []);
+        if (steps.length) html += '<div class="ad-sec"><span>解析</span>' + steps.map(function (st) { return '<p>' + esc(clean(st)) + '</p>'; }).join('') + '</div>';
+        if (r.deepExplain) html += '<div class="ad-sec"><span>AI 深度解析（强模型）</span><p>' + esc(clean(r.deepExplain)) + '</p></div>';
+        html += '<div class="ad-actions"><button type="button" class="mark-btn" data-mark-fav="' + esc(q.id) + '">☆ 收藏</button><button type="button" class="mark-btn" data-mark-wb="' + esc(q.id) + '">＋ 加入错题本</button>' +
+          (graded ? '<button type="button" class="mark-btn" data-explain="' + esc(q.id) + '" data-explain-idx="' + idx + '">' + (r.deepExplain ? '重新生成深度解析' : 'AI 深度解析') + '</button>' : '') + '</div>' +
+          '<div class="ad-deep" id="adDeep' + idx + '" hidden></div>';
         return html + '</div></div>';
       }).join('');
       sec.innerHTML = '<h2>' + esc(paperTitle(a)) + ' · 做题详情</h2>' +
@@ -387,6 +414,7 @@ async function clearPaperRecords(qids) {
         '<div class="ad-sum-main"><div class="ad-sum-line">得分 <b>' + (Math.round(sumScore * 10) / 10) + ' / ' + (Math.round(sumMax * 10) / 10) + '</b> · 已批改 ' + sumGraded + ' / ' + (a.questions || []).length + ' 题</div>' +
         '<div class="bar ' + (sumRate === null ? '' : sumRate >= 0.8 ? 'good' : sumRate >= 0.5 ? 'mid' : 'low') + '"><i style="width:' + Math.round((sumRate || 0) * 100) + '%"></i></div>' +
         '<div class="ad-strip">' + strip + '</div><p class="sub" style="margin:6px 0 0">逐题得分条：点任意题号跳到该题；满分题默认折叠，丢分题自动展开。</p></div></div>' +
+        '<div id="adMastery"></div>' +
         '<div class="ad-analysis-bar"><button type="button" class="btn ghost" id="adAnalysisBtn">AI 教学分析</button><span class="sub">按考点归组丢分、错因分类，并给出复盘动作与下一阶段安排。</span></div>' +
         '<div id="adAnalysis" class="ad-analysis" hidden></div>' + cards +
         '<button type="button" class="btn ghost" id="paperDetailClose">收起详情</button>';
@@ -427,7 +455,32 @@ async function clearPaperRecords(qids) {
           box.innerHTML = '<p class="sub">分析生成失败：' + esc(e.message) + '</p>';
         }).then(function () { anaBtn.disabled = false; });
       });
+      sec.querySelectorAll('[data-explain]').forEach(function (b) {
+        b.addEventListener('click', async function () {
+          var box = document.getElementById('adDeep' + b.dataset.explainIdx);
+          if (!box) return;
+          box.hidden = false; box.innerHTML = '<p class="sub">强模型正在生成深度解析，稍等…</p>';
+          b.disabled = true;
+          try {
+            var out = await window.AtlasUser.json('/api/attempts/' + encodeURIComponent(a.id) + '/explain', 'POST', { questionId: b.dataset.explain, force: true });
+            box.innerHTML = '<div class="ad-sec"><span>AI 深度解析（强模型）</span><p>' + esc(clean(out.deepExplain || '')) + '</p></div>';
+            if (window.AtlasKatex) window.AtlasKatex.render(box);
+            b.textContent = '重新生成深度解析';
+          } catch (e) { box.innerHTML = '<p class="sub">生成失败：' + esc(e.message) + '</p>'; }
+          b.disabled = false;
+        });
+      });
       if (window.AtlasMarks) window.AtlasMarks.wire(sec);
+      var mh = sec.querySelector('#adMastery');
+      if (mh && window.AtlasAssessment) { try { window.AtlasAssessment.renderMastery(mh, a.questions || [], a.results || {}); } catch (e) {} }
+      if (focusIdx != null) {
+        var fc = document.getElementById('adCard' + focusIdx);
+        if (fc) {
+          var fb = fc.querySelector('.ad-body');
+          if (fb && fb.hidden) { fb.hidden = false; var fct = fc.querySelector('.ad-caret'); if (fct) fct.textContent = '▾'; }
+          setTimeout(function () { fc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+        }
+      }
       if (window.AtlasKatex) window.AtlasKatex.render(sec);
     } catch (err) {
       sec.innerHTML = '<h2>做题详情</h2><p class="sub">加载失败：' + esc(err.message) + '</p>';

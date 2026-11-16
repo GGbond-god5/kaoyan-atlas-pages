@@ -4,6 +4,8 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let selected = null, drafts = [];
 let importedIds = new Set();
+let allQuestions = [];
+const KINDS = ['选择题','单选题','多选题','填空题','计算题','证明题','简答题','分析题','完形','阅读','新题型','翻译','小作文','大作文'];
 let mySubjects = {}; // id -> name（自建科目）
 let allFiles = [];
 const BUILTIN_SUBJECTS = {math:'数学一', math2:'数学二', english:'英语一', english2:'英语二', mechanics:'材料力学', politics:'政治'};
@@ -27,7 +29,11 @@ async function refresh() {
   $('#files').querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', async () => { selected = allFiles.find(f => String(f.id) === b.dataset.pick); drafts = []; renderDrafts(); $('#extract').hidden = false; $('#selected').textContent = selected.name; $('#progress').textContent = '正在加载已保存草稿…'; $('#extract').scrollIntoView({behavior:'smooth'}); try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract'); drafts = out.items; importedIds = new Set(out.importedIds || []); renderDrafts(); $('#progress').textContent = `已加载 ${drafts.length} 道已保存草稿。`; } catch (err) { $('#progress').textContent = '草稿加载失败：' + err.message; } }));
   $('#files').querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => { const f = allFiles.find(x => String(x.id) === b.dataset.del); if (!f) return; if (!confirm(`删除资料「${f.name}」？它抽出的草稿和已导入的题目会一并删除，无法恢复。`)) return; b.disabled = true; try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(f.id), 'DELETE'); if (selected && String(selected.id) === String(f.id)) { selected = null; drafts = []; importedIds = new Set(); renderDrafts(); $('#extract').hidden = true; } await refresh(); message(`已删除资料${out.questions ? `，连同 ${out.questions} 道已导入题目` : ''}。`); } catch (err) { message('删除失败：' + err.message); b.disabled = false; } }));
   }
-  $('#questions').innerHTML = questions.items.length ? questions.items.map(q => `<div class="question"><strong>${esc(q.subjectName || subjectLabel(q.subject || ''))} · ${esc(q.kpName || q.chapterTitle || '个人题目')}</strong><p>${esc(q.text || '')}</p><small>来源页 ${esc(q.sourcePage || '待核')} · ${esc(q.reviewStatus || '待核')}</small><div><button data-qdel="${esc(q.draftId || '')}">从题库删除</button></div></div>`).join('') : '<p>还没有导入题目。</p>';
+  allQuestions = questions.items;
+  $('#questions').innerHTML = questions.items.length ? questions.items.map(q => `<div class="question"><strong>${esc(q.subjectName || subjectLabel(q.subject || ''))} · ${esc(q.kpName || q.chapterTitle || '个人题目')}</strong><p>${esc(q.text || '')}</p><small>${esc(q.kind || '题型待补')} · 难度 ${esc(q.difficulty || '未标')} · ${q.maxScore != null ? esc(q.maxScore) + ' 分 · ' : ''}来源页 ${esc(q.sourcePage || '待核')} · ${esc(q.reviewStatus || '待核')}</small><div><button data-add-q="${esc(q.id || '')}">＋ 加入试题篮</button><button data-qdel="${esc(q.draftId || '')}">从题库删除</button></div></div>`).join('') : '<p>还没有导入题目。</p>';
+  bindAddButtons($('#questions'));
+  renderPick();
+  renderBasket();
   $('#questions').querySelectorAll('[data-qdel]').forEach(b => b.addEventListener('click', async () => { if (!b.dataset.qdel) return; if (!confirm('把这道题从个人题库删除？')) return; b.disabled = true; try { await AtlasUser.json('/api/personal/questions', 'DELETE', {draftId: b.dataset.qdel}); await refresh(); message('已从个人题库删除。'); } catch (err) { message('删除失败：' + err.message); b.disabled = false; } }));
 }
 $('#upload').addEventListener('submit', async e => {
@@ -60,7 +66,7 @@ async function pdfPage(pdf, n) {
 }
 function renderDrafts() {
   $('#review').hidden = !drafts.length;
-  $('#drafts').innerHTML = drafts.map((d,i) => `<div class="draft"><label><input type="checkbox" ${importedIds.has(d.draftId) ? '' : 'checked'} data-check="${i}"> 第 ${esc(d.sourcePage || '?')} 页 · 草稿 ${i+1}${importedIds.has(d.draftId) ? ' · 已导入题库' : ''}</label><label>题目<textarea data-field="text" data-index="${i}">${esc(d.text || '')}</textarea></label><label>答案<textarea data-field="answer" data-index="${i}">${esc(d.answer || '')}</textarea></label><label>解析步骤（每行一步）<textarea data-field="steps" data-index="${i}">${esc((d.steps || []).join('\n'))}</textarea></label><label><input type="checkbox" data-verified="${i}"> 我已核对题目和答案</label><small>未核对的答案会保留待核标记。</small><div><button data-ddel="${i}">删除这条草稿</button></div></div>`).join('');
+  $('#drafts').innerHTML = drafts.map((d,i) => `<div class="draft"><label><input type="checkbox" ${importedIds.has(d.draftId) ? '' : 'checked'} data-check="${i}"> 第 ${esc(d.sourcePage || '?')} 页 · 草稿 ${i+1}${importedIds.has(d.draftId) ? ' · 已导入题库' : ''}</label><label>题目<textarea data-field="text" data-index="${i}">${esc(d.text || '')}</textarea></label><label>答案<textarea data-field="answer" data-index="${i}">${esc(d.answer || '')}</textarea></label><label>解析步骤（每行一步）<textarea data-field="steps" data-index="${i}">${esc((d.steps || []).join('\n'))}</textarea></label><div class="dmeta"><label>题型 <select data-kind="${i}">${KINDS.map(k => `<option value="${k}"${d.kind === k ? ' selected' : ''}>${k}</option>`).join('')}</select></label><label>难度 <select data-diff="${i}">${['易','中','难'].map(k => `<option value="${k}"${d.difficulty === k ? ' selected' : ''}>${k}</option>`).join('')}</select></label><label>分值 <input type="number" min="0" step="0.5" data-score="${i}" placeholder="自动" value="${d.maxScore != null ? esc(d.maxScore) : ''}"></label><label>知识点 <input data-kp="${i}" value="${esc(d.kpName || '')}" placeholder="如：定积分的应用"></label></div><label><input type="checkbox" data-verified="${i}"> 我已核对题目和答案</label><small>未核对的答案会保留待核标记。</small><div><button data-ddel="${i}">删除这条草稿</button></div></div>`).join('');
   $('#drafts').querySelectorAll('[data-ddel]').forEach(b => b.addEventListener('click', async () => { const i = +b.dataset.ddel, d = drafts[i]; if (!d) return; if (!confirm('删除这条草稿？删除后重新打开资料也不会再出现。')) return; try { if (selected && d.draftId) await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract', 'DELETE', {draftId: d.draftId}); drafts.splice(i, 1); renderDrafts(); } catch (err) { message('删除草稿失败：' + err.message); } }));
 }
 $('#start').addEventListener('click', async () => {
@@ -85,7 +91,7 @@ $('#start').addEventListener('click', async () => {
 });
 $('#import').addEventListener('click', async () => {
   const button = $('#import'); let items;
-  try { items = [...$('#drafts').querySelectorAll('[data-check]:checked')].map(c => { const i = c.dataset.check, item = {...drafts[i]}; for (const field of ['text','answer','steps']) { const value = $('#drafts').querySelector(`[data-field="${field}"][data-index="${i}"]`).value; item[field] = field === 'steps' ? value.split(/\r?\n/).filter(Boolean) : value; } item.userVerified = $('#drafts').querySelector(`[data-verified="${i}"]`).checked; if (!item.text.trim()) throw Error('题目内容不能为空。'); return item; }); if (!items.length) throw Error('请至少选择一道题目。'); } catch (err) { message('草稿无法导入：' + err.message); return; }
+  try { items = [...$('#drafts').querySelectorAll('[data-check]:checked')].map(c => { const i = c.dataset.check, item = {...drafts[i]}; for (const field of ['text','answer','steps']) { const value = $('#drafts').querySelector(`[data-field="${field}"][data-index="${i}"]`).value; item[field] = field === 'steps' ? value.split(/\r?\n/).filter(Boolean) : value; } const kindEl = $('#drafts').querySelector(`[data-kind="${i}"]`); if (kindEl) item.kind = kindEl.value; const diffEl = $('#drafts').querySelector(`[data-diff="${i}"]`); if (diffEl) item.difficulty = diffEl.value; const kpEl = $('#drafts').querySelector(`[data-kp="${i}"]`); if (kpEl) item.kpName = kpEl.value.trim(); const scEl = $('#drafts').querySelector(`[data-score="${i}"]`); const scVal = scEl ? parseFloat(scEl.value) : NaN; if (Number.isFinite(scVal) && scVal > 0) item.maxScore = scVal; item.userVerified = $('#drafts').querySelector(`[data-verified="${i}"]`).checked; if (!item.text.trim()) throw Error('题目内容不能为空。'); return item; }); if (!items.length) throw Error('请至少选择一道题目。'); } catch (err) { message('草稿无法导入：' + err.message); return; }
   button.disabled = true;
   try { const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/import', 'POST', {items});
     (out.items || []).forEach(q => importedIds.add(q.draftId)); renderDrafts();
@@ -94,6 +100,88 @@ $('#import').addEventListener('click', async () => {
     if (out.errors && out.errors.length) note += ` ${out.errors.length} 道未导入：${out.errors[0].error}。`;
     message(note); await refresh(); } catch (err) { message('导入失败：' + err.message); } finally { button.disabled = false; }
 });
+
+/* ---------------- 组卷中心：试题篮 ---------------- */
+let basket = { subject: '', items: [] };
+const qById = id => allQuestions.find(q => q.id === id);
+const inBasket = id => basket.items.some(b => b.id === id);
+const effScore = (bi, q) => { const s = Number(bi.score); if (Number.isFinite(s) && s > 0) return s; const m = Number(q && q.maxScore); return Number.isFinite(m) && m > 0 ? m : null; };
+function bindAddButtons(root) {
+  if (!root) return;
+  root.querySelectorAll('[data-add-q]').forEach(b => b.addEventListener('click', () => {
+    const q = qById(b.dataset.addQ); if (!q) return;
+    if (inBasket(q.id)) { message('这道题已经在试题篮里了。'); return; }
+    if (basket.subject && q.subject !== basket.subject) { message(`试题篮里已经是「${subjectLabel(basket.subject)}」的题，一篮只组同一科；先组完或清空试题篮再换科目。`); return; }
+    if (!basket.subject) basket.subject = q.subject || '';
+    basket.items.push({ id: q.id, score: q.maxScore != null ? q.maxScore : '' });
+    saveBasket(); renderBasket(); renderPick();
+    message('已加入试题篮。');
+  }));
+}
+function saveBasket() { AtlasUser.save('basket', basket).catch(() => {}); }
+async function loadBasket() {
+  try { const b = await AtlasUser.load('basket', { subject: '', items: [] }); if (b && Array.isArray(b.items)) basket = { subject: b.subject || '', items: b.items.filter(x => x && x.id) }; } catch (e) {}
+  renderBasket(); renderPick();
+}
+function renderPick() {
+  const box = $('#qPick'); if (!box) return;
+  const sSel = $('#qSubject'), kSel = $('#qKind'), qIn = $('#qSearch');
+  const subs = [...new Set(allQuestions.map(q => q.subject).filter(Boolean))];
+  const kinds = [...new Set(allQuestions.map(q => q.kind).filter(Boolean))];
+  if (sSel) { const cur = sSel.value; sSel.innerHTML = '<option value="">全部科目</option>' + subs.map(x => `<option value="${esc(x)}">${esc(subjectLabel(x))}</option>`).join(''); sSel.value = cur; }
+  if (kSel) { const cur = kSel.value; kSel.innerHTML = '<option value="">全部题型</option>' + kinds.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join(''); kSel.value = cur; }
+  const fs = sSel ? sSel.value : '', fk = kSel ? kSel.value : '', kw = qIn ? qIn.value.trim() : '';
+  const list = allQuestions.filter(q => (!fs || q.subject === fs) && (!fk || q.kind === fk) && (!kw || (q.text || '').includes(kw) || (q.kpName || '').includes(kw)));
+  box.innerHTML = list.length ? list.slice(0, 200).map(q => `<div class="pick"><strong>${esc(subjectLabel(q.subject || ''))} · ${esc(q.kind || '题型待补')}</strong> <small>难度 ${esc(q.difficulty || '未标')}${q.maxScore != null ? ' · ' + esc(q.maxScore) + ' 分' : ''}${q.kpName ? ' · ' + esc(q.kpName) : ''} · 来源页 ${esc(q.sourcePage || '待核')}</small><p>${esc((q.text || '').slice(0, 160))}</p><div>${inBasket(q.id) ? '<button class="ghosty" disabled>已在试题篮</button>' : `<button data-add-q="${esc(q.id)}">＋ 加入试题篮</button>`}</div></div>`).join('') : '<p>没有符合条件的题目。先在上面上传资料、抽题导入个人题库。</p>';
+  bindAddButtons(box);
+}
+function renderBasket() {
+  const box = $('#basketBox'); if (!box) return;
+  if (!basket.items.length) { box.innerHTML = '<p>试题篮还是空的。从下方个人题库里选题加入；也可以在「个人题库」列表里直接点「＋ 加入试题篮」。</p>'; return; }
+  const rows = [];
+  let lastKind = null;
+  basket.items.forEach((bi, i) => {
+    const q = qById(bi.id); if (!q) return;
+    const kind = q.kind || '未分类';
+    if (kind !== lastKind) { rows.push(`<div class="bgroup">${esc(kind)}（${basket.items.filter(x => { const qq = qById(x.id); return qq && (qq.kind || '未分类') === kind; }).length} 题）</div>`); lastKind = kind; }
+    rows.push(`<div class="brow"><strong>第 ${i + 1} 题</strong> <small>${esc(q.difficulty || '未标')}${q.kpName ? ' · ' + esc(q.kpName) : ''} · 来源页 ${esc(q.sourcePage || '待核')}</small><p>${esc((q.text || '').slice(0, 140))}</p><div>分值 <input type="number" min="0" step="0.5" data-bscore="${i}" value="${bi.score !== '' && bi.score != null ? esc(bi.score) : (q.maxScore != null ? esc(q.maxScore) : '')}" placeholder="待定"> <button class="ghosty" data-bup="${i}">↑ 上移</button><button class="ghosty" data-bdown="${i}">↓ 下移</button><button class="ghosty" data-bswap="${i}">换一题</button><button class="dangery" data-bdel="${i}">移除</button></div></div>`);
+  });
+  const qs = basket.items.map(bi => ({ bi, q: qById(bi.id) })).filter(x => x.q);
+  let scoreSum = 0, scoreMissing = 0; const byKind = {}, byDiff = {}; const kps = new Set(); let noAnswer = 0, pending = 0;
+  qs.forEach(({ bi, q }) => { const sc = effScore(bi, q); if (sc == null) scoreMissing++; else scoreSum += sc; byKind[q.kind || '未分类'] = (byKind[q.kind || '未分类'] || 0) + 1; byDiff[q.difficulty || '未标'] = (byDiff[q.difficulty || '未标'] || 0) + 1; if (q.kpName) kps.add(q.kpName); if (!String(q.answer || '').trim()) noAnswer++; if (q.reviewStatus === 'pending') pending++; });
+  const fmt = m => Object.entries(m).map(([k, v]) => `${k} ${v} 题`).join(' · ');
+  const warn = [noAnswer ? `${noAnswer} 题还没有答案（批改会受限）` : '', pending ? `${pending} 题还是待核状态` : '', scoreMissing ? `${scoreMissing} 题分值待定` : ''].filter(Boolean).join('；');
+  box.innerHTML = `<div><strong>${esc(subjectLabel(basket.subject))} · 共 ${qs.length} 题</strong></div>` + rows.join('') +
+    `<div class="banalysis"><b>试卷分析</b><br>总分 ${scoreSum} 分${scoreMissing ? `（另有 ${scoreMissing} 题分值待定）` : ''} · 题型分布：${fmt(byKind)}<br>难度分布：${fmt(byDiff)} · 覆盖知识点 ${kps.size} 个${kps.size ? '：' + [...kps].slice(0, 12).join('、') : ''}${warn ? `<br>提醒：${warn}` : ''}</div>` +
+    `<div><button id="bSort">按题型+难度整理排序</button> <button id="bStart">开始做这套卷 →</button> <button class="ghosty" id="bClear">清空试题篮</button></div>`;
+  box.querySelectorAll('[data-bscore]').forEach(inp => inp.addEventListener('change', () => { const i = +inp.dataset.bscore; const v = parseFloat(inp.value); basket.items[i].score = Number.isFinite(v) && v > 0 ? v : ''; saveBasket(); renderBasket(); }));
+  box.querySelectorAll('[data-bdel]').forEach(b => b.addEventListener('click', () => { basket.items.splice(+b.dataset.bdel, 1); if (!basket.items.length) basket.subject = ''; saveBasket(); renderBasket(); renderPick(); }));
+  const move = (i, d) => { const j = i + d; if (j < 0 || j >= basket.items.length) return; [basket.items[i], basket.items[j]] = [basket.items[j], basket.items[i]]; saveBasket(); renderBasket(); };
+  box.querySelectorAll('[data-bup]').forEach(b => b.addEventListener('click', () => move(+b.dataset.bup, -1)));
+  box.querySelectorAll('[data-bdown]').forEach(b => b.addEventListener('click', () => move(+b.dataset.bdown, 1)));
+  box.querySelectorAll('[data-bswap]').forEach(b => b.addEventListener('click', () => {
+    const i = +b.dataset.bswap, cur = qById(basket.items[i].id); if (!cur) return;
+    const cands = allQuestions.filter(q => q.subject === basket.subject && (q.kind || '') === (cur.kind || '') && !inBasket(q.id));
+    if (!cands.length) { message('没有可换的同题型题目了。'); return; }
+    const pick = cands[Math.floor(Math.random() * cands.length)];
+    basket.items[i] = { id: pick.id, score: basket.items[i].score !== '' ? basket.items[i].score : (pick.maxScore != null ? pick.maxScore : '') };
+    saveBasket(); renderBasket(); renderPick(); message('已换一题。');
+  }));
+  const sortBtn = $('#bSort'); if (sortBtn) sortBtn.addEventListener('click', () => {
+    const rank = { '易': 0, '中': 1, '难': 2 };
+    basket.items.sort((x, y) => { const qx = qById(x.id) || {}, qy = qById(y.id) || {}; const kx = KINDS.indexOf(qx.kind), ky = KINDS.indexOf(qy.kind); if (kx !== ky) return (kx < 0 ? 99 : kx) - (ky < 0 ? 99 : ky); return (rank[qx.difficulty] ?? 1) - (rank[qy.difficulty] ?? 1); });
+    saveBasket(); renderBasket(); message('已按题型、难度整理。');
+  });
+  const clearBtn = $('#bClear'); if (clearBtn) clearBtn.addEventListener('click', () => { if (!confirm('清空试题篮？题目本身不会被删除。')) return; basket = { subject: '', items: [] }; saveBasket(); renderBasket(); renderPick(); });
+  const startBtn = $('#bStart'); if (startBtn) startBtn.addEventListener('click', () => {
+    const items = basket.items.filter(bi => qById(bi.id)).map(bi => ({ id: bi.id, score: bi.score === '' ? null : Number(bi.score) }));
+    if (!items.length) { message('试题篮是空的。'); return; }
+    try { localStorage.setItem('atlas.custompaper.v1', JSON.stringify({ title: `自组卷 · ${subjectLabel(basket.subject)}`, subject: basket.subject, items, ts: Date.now() })); } catch (e) { message('组卷信息保存失败：' + e.message); return; }
+    location.href = 'practice.html?custom=1';
+  });
+}
+['qSubject', 'qKind', 'qSearch'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', renderPick); });
+
 function addSubjectOption(sub) {
   const sel = document.querySelector('#upload select[name="subject"]'); if (!sel || sel.querySelector(`option[value="${sub.id}"]`)) return;
   const opt = document.createElement('option'); opt.value = sub.id; opt.textContent = sub.name;
@@ -101,4 +189,4 @@ function addSubjectOption(sub) {
 }
 document.querySelector('#upload select[name="subject"]').addEventListener('change', e => { $('#newSubjectRow').hidden = e.target.value !== '__new'; });
 try { await AtlasUser.ready; try { const out = await AtlasUser.json('/api/subjects'); (out.subjects || []).forEach(sub => { mySubjects[sub.id] = sub.name; addSubjectOption(sub); }); } catch (_) {}
-  await refresh(); } catch (err) { message(err.message); }
+  await refresh(); await loadBasket(); } catch (err) { message(err.message); }

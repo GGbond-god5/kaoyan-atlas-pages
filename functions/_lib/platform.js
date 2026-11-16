@@ -407,7 +407,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     return ok({deleted:changes(r) > 0});
   }
   if (action === 'state') {
-    const ns = params.namespace; if (!['practice','vocab','review','goals','onboarding','plan','inbox','marks'].includes(ns)) return notFound();
+    const ns = params.namespace; if (!['practice','vocab','review','goals','onboarding','plan','inbox','marks','basket'].includes(ns)) return notFound();
     const read = async () => {const r = await row(db,'SELECT data,revision FROM platform_state WHERE uid=? AND namespace=?',uid,ns); return r ? {data:parse(r.data),revision:r.revision} : {data:null,revision:0};};
     if (method === 'GET') return ok(await read());
     if (method === 'PUT') {const b=await body(); if (!b || !Number.isInteger(b.revision) || b.revision < 0 || !Object.hasOwn(b,'data')) return fail(400,'状态或版本无效');
@@ -438,6 +438,31 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     if (!userCfg) await noteUsage(env, uid, 'grade');
     await run(db,"INSERT INTO platform_results VALUES (?,?,?,?) ON CONFLICT(uid,attempt_id,question_id) DO UPDATE SET data=excluded.data WHERE json_extract(platform_results.data, '$.status') != 'graded'",uid,fid,q.id,JSON.stringify(result));
     const latest=await attempt(db,uid,fid); return ok({result:latest.results[q.id],attempt:latest});
+  }
+  if (action === 'attemptExplain' && method === 'POST') {
+    const a = await attempt(db, uid, fid); if (!a) return notFound();
+    const b = await body(); const q = a.questions.find(q => q.id === b?.questionId); if (!q) return fail(400, '题目不存在');
+    const prior = a.results[q.id]; if (!prior || prior.status !== 'graded') return fail(400, '这道题还没有批改结果，等批改完成后再来生成深度解析');
+    if (prior.deepExplain && !b?.force) return ok({ deepExplain: prior.deepExplain, cached: true });
+    if (!userCfg) { const blocked = await checkQuota(env, await me(), 'coach'); if (blocked) return fail(429, blocked); }
+    const answer = a.answers[q.id] || {};
+    const cap = x => str(x).slice(0, 4000);
+    const sys = '你是考研辅导老师，给学生做单题深度解析。按顺序讲：一、考点定位（这道题考什么、属于哪一类）；二、标准解法（分步推导，公式用 KaTeX 书写，每步只做一个动作）；三、错因诊断（结合学生作答与批改意见，指出具体错在哪一步、为什么错；学生没作答或作答正确时改讲关键难点）；四、易错提醒（同类题最常见的坑，一到两条）；五、方法总结（一句话记住这类题的做法）。不要编造题目没有的条件。' + PLAIN_STYLE;
+    const usr = [
+      `科目：${q.subject || ''} 题型：${q.kind || ''} 考点：${q.kpName || q.kp || ''}`,
+      `题干：${cap(q.passage ? q.passage + '\n' + q.text : q.text)}`,
+      `参考答案：${cap(q.answer)}`,
+      `已有解析：${cap((q.steps || []).join(' / '))}`,
+      `学生作答：${cap(answer.work) || (Array.isArray(answer.selected) && answer.selected.length ? '选择 ' + answer.selected.join('') : '（无文字作答）')}`,
+      `批改：得分 ${prior.score}/${prior.maxScore}；总评 ${cap(prior.comments)}；缺失要点 ${cap(prior.missing)}；订正要点 ${cap(prior.revised)}`,
+    ].join('\n');
+    let text;
+    try { text = await ai(env, [{ role: 'system', content: sys }, { role: 'user', content: usr }], false, userCfg, 'strong'); }
+    catch (e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502, e.message); }
+    if (!userCfg) await noteUsage(env, uid, 'coach');
+    const merged = { ...prior, deepExplain: String(text || '') };
+    await run(db, 'UPDATE platform_results SET data=? WHERE uid=? AND attempt_id=? AND question_id=?', JSON.stringify(merged), uid, fid, q.id);
+    return ok({ deepExplain: merged.deepExplain });
   }
   if (action === 'coach' && method === 'POST') {
     const b=await body(); if (!b || !Array.isArray(b.messages) || !b.messages.length || b.messages.length > 100 || b.messages.some(m=>!m || !['user','assistant'].includes(m.role) || typeof m.content !== 'string' || m.content.length > 30000 || (m.images !== undefined && (!Array.isArray(m.images) || m.images.length > 3 || m.images.some(im=>!validImage(im) || !im)))) || !b.context || typeof b.context !== 'object') return fail(400,'对话格式无效');
