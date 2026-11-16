@@ -3,7 +3,7 @@ import { ok, fail, readJson } from './http.js';
 import { IMPORT_PROMPT } from './import-prompt.js';
 import { allocatePaper, questionScore } from './scoring.js';
 import { gradeSystemFor, TRANSCRIBE_SYSTEM, GUIDE_SYSTEM, ANALYSIS_SYSTEM, PLAIN_STYLE } from './prompts.js';
-import { checkQuota, noteUsage } from './layer1.js';
+import { checkQuota, noteUsage, getMeta } from './layer1.js';
 
 const subjects = new Set(['math','math2','english','english2','mechanics','politics']);
 const schema = [
@@ -424,7 +424,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
       if (Object.values(b.answers).some(a=>!a || typeof a !== 'object' || !validImage(a.image))) return fail(400,'作答格式无效');
       const scores = allocatePaper(b.subject, b.questions, b.mode);
       const questions = b.questions.map((q, i) => ({...q, maxScore: scores[i], ...(q.maxScore == null ? {maxScoreAssumed:true} : {})}));
-      const a={id:typeof b.id==='string' && b.id ? b.id : id(),subject:b.subject,mode:b.mode,questions,answers:b.answers,results:{},status:'pending',createdAt:new Date().toISOString()};
+      const a={id:typeof b.id==='string' && b.id ? b.id : id(),subject:b.subject,mode:b.mode,questions,answers:b.answers,results:{},status:'pending',serverGrade:b.serverGrade===true,createdAt:new Date().toISOString()};
       const result=await run(db,'INSERT OR IGNORE INTO platform_attempts VALUES (?,?,?)',uid,a.id,JSON.stringify(a)); if (!changes(result)) return fail(409,'测评 ID 已存在'); return ok({attempt:a},201); }
   }
   if (action === 'attempt' && method === 'GET') {const a=await attempt(db,uid,fid); return a ? ok({attempt:a}) : notFound();}
@@ -482,4 +482,81 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     return ok({conversations});
   }
   return fail(405,'方法不支持');
+}
+
+/* ---------------- 服务器批改 worker（ECS 常驻服务专用） ----------------
+ * 鉴权：请求头 x-worker-token 与 env.WORKER_TOKEN 或 platform_meta.worker_token 比对。
+ * 只处理 serverGrade 套卷：用户用内置 AI 交卷时客户端标记；自带 API 的套卷密钥只在
+ * 用户设备上，仍由浏览器本地批改。批改/额度/结果写入与 attemptGrade 完全同路。 */
+const WORKER_LEASE_MS = 12 * 60 * 1000;
+function tokenEq(a, b) {
+  if (!a || !b || a.length !== b.length) return false;
+  let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+}
+async function workerInbox(db, uid, a) {
+  const mid = 'g' + a.id;
+  const r = await row(db, 'SELECT data,revision FROM platform_state WHERE uid=? AND namespace=?', uid, 'inbox');
+  const data = r ? parse(r.data) : { messages: [] };
+  const list = Array.isArray(data.messages) ? data.messages : [];
+  if (list.some(m => m && m.id === mid)) return;
+  const title = (SUBJECT_NAMES[a.subject] || a.subject) + (a.mode === 'mock' ? ' · 全真模考' : ' · 套卷');
+  list.unshift({ id: mid, kind: 'grade', attemptId: a.id, title, at: Date.now(), read: false });
+  data.messages = list.slice(0, 30);
+  if (r) await run(db, 'UPDATE platform_state SET data=?, revision=revision+1 WHERE uid=? AND namespace=?', JSON.stringify(data), uid, 'inbox');
+  else await run(db, 'INSERT INTO platform_state VALUES (?,?,?,1)', uid, 'inbox', JSON.stringify(data));
+}
+export async function handleWorker(request, env) {
+  if (request.method !== 'POST') return fail(405, '方法不支持');
+  if (!env.DB) return fail(503, '数据库未配置');
+  const expected = str(env.WORKER_TOKEN) || (await getMeta(env, 'worker_token'));
+  if (!expected || !tokenEq(request.headers.get('x-worker-token') || '', expected)) return fail(401, 'worker 令牌无效');
+  const b = await readJson(request);
+  if (!b || typeof b.action !== 'string') return fail(400, '请求格式无效');
+  const db = await database(env);
+  const loadRaw = async (uid, aid) => { const r = await row(db, 'SELECT data FROM platform_attempts WHERE uid=? AND id=?', uid, aid); return r ? parse(r.data) : null; };
+  const saveRaw = (uid, a) => run(db, 'UPDATE platform_attempts SET data=? WHERE uid=? AND id=?', JSON.stringify(a), uid, a.id);
+  const hasAnswer = (a, qid) => { const an = (a.answers || {})[qid] || {}; return !!(String(an.work || '').trim() || (Array.isArray(an.selected) && an.selected.length) || an.image); };
+  const pendingOf = (a) => a.questions.map(q => q.id).filter(qid => hasAnswer(a, qid) && !(a.results[qid] && a.results[qid].status === 'graded'));
+
+  if (b.action === 'claim') {
+    const rows = await all(db, 'SELECT uid,id,data FROM platform_attempts ORDER BY rowid DESC LIMIT 120');
+    for (const r of rows) {
+      let raw; try { raw = parse(r.data); } catch { continue; }
+      if (!raw || raw.serverGrade !== true || !Array.isArray(raw.questions)) continue;
+      const full = await attempt(db, r.uid, r.id); if (!full) continue;
+      const pending = pendingOf(full);
+      if (!pending.length) {
+        // 已全部批完但完成消息还没发（可能是在页面里批完的）：补发并打戳，避免重复打扰
+        if (!raw.workerNotified) { await workerInbox(db, r.uid, raw); raw.workerNotified = true; delete raw.workerLease; await saveRaw(r.uid, raw); }
+        continue;
+      }
+      if (raw.workerLease && Date.now() - raw.workerLease < WORKER_LEASE_MS) continue;
+      raw.workerLease = Date.now(); await saveRaw(r.uid, raw);
+      return ok({ job: { type: 'grade', uid: r.uid, attemptId: r.id, pending, subject: raw.subject, mode: raw.mode } });
+    }
+    return ok({ job: null });
+  }
+  if (b.action === 'grade') {
+    const uid = str(b.uid), aid = str(b.attemptId), qid = str(b.questionId);
+    const a = await attempt(db, uid, aid); if (!a) return notFound();
+    const q = a.questions.find(x => x.id === qid); if (!q) return fail(400, '题目不存在');
+    const prior = a.results[qid]; if (prior && prior.status === 'graded') return ok({ result: prior, remaining: pendingOf(a).length });
+    const user = await row(db, 'SELECT * FROM users WHERE id=?', uid);
+    const blocked = await checkQuota(env, user, 'grade'); if (blocked) return ok({ blocked });
+    const answer = a.answers[qid] || {}; let result;
+    try { result = { questionId: qid, ...await grade(env, { question: q.passage ? q.passage + '\n\n' + q.text : q.text, answer: q.answer, steps: q.steps, subject: q.subject, kp: q.kp, kind: q.kind, difficulty: q.difficulty, maxScore: q.maxScore, maxScoreAssumed: q.maxScoreAssumed, reviewStatus: q.reviewStatus, work: answer.work, selected: answer.selected, image: answer.image }, null) }; }
+    catch (e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502, e.message); }
+    await noteUsage(env, uid, 'grade');
+    await run(db, "INSERT INTO platform_results VALUES (?,?,?,?) ON CONFLICT(uid,attempt_id,question_id) DO UPDATE SET data=excluded.data WHERE json_extract(platform_results.data, '$.status') != 'graded'", uid, aid, qid, JSON.stringify(result));
+    const raw = await loadRaw(uid, aid); if (raw) { raw.workerLease = Date.now(); await saveRaw(uid, raw); }
+    const latest = await attempt(db, uid, aid);
+    return ok({ result: latest.results[qid], remaining: pendingOf(latest).length });
+  }
+  if (b.action === 'release') {
+    const raw = await loadRaw(str(b.uid), str(b.attemptId));
+    if (raw && raw.workerLease) { delete raw.workerLease; await saveRaw(str(b.uid), raw); }
+    return ok({});
+  }
+  return fail(400, '未知 action');
 }

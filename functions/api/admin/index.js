@@ -108,6 +108,7 @@ export async function onRequestGet({ request, env }) {
     if (action === "users") return ok({ users: await users(env) });
     if (action === "invites") return ok({ invites: await invitesList(env) });
     if (action === "announcement") return ok({ announcement: await getMeta(env, "announcement") });
+    if (action === "workerToken") return ok({ set: !!(await getMeta(env, "worker_token")) || !!env.WORKER_TOKEN });
     return fail(400, "未知 action");
   } catch (err) {
     console.error("[admin] 查询失败", err);
@@ -148,6 +149,12 @@ export async function onRequestPost({ request, env }) {
         codes.push(code);
       }
       return ok({ codes });
+    }
+    if (action === "workerToken.set") {
+      const token = String(body.token || "").trim();
+      if (token.length < 24) return fail(400, "令牌至少 24 个字符");
+      await setMeta(env, "worker_token", token);
+      return ok({ set: true });
     }
     if (action === "announcement.set") {
       const text = String(body.text || "").trim().slice(0, 200);

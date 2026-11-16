@@ -620,14 +620,15 @@
     try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch (e) {}
     const id = crypto.randomUUID();
     try {
-      const data = await window.AtlasUser.json("/api/attempts", "POST", {id, subject:session.queue[0].subject, mode:session.mode, questions:session.queue, answers});
+      const serverGrade = !(window.AtlasAiCfg && window.AtlasAiCfg.get && window.AtlasAiCfg.get().mode === "user");
+      const data = await window.AtlasUser.json("/api/attempts", "POST", {id, subject:session.queue[0].subject, mode:session.mode, questions:session.queue, answers, serverGrade});
       session.attempt = data.attempt;
       const hasAnswer = q => (session.picks[q.id] || []).length || String(session.notes[q.id] || "").trim() || (answers[q.id] && answers[q.id].image);
       session.gradeQueue = session.queue.filter(q => hasAnswer(q)).map(q => q.id);
       session.gradeSkipped = session.queue.length - session.gradeQueue.length;
       session.gradeTotal = session.gradeQueue.length;
       session.gradeDone = 0;
-      if (window.AtlasGradeBg) window.AtlasGradeBg.save({ attemptId: id, title: (SUBJECT_NAMES[session.queue[0].subject] || '套卷') + (session.mode === "mock" ? " · 全真模考" : " · 套卷"), pending: session.gradeQueue.slice(), total: session.gradeTotal });
+      if (window.AtlasGradeBg && !serverGrade) window.AtlasGradeBg.save({ attemptId: id, title: (SUBJECT_NAMES[session.queue[0].subject] || '套卷') + (session.mode === "mock" ? " · 全真模考" : " · 套卷"), pending: session.gradeQueue.slice(), total: session.gradeTotal });
       finishSubmit();
       await runGradeQueue(id);
     } catch (err) { session.submitting = false; askConfirm("保存失败", `交卷未完成：${err.message}。请重试。`, () => {}); }

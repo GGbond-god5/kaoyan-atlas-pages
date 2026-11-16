@@ -124,3 +124,4 @@
 - 内置 AI 每日额度定版：批改 80 题/日、对话 60 次/日、抽题 20 次/日（管理员不限额），超额提示引导接入自有 API。
 - 发布《阿里云学生 300 元代金券领取与 API 接入教程》（docs/aliyun-student-api-guide.pdf，含 B 站视频 BV1DRj46MEuS）；站长公告与社区置顶必读帖同步上线，引导用户接入自有 API。
 - 教程 PDF 改为站内直读：文件放入站点 pdf 目录（/pdf/aliyun-student-api-guide.pdf），社区必读帖与公告改为站内链接；社区动态与评论中的网址自动变为可点击链接（网页与 App）。
+- 新增服务器批改：ECS 常驻 worker 轮询领卷批改（/api/worker 令牌接口 + serverGrade 标记 + 完成消息服务器补发），用户退出页面不再中断批改。

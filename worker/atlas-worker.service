@@ -1,0 +1,16 @@
+[Unit]
+Description=Kaoyan Atlas grading worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/atlas-worker
+EnvironmentFile=/opt/atlas-worker/worker.env
+ExecStart=/usr/bin/node /opt/atlas-worker/atlas-worker.mjs
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
