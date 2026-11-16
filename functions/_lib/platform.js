@@ -384,6 +384,24 @@ async function dispatch(request,env,uid,action,params,userCfg) {
       await run(db,"UPDATE platform_files SET status='draft' WHERE uid=? AND id=?",uid,fid);
       return ok({items, skipped});
     }
+    if (action === 'extract' && method === 'PUT') {
+      const b = await body(); const draftId = typeof b?.draftId === 'string' ? b.draftId : '';
+      if (!draftId) return fail(400, '草稿 ID 无效');
+      const savedRow = await row(db, 'SELECT data FROM platform_drafts WHERE uid=? AND file_id=? AND id=?', uid, fid, draftId);
+      if (!savedRow) return notFound();
+      const cur = parse(savedRow.data);
+      const EDITABLE = ['text','answer','steps','kind','difficulty','kp','kpName','chapter','chapterTitle','passage','topicChapter'];
+      const next = { ...cur };
+      for (const k of EDITABLE) if (typeof b[k] === 'string') next[k] = b[k];
+      if (Array.isArray(b.steps) && b.steps.every(x => typeof x === 'string')) next.steps = b.steps;
+      if (b.maxScore === null) delete next.maxScore;
+      else if (typeof b.maxScore === 'number' && Number.isFinite(b.maxScore) && b.maxScore > 0) next.maxScore = b.maxScore;
+      if (!validQuestion(next)) return fail(400, '题目结构无效（题干不能为空，答案/步骤/题型等字段需完整）');
+      await run(db, 'UPDATE platform_drafts SET data=? WHERE uid=? AND file_id=? AND id=?', JSON.stringify(next), uid, fid, draftId);
+      const qRow = await row(db, 'SELECT data FROM platform_questions WHERE uid=? AND draft_id=?', uid, draftId);
+      if (qRow) { const q = parse(qRow.data); for (const k of EDITABLE) q[k] = next[k]; if (next.maxScore == null) delete q.maxScore; else if (next.maxScore != null) q.maxScore = next.maxScore; await run(db, 'UPDATE platform_questions SET data=? WHERE uid=? AND draft_id=?', JSON.stringify(q), uid, draftId); }
+      return ok({ draft: next });
+    }
     if (action === 'extract' && method === 'DELETE') {
       const b = await body(); const draftId = typeof b?.draftId === 'string' ? b.draftId : '';
       if (!draftId) return fail(400,'草稿 ID 无效');
@@ -392,7 +410,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     }
     if (action === 'import' && method === 'POST') {
       const b = await body(); if (!Array.isArray(b?.items) || !b.items.length || b.items.length > 500) return fail(400,'草稿无效');
-      const seen = new Set(), records = [], errors = [];
+      const seen = new Set(), errors = []; let records = [];
       for (const q of b.items) {
         if (!q || typeof q.draftId !== 'string') { errors.push({error:'有一道草稿缺少 ID'}); continue; }
         if (seen.has(q.draftId)) { errors.push({draftId:q.draftId, error:'同一草稿被重复提交'}); continue; }
@@ -404,13 +422,47 @@ async function dispatch(request,env,uid,action,params,userCfg) {
         records.push(item);
       }
       if (!records.length) return fail(400, errors[0]?.error || '没有可导入的题目');
+      const normText = t => str(t).replace(/\s+/g, '').toLowerCase();
+      const existingKeys = new Set((await all(db, 'SELECT data FROM platform_questions WHERE uid=?', uid)).map(r => { try { return normText(parse(r.data).text); } catch { return ''; } }).filter(Boolean));
+      const batchKeys = new Set(); const dupIds = [];
+      records = records.filter(item => { const k = normText(item.text); if (!k || existingKeys.has(k) || batchKeys.has(k)) { dupIds.push(item.draftId); return false; } batchKeys.add(k); return true; });
       let imported = 0, items = [];
       for (const item of records) { const result = await run(db,'INSERT OR IGNORE INTO platform_questions VALUES (?,?,?,?)',uid,fid,item.draftId,JSON.stringify(item)); imported += changes(result); const saved = await row(db,'SELECT data FROM platform_questions WHERE uid=? AND file_id=? AND draft_id=?',uid,fid,item.draftId); if (saved) items.push(parse(saved.data)); }
       if (imported) await run(db,"UPDATE platform_files SET status='imported' WHERE uid=? AND id=?",uid,fid);
-      return ok({items, imported, skipped:records.length - imported, errors});
+      return ok({items, imported, skipped:records.length - imported, duplicates:dupIds, errors});
     }
   }
+  if (action === 'drafts' && method === 'GET') {
+    const files = await all(db, 'SELECT id,name,subject FROM platform_files WHERE uid=?', uid);
+    const fmap = {}; for (const f of files) fmap[f.id] = f;
+    const rows = await all(db, 'SELECT id,file_id,data FROM platform_drafts WHERE uid=?', uid);
+    const importedRows = await all(db, "SELECT draft_id, json_extract(data,'$.reviewStatus') AS rs FROM platform_questions WHERE uid=?", uid);
+    const imported = new Set(importedRows.map(r => r.draft_id));
+    const rsMap = {}; for (const r of importedRows) rsMap[r.draft_id] = r.rs || '';
+    const items = [];
+    for (const r of rows) { const d = parse(r.data); if (!d || !d.draftId) continue; const f = fmap[r.file_id] || {}; items.push({ ...d, fileId: r.file_id, fileName: f.name || '', imported: imported.has(r.id), qReviewStatus: rsMap[r.id] || '' }); }
+    items.sort((a, b) => String(a.fileName).localeCompare(String(b.fileName)) || (a.sourcePage || 0) - (b.sourcePage || 0));
+    return ok({ items });
+  }
   if (action === 'questions' && method === 'GET') return ok({items:(await all(db,'SELECT data FROM platform_questions WHERE uid=?',uid)).map(x=>parse(x.data))});
+  if (action === 'questions' && method === 'PUT') {
+    const b = await body();
+    const did = typeof b?.draftId === 'string' ? b.draftId : (typeof b?.id === 'string' ? b.id.replace(/^personal-/, '') : '');
+    if (!did) return fail(400, '题目 ID 无效');
+    const qRow = await row(db, 'SELECT data FROM platform_questions WHERE uid=? AND draft_id=?', uid, did);
+    if (!qRow) return notFound();
+    const cur = parse(qRow.data);
+    const EDITABLE = ['text','answer','steps','kind','difficulty','kp','kpName','chapter','chapterTitle','passage','topicChapter'];
+    const next = { ...cur };
+    for (const k of EDITABLE) if (typeof b[k] === 'string') next[k] = b[k];
+    if (Array.isArray(b.steps) && b.steps.every(x => typeof x === 'string')) next.steps = b.steps;
+    if (b.maxScore === null) delete next.maxScore;
+    else if (typeof b.maxScore === 'number' && Number.isFinite(b.maxScore) && b.maxScore > 0) next.maxScore = b.maxScore;
+    if (b.userVerified === true) next.reviewStatus = 'user_verified';
+    if (!validQuestion(next)) return fail(400, '题目结构无效（题干不能为空，答案/步骤/题型等字段需完整）');
+    await run(db, 'UPDATE platform_questions SET data=? WHERE uid=? AND draft_id=?', JSON.stringify(next), uid, did);
+    return ok({ item: next });
+  }
   if (action === 'questions' && method === 'DELETE') {
     const b = await body();
     const did = typeof b?.draftId === 'string' ? b.draftId : (typeof b?.id === 'string' ? b.id.replace(/^personal-/,'') : '');
