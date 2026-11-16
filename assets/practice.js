@@ -620,8 +620,10 @@
     try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch (e) {}
     const id = crypto.randomUUID();
     try {
-      const serverGrade = !(window.AtlasAiCfg && window.AtlasAiCfg.get && window.AtlasAiCfg.get().mode === "user");
-      const data = await window.AtlasUser.json("/api/attempts", "POST", {id, subject:session.queue[0].subject, mode:session.mode, questions:session.queue, answers, serverGrade});
+      const serverGrade = true;
+      let aiCfg = null;
+      try { const c = window.AtlasAiCfg && window.AtlasAiCfg.get ? window.AtlasAiCfg.get() : null; if (c && c.mode === "user" && c.base && c.key && c.model) aiCfg = { base: c.base, key: c.key, model: c.model }; } catch (e) {}
+      const data = await window.AtlasUser.json("/api/attempts", "POST", {id, subject:session.queue[0].subject, mode:session.mode, questions:session.queue, answers, serverGrade, aiCfg});
       session.attempt = data.attempt;
       const hasAnswer = q => (session.picks[q.id] || []).length || String(session.notes[q.id] || "").trim() || (answers[q.id] && answers[q.id].image);
       session.gradeQueue = session.queue.filter(q => hasAnswer(q)).map(q => q.id);

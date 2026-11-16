@@ -258,7 +258,7 @@ status: score === null? 'pending': 'graded',
 async function attempt(db, uid, aid) {
   const a = await row(db,'SELECT data FROM platform_attempts WHERE uid=? AND id=?',uid,aid);
   if (!a) return null;
-  const obj = parse(a.data); obj.results = {};
+  const obj = parse(a.data); delete obj.aiCfg; obj.results = {};
   for (const r of await all(db,'SELECT question_id,data FROM platform_results WHERE uid=? AND attempt_id=?',uid,aid)) obj.results[r.question_id] = parse(r.data);
   const results = Object.values(obj.results);
   obj.status = results.length === obj.questions.length && results.every(r => r.status === 'graded') ? 'graded' : 'pending';
@@ -424,7 +424,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
       if (Object.values(b.answers).some(a=>!a || typeof a !== 'object' || !validImage(a.image))) return fail(400,'作答格式无效');
       const scores = allocatePaper(b.subject, b.questions, b.mode);
       const questions = b.questions.map((q, i) => ({...q, maxScore: scores[i], ...(q.maxScore == null ? {maxScoreAssumed:true} : {})}));
-      const a={id:typeof b.id==='string' && b.id ? b.id : id(),subject:b.subject,mode:b.mode,questions,answers:b.answers,results:{},status:'pending',serverGrade:b.serverGrade===true,createdAt:new Date().toISOString()};
+      const a={id:typeof b.id==='string' && b.id ? b.id : id(),subject:b.subject,mode:b.mode,questions,answers:b.answers,results:{},status:'pending',serverGrade:b.serverGrade===true,aiCfg:validAiCfg(b.aiCfg),createdAt:new Date().toISOString()};
       const result=await run(db,'INSERT OR IGNORE INTO platform_attempts VALUES (?,?,?)',uid,a.id,JSON.stringify(a)); if (!changes(result)) return fail(409,'测评 ID 已存在'); return ok({attempt:a},201); }
   }
   if (action === 'attempt' && method === 'GET') {const a=await attempt(db,uid,fid); return a ? ok({attempt:a}) : notFound();}
@@ -484,10 +484,24 @@ async function dispatch(request,env,uid,action,params,userCfg) {
   return fail(405,'方法不支持');
 }
 
+/* 自带 API 配置校验（与 userAiConfig 同口径）：交卷时随卷暂存，供服务器批改使用，整卷批完即删。 */
+function validAiCfg(c) {
+  if (!c || typeof c !== 'object') return null;
+  const base = str(c.base).trim().replace(/\/+$/, '');
+  const key = str(c.key).trim();
+  const model = str(c.model).trim();
+  let u; try { u = new URL(base); } catch { return null; }
+  if (!/^https:$/.test(u.protocol) || u.username || u.password) return null;
+  if (key.length < 8 || key.length > 512) return null;
+  if (!model || model.length > 100 || /\s/.test(model)) return null;
+  return { base, key, model };
+}
+
 /* ---------------- 服务器批改 worker（ECS 常驻服务专用） ----------------
  * 鉴权：请求头 x-worker-token 与 env.WORKER_TOKEN 或 platform_meta.worker_token 比对。
- * 只处理 serverGrade 套卷：用户用内置 AI 交卷时客户端标记；自带 API 的套卷密钥只在
- * 用户设备上，仍由浏览器本地批改。批改/额度/结果写入与 attemptGrade 完全同路。 */
+ * 只处理 serverGrade 套卷（客户端交卷时统一标记，全部走服务器批改）：内置 AI 走站点
+ * 通道与额度；自带 API 的套卷用随卷暂存的 aiCfg 批改（不计站点额度），整卷批完即删除
+ * aiCfg，且 attempt() 读取时一律剔除、不回传前端。批改/结果写入与 attemptGrade 同路。 */
 const WORKER_LEASE_MS = 12 * 60 * 1000;
 function tokenEq(a, b) {
   if (!a || !b || a.length !== b.length) return false;
@@ -528,7 +542,7 @@ export async function handleWorker(request, env) {
       const pending = pendingOf(full);
       if (!pending.length) {
         // 已全部批完但完成消息还没发（可能是在页面里批完的）：补发并打戳，避免重复打扰
-        if (!raw.workerNotified) { await workerInbox(db, r.uid, raw); raw.workerNotified = true; delete raw.workerLease; await saveRaw(r.uid, raw); }
+        if (!raw.workerNotified) { await workerInbox(db, r.uid, raw); raw.workerNotified = true; delete raw.workerLease; delete raw.aiCfg; await saveRaw(r.uid, raw); }
         continue;
       }
       if (raw.workerLease && Date.now() - raw.workerLease < WORKER_LEASE_MS) continue;
@@ -542,16 +556,19 @@ export async function handleWorker(request, env) {
     const a = await attempt(db, uid, aid); if (!a) return notFound();
     const q = a.questions.find(x => x.id === qid); if (!q) return fail(400, '题目不存在');
     const prior = a.results[qid]; if (prior && prior.status === 'graded') return ok({ result: prior, remaining: pendingOf(a).length });
-    const user = await row(db, 'SELECT * FROM users WHERE id=?', uid);
-    const blocked = await checkQuota(env, user, 'grade'); if (blocked) return ok({ blocked });
+    const raw0 = await loadRaw(uid, aid);
+    const userCfg = raw0 && raw0.aiCfg ? raw0.aiCfg : null;
+    if (!userCfg) { const user = await row(db, 'SELECT * FROM users WHERE id=?', uid); const blocked = await checkQuota(env, user, 'grade'); if (blocked) return ok({ blocked }); }
     const answer = a.answers[qid] || {}; let result;
-    try { result = { questionId: qid, ...await grade(env, { question: q.passage ? q.passage + '\n\n' + q.text : q.text, answer: q.answer, steps: q.steps, subject: q.subject, kp: q.kp, kind: q.kind, difficulty: q.difficulty, maxScore: q.maxScore, maxScoreAssumed: q.maxScoreAssumed, reviewStatus: q.reviewStatus, work: answer.work, selected: answer.selected, image: answer.image }, null) }; }
+    try { result = { questionId: qid, ...await grade(env, { question: q.passage ? q.passage + '\n\n' + q.text : q.text, answer: q.answer, steps: q.steps, subject: q.subject, kp: q.kp, kind: q.kind, difficulty: q.difficulty, maxScore: q.maxScore, maxScoreAssumed: q.maxScoreAssumed, reviewStatus: q.reviewStatus, work: answer.work, selected: answer.selected, image: answer.image }, userCfg) }; }
     catch (e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502, e.message); }
-    await noteUsage(env, uid, 'grade');
+    if (!userCfg) await noteUsage(env, uid, 'grade');
     await run(db, "INSERT INTO platform_results VALUES (?,?,?,?) ON CONFLICT(uid,attempt_id,question_id) DO UPDATE SET data=excluded.data WHERE json_extract(platform_results.data, '$.status') != 'graded'", uid, aid, qid, JSON.stringify(result));
-    const raw = await loadRaw(uid, aid); if (raw) { raw.workerLease = Date.now(); await saveRaw(uid, raw); }
     const latest = await attempt(db, uid, aid);
-    return ok({ result: latest.results[qid], remaining: pendingOf(latest).length });
+    const remaining = pendingOf(latest).length;
+    const raw = await loadRaw(uid, aid);
+    if (raw) { raw.workerLease = Date.now(); if (!remaining) delete raw.aiCfg; await saveRaw(uid, raw); }
+    return ok({ result: latest.results[qid], remaining });
   }
   if (b.action === 'release') {
     const raw = await loadRaw(str(b.uid), str(b.attemptId));

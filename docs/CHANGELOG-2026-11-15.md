@@ -125,3 +125,4 @@
 - 发布《阿里云学生 300 元代金券领取与 API 接入教程》（docs/aliyun-student-api-guide.pdf，含 B 站视频 BV1DRj46MEuS）；站长公告与社区置顶必读帖同步上线，引导用户接入自有 API。
 - 教程 PDF 改为站内直读：文件放入站点 pdf 目录（/pdf/aliyun-student-api-guide.pdf），社区必读帖与公告改为站内链接；社区动态与评论中的网址自动变为可点击链接（网页与 App）。
 - 新增服务器批改：ECS 常驻 worker 轮询领卷批改（/api/worker 令牌接口 + serverGrade 标记 + 完成消息服务器补发），用户退出页面不再中断批改。
+- 批改全量改走服务器（用户定版）：自带 API 配置随卷暂存供 worker 批改、批完即删且不回传前端；客户端交卷统一标记 serverGrade。
