@@ -3,11 +3,15 @@
 set -e
 TOKEN="${1:?用法: bash install.sh <worker令牌>}"
 SRC=/opt/atlas-src
-if [ -d "$SRC/.git" ]; then git -C "$SRC" pull --ff-only; else git clone --depth 1 https://github.com/GGbond-god5/kaoyan-atlas-pages.git "$SRC"; fi
+if [ -d "$SRC/.git" ]; then git -C "$SRC" pull --ff-only; else rm -rf "$SRC"; git clone --depth 1 https://github.com/GGbond-god5/kaoyan-atlas-pages.git "$SRC"; fi
 mkdir -p /opt/atlas-worker
 cp "$SRC/worker/atlas-worker.mjs" /opt/atlas-worker/
 printf 'ATLAS_SITE=https://kaoyan-atlas-pages.pages.dev\nATLAS_WORKER_TOKEN=%s\n' "$TOKEN" > /opt/atlas-worker/worker.env
 chmod 600 /opt/atlas-worker/worker.env
+NODE_BIN="$(command -v node || true)"
+if [ -z "$NODE_BIN" ] && [ -x /usr/local/bin/node ]; then NODE_BIN=/usr/local/bin/node; fi
+if [ -z "$NODE_BIN" ]; then echo "未找到 Node.js，请先安装 Node 18+"; exit 1; fi
+ln -sf "$NODE_BIN" /usr/bin/node
 cp "$SRC/worker/atlas-worker.service" /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable --now atlas-worker

@@ -14,6 +14,7 @@ async function call(body) {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-worker-token': TOKEN },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(120000),
   });
   const j = await r.json().catch(() => null);
   if (!r.ok || !j || j.ok !== true) throw new Error((j && j.error) || 'HTTP ' + r.status);
