@@ -1,5 +1,16 @@
 (async function () {
   "use strict";
+  if (!window.VOCAB) {
+    try {
+      await new Promise((res, rej) => {
+        const sc = document.createElement("script");
+        sc.src = "assets/vocab-data.js?v=2";
+        sc.onload = res;
+        sc.onerror = () => rej(new Error("词库加载失败"));
+        document.head.appendChild(sc);
+      });
+    } catch (e) { document.body.textContent = e.message + "，请检查网络后刷新。"; return; }
+  }
   const V = window.VOCAB;
   if (!V) return;
   const WORDS = V.words;

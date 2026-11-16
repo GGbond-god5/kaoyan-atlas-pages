@@ -388,3 +388,13 @@ body.exam-pure .gd-fab { display: none !important; }
   background: var(--ink); color: #F7F2E7; border: 0; border-radius: 999px; padding: 11px 18px;
   font-size: 14px; font-weight: 700; box-shadow: 0 8px 24px rgba(23,22,26,.35); cursor: pointer; }
 html.atlas-app #gradePill { bottom: 84px; }
+
+/* 填空题分空作答 */
+.workarea.fill-mode>label,.workarea.fill-mode>#work{display:none}
+.blank-in{display:inline-block;min-width:104px;max-width:230px;padding:1px 8px 2px;margin:0 2px;border:0;border-bottom:2px solid #B8860B;background:#FBF3E2;border-radius:6px 6px 0 0;font-size:16px;text-align:center;color:#17161A}
+.blank-in:focus{outline:none;background:#F7EACB;border-bottom-color:#8A6508}
+.blank-in:disabled{opacity:.75}
+.blank-tools{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px}
+.blank-tool{border:1px solid #D9CFB4;background:#fff;border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer;min-height:34px;color:#17161A}
+.blank-tool:active{background:#FBF3E2}
+.blank-preview{font-size:14px;line-height:1.8;color:#4A4232;background:#FFFDF6;border:1px dashed #D9CFB4;border-radius:8px;padding:8px 10px;margin-bottom:10px}

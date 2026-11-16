@@ -130,3 +130,6 @@
 - Android App v1.1（versionCode 13）：全部链接留在 App 内打开、不再跳 Chrome；app-version.json 补全 apkUrl/size，修复旧版 App 内更新。
 - worker 部署修复：install.sh 自适应 Node 路径（ECS 的 Node 在 /usr/local/bin）并健壮化 clone；worker 请求加 120 秒超时。
 - install.sh 改为显式 restart，确保更新 worker 代码后立即生效（enable --now 不重启已运行服务）。
+- 院校目录爬虫迁移到 ECS 运行（tools/catalog/ 入库；已抓 raw 数据经 Release 附件转移，服务器断点续跑）。
+- 填空题分空作答：题干空位内嵌输入框 + 符号工具条 + 实时公式预览，答案按空拼回、批改链路不变。
+- 加载提速：单词页词库改动态加载不阻塞首屏；静态资源缓存 300 秒→3600 秒。

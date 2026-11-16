@@ -10,7 +10,7 @@
 <script>if(/[?&]motion=0/.test(location.search))document.documentElement.classList.add("motion-off");</script>
 <title>大观题库 · 考研科目大观</title>
 <link rel="stylesheet" href="assets/theme.css">
-<link rel="stylesheet" href="assets/practice.css?v=26">
+<link rel="stylesheet" href="assets/practice.css?v=27">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
   <link rel="stylesheet" href="assets/account-hub.css?v=2">
 </head>
@@ -90,6 +90,10 @@
             <div class="workarea">
               <label for="work">作答 / 关键步骤</label>
               <textarea id="work" placeholder="在纸上演算；这里可记关键步骤，切题不会丢。"></textarea>
+              <div id="blankBar" hidden>
+                <div class="blank-tools" id="blankTools"></div>
+                <div class="blank-preview">我的答案：<span id="blankPreview">（还没填）</span></div>
+              </div>
               <div class="photo-box" id="photoBox" hidden>
                 <input type="file" id="photoCamera" accept="image/*" capture="environment" hidden>
                 <input type="file" id="photoFile" accept="image/*" hidden>
@@ -153,7 +157,7 @@
 <script src="assets/review.js?v=1"></script>
 <script src="assets/assessment.js?v=8"></script>
 <script src="assets/plain-text.js?v=1"></script>
-<script src="assets/practice.js?v=51"></script>
+<script src="assets/practice.js?v=52"></script>
 <script src="assets/site-tools.js?v=4"></script>
 <script src="assets/pwa.js?v=1"></script>
 <script src="assets/account-hub.js?v=3"></script>

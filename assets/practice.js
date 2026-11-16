@@ -51,7 +51,7 @@
     return a.length > 1;
   }
   function isObjective(q) { return OBJ_KINDS.includes(q.kind); }
-  function questionHTML(q) {
+  function questionHTML(q, fillMode) {
     const stem = [];
     const opts = [];
     for (const ln of String(q.text || "").split("\n")) {
@@ -59,7 +59,12 @@
       if (m) opts.push({ l: m[1], t: m[2] });
       else stem.push(ln);
     }
-    const parts = stem.filter(l => l.trim()).map(l => `<p>${inline(l)}</p>`).join("");
+    let bi = 0;
+    const parts = stem.filter(l => l.trim()).map(l => {
+      let h = inline(l);
+      if (fillMode) h = h.replace(/[_＿]{3,}/g, () => `<input class="blank-in" data-bi="${bi++}" type="text" autocomplete="off" spellcheck="false" aria-label="第${bi}空">`);
+      return `<p>${h}</p>`;
+    }).join("");
     const obj = OBJ_KINDS.includes(q.kind);
     const multi = obj && isMulti(q);
     const picked = (session && session.picks && session.picks[q.id]) || [];
@@ -75,6 +80,97 @@
     }
     return parts + list;
   }
+  /* 填空题分空作答：题干下划线空位（___ 或 ＿＿＿）渲染成内嵌输入框，答案按
+   * 「第1空：…；第2空：…」拼回 notes，提交/批改链路与原文本框完全一致。
+   * 任一空位落在数学公式 \\(...\\) 内时整题回退普通文本框（公式渲染会吞掉输入框）。 */
+  function fillBlankCount(q) {
+    if (!q || q.kind !== "填空题") return 0;
+    const text = String(q.text || "");
+    const spans = [];
+    const mre = /\\\([\s\S]*?\\\)|\$\$[\s\S]*?\$\$|\$[^$\n]*?\$/g;
+    let m; while ((m = mre.exec(text))) spans.push([m.index, m.index + m[0].length]);
+    let n = 0;
+    const bre = /[_＿]{3,}/g;
+    while ((m = bre.exec(text))) {
+      if (spans.some(([a, b]) => m.index >= a && m.index < b)) return 0;
+      n++;
+    }
+    return n;
+  }
+  function blankValues(notes, n) {
+    const out = Array.from({ length: n }, () => "");
+    const t = String(notes || "").trim();
+    if (!t) return out;
+    t.split(/；|;/).map(x => x.trim()).forEach((part, i) => {
+      const v = part.replace(/^第\d+空：/, "").replace(/^（未填）$/, "");
+      if (i < n) out[i] = v;
+      else if (n) out[n - 1] = out[n - 1] ? out[n - 1] + "；" + v : v;
+    });
+    return out;
+  }
+  function composeBlanks(values) {
+    let last = -1;
+    values.forEach((v, i) => { if (String(v).trim()) last = i; });
+    if (last < 0) return "";
+    return values.slice(0, last + 1).map((v, i) => `第${i + 1}空：${String(v).trim() || "（未填）"}`).join("；");
+  }
+  let lastBlank = null;
+  function currentBlanks() { return $$("#qtext .blank-in"); }
+  function syncBlanks() {
+    if (!session) return;
+    const q = current(); if (!q) return;
+    session.notes[q.id] = composeBlanks(currentBlanks().map(i => i.value));
+    updateBlankPreview();
+  }
+  function updateBlankPreview() {
+    const el = $("#blankPreview"); if (!el || !session) return;
+    const values = currentBlanks().map(i => i.value);
+    if (!values.some(v => v.trim())) { el.textContent = "（还没填）"; return; }
+    el.innerHTML = values.map((v, i) => {
+      const t = v.trim();
+      const body = !t ? "（未填）" : (/\\|[\^_]\{|[\^_][a-zA-Z0-9]/.test(t) ? `\\(${esc(t)}\\)` : esc(t));
+      return `第${i + 1}空 ${body}`;
+    }).join("；");
+    renderMath(el);
+  }
+  function setupFill(q, n) {
+    const bar = $("#blankBar");
+    const area = document.querySelector(".workarea");
+    if (area) area.classList.toggle("fill-mode", n > 0);
+    if (bar) bar.hidden = !(n > 0);
+    if (!(n > 0)) return;
+    const values = blankValues(session.notes[q.id], n);
+    currentBlanks().forEach((inp, i) => { inp.value = values[i] || ""; inp.disabled = !!session.ended; });
+    updateBlankPreview();
+  }
+  const BLANK_TOOLS = [
+    ["分数", "\\frac{}{}", 6], ["根号", "\\sqrt{}", 6], ["次方", "^{}", 2], ["平方", "^{2}", -1],
+    ["下标", "_{}", 2], ["π", "\\pi", -1], ["≤", "\\le", -1], ["≥", "\\ge", -1],
+    ["∞", "\\infty", -1], ["∫", "\\int", -1], ["∑", "\\sum", -1], ["α", "\\alpha", -1],
+    ["β", "\\beta", -1], ["θ", "\\theta", -1], ["λ", "\\lambda", -1], ["μ", "\\mu", -1],
+    ["·", "\\cdot", -1], ["×", "\\times", -1], ["→", "\\to", -1], ["'", "'", -1],
+  ];
+  function buildBlankTools() {
+    const box = $("#blankTools"); if (!box || box.childElementCount) return;
+    for (const [label, ins, cur] of BLANK_TOOLS) {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "blank-tool"; b.textContent = label; b.tabIndex = -1;
+      b.addEventListener("mousedown", e => e.preventDefault());
+      b.addEventListener("click", () => {
+        const inputs = currentBlanks(); if (!inputs.length) return;
+        const inp = (lastBlank && inputs.includes(lastBlank)) ? lastBlank : (inputs.find(i => !i.value.trim()) || inputs[0]);
+        inp.focus();
+        const st = inp.selectionStart != null ? inp.selectionStart : inp.value.length;
+        const en = inp.selectionEnd != null ? inp.selectionEnd : inp.value.length;
+        inp.value = inp.value.slice(0, st) + ins + inp.value.slice(en);
+        const pos = cur >= 0 ? st + cur : st + ins.length;
+        try { inp.setSelectionRange(pos, pos); } catch (e) {}
+        syncBlanks();
+      });
+      box.appendChild(b);
+    }
+  }
+
   const KEY = "atlas.practice.v1";
   const AI_ENDPOINT = (window.ATLAS_CONFIG && window.ATLAS_CONFIG.gradeEndpoint) || "";
 
@@ -450,8 +546,10 @@
       const url = src.includes(".") ? `assets/figs/${src}` : `assets/figs/${src}.svg`;
       return `<img src="${url}" alt="题图" onerror="this.remove()">`;
     }).join("");
-    $("#qtext").innerHTML = questionHTML(q);
+    const fillN = fillBlankCount(q);
+    $("#qtext").innerHTML = questionHTML(q, fillN > 0);
     renderMath($("#qtext"));
+    setupFill(q, fillN);
     const hasPassage = !!(q.passage && q.passage.trim());
     $("#qpassage").hidden = !hasPassage;
     $("#paperCard").classList.toggle("has-passage", hasPassage);
@@ -463,7 +561,7 @@
     }
     $("#work").value = session.notes[q.id] || "";
     const subjective = isSubjective(q);
-    $("#photoBox").hidden = !subjective;
+    $("#photoBox").hidden = !(subjective || fillN > 0);
     const aiAsk = $("#aiAsk");
     if (aiAsk) {
       aiAsk.hidden = !AI_ENDPOINT;
@@ -471,7 +569,7 @@
         : (q.kind === "翻译" ? "AI 核对翻译" : "AI 核对答案");
     }
     showPhoto(null);
-    if (subjective) {
+    if (subjective || fillN > 0) {
       photoGet(q.id).then(url => {
         if (url && session && current() && current().id === q.id) showPhoto(url);
       });
@@ -1050,6 +1148,20 @@
     const btn = e.target.closest("[data-opt]");
     if (btn) chooseOption(btn.dataset.opt);
   });
+  $("#qtext").addEventListener("input", e => {
+    if (e.target.classList && e.target.classList.contains("blank-in")) syncBlanks();
+  });
+  $("#qtext").addEventListener("focusin", e => {
+    if (e.target.classList && e.target.classList.contains("blank-in")) lastBlank = e.target;
+  });
+  $("#qtext").addEventListener("keydown", e => {
+    if (!e.target.classList || !e.target.classList.contains("blank-in") || e.key !== "Enter") return;
+    e.preventDefault();
+    const list = currentBlanks();
+    const i = list.indexOf(e.target);
+    if (i >= 0 && i < list.length - 1) list[i + 1].focus(); else e.target.blur();
+  });
+  buildBlankTools();
   $("#gradebar").addEventListener("click", e => {
     const b = e.target.closest("[data-grade]"); if (b && !b.disabled) grade(b.dataset.grade);
   });
