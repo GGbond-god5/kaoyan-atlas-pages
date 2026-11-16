@@ -71,7 +71,19 @@ export function modelChain(env, tier) {
   return [...base, dflt].filter((m, i, a) => a.indexOf(m) === i);
 }
 
-export async function ai(env, messages, jsonMode = false, userCfg = null, tier = 'mid') {
+export async function ai(env, messages, jsonMode = false, userCfg = null, tier = 'mid', opts = {}) {
+  if (userCfg && !opts.noFallback) {
+    try { return await aiCall(env, messages, jsonMode, userCfg, tier); }
+    catch (e) {
+      // 自选 API 失败时自动回退系统内置通道，保证批改/小观不断线；内置也失败时报自选 API 的原始错误便于定位
+      try { return await aiCall(env, messages, jsonMode, null, tier); }
+      catch (_) { throw e; }
+    }
+  }
+  return aiCall(env, messages, jsonMode, userCfg, tier);
+}
+
+async function aiCall(env, messages, jsonMode = false, userCfg = null, tier = 'mid') {
   const key = userCfg ? userCfg.key : (env.AI_API_KEY || env.DASHSCOPE_API_KEY);
   if (!key) throw new Error('AI 服务未配置');
   let base = (userCfg ? userCfg.base : (env.AI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1')).replace(/\/+$/, '');
@@ -285,7 +297,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
   if (action === 'aiTest' && method === 'POST') {
     const t0 = Date.now();
     try {
-      const reply = await ai(env, [{ role: 'user', content: '请只回复四个字：连接正常' }], false, userCfg, 'cheap');
+      const reply = await ai(env, [{ role: 'user', content: '请只回复四个字：连接正常' }], false, userCfg, 'cheap', { noFallback: true });
       return ok({ reply: String(reply).slice(0, 60), model: userCfg ? userCfg.model : (env.AI_MODEL || 'qwen3-vl-plus'), custom: !!userCfg, ms: Date.now() - t0 });
     } catch (e) { return fail(502, e.message); }
   }
