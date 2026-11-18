@@ -62,8 +62,11 @@ export function userAiConfig(request) {
 const MODEL_CHAINS = {
   cheap: ['deepseek-v4.1-flash-1017'],
   mid: ['glm-5.3', 'kimi-k3.1-pro', 'deepseek-v4.1-flash-1017'],
-  strong: ['qwen3.8-max-0902', 'glm-5.3', 'kimi-k3.1-pro'],
-  vision: ['qwen3.8-max-0902', 'kimi-k3.1-pro', 'glm-5.3'],
+  // 2026-11-18 调整：qwen3.8-max-0902 开通状态一直未确认，线上实测 strong/vision 档批改持续超时
+  // （同一套卷反复领取、单题超 120 秒无结果），先将其移出链，待站长在千问控制台核实开通与时延后再恢复；
+  // strong/vision 改由实测可用的 kimi 打头，链尾仍有 env.AI_MODEL（qwen3-vl-plus）兜底（见 modelChain）。
+  strong: ['kimi-k3.1-pro', 'glm-5.3'],
+  vision: ['kimi-k3.1-pro', 'glm-5.3'],
 };
 export function modelChain(env, tier) {
   const dflt = (env && env.AI_MODEL) || 'qwen3-vl-plus';
@@ -108,10 +111,14 @@ async function aiAttempt(env, base, key, model, messages, jsonMode, userCfg) {
   };
   // 推理型模型会把 token 花在思考上，额度小的时候 content 会是空的
   if (!userCfg && env.AI_REASONING_EFFORT) payload.reasoning_effort = env.AI_REASONING_EFFORT;
+  // 单个模型一次调用的超时（毫秒，可用环境变量 AI_TIMEOUT_MS 覆盖）：超时即判失败、顺延链上下一个模型，
+  // 避免未开通/异常的模型让请求无限期挂住、拖死整条批改队列
+  const timeoutMs = Math.max(10000, Number(env.AI_TIMEOUT_MS || 60000) || 60000);
   const send = () => fetch(`${base}/chat/completions`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   let res;
   try { res = await send(); }
@@ -625,7 +632,8 @@ export async function handleWorker(request, env) {
   const pendingOf = (a) => a.questions.map(q => q.id).filter(qid => hasAnswer(a, qid) && !(a.results[qid] && a.results[qid].status === 'graded'));
 
   if (b.action === 'claim') {
-    const rows = await all(db, 'SELECT uid,id,data FROM platform_attempts ORDER BY rowid DESC LIMIT 120');
+    // 先到先批（rowid 升序）：原来只看最新 120 条且新卷优先，早交的卷会一直被插队、超出窗口的永远领不到
+    const rows = await all(db, 'SELECT uid,id,data FROM platform_attempts ORDER BY rowid ASC LIMIT 200');
     for (const r of rows) {
       let raw; try { raw = parse(r.data); } catch { continue; }
       if (!raw || raw.serverGrade !== true || !Array.isArray(raw.questions)) continue;
