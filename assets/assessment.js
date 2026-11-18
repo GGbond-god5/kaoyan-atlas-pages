@@ -1,7 +1,84 @@
 (function () {
   "use strict";
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  function renderMastery(host, questions, results) {
+  function renderModuleMastery(host, questions, results, SA, subject) {
+    // 学情分析学科定制雷达：维度是本科目的内容模块（数学按章组、英语按题型、政治按板块、807 按力学模块，
+    // 定义在 assets/subject-analytics.js），取数口径见各科 radarNote；与批改的能力维度评分（过程指标）分开，不混用。
+    const cfg = SA.config(subject);
+    const dimensions = cfg.radar.map(d => ({ name: d.name, short: d.short || d.name, count: 0, graded: 0, score: 0, max: 0 }));
+    const byName = {}; dimensions.forEach(d => { byName[d.name] = d; });
+    const dimKeys = SA.dimKeyMap(subject);
+    function dimValue(v, qMax) {
+      if (v && typeof v === "object") { const sc = Number(v.score), mx = Number(v.max); if (Number.isFinite(sc) && Number.isFinite(mx) && mx > 0) return [sc, mx]; if (Number.isFinite(sc)) return [sc, qMax]; return null; }
+      if (typeof v === "string") { const m = v.match(/([\d.]+)\s*\/\s*([\d.]+)/); if (m) return [Number(m[1]), Number(m[2])]; const n = Number(v); if (Number.isFinite(n)) return n <= 1 ? [n * qMax, qMax] : [n, qMax]; return null; }
+      if (typeof v === "number" && Number.isFinite(v)) return v <= 1 ? [v * qMax, qMax] : [v, qMax];
+      return null;
+    }
+    const topics = new Map();
+    function add(target, result) {
+      target.count++;
+      if (result && result.status === "graded" && result.maxScore != null && Number.isFinite(Number(result.maxScore)) && Number(result.maxScore) > 0 && result.score != null && Number.isFinite(Number(result.score))) {
+        target.graded++; target.score += Number(result.score); target.max += Number(result.maxScore);
+      }
+    }
+    questions.forEach(q => {
+      const name = q.topicTitle || q.chapterTitle || q.kpName || "未分类";
+      if (!topics.has(name)) topics.set(name, {count:0, graded:0, score:0, max:0});
+      const result = results[q.id]; add(topics.get(name), result);
+      if ((q.subject || "") !== subject) return;
+      const graded = result && result.status === "graded" && Number(result.maxScore) > 0 && Number.isFinite(Number(result.score));
+      let fed = false;
+      // 优先：批改维度评分里可映射到内容维度的键（目前仅 807「受力分析与平衡方程」→ 受力分析、英语翻译四项 → 翻译）。
+      if (graded && result.dimensions && typeof result.dimensions === "object") {
+        const hit = {};
+        Object.keys(result.dimensions).forEach(k => {
+          const dn = dimKeys[k]; if (!dn || !byName[dn]) return;
+          const dv = dimValue(result.dimensions[k], Number(result.maxScore));
+          if (!dv) return;
+          byName[dn].score += dv[0]; byName[dn].max += dv[1]; hit[dn] = true;
+        });
+        Object.keys(hit).forEach(dn => { byName[dn].count++; byName[dn].graded++; });
+        fed = Object.keys(hit).length > 0;
+      }
+      // 其次：按本科目配置的题型/章节归入内容维度，整题得分计入。
+      if (!fed) {
+        const dn = SA.radarDimFor(subject, q);
+        if (dn && byName[dn]) { const d = byName[dn]; d.count++; if (graded) { d.graded++; d.score += Number(result.score); d.max += Number(result.maxScore); } }
+      }
+    });
+    const N = dimensions.length;
+    const angleOf = i => Math.PI * 2 * i / N - Math.PI / 2;
+    const pt = (i, r) => [100 + r * Math.cos(angleOf(i)), 100 + r * Math.sin(angleOf(i))];
+    const ring = r => `<polygon points="${dimensions.map((d, i) => pt(i, r).map(v => v.toFixed(1)).join(",")).join(" ")}" fill="none" stroke="#cbbba7"/>`;
+    const axes = dimensions.map((d, i) => { const [x, y] = pt(i, 80); return `<line x1="100" y1="100" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#cbbba7"/>`; }).join("");
+    const ratioOf = d => d.max ? Math.max(0, Math.min(1, d.score / d.max)) : 0;
+    const covered = dimensions.filter(d => d.max).length;
+    const positions = dimensions.map((d, i) => pt(i, 80 * ratioOf(d)));
+    const polygon = covered >= 3 ? `<polygon points="${positions.map(p => p.map(v => v.toFixed(1)).join(",")).join(" ")}" fill="#ad493d55" stroke="#a53b30"/>` : "";
+    const sectors = covered > 0 && covered < 3 ? dimensions.map((d, i) => {
+      const ratio = ratioOf(d); if (!ratio) return "";
+      const angle = angleOf(i), a0 = angle - Math.PI / N, a1 = angle + Math.PI / N, r = Math.max(10, 80 * ratio);
+      const x0 = 100 + r * Math.cos(a0), y0 = 100 + r * Math.sin(a0);
+      const x1 = 100 + r * Math.cos(a1), y1 = 100 + r * Math.sin(a1);
+      return `<path d="M100,100 L${x0.toFixed(1)},${y0.toFixed(1)} A${r.toFixed(1)},${r.toFixed(1)} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="#ad493d55" stroke="#a53b30"/>`;
+    }).join("") : "";
+    const dots = covered >= 3 ? positions.map(([x, y], i) => dimensions[i].max ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#a53b30"/>` : "").join("") : "";
+    const labels = dimensions.map((d, i) => {
+      const [x, y] = pt(i, 92);
+      return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="7.5" text-anchor="middle" dominant-baseline="middle" fill="#8a7d6b">${esc(d.short)}</text>`;
+    }).join("");
+    const fmt = v => Math.round(v * 10) / 10;
+    const basis = v => v.max ? `已评分 ${v.graded} 题，${fmt(v.score)} / ${fmt(v.max)} 分（${Math.round(v.score / v.max * 100)}%）` : "待评估（没有可计分结果）";
+    const list = [...topics.entries()];
+    host.innerHTML = `<h3>能力与知识点覆盖</h3><button type="button" id="masteryOpen">查看能力与知识点图</button><dialog id="masteryDialog"><h3>能力与知识点依据</h3><p>雷达按学科定制：${esc(cfg.name)}采用「${dimensions.map(d => d.name).join("、")}」六个内容维度，各科互不串扰。${esc(cfg.radarNote)}面积越大表示该维度得分比例越高；至少 3 个维度有已评分数据时画雷达面积，不足时用扇形面积展示。实际覆盖 ${questions.length} 题。</p><svg viewBox="0 0 200 200" width="180" height="180" role="img" aria-label="${esc(cfg.name)}学科雷达图，详细题数与得分见文字">${ring(80)}${ring(40)}${axes}${sectors}${polygon}${dots}${labels}</svg><ol>${dimensions.map(d => `<li><b>${esc(d.name)}</b>：覆盖 ${d.count} 题；${basis(d)}</li>`).join("")}</ol><h3>知识点掌握</h3><ul>${list.map(([name,v]) => `<li>${esc(name)}：覆盖 ${v.count} 题；${basis(v)}${v.max ? `<div role="img" aria-label="得分比例 ${Math.round(v.score/v.max*100)}%" style="height:6px;max-width:220px;background:#eadfd1"><div style="height:100%;width:${Math.max(0,Math.min(100,v.score/v.max*100))}%;background:#a53b30"></div></div>` : ""}</li>`).join("")}</ul><button type="button" id="masteryClose">关闭</button></dialog>`;
+    const dialog = host.querySelector("dialog"); host.querySelector("#masteryOpen").onclick = () => dialog.showModal(); host.querySelector("#masteryClose").onclick = () => dialog.close();
+  }
+  function renderMastery(host, questions, results, opts) {
+    // 学情分析（网页/App 做题详情）传 opts.subjectAnalytics 时走学科定制的内容雷达；
+    // 交卷结果页等其他调用不传 opts，仍用下面按科目区分的能力指标体系，行为不变。
+    const SA = (opts && opts.subjectAnalytics && window.AtlasSubjectAnalytics) ? window.AtlasSubjectAnalytics : null;
+    const cfgSubject = (opts && opts.subject) || (questions[0] || {}).subject || "";
+    if (SA && SA.config(cfgSubject)) { renderModuleMastery(host, questions, results, SA, cfgSubject); return; }
     // 分科能力指标：每个科目用自己的指标体系（数学没有写作、英语没有协调方程）。
     // 数据优先用批改返回的 dimensions（分科能力评分），其次用同名得分点，最后按题型归入对应指标。
     const SETS = {

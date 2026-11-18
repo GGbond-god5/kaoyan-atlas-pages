@@ -67,3 +67,22 @@
 #adMastery h3{font-size:15px;margin:6px 0 4px}
 
 .ad-deep{margin-top:6px}
+
+/* 两级结构：套卷记录紧凑列表（与 App 成绩明细对齐）+ 详情独立视图 */
+.paper-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 8px;border-bottom:1px solid #EFE9D8;cursor:pointer}
+.paper-row:hover{background:#FBF7EA}
+.pr-title{font-weight:700;flex:1;min-width:0}
+.pr-meta{color:#8A8172;font-size:12.5px;white-space:nowrap}
+.pr-rate{font-weight:700;white-space:nowrap}
+.pr-rate.good{color:#3E7A4E}
+.pr-rate.mid{color:#8A6414}
+.pr-rate.low{color:#A03A34}
+.pr-date{color:#8A8172;font-size:12.5px;white-space:nowrap}
+.pr-chips{padding:8px 8px 14px}
+.pd-back{margin-bottom:10px}
+.ad-detail-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+/* 英语作文提升指导（仅英语作文题且有批改结果时出现） */
+.essay-guide{border:1px solid #E3C878;background:#FFFBEB;border-radius:10px;padding:10px 12px}
+.essay-guide .eg-score{font-weight:700}
+.essay-guide .eg-sub{font-weight:700;color:#4A4436;margin-top:10px}

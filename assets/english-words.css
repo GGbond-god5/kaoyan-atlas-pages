@@ -1,0 +1,105 @@
+/* 英语阅读点词查义（蓝图 B1）· 配合 assets/english-words.js
+   单词轻提示 + 释义浮层；颜色/字体只用 theme.css 的全站令牌，不另起一套。 */
+
+/* 可点击单词：默认几乎无痕，hover/聚焦时才给底纹提示 */
+.ew-word {
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .15s ease;
+}
+.ew-word:hover,
+.ew-word:focus-visible {
+  background: var(--vermilion-soft, #FAECE9);
+  outline: none;
+  box-shadow: inset 0 -1px 0 var(--vermilion, #A8342A);
+}
+
+/* 释义浮层：与站内卡片同语言（纸面、细边、衬线大词头） */
+.ew-pop {
+  position: fixed;
+  z-index: 1200;
+  box-sizing: border-box;
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+  padding: 14px 16px 12px;
+  background: var(--card, #FCFAF5);
+  border: 1px solid var(--rule, #DAD2C3);
+  border-radius: 10px;
+  box-shadow: 0 10px 32px rgba(23, 22, 26, .18), 0 2px 6px rgba(23, 22, 26, .08);
+  color: var(--ink, #17161A);
+  font-family: var(--sans, system-ui, sans-serif);
+  font-size: var(--fs-sm, 13px);
+  line-height: 1.55;
+}
+.ew-pop[hidden] { display: none; }
+
+.ew-pop-x {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted, #6E675C);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.ew-pop-x:hover { color: var(--ink, #17161A); }
+
+.ew-pop-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-right: 22px;
+}
+.ew-pop-word {
+  font-family: var(--serif, Georgia, serif);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  word-break: break-all;
+}
+.ew-pop-phon { color: var(--muted, #6E675C); font-size: var(--fs-xs, 12px); }
+
+.ew-pop-sub {
+  margin-top: 2px;
+  color: var(--muted, #6E675C);
+  font-size: var(--fs-xs, 12px);
+}
+.ew-pop-sub:empty { display: none; }
+
+.ew-pop-mean {
+  margin-top: 6px;
+  font-size: var(--fs-body, 15px);
+  color: var(--ink, #17161A);
+}
+
+.ew-pop-ex {
+  margin-top: 6px;
+  color: var(--ink-2, #45413A);
+  font-size: var(--fs-xs, 12px);
+}
+.ew-pop-ex:empty { display: none; }
+
+.ew-pop-star {
+  margin-top: 10px;
+  padding: 5px 12px;
+  border: 1px solid var(--rule, #DAD2C3);
+  border-radius: 999px;
+  background: var(--card, #FCFAF5);
+  color: var(--ink-2, #45413A);
+  font: inherit;
+  font-size: var(--fs-xs, 12px);
+  cursor: pointer;
+}
+.ew-pop-star:hover { border-color: var(--ink-2, #45413A); }
+.ew-pop-star.on {
+  border-color: var(--vermilion, #A8342A);
+  color: var(--vermilion, #A8342A);
+  background: var(--vermilion-soft, #FAECE9);
+}
+.ew-pop-star:disabled { opacity: .55; cursor: default; }

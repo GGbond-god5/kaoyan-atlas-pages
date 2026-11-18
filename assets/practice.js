@@ -36,6 +36,25 @@
       return `<p>${h}</p>`;
     }).join("");
   }
+  /* 英语点词查义（蓝图 B1）：仅英语一/英语二才动态加载英语专属模块处理原文，
+   * 其他科目的 passage 渲染不进此分支、行为一字不变；词表由模块内部懒加载。 */
+  let engWordsPromise = null;
+  function enhanceEnglishWords(el) {
+    if (window.EnglishWords) { window.EnglishWords.enhance(el); return; }
+    if (!engWordsPromise) {
+      engWordsPromise = new Promise(res => {
+        const sc = document.createElement("script");
+        sc.src = "assets/english-words.js?v=1";
+        sc.onload = res;
+        sc.onerror = res;
+        document.head.appendChild(sc);
+      });
+    }
+    engWordsPromise.then(() => {
+      const cq = current();
+      if (window.EnglishWords && cq && ["english", "english2"].includes(cq.subject)) window.EnglishWords.enhance(el);
+    });
+  }
   const OBJ_KINDS = ["选择题", "单选题", "多选题", "阅读", "完形", "新题型"];
   function answerLetters(q) {
     if (["pending", "needs_review"].includes(q.reviewStatus)) return "";
@@ -557,6 +576,7 @@
       const isCloze = q.kind === "完形";
       $("#qpassagebody").innerHTML = passageHTML(q.passage, isCloze);
       renderMath($("#qpassagebody"));
+      if (["english", "english2"].includes(q.subject)) enhanceEnglishWords($("#qpassagebody"));
       $("#qpassage").open = true;
     }
     $("#work").value = session.notes[q.id] || "";

@@ -787,7 +787,7 @@ async function clearPaperRecordsApp(qids) {
     '<button type="button" class="btn-sub danger" id="qdReset">重置这套（删除记录）</button></div>';
     if (window.AtlasAssessment) {
       var mh = document.getElementById('qdMastery');
-      if (mh) { try { window.AtlasAssessment.renderMastery(mh, qs.map(function (q) { return q.subject ? q : Object.assign({}, q, { subject: a.subject }); }), a.results || {}); } catch (e) {} }
+      if (mh) { try { window.AtlasAssessment.renderMastery(mh, qs.map(function (q) { return q.subject ? q : Object.assign({}, q, { subject: a.subject }); }), a.results || {}, { subjectAnalytics: true, subject: a.subject }); } catch (e) {} }
     }
     var anaBtn = document.getElementById('qdAnalysisBtn');
     if (anaBtn) anaBtn.addEventListener('click', function () {
@@ -797,11 +797,13 @@ async function clearPaperRecordsApp(qids) {
       box.innerHTML = '<div class="sub-loading">正在生成教学分析…</div>';
       anaBtn.disabled = true;
       var lines = ['科目：' + (SUBJECT_NAMES[a.subject] || a.subject || '') + '，共 ' + qs.length + ' 题，已批改 ' + sm.graded + ' 题，总得分率 ' + rate + '。'];
+      /* 学科定制：注入本科目侧重点与隔离守卫，服务端按 context.subject 再拼一份（双保险）。 */
+      if (window.AtlasSubjectAnalytics && AtlasSubjectAnalytics.config(a.subject)) { lines.push(AtlasSubjectAnalytics.aiFocus(a.subject)); lines.push(AtlasSubjectAnalytics.guardLine(a.subject)); }
       qs.forEach(function (q, i) {
         var r = (a.results || {})[q.id] || {};
         lines.push('第' + (i + 1) + '题 考点：' + (q.kpName || q.kp || '未知') + '，题型：' + (q.kind || '') + '，' + (r.status === 'graded' ? ('得分 ' + r.score + '/' + r.maxScore + (r.level ? '，等级 ' + r.level : '') + (r.missing ? '，缺失要点：' + r.missing : '')) : '未批改'));
       });
-      AtlasUser.json('/api/coach', 'POST', { context: { source: 'attempt-analysis', attemptId: a.id }, messages: [{ role: 'user', content: lines.join('\n') }] }).then(function (r) {
+      AtlasUser.json('/api/coach', 'POST', { context: { source: 'attempt-analysis', attemptId: a.id, subject: a.subject }, messages: [{ role: 'user', content: lines.join('\n') }] }).then(function (r) {
         box.innerHTML = '<div class="qd-sec"><span>AI 教学分析</span><p>' + esc(cleanText(r.reply || '')) + '</p></div>';
         gMath(box);
       }).catch(function (e) {

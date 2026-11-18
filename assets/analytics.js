@@ -8,6 +8,14 @@
   var $ = function (s) { return document.querySelector(s); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var pct = function (x) { return Math.round(x * 100) + '%'; };
+  /* 两级结构：详情打开时主视图隐藏，返回时恢复并回到原滚动位置 */
+  var detailOpen = false, savedScrollY = 0;
+  function fmtDate(a) {
+    var v = a && (a.createdAt || a.created_at || a.ts || a.time);
+    if (!v) return '';
+    var d = new Date(v);
+    return isNaN(d) ? '' : (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
 
   function rate(r) { return r && r.status === 'graded' && Number(r.maxScore) > 0 ? Number(r.score) / Number(r.maxScore) : null; }
 
@@ -88,6 +96,14 @@
 
   function summaryText(papers, kps, kinds, adviceCount) {
     var lines = ['这是我的套卷作答数据统计（' + papers.length + ' 套）：'];
+    /* 学科定制：单科时注入本科目侧重点与隔离守卫；全部科目时明确要求按科分别小结，不许串科。 */
+    var SA0 = window.AtlasSubjectAnalytics || null;
+    if (SA0 && state.subject !== 'all' && SA0.config(state.subject)) {
+      lines.push('科目：' + SA0.config(state.subject).name + '。' + SA0.aiFocus(state.subject));
+      lines.push(SA0.guardLine(state.subject));
+    } else {
+      lines.push('以下包含多个科目的数据：请按科目分别小结，不得把任何一科的题型、栏目或概念套用到另一科。');
+    }
     papers.forEach(function (p, i) {
       lines.push('第' + (i + 1) + '套 ' + p.title + '：得分率 ' + (p.rate === null ? '未批改完' : pct(p.rate)) + '，错题号 ' + (p.wrong.map(function (w) { return '第' + w.no + '题'; }).join('、') || '无'));
     });
@@ -95,6 +111,20 @@
     if (weak.length) lines.push('薄弱知识点：' + weak.map(function (e) { return e.label + '（' + e.n + '题，未满分率' + pct(e.missRate) + '）'; }).join('；'));
     lines.push('请基于这些数据给我一份简短的提升建议：先指出最该优先处理的 1–2 个问题，再给接下来一周的具体练法。不要编造数据里没有的错题或分数。');
     return lines.join('\n');
+  }
+
+  async function resetPaper(id, btn) {
+    // 重置这套：删本次作答/批改记录 + 连带清做题记录与复盘排期（clearPaperRecords），收藏与手动错题本保留。
+    if (!id) return;
+    if (!confirm('确定重置这套卷吗？这一次的作答与批改记录会被删除，这套题目的做题记录（做过/错题次数、复盘排期）也会一并清除，可以干净二刷；收藏与手动加入错题本的题保留。删了不能恢复。')) return;
+    if (btn) btn.disabled = true;
+    try {
+      var att = (state.attempts || []).filter(function (x) { return x.id === id; })[0];
+      var qids = att && att.questions ? att.questions.map(function (q) { return q.id; }) : [];
+      await window.AtlasUser.json('/api/attempts', 'DELETE', { ids: [id] });
+      await clearPaperRecords(qids);
+      location.reload();
+    } catch (err) { alert('重置失败：' + err.message); if (btn) btn.disabled = false; }
   }
 
 async function clearPaperRecords(qids) {
@@ -233,8 +263,30 @@ async function clearPaperRecords(qids) {
       });
     });
 
-    var kps = aggregate(papers, function (q) { return q.kp || q.kpName ? (q.subject + '|' + (q.kp || q.kpName)) : ''; }, function (q) { return q.kpName || q.kp || '未标注考点'; })
-      .sort(function (x, y) { return y.missRate - x.missRate || y.n - x.n; });
+    /* 薄弱归组按学科定制（assets/subject-analytics.js）：选了单科且该科有配置时按本科目口径归组
+     * （数学按章组、英语按题型、政治按板块、807 按模块）；全部科目或无配置时回退原 kp 口径，
+     * 回退时条目 key 带科目前缀，不跨科合并、更不借用其他科目的分组。 */
+    var SA = window.AtlasSubjectAnalytics || null;
+    var subjCfg = SA && state.subject !== 'all' ? SA.config(state.subject) : null;
+    var kpTitle = document.querySelector('#kpCard h2');
+    if (kpTitle) kpTitle.textContent = subjCfg ? subjCfg.groupTitle : '薄弱知识点';
+    var groupMeta = {};
+    var kps;
+    if (subjCfg) {
+      kps = aggregate(papers, function (q) {
+        var g = SA.groupOf(state.subject, q);
+        if (!g) return '';
+        groupMeta[state.subject + '|' + g.key] = g;
+        return state.subject + '|' + g.key;
+      }, function (q) {
+        var g = SA.groupOf(state.subject, q);
+        return g ? g.label : '未归组';
+      }).sort(function (x, y) { return y.missRate - x.missRate || y.n - x.n; });
+      kps.forEach(function (e) { var g = groupMeta[e.key]; if (g) { e.chapter = g.chapter; e.kp = g.kp; } });
+    } else {
+      kps = aggregate(papers, function (q) { return q.kp || q.kpName ? (q.subject + '|' + (q.kp || q.kpName)) : ''; }, function (q) { return q.kpName || q.kp || '未标注考点'; })
+        .sort(function (x, y) { return y.missRate - x.missRate || y.n - x.n; });
+    }
     $('#kpList').innerHTML = kps.slice(0, 12).map(function (e) {
       return '<div class="row"><div class="rhead"><b>' + esc(e.label) + '</b><span>未满分率 ' + pct(e.missRate) + ' · 平均得分率 ' + pct(e.avg) + '</span></div>' +
         '<div class="rmeta">' + e.n + ' 道已批改 · 满分 ' + e.full + ' 道 · 零分 ' + e.zero + ' 道' + bankLink(e) + '</div>' +
@@ -248,32 +300,24 @@ async function clearPaperRecords(qids) {
         '<div class="rmeta">' + e.n + ' 道已批改</div><div class="bar good"><i style="width:' + Math.round(e.avg * 100) + '%"></i></div></div>';
     }).join('') || '<p class="sub">暂无数据。</p>';
 
+    /* 套卷记录：App「成绩明细」式紧凑列表——一行一套（标题 / 已批改与得分 / 得分率 / 日期），点整行进详情；错题号保留在行下，点它直达详情对应题。 */
     $('#paperList').innerHTML = papers.slice().reverse().map(function (p) {
       var chips = p.wrong.length ? p.wrong.map(function (w) {
         return '<span class="chip' + (w.rate > 0 ? ' part' : '') + '" role="button" tabindex="0" data-open-paper="' + esc(p.id || '') + '" data-goto="' + (w.no - 1) + '" title="' + esc(w.kpName || w.kind) + '">第' + w.no + '题' + (w.kpName ? ' · ' + esc(w.kpName) : '') + (w.rate > 0 ? '（部分分）' : '') + '</span>';
       }).join('') : '<span class="chip" style="border-color:#BFD8C6;color:#3E7A4E;background:#EDF5EF">全部满分</span>';
-      return '<div class="paper"><h3><button type="button" class="paper-open" data-open-paper="' + esc(p.id || '') + '">' + esc(p.title) + '</button></h3><div class="pmeta">' +
-        (p.mode === 'mock' ? '全真模考 · ' : p.mode === 'diagnostic' ? '能力自测 · ' : '套卷 · ') + '已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '（' + (p.rate === null ? '—' : pct(p.rate)) + '）</div>' +
-        '<div class="bar ' + (p.rate === null ? '' : p.rate >= 0.8 ? 'good' : p.rate >= 0.5 ? 'mid' : 'low') + '" style="margin-top:8px"><i style="width:' + Math.round((p.rate || 0) * 100) + '%"></i></div>' +
-        '<div class="chips">' + chips + '</div>' +
-        '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn ghost" data-open-paper="' + esc(p.id || '') + '">逐题详情（作答 · 评分 · 解析）→</button><button type="button" class="btn ghost danger" data-reset-paper="' + esc(p.id || '') + '">重置这套（删除记录，二刷用）</button></div></div>';
+      var date = fmtDate(p._attempt);
+      var rateCls = p.rate === null ? 'mid' : p.rate >= 0.8 ? 'good' : p.rate >= 0.5 ? 'mid' : 'low';
+      return '<div class="paper-row" role="button" tabindex="0" data-open-paper="' + esc(p.id || '') + '" title="进入做题详情">' +
+        '<span class="pr-title">' + esc(p.title) + '</span>' +
+        '<span class="pr-meta">已批改 ' + p.graded + '/' + p.total + ' 题 · 得分 ' + p.score + '/' + p.max + '</span>' +
+        '<span class="pr-rate ' + rateCls + '">' + (p.rate === null ? '待批改' : pct(p.rate)) + '</span>' +
+        (date ? '<span class="pr-date">' + esc(date) + '</span>' : '') + '</div>' +
+        '<div class="chips pr-chips">' + chips + '</div>';
     }).join('');
     document.querySelectorAll('#paperList [data-open-paper]').forEach(function (b) {
-      b.addEventListener('click', function () { if (b.dataset.openPaper) openPaperDetail(b.dataset.openPaper, b.dataset.goto != null && b.dataset.goto !== '' ? Number(b.dataset.goto) : null); });
-    });
-    document.querySelectorAll('#paperList [data-reset-paper]').forEach(function (b) {
-      b.addEventListener('click', async function () {
-        if (!b.dataset.resetPaper) return;
-        if (!confirm('确定重置这套卷吗？这一次的作答与批改记录会被删除，这套题目的做题记录（做过/错题次数、复盘排期）也会一并清除，可以干净二刷；收藏与手动加入错题本的题保留。删了不能恢复。')) return;
-        b.disabled = true;
-        try {
-          var att = (state.attempts || []).filter(function (x) { return x.id === b.dataset.resetPaper; })[0];
-          var qids = att && att.questions ? att.questions.map(function (q) { return q.id; }) : [];
-          await window.AtlasUser.json('/api/attempts', 'DELETE', { ids: [b.dataset.resetPaper] });
-          await clearPaperRecords(qids);
-          location.reload();
-        } catch (err) { alert('重置失败：' + err.message); b.disabled = false; }
-      });
+      var go = function () { if (b.dataset.openPaper) openPaperDetail(b.dataset.openPaper, b.dataset.goto != null && b.dataset.goto !== '' ? Number(b.dataset.goto) : null); };
+      b.addEventListener('click', go);
+      b.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
     });
 
     var advice = buildAdvice(papers, kps, kinds);
@@ -321,6 +365,25 @@ async function clearPaperRecords(qids) {
       $('#emptyCard').hidden = false;
     }
   }
+  /* 详情独立视图：进入时隐藏主视图各区，返回时恢复并回到进入前的滚动位置 */
+  var MAIN_VIEW_SELS = ['.ahero', '#subjectTabs', '#overview', '#trendCard', '#subjectCard', '#gapCard', '#kpCard', '#kindCard', '#papersCard', '#adviceCard', '#emptyCard'];
+  function showDetailView() {
+    if (!detailOpen) { savedScrollY = window.scrollY || window.pageYOffset || 0; detailOpen = true; }
+    MAIN_VIEW_SELS.forEach(function (s) { var el = $(s); if (el) el.hidden = true; });
+  }
+  function closePaperDetail() {
+    var sec = document.getElementById('paperDetail');
+    if (sec) sec.hidden = true;
+    detailOpen = false;
+    var hero = $('.ahero'); if (hero) hero.hidden = false;
+    var tabs = $('#subjectTabs'); if (tabs) tabs.hidden = false;
+    render();
+    window.scrollTo(0, savedScrollY);
+  }
+  function bindDetailBack(sec) {
+    sec.querySelectorAll('[data-back]').forEach(function (b) { b.addEventListener('click', closePaperDetail); });
+  }
+
   async function openPaperDetail(id, focusIdx) {
     var main = document.querySelector('main') || document.body;
     var sec = document.getElementById('paperDetail');
@@ -330,9 +393,11 @@ async function clearPaperRecords(qids) {
       sec.className = 'card';
       main.appendChild(sec);
     }
+    showDetailView();
     sec.hidden = false;
-    sec.innerHTML = '<h2>做题详情</h2><p class="sub">正在加载…</p>';
-    sec.scrollIntoView({ behavior: 'smooth' });
+    sec.innerHTML = '<button type="button" class="btn ghost pd-back" data-back>← 返回学情分析</button><h2>做题详情</h2><p class="sub">正在加载…</p>';
+    bindDetailBack(sec);
+    window.scrollTo(0, 0);
     try {
       var data = await window.AtlasUser.json('/api/attempts/' + encodeURIComponent(id));
       var a = data.attempt;
@@ -351,12 +416,20 @@ async function clearPaperRecords(qids) {
         return '<button type="button" class="ad-cell ' + rateCls(rt) + '" data-goto="' + idx + '" title="第 ' + (idx + 1) + ' 题' + (q.kpName ? ' · ' + esc(q.kpName) : '') + (rt === null ? ' · 待批改' : ' · ' + Math.round(Number(rr.score) * 10) / 10 + '/' + Math.round(Number(rr.maxScore) * 10) / 10) + '">' + (idx + 1) + '</button>';
       }).join('');
       var isEnglish = ['english', 'english2'].indexOf(a.subject || '') >= 0;
+      /* 专属栏目白名单（学科定制双保险）：作文提升指导、参考译文等专属栏目只有本科目配置允许时才渲染，
+       * 即使批改结果里混入了其他科目的栏目数据也不会显示；配置模块缺失时回退原 isEnglish 判定。 */
+      var SA = window.AtlasSubjectAnalytics || null;
+      var anaCfg = SA ? SA.config(a.subject) : null;
+      var colOk = function (col) { return !SA || SA.columnAllowed(a.subject, col); };
       var cards = (a.questions || []).map(function (q, idx) {
         var r = (a.results || {})[q.id] || {};
         var it = byId[q.id] || {};
         var graded = r.status === 'graded';
         var rt = rate(r);
         var open = !(graded && rt >= 1);
+        /* 英语作文提升指导：仅英语科目 + 作文题 + 已有批改结果（总评/语法纠错/句子提升任一）时出现 */
+        var isEssay = isEnglish && /作文/.test(q.kind || '');
+        var hasGuide = isEssay && graded && colOk('作文提升指导') && !!(r.comments || (Array.isArray(r.grammar) && r.grammar.length) || (Array.isArray(r.upgrades) && r.upgrades.length));
         var ans = (a.answers || {})[q.id] || {};
         var myAnswer = '';
         var sel = Array.isArray(ans.selected) ? ans.selected.filter(Boolean) : [];
@@ -374,6 +447,21 @@ async function clearPaperRecords(qids) {
         var stemText = it.text || q.text || '';
         if (stemText) html += '<div class="ad-sec"><span>题干</span><p>' + esc(clean(stemText)) + '</p></div>';
         html += myAnswer;
+        if (hasGuide) {
+          /* 复用批改界面的呈现口径：分数点评 + 语法纠错（原句 → 改后＋原因）+ 句子提升（原句 → 升级句＋说明），纯文本 */
+          var guide = '<div class="ad-sec essay-guide"><span>作文提升指导</span>' +
+            '<p class="eg-score">分数点评：' + (Math.round(Number(r.score) * 10) / 10) + ' / ' + (Math.round(Number(r.maxScore) * 10) / 10) + (r.level ? ' · ' + esc(r.level) : '') + '</p>';
+          if (r.comments) guide += '<p>' + esc(clean(r.comments)) + '</p>';
+          if (Array.isArray(r.grammar) && r.grammar.length) guide += '<p class="eg-sub">语法纠错</p>' + r.grammar.map(function (g) {
+            if (typeof g === 'string') return '<p>' + esc(clean(g)) + '</p>';
+            return '<p>' + esc(clean((g.original || '') + (g.corrected ? ' → ' + g.corrected : '') + (g.reason ? '（' + g.reason + '）' : ''))) + '</p>';
+          }).join('');
+          if (Array.isArray(r.upgrades) && r.upgrades.length) guide += '<p class="eg-sub">句子提升</p>' + r.upgrades.map(function (u) {
+            if (typeof u === 'string') return '<p>' + esc(clean(u)) + '</p>';
+            return '<p>' + esc(clean((u.original || '') + (u.upgraded ? ' → ' + u.upgraded : '') + (u.note ? '（' + u.note + '）' : ''))) + '</p>';
+          }).join('');
+          html += guide + '</div>';
+        }
         if (r.level) html += '<div class="ad-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
         if (r.comments) html += '<div class="ad-sec"><span>AI 总评</span><p>' + esc(clean(r.comments)) + '</p></div>';
         if (Array.isArray(r.breakdown) && r.breakdown.length) html += '<div class="ad-sec"><span>得分点</span>' + r.breakdown.map(function (b) {
@@ -390,15 +478,17 @@ async function clearPaperRecords(qids) {
         }).join('') + '</div>';
         if (r.missing) html += '<div class="ad-sec"><span>缺失要点</span><p>' + esc(clean(r.missing)) + '</p></div>';
         if (r.suggestions) html += '<div class="ad-sec"><span>改进建议</span><p>' + esc(clean(r.suggestions)) + '</p></div>';
-        if (isEnglish && Array.isArray(r.grammar) && r.grammar.length) html += '<div class="ad-sec"><span>语法与表达</span>' + r.grammar.map(function (g) {
+        if (isEnglish && !hasGuide && colOk('语法与表达') && Array.isArray(r.grammar) && r.grammar.length) html += '<div class="ad-sec"><span>语法与表达</span>' + r.grammar.map(function (g) {
           if (typeof g === 'string') return '<p>' + esc(clean(g)) + '</p>';
           return '<p>' + esc(clean((g.original || '') + (g.corrected ? ' → ' + g.corrected : '') + (g.reason ? '（' + g.reason + '）' : ''))) + '</p>';
         }).join('') + '</div>';
-        if (isEnglish && Array.isArray(r.upgrades) && r.upgrades.length) html += '<div class="ad-sec"><span>句子升级</span>' + r.upgrades.map(function (u) {
+        if (isEnglish && !hasGuide && colOk('句子升级') && Array.isArray(r.upgrades) && r.upgrades.length) html += '<div class="ad-sec"><span>句子升级</span>' + r.upgrades.map(function (u) {
           if (typeof u === 'string') return '<p>' + esc(clean(u)) + '</p>';
           return '<p>' + esc(clean((u.original || '') + (u.upgraded ? ' → ' + u.upgraded : '') + (u.note ? '（' + u.note + '）' : ''))) + '</p>';
         }).join('') + '</div>';
-        if (r.revised) html += '<div class="ad-sec"><span>' + (isEnglish ? (q.kind === '翻译' ? '参考译文' : '修改稿') : '订正要点') + '</span><p>' + esc(clean(r.revised)) + '</p></div>';
+        var revisedLabel = '订正要点';
+        if (isEnglish) revisedLabel = (q.kind === '翻译' && colOk('参考译文')) ? '参考译文' : (colOk('修改稿') ? '修改稿' : '订正要点');
+        if (r.revised) html += '<div class="ad-sec"><span>' + revisedLabel + '</span><p>' + esc(clean(r.revised)) + '</p></div>';
         var refAns = it.answer || q.answer || '';
         if (refAns) html += '<div class="ad-sec"><span>参考答案</span><p>' + esc(clean(refAns)) + '</p></div>';
         var steps = (it.steps && it.steps.length) ? it.steps : (Array.isArray(q.steps) ? q.steps : []);
@@ -409,16 +499,18 @@ async function clearPaperRecords(qids) {
           '<div class="ad-deep" id="adDeep' + idx + '" hidden></div>';
         return html + '</div></div>';
       }).join('');
-      sec.innerHTML = '<h2>' + esc(paperTitle(a)) + ' · 做题详情</h2>' +
+      sec.innerHTML = '<button type="button" class="btn ghost pd-back" data-back>← 返回学情分析</button><h2>' + esc(paperTitle(a)) + ' · 做题详情</h2>' +
         '<div class="ad-sum"><div class="ad-sum-rate"><b>' + (sumRate === null ? '—' : pct(sumRate)) + '</b><span>得分率</span></div>' +
         '<div class="ad-sum-main"><div class="ad-sum-line">得分 <b>' + (Math.round(sumScore * 10) / 10) + ' / ' + (Math.round(sumMax * 10) / 10) + '</b> · 已批改 ' + sumGraded + ' / ' + (a.questions || []).length + ' 题</div>' +
         '<div class="bar ' + (sumRate === null ? '' : sumRate >= 0.8 ? 'good' : sumRate >= 0.5 ? 'mid' : 'low') + '"><i style="width:' + Math.round((sumRate || 0) * 100) + '%"></i></div>' +
         '<div class="ad-strip">' + strip + '</div><p class="sub" style="margin:6px 0 0">逐题得分条：点任意题号跳到该题；满分题默认折叠，丢分题自动展开。</p></div></div>' +
         '<div id="adMastery"></div>' +
-        '<div class="ad-analysis-bar"><button type="button" class="btn ghost" id="adAnalysisBtn">AI 教学分析</button><span class="sub">按考点归组丢分、错因分类，并给出复盘动作与下一阶段安排。</span></div>' +
+        '<div class="ad-analysis-bar"><button type="button" class="btn ghost" id="adAnalysisBtn">AI 教学分析</button><span class="sub">' + (anaCfg ? '按本科目口径（' + esc(anaCfg.groupTitle) + '）归组丢分、错因分类，并给出复盘动作与下一阶段安排；只分析' + esc(anaCfg.name) + '，不串科。' : '按考点归组丢分、错因分类，并给出复盘动作与下一阶段安排。') + '</span></div>' +
         '<div id="adAnalysis" class="ad-analysis" hidden></div>' + cards +
-        '<button type="button" class="btn ghost" id="paperDetailClose">收起详情</button>';
-      sec.querySelector('#paperDetailClose').addEventListener('click', function () { sec.hidden = true; });
+        '<div class="ad-detail-foot"><button type="button" class="btn ghost" data-back>← 返回学情分析</button><button type="button" class="btn ghost danger" id="paperDetailReset">重置这套（删除记录，二刷用）</button></div>';
+      bindDetailBack(sec);
+      var resetBtn = sec.querySelector('#paperDetailReset');
+      if (resetBtn) resetBtn.addEventListener('click', function () { resetPaper(a.id, resetBtn); });
       sec.querySelectorAll('[data-toggle]').forEach(function (h) {
         h.addEventListener('click', function () {
           var card = document.getElementById('adCard' + h.dataset.toggle);
@@ -443,12 +535,15 @@ async function clearPaperRecords(qids) {
         box.hidden = false;
         box.innerHTML = '<p class="sub">正在生成教学分析…</p>';
         anaBtn.disabled = true;
-        var lines = ['科目：' + (a.subject || '') + '，共 ' + (a.questions || []).length + ' 题。'];
+        var lines = ['科目：' + subjectName(a.subject, [a]) + '，共 ' + (a.questions || []).length + ' 题。'];
+        /* 学科定制：注入本科目教学分析侧重点与隔离守卫，服务端也会按 context.subject 再拼一份（双保险）。 */
+        if (anaCfg) { lines.push(SA.aiFocus(a.subject)); lines.push(SA.guardLine(a.subject)); }
         (a.questions || []).forEach(function (q, i) {
           var r = (a.results || {})[q.id] || {};
-          lines.push('第' + (i + 1) + '题 考点：' + (q.kpName || q.kp || '未知') + '，题型：' + (q.kind || '') + '，' + (r.status === 'graded' ? ('得分 ' + r.score + '/' + r.maxScore + (r.level ? '，等级 ' + r.level : '') + (r.missing ? '，缺失要点：' + r.missing : '')) : '未批改'));
+          var grp = anaCfg ? SA.groupOf(a.subject, q) : null;
+          lines.push('第' + (i + 1) + '题 ' + (grp ? '归组：' + grp.label + '，' : '') + '考点：' + (q.kpName || q.kp || '未知') + '，题型：' + (q.kind || '') + '，' + (r.status === 'graded' ? ('得分 ' + r.score + '/' + r.maxScore + (r.level ? '，等级 ' + r.level : '') + (r.missing ? '，缺失要点：' + r.missing : '')) : '未批改'));
         });
-        window.AtlasUser.json('/api/coach', 'POST', { context: { source: 'attempt-analysis', attemptId: a.id }, messages: [{ role: 'user', content: lines.join('\n') }] }).then(function (r) {
+        window.AtlasUser.json('/api/coach', 'POST', { context: { source: 'attempt-analysis', attemptId: a.id, subject: a.subject }, messages: [{ role: 'user', content: lines.join('\n') }] }).then(function (r) {
           box.innerHTML = '<div class="ad-sec"><span>AI 教学分析</span><p>' + esc(clean(r.reply || '')) + '</p></div>';
           if (window.AtlasKatex) window.AtlasKatex.render(box);
         }).catch(function (e) {
@@ -472,7 +567,7 @@ async function clearPaperRecords(qids) {
       });
       if (window.AtlasMarks) window.AtlasMarks.wire(sec);
       var mh = sec.querySelector('#adMastery');
-      if (mh && window.AtlasAssessment) { try { window.AtlasAssessment.renderMastery(mh, a.questions || [], a.results || {}); } catch (e) {} }
+      if (mh && window.AtlasAssessment) { try { window.AtlasAssessment.renderMastery(mh, a.questions || [], a.results || {}, { subjectAnalytics: true, subject: a.subject }); } catch (e) {} }
       if (focusIdx != null) {
         var fc = document.getElementById('adCard' + focusIdx);
         if (fc) {
@@ -483,7 +578,8 @@ async function clearPaperRecords(qids) {
       }
       if (window.AtlasKatex) window.AtlasKatex.render(sec);
     } catch (err) {
-      sec.innerHTML = '<h2>做题详情</h2><p class="sub">加载失败：' + esc(err.message) + '</p>';
+      sec.innerHTML = '<button type="button" class="btn ghost pd-back" data-back>← 返回学情分析</button><h2>做题详情</h2><p class="sub">加载失败：' + esc(err.message) + '</p>';
+      bindDetailBack(sec);
     }
   }
 
