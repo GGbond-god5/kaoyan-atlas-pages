@@ -991,8 +991,8 @@
   }
   function isSubjective(q) {
     if (!q) return false;
-    if (["math", "math2"].includes(q.subject)) return ["计算题", "证明题"].includes(q.kind);
-    if (q.subject === "mechanics") return ["计算题", "简答题"].includes(q.kind);
+    if (["math", "math2"].includes(q.subject)) return ["计算题", "证明题", "解答题"].includes(q.kind);
+    if (q.subject === "mechanics") return ["计算题", "简答题", "证明题"].includes(q.kind);
     if (["english", "english2"].includes(q.subject)) return ["翻译", "小作文", "大作文", "句式"].includes(q.kind);
     if (q.subject === "politics") return ["分析题"].includes(q.kind);
     return false;
