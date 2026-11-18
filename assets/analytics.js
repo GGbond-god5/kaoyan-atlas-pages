@@ -441,7 +441,8 @@ async function clearPaperRecords(qids) {
           else if (isEnglish && /作文/.test(q.kind || '')) workLabel = '我的作文';
           myAnswer += '<div class="ad-sec"><span>' + workLabel + '</span><p>' + esc(clean(work)) + '</p></div>';
         }
-        if (ans.image) myAnswer += '<div class="ad-sec"><span>作答照片</span><img class="ad-photo" src="' + ans.image + '" alt="作答照片"></div>';
+        var ansImgs = Array.isArray(ans.images) && ans.images.length ? ans.images : (ans.image ? [ans.image] : []);
+        if (ansImgs.length) myAnswer += '<div class="ad-sec"><span>作答照片' + (ansImgs.length > 1 ? '（共 ' + ansImgs.length + ' 页）' : '') + '</span>' + ansImgs.map(function (u, i) { return (ansImgs.length > 1 ? '<p class="ad-pagelabel">第 ' + (i + 1) + ' 页</p>' : '') + '<img class="ad-photo" src="' + u + '" alt="作答照片第 ' + (i + 1) + ' 页">'; }).join('') + '</div>';
         var html = '<div class="ad-card" id="adCard' + idx + '"><div class="ad-head" data-toggle="' + idx + '"><b>第 ' + (idx + 1) + ' 题</b><span>' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' +
           '<b class="ad-score ' + rateCls(rt) + '">' + (graded ? (Math.round(Number(r.score) * 10) / 10) + ' / ' + (Math.round(Number(r.maxScore) * 10) / 10) : '待批改') + '</b><span class="ad-caret">' + (open ? '▾' : '▸') + '</span></div><div class="ad-body"' + (open ? '' : ' hidden') + '>';
         var stemText = it.text || q.text || '';

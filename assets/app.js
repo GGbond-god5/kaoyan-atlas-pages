@@ -852,7 +852,8 @@ async function clearPaperRecordsApp(qids) {
           else if (isEnglish && /作文/.test(q.kind || '')) workLabel = '我的作文';
           html += '<div class="qd-sec"><span>' + workLabel + '</span><p>' + esc(cleanText(work)) + '</p></div>';
         }
-        if (ans.image) html += '<div class="qd-sec"><span>作答照片</span><img class="qd-photo" src="' + ans.image + '" alt="作答照片"></div>';
+        var ansImgs = Array.isArray(ans.images) && ans.images.length ? ans.images : (ans.image ? [ans.image] : []);
+        if (ansImgs.length) html += '<div class="qd-sec"><span>作答照片' + (ansImgs.length > 1 ? '（共 ' + ansImgs.length + ' 页）' : '') + '</span>' + ansImgs.map(function (u, i) { return (ansImgs.length > 1 ? '<p class="qd-pagelabel">第 ' + (i + 1) + ' 页</p>' : '') + '<img class="qd-photo" src="' + u + '" alt="作答照片第 ' + (i + 1) + ' 页">'; }).join('') + '</div>';
         if (r.level) html += '<div class="qd-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
         if (r.comments) html += '<div class="qd-sec"><span>AI 总评</span><p>' + esc(cleanText(r.comments)) + '</p></div>';
         if (Array.isArray(r.breakdown) && r.breakdown.length) {

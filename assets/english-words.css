@@ -76,7 +76,23 @@
   margin-top: 6px;
   font-size: var(--fs-body, 15px);
   color: var(--ink, #17161A);
+  white-space: pre-line; /* ECDICT 完整释义按词性分行 */
 }
+
+/* 英文释义与词形行：次级信息，字号与例句一致 */
+.ew-pop-en {
+  margin-top: 6px;
+  color: var(--ink-2, #45413A);
+  font-size: var(--fs-xs, 12px);
+}
+.ew-pop-en:empty { display: none; }
+
+.ew-pop-forms {
+  margin-top: 4px;
+  color: var(--muted, #6E675C);
+  font-size: var(--fs-xs, 12px);
+}
+.ew-pop-forms:empty { display: none; }
 
 .ew-pop-ex {
   margin-top: 6px;

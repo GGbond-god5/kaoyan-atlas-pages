@@ -44,7 +44,7 @@
     if (!engWordsPromise) {
       engWordsPromise = new Promise(res => {
         const sc = document.createElement("script");
-        sc.src = "assets/english-words.js?v=1";
+        sc.src = "assets/english-words.js?v=2";
         sc.onload = res;
         sc.onerror = res;
         document.head.appendChild(sc);
@@ -588,10 +588,10 @@
       aiAsk.textContent = (q.kind === "大作文" || q.kind === "小作文") ? "AI 批改作文"
         : (q.kind === "翻译" ? "AI 核对翻译" : "AI 核对答案");
     }
-    showPhoto(null);
+    showPhotos([]);
     if (subjective || fillN > 0) {
-      photoGet(q.id).then(url => {
-        if (url && session && current() && current().id === q.id) showPhoto(url);
+      photoGet(q.id).then(urls => {
+        if (urls.length && session && current() && current().id === q.id) showPhotos(urls);
       });
     }
     $("#solution").hidden = true;
@@ -606,7 +606,6 @@
     $("#work").readOnly = session.ended;
     $("#photoTake").hidden = session.ended;
     $("#photoPick").hidden = session.ended;
-    $("#photoRemove").hidden = session.ended;
     if (session.ended && OBJ_KINDS.includes(q.kind)) paintObjective(q);
     if (session.ended) {
       showSolution(true);
@@ -734,7 +733,7 @@
       finishSubmit(); return;
     }
     const answers = {};
-    for (const q of session.queue) answers[q.id] = {work:session.notes[q.id] || "", selected:session.picks[q.id] || [], image:await photoGet(q.id) || ""};
+    for (const q of session.queue) { const imgs = await photoGet(q.id); answers[q.id] = {work:session.notes[q.id] || "", selected:session.picks[q.id] || [], image:imgs[0] || "", images:imgs}; }
     try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch (e) {}
     const id = crypto.randomUUID();
     try {
@@ -938,6 +937,7 @@
   /* ---------- answer photo + AI grading ---------- */
   let DB_NAME;
   const DB_STORE = "photos";
+  const MAX_PHOTOS = 6; /* 每题照片上限，与服务端 MAX_ANSWER_IMAGES 对齐；数组顺序即页序 */
   let dbPromise = null;
   function db() {
     if (!dbPromise) {
@@ -954,22 +954,27 @@
     }
     return dbPromise;
   }
+  /* 本地照片按题存 data URL 数组；兼容旧数据：以前存的是单个字符串，读出时按单图数组返回 */
   async function photoGet(id) {
     try {
       const d = await db();
-      return await new Promise((resolve, reject) => {
+      const v = await new Promise((resolve, reject) => {
         const tx = d.transaction(DB_STORE, "readonly").objectStore(DB_STORE).get(id);
         tx.onsuccess = () => resolve(tx.result || null);
         tx.onerror = () => reject(tx.error);
       });
-    } catch (e) { return null; }
+      if (Array.isArray(v)) return v.filter(s => typeof s === "string" && s);
+      return v ? [v] : [];
+    } catch (e) { return []; }
   }
-  async function photoPut(id, url) {
+  async function photoPut(id, urls) {
+    const list = (Array.isArray(urls) ? urls : [urls]).filter(s => typeof s === "string" && s).slice(0, MAX_PHOTOS);
+    if (!list.length) return photoDel(id);
     try {
       const d = await db();
       await new Promise((resolve, reject) => {
         const tx = d.transaction(DB_STORE, "readwrite");
-        tx.objectStore(DB_STORE).put(url, id);
+        tx.objectStore(DB_STORE).put(list, id);
         tx.oncomplete = resolve; tx.onerror = () => reject(tx.error);
       });
     } catch (e) { /* preview only */ }
@@ -1009,23 +1014,27 @@
       img.src = url;
     });
   }
+  let curPhotos = []; /* 当前题的照片数组（顺序即页序），预览、删除与 AI 评卷共用 */
   function updateAIButton() {
     const q = current();
-    const hasPhoto = !$("#photoPreview").hidden;
-    $("#aiGrade").hidden = !!sealed() || !(q && isSubjective(q) && hasPhoto && AI_ENDPOINT);
+    $("#aiGrade").hidden = !!sealed() || !(q && isSubjective(q) && curPhotos.length && AI_ENDPOINT);
   }
-  function showPhoto(url) {
-    const box = $("#photoPreview");
-    if (!url) { box.hidden = true; $("#photoImg").removeAttribute("src"); }
-    else { $("#photoImg").src = url; box.hidden = false; }
+  function showPhotos(urls) {
+    curPhotos = Array.isArray(urls) ? urls.slice(0, MAX_PHOTOS) : [];
+    const box = $("#photoPreview"), thumbs = $("#photoThumbs");
+    box.hidden = !curPhotos.length;
+    const canEdit = !!session && !session.ended;
+    thumbs.innerHTML = curPhotos.map((u, i) =>
+      `<figure class="photo-thumb"><img src="${u}" alt="作答照片第 ${i + 1} 页"><figcaption>第 ${i + 1} 页</figcaption>${canEdit ? `<button type="button" class="photo-del" data-del="${i}" title="删除这一页">×</button>` : ""}</figure>`
+    ).join("");
     updateAIButton();
   }
   async function aiGrade(photoOnly) {
     const q = current(); if (!q || sealed() || !AI_ENDPOINT) return;
     const work = ($("#work").value || "").trim();
     const picks = (session && session.picks && session.picks[q.id] || []).join("");
-    const photo = await photoGet(q.id) || (photoOnly ? $("#photoImg").src : "");
-    if (!photo && !work && !picks) {
+    const photos = await photoGet(q.id);
+    if (!photos.length && !work && !picks) {
       const box = $("#aiResult"); box.hidden = false;
       box.textContent = "请先在作答区写下答案（作文/翻译直接输入），或上传作答照片，再点 AI 评核。";
       return;
@@ -1042,7 +1051,7 @@
           question: (q.passage ? q.passage + "\n\n" : "") + q.text,
           answer: q.answer, steps: q.steps, maxScore: q.maxScore, difficulty: q.difficulty,
           selected: picks,
-          work, image: photo || "",
+          work, image: photos[0] || "", images: photos,
         }),
       });
       const data = await r.json();
@@ -1194,21 +1203,31 @@
   }
   $("#photoTake").addEventListener("click", () => choosePhoto($("#photoCamera")));
   $("#photoPick").addEventListener("click", () => choosePhoto($("#photoFile")));
+  function notePhotos(msg) { const n = $("#photoNote"); if (n) n.textContent = msg; }
   async function onPhotoChange(e) {
     const input = e.target, target = input._target;
-    const file = input.files && input.files[0];
+    const files = input.files ? [...input.files] : [];
     input.value = ""; input._target = null;
-    if (!file || !target || session !== target.session || session.ended) return;
-    const url = await fileToDataUrl(file);
-    if (!url || session !== target.session || session.ended) return;
-    await photoPut(target.id, url);
-    if (session === target.session && !session.ended && current().id === target.id) showPhoto(url);
+    if (!files.length || !target || session !== target.session || session.ended) return;
+    const existing = await photoGet(target.id);
+    const room = MAX_PHOTOS - existing.length;
+    if (room <= 0) { notePhotos(`这道题已经有 ${MAX_PHOTOS} 张照片了，先删掉一页再添加。`); return; }
+    const urls = [];
+    for (const f of files.slice(0, room)) { const u = await fileToDataUrl(f); if (u) urls.push(u); }
+    if (files.length > room) notePhotos(`每题最多 ${MAX_PHOTOS} 张照片，多出的没有添加。`);
+    if (!urls.length || session !== target.session || session.ended) return;
+    const next = existing.concat(urls);
+    await photoPut(target.id, next);
+    if (session === target.session && !session.ended && current().id === target.id) showPhotos(next);
   }
   $("#photoCamera").addEventListener("change", onPhotoChange);
   $("#photoFile").addEventListener("change", onPhotoChange);
-  $("#photoRemove").addEventListener("click", async () => {
-    if (!session) return;
-    await photoDel(current().id); showPhoto(null);
+  $("#photoThumbs").addEventListener("click", async e => {
+    const b = e.target.closest("[data-del]"); if (!b || !session || session.ended) return;
+    const q = current(); if (!q) return;
+    const next = (await photoGet(q.id)).filter((_, i) => i !== Number(b.dataset.del));
+    await photoPut(q.id, next);
+    if (current() && current().id === q.id) showPhotos(next);
   });
   $("#aiGrade").addEventListener("click", aiGrade);
 

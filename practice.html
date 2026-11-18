@@ -96,15 +96,14 @@
               </div>
               <div class="photo-box" id="photoBox" hidden>
                 <input type="file" id="photoCamera" accept="image/*" capture="environment" hidden>
-                <input type="file" id="photoFile" accept="image/*" hidden>
+                <input type="file" id="photoFile" accept="image/*" multiple hidden>
                 <button class="photo-pick" id="photoTake" type="button">＋ 拍照</button>
-                <button class="photo-pick" id="photoPick" type="button">＋ 从相册或本地文件选择照片</button>
+                <button class="photo-pick" id="photoPick" type="button">＋ 从相册或本地文件选择照片（可多选）</button>
                 <button class="ai-grade" id="aiGrade" type="button" hidden>AI 评卷</button>
                 <div class="photo-preview" id="photoPreview" hidden>
-                  <img id="photoImg" alt="作答照片">
-                  <button id="photoRemove" type="button">移除</button>
+                  <div class="photo-thumbs" id="photoThumbs"></div>
                 </div>
-                <span class="photo-note">照片只保存在本机浏览器；AI 评卷需先配置阿里云 Key</span>
+                <span class="photo-note" id="photoNote">每题最多 6 张，可分次追加，按添加顺序（第 1 页、第 2 页…）一起批改；照片只保存在本机浏览器，单张会自动压缩</span>
               </div>
             </div>
             <div class="paper-actions">

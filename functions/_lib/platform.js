@@ -149,6 +149,24 @@ async function aiAttempt(env, base, key, model, messages, jsonMode, userCfg) {
 }
 function validImage(s) { return !s || (typeof s === 'string' && s.length <= 9800000 && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(s)); }
 
+/* 作答照片多图：一题最多 6 页，数组顺序即页序。图片仍以 data URL 内嵌 attempt JSON 存 D1（不走 R2）。
+ * 新数据写 answers[qid].images 数组，并同步 image=第一张，兼容未改到的老读取方；
+ * 老数据只有 image 单字符串时，answerImages 按单图读出，双向兼容。 */
+const MAX_ANSWER_IMAGES = 6;
+const MAX_ANSWER_IMAGES_TOTAL = 19600000; /* 每题照片合计字符上限（约 2 张满格单图），防整卷 JSON 失控膨胀；前端压缩后正常照片远低于此 */
+export function answerImages(a) {
+  if (!a || typeof a !== 'object') return [];
+  if (Array.isArray(a.images)) { const list = a.images.filter(s => typeof s === 'string' && s); if (list.length) return list.slice(0, MAX_ANSWER_IMAGES); }
+  return typeof a.image === 'string' && a.image ? [a.image] : [];
+}
+function validImages(a) {
+  if (a === undefined || a === null) return true;
+  if (!Array.isArray(a) || a.length > MAX_ANSWER_IMAGES) return false;
+  let total = 0;
+  for (const s of a) { if (!s || !validImage(s)) return false; total += s.length; if (total > MAX_ANSWER_IMAGES_TOTAL) return false; }
+  return true;
+}
+
 /** 从个人题库里按关键词取最多 3 条作为问答参考 */
 async function retrieveContext(db, uid, query) {
   const q = String(query || '').trim();
@@ -198,9 +216,10 @@ if (givenMax!== null && (!Number.isFinite(givenMax) || givenMax <= 0)) throw new
 const essay = /^english/.test(str(p.subject)) && ['小作文', '大作文'].includes(p.kind);
 let max = givenMax, maxAssumed = p.maxScoreAssumed === true;
 if (max === null && (str(p.answer).trim() || essay)) { max = questionScore(p.subject, p.kind, p.difficulty); maxAssumed = true;}
-if (!validImage(p.image)) throw new Error('作答照片格式异常或过大');
+const images = answerImages(p);
+if (!validImages(p.images) || images.some(s => !validImage(s))) throw new Error('作答照片格式异常或过大');
 const selected = Array.isArray(p.selected) && p.selected.every(x => typeof x === 'string')? p.selected.join(''): '';
-if (!str(p.work).trim() &&!selected.trim() &&!p.image) throw new Error('请先作答、勾选选项或上传照片');
+if (!str(p.work).trim() &&!selected.trim() &&!images.length) throw new Error('请先作答、勾选选项或上传照片');
 if (!str(p.question).trim()) throw new Error('缺少题目');
 const unverified = ['pending', 'needs_review'].includes(p.reviewStatus);
 const canScore = max!== null &&!unverified && (essay ||!!str(p.answer).trim());
@@ -211,13 +230,13 @@ const expected = letters(str(p.answer)), chosen = letters(selected);
 
 // 阶段一：照片先转写（只转写不评分）。客观题跳过，已有参考答案兜底。
 let transcript = '', illegible = [];
-if (p.image &&!objective) {
+if (images.length &&!objective) {
 try {
 const t = await ai(env, [
 { role: 'system', content: TRANSCRIBE_SYSTEM},
 { role: 'user', content: [
-{ type: 'text', text: '请转写这张学生作答照片。'},
-{ type: 'image_url', image_url: { url: p.image}},
+{ type: 'text', text: images.length > 1 ? `请转写这组学生作答照片，共 ${images.length} 页，按排列顺序连续转写全部内容（第 1 页在前，不要漏页）。` : '请转写这张学生作答照片。'},
+...images.map(url => ({ type: 'image_url', image_url: { url }})),
 ]},
 ], true, userCfg, 'vision');
 if (t && typeof t === 'object' &&!Array.isArray(t)) {
@@ -229,8 +248,8 @@ illegible = Array.isArray(t.illegible)? t.illegible.map(str).filter(Boolean).sli
 const workText = [str(p.work), transcript? '\n' + transcript: ''].filter(Boolean).join('\n');
 
 const content = [{ type: 'text', text: JSON.stringify({ kind: p.kind, subject: p.subject, subjectName: p.subjectName || p.subject, difficulty: p.difficulty, kp: p.kp, question: p.question, referenceAnswer: p.answer, steps: p.steps || [], work: workText, selected, maxScore: max, illegible})}];
-// 没有转写结果（客观题或转写失败）时按原样带图评分；转写有看不清处时也带图复核。
-if (p.image && (!transcript || illegible.length)) content.push({ type: 'image_url', image_url: { url: p.image}});
+// 没有转写结果（客观题或转写失败）时按原样带图评分；转写有看不清处时也带图复核。多图按页序全部附上。
+if (images.length && (!transcript || illegible.length)) for (const url of images) content.push({ type: 'image_url', image_url: { url }});
 const messages = [{ role: 'system', content: gradeSystemFor(p.subject, p.kind)}, { role: 'user', content}];
 let out = await ai(env, messages, true, userCfg, gradeTier);
 if (canScore && (!out || typeof out!== 'object' || out.score == null || out.score === '')) {
@@ -492,7 +511,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
       return ok({deleted:n}); }
     if (method === 'GET') {const rows=await all(db,'SELECT id FROM platform_attempts WHERE uid=?',uid); return ok({attempts:await Promise.all(rows.map(r=>attempt(db,uid,r.id)))});}
     if (method === 'POST') {const b=await body(); if (!b || !(await subjectAllowed(db, uid, b.subject)) || !str(b.mode) || !Array.isArray(b.questions) || !b.questions.length || b.questions.length > 500 || !b.answers || typeof b.answers !== 'object' || Array.isArray(b.answers) || b.questions.some(q=>!q || typeof q.id !== 'string' || !q.id || q.subject !== b.subject) || new Set(b.questions.map(q=>q.id)).size !== b.questions.length) return fail(400,'试卷必须包含同一科目且题号唯一的题目');
-      if (Object.values(b.answers).some(a=>!a || typeof a !== 'object' || !validImage(a.image))) return fail(400,'作答格式无效');
+      if (Object.values(b.answers).some(a=>!a || typeof a !== 'object' || !validImage(a.image) || !validImages(a.images))) return fail(400,'作答格式无效');
       const scores = allocatePaper(b.subject, b.questions, b.mode);
       const questions = b.questions.map((q, i) => ({...q, maxScore: scores[i], ...(q.maxScore == null ? {maxScoreAssumed:true} : {})}));
       const a={id:typeof b.id==='string' && b.id ? b.id : id(),subject:b.subject,mode:b.mode,questions,answers:b.answers,results:{},status:'pending',serverGrade:b.serverGrade===true,aiCfg:validAiCfg(b.aiCfg),createdAt:new Date().toISOString()};
@@ -503,8 +522,8 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     const a=await attempt(db,uid,fid); if (!a) return notFound(); const b=await body(); const q=a.questions.find(q=>q.id===b?.questionId); if (!q) return fail(400,'题目不存在');
     const prior=a.results[q.id]; if (prior?.status==='graded') return ok({result:prior,attempt:a});
     if (!userCfg) { const blocked = await checkQuota(env, await me(), 'grade'); if (blocked) return fail(429, blocked); }
-    const answer=a.answers[q.id] || {}; let result;
-    try { result={questionId:q.id,...await grade(env,{question:q.passage ? q.passage + '\n\n' + q.text : q.text,answer:q.answer,steps:q.steps,subject:q.subject,kp:q.kp,kind:q.kind,difficulty:q.difficulty,maxScore:q.maxScore,maxScoreAssumed:q.maxScoreAssumed,reviewStatus:q.reviewStatus,work:answer.work,selected:answer.selected,image:answer.image}, userCfg)}; }
+    const answer=a.answers[q.id] || {}; const ansImgs=answerImages(answer); let result;
+    try { result={questionId:q.id,...await grade(env,{question:q.passage ? q.passage + '\n\n' + q.text : q.text,answer:q.answer,steps:q.steps,subject:q.subject,kp:q.kp,kind:q.kind,difficulty:q.difficulty,maxScore:q.maxScore,maxScoreAssumed:q.maxScoreAssumed,reviewStatus:q.reviewStatus,work:answer.work,selected:answer.selected,image:ansImgs[0] || '',images:ansImgs}, userCfg)}; }
     catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
     if (!userCfg) await noteUsage(env, uid, 'grade');
     await run(db,"INSERT INTO platform_results VALUES (?,?,?,?) ON CONFLICT(uid,attempt_id,question_id) DO UPDATE SET data=excluded.data WHERE json_extract(platform_results.data, '$.status') != 'graded'",uid,fid,q.id,JSON.stringify(result));
@@ -628,7 +647,7 @@ export async function handleWorker(request, env) {
   const db = await database(env);
   const loadRaw = async (uid, aid) => { const r = await row(db, 'SELECT data FROM platform_attempts WHERE uid=? AND id=?', uid, aid); return r ? parse(r.data) : null; };
   const saveRaw = (uid, a) => run(db, 'UPDATE platform_attempts SET data=? WHERE uid=? AND id=?', JSON.stringify(a), uid, a.id);
-  const hasAnswer = (a, qid) => { const an = (a.answers || {})[qid] || {}; return !!(String(an.work || '').trim() || (Array.isArray(an.selected) && an.selected.length) || an.image); };
+  const hasAnswer = (a, qid) => { const an = (a.answers || {})[qid] || {}; return !!(String(an.work || '').trim() || (Array.isArray(an.selected) && an.selected.length) || an.image || (Array.isArray(an.images) && an.images.length)); };
   const pendingOf = (a) => a.questions.map(q => q.id).filter(qid => hasAnswer(a, qid) && !(a.results[qid] && a.results[qid].status === 'graded'));
 
   if (b.action === 'claim') {
@@ -658,8 +677,8 @@ export async function handleWorker(request, env) {
     const raw0 = await loadRaw(uid, aid);
     const userCfg = raw0 && raw0.aiCfg ? raw0.aiCfg : null;
     if (!userCfg) { const user = await row(db, 'SELECT * FROM users WHERE id=?', uid); const blocked = await checkQuota(env, user, 'grade'); if (blocked) return ok({ blocked }); }
-    const answer = a.answers[qid] || {}; let result;
-    try { result = { questionId: qid, ...await grade(env, { question: q.passage ? q.passage + '\n\n' + q.text : q.text, answer: q.answer, steps: q.steps, subject: q.subject, kp: q.kp, kind: q.kind, difficulty: q.difficulty, maxScore: q.maxScore, maxScoreAssumed: q.maxScoreAssumed, reviewStatus: q.reviewStatus, work: answer.work, selected: answer.selected, image: answer.image }, userCfg) }; }
+    const answer = a.answers[qid] || {}; const ansImgs = answerImages(answer); let result;
+    try { result = { questionId: qid, ...await grade(env, { question: q.passage ? q.passage + '\n\n' + q.text : q.text, answer: q.answer, steps: q.steps, subject: q.subject, kp: q.kp, kind: q.kind, difficulty: q.difficulty, maxScore: q.maxScore, maxScoreAssumed: q.maxScoreAssumed, reviewStatus: q.reviewStatus, work: answer.work, selected: answer.selected, image: ansImgs[0] || '', images: ansImgs }, userCfg) }; }
     catch (e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502, e.message); }
     if (!userCfg) await noteUsage(env, uid, 'grade');
     await run(db, "INSERT INTO platform_results VALUES (?,?,?,?) ON CONFLICT(uid,attempt_id,question_id) DO UPDATE SET data=excluded.data WHERE json_extract(platform_results.data, '$.status') != 'graded'", uid, aid, qid, JSON.stringify(result));

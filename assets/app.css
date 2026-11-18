@@ -580,6 +580,7 @@ button { font-family: inherit; }
 .qd-analysis { margin-top: 10px; border-top: 1px solid var(--rule); padding-top: 10px; }
 .qd-analysis p { line-height: 1.8; white-space: pre-wrap; }
 .qd-photo{display:block;max-width:100%;border-radius:8px;margin-top:4px}
+.qd-pagelabel{font-size:11px;opacity:.65;margin:8px 0 0}
 
 .qd-deep{margin-top:6px}
 .qd-deep p{line-height:1.8;white-space:pre-wrap}
