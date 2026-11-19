@@ -184,17 +184,15 @@
    "source": "华工 801 2017（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "六．（20 分）图示两端固定变截面杆，如果温度升高 \\(\\Delta T\\)，试求杆内最大正应力。已知材料的弹性模量 \\(E\\)，线膨胀系数 \\(\\alpha_t\\)，\\(AB\\)、\\(CD\\) 段截面高度、宽度均为 \\(h\\)，\\(BC\\) 段截面高度、宽度分别为 \\(h/2\\)、\\(h\\)。",
-   "answer": "两端固定、温度升高即全约束，总伸长为零。杆分三段：\\(AB\\)、\\(CD\\) 截面积 \\(A_1=h\\times h=h^2\\)，\\(BC\\) 截面积 \\(A_2=\\dfrac{h}{2}\\times h=\\dfrac{h^2}{2}\\)。温度力（压力）\\(N\\) 沿全长相同（无外载），由 \\(\\alpha_t\\Delta T\\,l-\\dfrac{N}{E}\\left(\\dfrac{l_1}{A_1}+\\dfrac{l_2}{A_2}+\\dfrac{l_3}{A_1}\\right)=0\\) 解出 \\(N\\)，再除以各段面积取最大。",
+   "answer": "三段等长（各 \\(l\\)）且底边平直，\\(BC\\) 段形心比 \\(AB\\)、\\(CD\\) 段形心低 \\(h/4\\)，形心线不直：温度压力除轴压外还在杆内引起弯曲，不能按纯轴向问题处理。用单位荷载法以截面内力为多余未知量求解，得轴力 \\(N=\\dfrac{15}{26}E\\alpha_t\\Delta T\\,h^2\\)（压），\\(BC\\) 段弯矩 \\(M_C=\\dfrac{3}{104}E\\alpha_t\\Delta T\\,h^3\\)。最大正应力在 \\(BC\\) 段：\\(\\sigma_{\\max}=\\dfrac{N}{A_{BC}}+\\dfrac{M_C}{W_{BC}}=\\dfrac{15}{13}E\\alpha_t\\Delta T+\\dfrac{9}{13}E\\alpha_t\\Delta T=\\dfrac{24}{13}E\\alpha_t\\Delta T\\approx1.85E\\alpha_t\\Delta T\\)（压应力）。",
    "steps": [
-    "约束条件：两端固定，总伸长 \\(\\Delta l=0\\)（完全约束），杆内产生均匀温度压力 \\(N\\)（无外载，各截面轴力相同）。",
-    "截面积：\\(AB\\)、\\(CD\\) 段 \\(A_1=h\\times h=h^2\\)；\\(BC\\) 段 \\(A_2=\\dfrac{h}{2}\\cdot h=\\dfrac{h^2}{2}\\)。",
-    "自由热伸长：\\(\\Delta l_T=\\alpha_t\\Delta T\\cdot l\\)（\\(l\\) 为总长）。",
-    "弹性压缩：各段的压缩量之和 \\(=\\dfrac{N}{E}\\left(\\dfrac{l_{AB}}{A_1}+\\dfrac{l_{BC}}{A_2}+\\dfrac{l_{CD}}{A_1}\\right)\\)。",
-    "变形协调：\\(\\Delta l_T-\\Delta l_N=0\\)，即 \\(\\alpha_t\\Delta T l=\\dfrac{N}{E}\\left(\\dfrac{l_1}{h^2}+\\dfrac{l_2}{h^2/2}+\\dfrac{l_3}{h^2}\\right)=\\dfrac{N}{E h^2}\\left(l_1+2l_2+l_3\\right)\\)。",
-    "解出轴力：\\(N=\\dfrac{\\alpha_t\\Delta T\\,l\\,E\\,h^2}{l_1+2l_2+l_3}\\)（压）。",
-    "各段应力：\\(\\sigma_{AB}=\\dfrac{N}{A_1}=\\dfrac{N}{h^2}\\)、\\(\\sigma_{BC}=\\dfrac{N}{A_2}=\\dfrac{2N}{h^2}=2\\sigma_{AB}\\)。",
-    "最大正应力出现在截面积最小的 \\(BC\\) 段（轴力相同、面积最小）：\\(\\sigma_{\\max}=\\dfrac{2N}{h^2}=\\dfrac{2\\alpha_t\\Delta T\\,l\\,E}{l_1+2l_2+l_3}\\)。",
-    "要点：变截面杆的温度应力——轴力沿全长相同（静定化后），应力最大的永远是截面积最小的那段；变形协调方程中的柔度按各段 \\(l/A\\) 加权。"
+    "形心偏心：三段底边平直，\\(AB\\)、\\(CD\\) 段形心高 \\(h/2\\)，\\(BC\\) 段形心高 \\(h/4\\)，形心线在 \\(B\\)、\\(C\\) 处错开 \\(h/4\\)。温升被两端约束后产生的压力沿 \\(AB\\) 段形心线传入 \\(BC\\) 段时偏心 \\(e=h/4\\)，故 \\(BC\\) 段是压弯组合，纯轴向温度应力公式不适用。",
+    "静不定处理：结构对称，取 \\(C\\) 截面的轴力 \\(F_{NC}\\) 与弯矩 \\(M_C\\) 为多余未知量，用单位荷载法（莫尔积分）写出 \\(C\\) 截面的轴向位移协调方程与转角协调方程（\\(\\theta_C=0\\)）。",
+    "协调方程：\\(\\Delta_{C3}=\\dfrac{11l}{4Eh^2}F_{NC}-\\dfrac{3l}{Eh^2}M_C=\\dfrac{3}{2}\\alpha_t\\Delta T\\,l\\)；\\(\\theta_C=\\dfrac{12l}{Eh^4}\\left(M_C-\\dfrac{F_{NC}h}{4}\\right)+\\dfrac{48l}{Eh^4}M_C=0\\)。",
+    "联立解得：\\(F_{NC}=\\dfrac{15}{26}E\\alpha_t\\Delta T\\,h^2\\)（压），\\(M_C=\\dfrac{3}{104}E\\alpha_t\\Delta T\\,h^3\\)。",
+    "\\(BC\\) 段应力叠加：轴压 \\(\\dfrac{F_{NC}}{A_{BC}}=\\dfrac{15/26}{1/2}E\\alpha_t\\Delta T=\\dfrac{15}{13}E\\alpha_t\\Delta T\\)；弯曲 \\(\\dfrac{M_C}{W_{BC}}=\\dfrac{3/104}{1/24}E\\alpha_t\\Delta T=\\dfrac{9}{13}E\\alpha_t\\Delta T\\)（\\(A_{BC}=h^2/2\\)，\\(W_{BC}=h\\cdot(h/2)^2/6=h^3/24\\)）。",
+    "最大正应力在 \\(BC\\) 段边缘纤维：\\(\\sigma_{\\max}=\\dfrac{15}{13}E\\alpha_t\\Delta T+\\dfrac{9}{13}E\\alpha_t\\Delta T=\\dfrac{24}{13}E\\alpha_t\\Delta T\\approx1.85E\\alpha_t\\Delta T\\)（压）。\\(AB\\)、\\(CD\\) 段应力约 \\(1.27E\\alpha_t\\Delta T\\)，不控制。",
+    "要点：截面突变且形心线不直时，轴向内力会因偏心 \\(h/4\\) 产生附加弯矩；若误按形心线为直线的纯轴向问题计算，只能得 \\(1.5E\\alpha_t\\Delta T\\)，低估约 19%。"
    ],
    "figures": [
     "q807-2017-06.png"

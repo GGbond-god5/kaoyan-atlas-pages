@@ -45,17 +45,14 @@
    "source": "华工 807 2026（回忆版）",
    "isReal": true,
    "text": "二．（15 分）图示结构，已知杆 \\(AB\\) 为刚性杆，三根杆 \\(AF\\)、\\(CD\\)、\\(CE\\) 的横截面积 \\(A=200\\,\\mathrm{mm^2}\\)，弹性模量 \\(E=200\\,\\mathrm{GPa}\\)，许用应力 \\([\\sigma]=120\\,\\mathrm{MPa}\\)。刚性杆 \\(AB\\) 水平放置，\\(A\\) 端铰支于地面，\\(B\\) 端受向下集中力 \\(F=10\\,\\mathrm{kN}\\)；\\(C\\) 为 \\(AB\\) 中点，\\(AC=CB=3\\,\\mathrm{m}\\)；从 \\(C\\) 点向上引两斜杆 \\(CD\\)、\\(CE\\)，与 \\(AB\\) 夹角均为 \\(30^\\circ\\)；另有一竖杆 \\(AF\\)，\\(D\\)、\\(E\\)、\\(F\\) 三点在同一水平线上，距 \\(AB\\) 竖直距离 \\(2\\,\\mathrm{m}\\)。试校核三根弹性杆的强度并计算荷载作用点 \\(B\\) 的竖直位移。",
-   "answer": "刚性杆 \\(AB\\) 绕 \\(A\\) 转动，\\(C\\)、\\(B\\) 位移按力臂成比例（\\(v_C=v_B/2\\)）。由 \\(AB\\) 的力矩平衡求三杆轴力之和，由变形协调（三杆的位移关系）分配各杆轴力，再校核强度并按 \\(N=\\dfrac{EA\\Delta}{l}\\) 反求 \\(v_B\\)。",
+   "answer": "\\(F_{AF}=10\\,\\mathrm{kN}\\)（拉，\\(\\sigma_{AF}=50\\,\\mathrm{MPa}\\)），\\(F_{CD}=F_{CE}=20\\,\\mathrm{kN}\\)（拉，\\(\\sigma=100\\,\\mathrm{MPa}\\)），三杆均满足强度要求；\\(B\\) 点竖直位移 \\(v_B=7.5\\,\\mathrm{mm}\\)（向下）。",
    "steps": [
-    "几何：\\(AC=CB=3\\,\\mathrm{m}\\)，\\(AB=6\\,\\mathrm{m}\\)；\\(D\\)、\\(E\\)、\\(F\\) 距 \\(AB\\) 为 \\(2\\,\\mathrm{m}\\)。斜杆 \\(CD\\)、\\(CE\\) 与 \\(AB\\) 成 \\(30^\\circ\\)，故其长度 \\(l_{CD}=\\dfrac{2}{\\sin30^\\circ}=4\\,\\mathrm{m}\\)（竖直投影 2 m）。竖杆 \\(AF\\) 长 \\(2\\,\\mathrm{m}\\)。",
-    "刚性杆转动：\\(AB\\) 绕 \\(A\\) 转小角 \\(\\theta\\)，则 \\(C\\) 点位移 \\(v_C=3\\theta\\)、\\(B\\) 点位移 \\(v_B=6\\theta\\)，故 \\(v_C=\\dfrac{v_B}{2}\\)。",
-    "三杆的伸长：竖杆 \\(AF\\) 在 \\(A\\) 点（铰支，不位移），故 \\(AF\\) 不参与变形（或按零位移处理）；主要承力的是 \\(CD\\)、\\(CE\\) 两根斜杆，其伸长由 \\(C\\) 点位移沿杆方向投影得到 \\(\\Delta_{CD}=v_C\\sin30^\\circ=\\dfrac{v_C}{2}\\)。",
-    "力矩平衡（对 \\(A\\) 取矩）：\\(F\\cdot 6=\\left(N_{CD}+N_{CE}\\right)\\sin30^\\circ\\cdot3\\)（两斜杆竖向分力对 \\(A\\) 的力臂为 \\(AC=3\\,\\mathrm{m}\\)）。",
-    "由对称 \\(N_{CD}=N_{CE}=N\\)：\\(10\\times6=2N\\times0.5\\times3=3N\\)，故 \\(N=20\\,\\mathrm{kN}\\)。",
-    "强度校核：\\(\\sigma=\\dfrac{N}{A}=\\dfrac{20\\times10^3}{200\\times10^{-6}}=1.0\\times10^8\\,\\mathrm{Pa}=100\\,\\mathrm{MPa}<[\\sigma]=120\\,\\mathrm{MPa}\\)，满足。",
-    "位移：由物理关系 \\(\\Delta_{CD}=\\dfrac{Nl_{CD}}{EA}=\\dfrac{20\\times10^3\\times4}{200\\times10^9\\times200\\times10^{-6}}=\\dfrac{8\\times10^4}{4\\times10^7}=2.0\\times10^{-3}\\,\\mathrm{m}=2.0\\,\\mathrm{mm}\\)。",
-    "又 \\(\\Delta_{CD}=\\dfrac{v_C}{2}\\)，故 \\(v_C=4.0\\,\\mathrm{mm}\\)；再由 \\(v_B=2v_C=8.0\\,\\mathrm{mm}\\)。",
-    "结论：三杆应力 \\(100\\,\\mathrm{MPa}<120\\,\\mathrm{MPa}\\)，强度满足；\\(B\\) 点竖直位移 \\(v_B=8.0\\,\\mathrm{mm}\\)（向下）。要点：刚性杆绕铰支转动→各点位移按力臂成比例，这是分配各杆变形与轴力的关键。"
+    "几何（见试题图）：刚性杆 \\(AB=6\\,\\mathrm{m}\\)，\\(C\\) 为中点；\\(AF\\) 为竖杆，\\(A\\) 下方 \\(2\\,\\mathrm{m}\\) 锚固于 \\(F\\)；\\(CD\\)、\\(CE\\) 自 \\(C\\) 向左上、右上与 \\(AB\\) 成 \\(30^\\circ\\)，长 \\(l_{CD}=2/\\sin30^\\circ=4\\,\\mathrm{m}\\)。\\(A\\) 不是支座，\\(AB\\) 由三根弹性杆支承，为静定结构。",
+    "对刚性杆 \\(AB\\) 取矩（对 \\(C\\)）：\\(F_{AF}\\times3=F\\times3\\)，得 \\(F_{AF}=10\\,\\mathrm{kN}\\)（拉）。",
+    "水平平衡得 \\(F_{CD}=F_{CE}\\)；竖直平衡：\\((F_{CD}+F_{CE})\\sin30^\\circ-F_{AF}-F=0\\)，得 \\(F_{CD}=F_{CE}=20\\,\\mathrm{kN}\\)（拉）。",
+    "强度校核：\\(\\sigma_{AF}=\\dfrac{10\\times10^3}{200}=50\\,\\mathrm{MPa}\\)，\\(\\sigma_{CD}=\\sigma_{CE}=\\dfrac{20\\times10^3}{200}=100\\,\\mathrm{MPa}\\)，均小于 \\([\\sigma]=120\\,\\mathrm{MPa}\\)，满足。",
+    "伸长：\\(\\Delta_{AF}=\\dfrac{F_{AF}l_{AF}}{EA}=\\dfrac{10\\times10^3\\times2}{200\\times10^9\\times200\\times10^{-6}}=0.5\\,\\mathrm{mm}\\)；\\(\\Delta_{CD}=\\dfrac{20\\times10^3\\times4}{200\\times10^9\\times200\\times10^{-6}}=2.0\\,\\mathrm{mm}\\)。",
+    "位移：\\(A\\) 点下移 \\(v_A=\\Delta_{AF}=0.5\\,\\mathrm{mm}\\)；\\(C\\) 点下移 \\(v_C=\\Delta_{CD}/\\sin30^\\circ=4.0\\,\\mathrm{mm}\\)；刚性杆按直线位移分布，\\(v_B=2v_C-v_A=8.0-0.5=7.5\\,\\mathrm{mm}\\)（向下）。"
    ],
    "figures": [
     "q807-2026-02.png"
@@ -80,17 +77,17 @@
    "source": "华工 807 2026（回忆版）",
    "isReal": true,
    "text": "三．（20 分）如图所示，一直径 \\(d=100\\,\\mathrm{mm}\\) 的实心圆轴 \\(BC\\) 与一空心圆轴 \\(AB\\)（外径 \\(D=132\\,\\mathrm{mm}\\)、内径 \\(d=100\\,\\mathrm{mm}\\)）由键连接，键的尺寸 \\(l=30\\,\\mathrm{mm}\\)、\\(b=h=10\\,\\mathrm{mm}\\)。轴的两端均为固定端，在两轴连接处 \\(B\\) 施加外力偶矩 \\(m_0=15\\,\\mathrm{kN\\cdot m}\\)。已知许用切应力 \\([\\tau]=100\\,\\mathrm{MPa}\\)，许用挤压应力 \\([\\sigma_{bs}]=250\\,\\mathrm{MPa}\\)，切变模量 \\(G=80\\,\\mathrm{GPa}\\)。试求：（1）校核两个圆轴的强度；（2）若要保证结构强度安全，至少要用多少个键。",
-   "answer": "两端固定的变截面轴受中间扭矩 \\(m_0\\) 属一次超静定，扭矩按两段的 \\(GI_p\\) 分配。算得各段扭矩后校核扭转强度；键的挤压（\\(\\sigma_{bs}=\\dfrac{F}{hl/2}\\)）与剪切决定所需键数。",
+   "answer": "（1）\\(T_{AB}\\approx10.1\\,\\mathrm{kN\\cdot m}\\)、\\(T_{BC}\\approx4.9\\,\\mathrm{kN\\cdot m}\\)，\\(\\tau_{AB}\\approx33.2\\,\\mathrm{MPa}\\)、\\(\\tau_{BC}\\approx25.2\\,\\mathrm{MPa}\\)，均小于 \\([\\tau]=100\\,\\mathrm{MPa}\\)，两轴强度满足；（2）至少需要 4 个键（由键的剪切控制）。",
    "steps": [
     "截面几何：实心段 \\(BC\\)（\\(d=100\\,\\mathrm{mm}\\)）的 \\(I_{p1}=\\dfrac{\\pi d^4}{32}=\\dfrac{\\pi\\times100^4}{32}=9.817\\times10^6\\,\\mathrm{mm^4}\\)。",
     "空心段 \\(AB\\)（\\(D=132\\)、\\(d=100\\)）：\\(I_{p2}=\\dfrac{\\pi(D^4-d^4)}{32}=\\dfrac{\\pi(132^4-100^4)}{32}=\\dfrac{\\pi(3.036\\times10^8-1.0\\times10^8)}{32}=\\dfrac{\\pi\\times2.036\\times10^8}{32}=2.0\\times10^7\\,\\mathrm{mm^4}\\)。",
     "超静定分配：两端固定、中间施加 \\(m_0\\)，扭矩按各段的 \\(GI_p/l\\) 分配（\\(G\\) 相同）：\\(T_1+T_2=m_0\\)、\\(\\dfrac{T_1l_1}{GI_{p1}}=\\dfrac{T_2l_2}{GI_{p2}}\\)（转角协调，注意方向相反）。",
     "抗扭截面系数：\\(W_{t1}=\\dfrac{I_{p1}}{d/2}=\\dfrac{9.817\\times10^6}{50}=1.963\\times10^5\\,\\mathrm{mm^3}\\)；\\(W_{t2}=\\dfrac{I_{p2}}{D/2}=\\dfrac{2.0\\times10^7}{66}=3.03\\times10^5\\,\\mathrm{mm^3}\\)。",
-    "（1）按分配后的扭矩分别算 \\(\\tau_1=\\dfrac{T_1}{W_{t1}}\\)、\\(\\tau_2=\\dfrac{T_2}{W_{t2}}\\)，与 \\([\\tau]=100\\,\\mathrm{MPa}\\) 比较。由于实心段的 \\(W_t\\) 较小，通常由实心段控制。",
+    "（1）两段等长（\\(L=1\\,\\mathrm{m}\\)，见试题图），扭矩按 \\(I_p\\) 分配：\\(T_{AB}=m_0\\dfrac{I_{p,AB}}{I_{p,AB}+I_{p,BC}}\\approx15\\times\\dfrac{2.00\\times10^7}{2.98\\times10^7}\\approx10.1\\,\\mathrm{kN\\cdot m}\\)，\\(T_{BC}\\approx4.9\\,\\mathrm{kN\\cdot m}\\)。\\(\\tau_{AB}=\\dfrac{T_{AB}}{W_{t2}}\\approx\\dfrac{10.1\\times10^6}{3.03\\times10^5}\\approx33.2\\,\\mathrm{MPa}\\)，\\(\\tau_{BC}=\\dfrac{T_{BC}}{W_{t1}}\\approx\\dfrac{4.9\\times10^6}{1.963\\times10^5}\\approx25.2\\,\\mathrm{MPa}\\)，均小于 \\([\\tau]=100\\,\\mathrm{MPa}\\)，强度满足。",
     "（2）键的受力：键传递的力 \\(F=\\dfrac{T}{d/2}\\)（\\(d\\) 为轴径）。键的挤压面积 \\(A_{bs}=\\dfrac{hl}{2}\\)（键高的一半与被压长度之积，取较保守的一半）。",
     "单键的挤压承载力：\\(F_{bs}\\le[\\sigma_{bs}]\\cdot\\dfrac{hl}{2}=250\\times10^6\\times\\dfrac{0.010\\times0.030}{2}=250\\times10^6\\times1.5\\times10^{-4}=37.5\\,\\mathrm{kN}\\)。",
     "单键的剪切承载力：\\(F_s\\le[\\tau]\\cdot bl=100\\times10^6\\times0.010\\times0.030=30\\,\\mathrm{kN}\\)。",
-    "所需键数 \\(n\\ge\\dfrac{F}{\\min(F_{bs},F_s)}=\\dfrac{T/(d/2)}{30\\,\\mathrm{kN}}\\)，向上取整即得最少键数。",
+    "（2）键传递的扭矩取连接处 \\(BC\\) 段扭矩 \\(T_{BC}\\approx4.9\\,\\mathrm{kN\\cdot m}\\)（与答案口径一致，约 \\(5\\,\\mathrm{kN\\cdot m}\\)）：每键受力 \\(F_1=\\dfrac{T_{BC}}{n\\,d/2}\\approx\\dfrac{100}{n}\\,\\mathrm{kN}\\)。挤压：\\(\\sigma_{bs}=\\dfrac{F_1}{hl/2}\\le250\\,\\mathrm{MPa}\\) 得 \\(n\\ge2.67\\)；剪切：\\(\\tau=\\dfrac{F_1}{bl}\\le100\\,\\mathrm{MPa}\\) 得 \\(n\\ge3.33\\)。故至少需要 4 个键。",
     "要点：两端固定的变截面轴受中间扭矩，必须按 \\(GI_p\\) 分配扭矩；键连接要同时校核挤压与剪切，取较小者决定键数。"
    ],
    "figures": [
@@ -116,14 +113,14 @@
    "source": "华工 807 2026（回忆版）",
    "isReal": true,
    "text": "四．（20 分）如图所示矩形截面简支梁 \\(AB\\)，荷载 \\(F\\) 可沿梁移动。已知梁长为 \\(l\\)，截面宽度为 \\(b\\)，许用正应力、切应力分别为 \\([\\sigma]\\)、\\([\\tau]\\)。试按等强度条件确定截面高度 \\(h\\) 随梁轴线坐标 \\(x\\) 的变化规律。",
-   "answer": "等强度条件 \\(\\sigma_{\\max}=[\\sigma]\\)，即 \\(W(x)=\\dfrac{M(x)}{[\\sigma]}\\)。移动荷载的最不利弯矩包络 \\(M(x)\\)，代入 \\(W=\\dfrac{bh^2(x)}{6}\\) 得 \\(h(x)=\\sqrt{\\dfrac{6M(x)}{b[\\sigma]}}\\)。同时需复核切应力 \\(\\tau_{\\max}=\\dfrac{3F_S}{2bh(x)}\\le[\\tau]\\)。",
+   "answer": "取左半段（\\(0\\le x\\le l/2\\)，右半对称）：弯矩包络 \\(M(x)=\\dfrac{Fx(l-x)}{l}\\)、剪力包络 \\(F_S(x)=\\dfrac{F(l-x)}{l}\\)。纯弯曲等强度高度 \\(h_1(x)=\\sqrt{\\dfrac{6Fx(l-x)}{bl[\\sigma]}}\\)，剪切控制高度 \\(h_2(x)=\\dfrac{3F(l-x)}{2bl[\\tau]}\\)，实际 \\(h(x)=\\max\\{h_1,h_2\\}\\)：在 \\((0,x_1)\\) 段取 \\(h_2\\)、\\((x_1,l/2)\\) 段取 \\(h_1\\)，临界点 \\(x_1=\\dfrac{3Fl[\\sigma]}{8bl[\\tau]^2+3F[\\sigma]}\\)（右半段对称）。",
    "steps": [
     "等强度梁的定义：各截面的最大正应力都等于 \\([\\sigma]\\)，材料被充分利用：\\(\\sigma(x)=\\dfrac{M(x)}{W(x)}=[\\sigma]\\)。",
     "矩形截面（宽 \\(b\\) 定值、高 \\(h\\) 可变）：\\(W(x)=\\dfrac{b\\,h^2(x)}{6}\\)。",
     "故 \\(h(x)=\\sqrt{\\dfrac{6M(x)}{b[\\sigma]}}\\)——高度按弯矩的平方根变化。",
     "移动荷载的弯矩包络：荷载 \\(F\\) 位于 \\(x\\) 处时该处弯矩最大 \\(M_{\\max}(x)=\\dfrac{Fx(l-x)}{l}\\)，故 \\(h(x)=\\sqrt{\\dfrac{6Fx(l-x)}{b[\\sigma]l}}\\)，是椭圆族曲线（跨中最高、两端为零）。",
     "切应力复核：\\(\\tau_{\\max}=\\dfrac{3F_S}{2bh(x)}\\le[\\tau]\\)，即 \\(h(x)\\ge\\dfrac{3F_S}{2b[\\tau]}\\)——这是高度的下限，端点处（\\(h\\to0\\)）必须按此设置最小高度 \\(h_{\\min}\\)。",
-    "综合：\\(h(x)=\\max\\left\\{\\sqrt{\\dfrac{6M(x)}{b[\\sigma]}},\\ \\dfrac{3F_S(x)}{2b[\\tau]}\\right\\}\\)，实际取两者中的较大值。",
+    "综合：取左半段 \\(0\\le x\\le l/2\\)（右半对称），\\(h(x)=\\max\\{h_1(x),h_2(x)\\}\\)，其中 \\(h_1(x)=\\sqrt{\\dfrac{6Fx(l-x)}{bl[\\sigma]}}\\)、\\(h_2(x)=\\dfrac{3F(l-x)}{2bl[\\tau]}\\)。令 \\(h_1=h_2\\) 解得临界点 \\(x_1=\\dfrac{3Fl[\\sigma]}{8bl[\\tau]^2+3F[\\sigma]}\\)：支座附近 \\((0,x_1)\\) 剪力控制取 \\(h_2\\)，中部 \\((x_1,l/2)\\) 弯矩控制取 \\(h_1\\)。",
     "要点：等强度梁必须同时满足“正应力条件”（给出 \\(h\\) 的上限形式）与“切应力条件”（给出 \\(h\\) 的下限），最终取包络；端点处高度不能为零，要保留 \\(h_{\\min}\\)。"
    ],
    "figures": [
@@ -149,14 +146,13 @@
    "source": "华工 807 2026（回忆版）",
    "isReal": true,
    "text": "五．（20 分）图示结构，已知荷载 \\(P=500\\,\\mathrm{N}\\)。试求：（1）杆 \\(DC\\) 的最大拉应力；（2）梁 \\(ABC\\) 的最大弯曲正应力。",
-   "answer": "先由静力平衡求杆 \\(DC\\) 的内力与梁 \\(ABC\\) 的支反力，再分别按 \\(\\sigma=\\dfrac{N}{A}\\)（杆）与 \\(\\sigma=\\dfrac{M_{\\max}}{W}\\)（梁）计算。",
+   "answer": "（1）杆 \\(DC\\) 的最大拉应力 \\(\\sigma_{DC}\\approx49.8\\,\\mathrm{MPa}\\)；（2）梁 \\(ABC\\) 的最大弯曲正应力 \\(\\sigma_{ABC}\\approx1.87\\,\\mathrm{MPa}\\)（均为突加荷载、动荷系数 \\(K_d=2\\) 的最大值）。",
    "steps": [
-    "结构：梁 \\(ABC\\) 由杆 \\(DC\\) 斜撑，\\(P=500\\,\\mathrm{N}\\) 作用在某点。取梁 \\(ABC\\) 为隔离体，列平衡方程求 \\(DC\\) 杆轴力与支座反力。",
-    "（1）杆 \\(DC\\) 的轴力 \\(N_{DC}\\) 求出后，拉应力 \\(\\sigma_{DC}=\\dfrac{N_{DC}}{A_{DC}}\\)（\\(A_{DC}\\) 为杆的横截面积，按图示尺寸）。",
-    "（2）梁 \\(ABC\\) 的弯矩：由支反力与荷载作弯矩图，求 \\(M_{\\max}\\)（通常在集中力作用处或支承点）。",
-    "梁的最大弯曲正应力：\\(\\sigma_{\\max}=\\dfrac{M_{\\max}}{W_z}\\)，\\(W_z\\) 按梁的截面形状（矩形 \\(W=\\dfrac{bh^2}{6}\\) 或圆形 \\(W=\\dfrac{\\pi d^3}{32}\\)）计算。",
-    "注意：题目要求分别给出“杆的最大拉应力”与“梁的最大弯曲正应力”——这是两个不同的构件、两种不同的应力类型，不能混用公式。",
-    "要点：这类“梁+杆”组合结构的标准流程是：整体平衡 → 各构件内力 → 分别按构件的应力公式计算；杆看轴力、梁看弯矩。"
+    "结构（见试题图）：梁 \\(ABC\\)，\\(A\\) 为铰支、\\(B\\) 为滚轴（\\(AB=1000\\,\\mathrm{mm}\\)），外伸段 \\(BC=1000\\,\\mathrm{mm}\\)；杆 \\(DC\\) 长 \\(1000\\,\\mathrm{mm}\\) 连接 \\(D\\)（固定）与铰 \\(C\\)；在铰 \\(C\\) 处突加竖直荷载 \\(P=500\\,\\mathrm{N}\\)。梁为圆截面 \\(D=50\\,\\mathrm{mm}\\)，杆直径 \\(d=5\\,\\mathrm{mm}\\)，同种材料 \\(E=200\\,\\mathrm{GPa}\\)。",
+    "静载分析：设杆 \\(DC\\) 拉力为 \\(F_1\\)。梁 \\(C\\) 点挠度（外伸端净荷载 \\(P-F_1\\)）：\\(\\omega_C=\\dfrac{(P-F_1)l^3}{3EI}+\\dfrac{(P-F_1)l^3}{3EI}=\\dfrac{2(P-F_1)l^3}{3EI}\\)（外伸段弯曲加 \\(B\\) 点转角项）；杆伸长 \\(\\Delta l_{CD}=\\dfrac{F_1l}{EA}\\)。",
+    "变形协调 \\(\\omega_C=\\Delta l_{CD}\\)：\\(\\dfrac{2(P-F_1)l^2}{3EI}=\\dfrac{F_1}{EA}\\)。代入 \\(A=\\dfrac{\\pi d^2}{4}=19.63\\,\\mathrm{mm^2}\\)、\\(I=\\dfrac{\\pi D^4}{64}=3.068\\times10^5\\,\\mathrm{mm^4}\\)、\\(l=1000\\,\\mathrm{mm}\\)：\\(\\dfrac{2Al^2}{3I}=\\dfrac{128}{3}\\)，解得 \\(F_1=\\dfrac{128}{131}P\\approx488.5\\,\\mathrm{N}\\)。",
+    "突加荷载动荷系数 \\(K_d=2\\)。（1）杆 \\(DC\\) 最大拉应力：\\(\\sigma_{DC}=K_d\\dfrac{F_1}{A}=2\\times\\dfrac{488.5}{19.63}\\approx49.8\\,\\mathrm{MPa}\\)。",
+    "（2）梁最大弯矩在 \\(B\\) 截面：\\(M_{\\max}=(P-F_1)l=\\dfrac{3}{131}\\times500\\times1\\approx11.45\\,\\mathrm{N\\cdot m}\\)；\\(\\sigma_{ABC}=K_d\\dfrac{M_{\\max}}{W}=2\\times\\dfrac{11.45}{\\pi\\times0.05^3/32}\\approx1.87\\,\\mathrm{MPa}\\)。"
    ],
    "figures": [
     "q807-2026-05.png"
@@ -181,15 +177,14 @@
    "source": "华工 807 2026（回忆版）",
    "isReal": true,
    "text": "六．（25 分）水平折杆 \\(ABCD\\) 如图所示（\\(B\\) 为铰接点），其截面均为圆形、直径为 \\(d\\)，已知 \\(F=20\\,\\mathrm{kN}\\)，\\(a=1\\,\\mathrm{m}\\)，材料的许用应力 \\([\\sigma]=120\\,\\mathrm{MPa}\\)。要求：（1）按第三强度理论设计杆的直径 \\(d\\)；（2）计算危险点处的主应力和最大切应力。（附：\\(\\left(\\dfrac{4}{3}\\right)^{1/3}=1.1\\)，\\(\\pi^{1/3}=1.465\\)，\\(17^{1/6}=1.60\\)）",
-   "answer": "（1）\\(d\\approx191\\,\\mathrm{mm}\\)；（2）\\(\\sigma=117.0\\,\\mathrm{MPa}\\)，\\(\\tau=14.6\\,\\mathrm{MPa}\\)，\\(\\sigma_1\\approx118.8\\,\\mathrm{MPa}\\)，\\(\\sigma_2=0\\)，\\(\\sigma_3\\approx-1.8\\,\\mathrm{MPa}\\)，\\(\\tau_{\\max}\\approx60.3\\,\\mathrm{MPa}\\)，且 \\(\\sigma_{r3}\\approx120\\,\\mathrm{MPa}=[\\sigma]\\)。",
+   "answer": "（1）\\(d\\ge120.5\\,\\mathrm{mm}\\)，取 \\(d=121\\,\\mathrm{mm}\\)；（2）危险点（\\(D\\) 截面）\\(\\sigma\\approx116.4\\,\\mathrm{MPa}\\)，\\(\\tau\\approx14.6\\,\\mathrm{MPa}\\)，\\(\\sigma_1\\approx118.2\\,\\mathrm{MPa}\\)，\\(\\sigma_2=0\\)，\\(\\sigma_3\\approx-1.8\\,\\mathrm{MPa}\\)，\\(\\tau_{\\max}\\approx60.0\\,\\mathrm{MPa}\\)，\\(\\sigma_{r3}\\approx120\\,\\mathrm{MPa}=[\\sigma]\\)。",
    "steps": [
     "考点：水平折杆的弯扭组合变形；第三强度理论 \\(\\sigma_{r3}=\\dfrac{\\sqrt{M^2+T^2}}{W}\\) 设计截面；危险点主应力与最大切应力。",
-    "内力：由折杆图示几何，危险截面的弯矩与扭矩为 \\(M=4Fa=4\\times20\\times1=80\\,\\mathrm{kN\\cdot m}\\)，\\(T=Fa=20\\,\\mathrm{kN\\cdot m}\\)。",
-    "（1）按第三强度理论设计直径：\\(\\sigma_{r3}=\\dfrac{\\sqrt{M^2+T^2}}{W}=\\dfrac{\\sqrt{17}\\,Fa}{\\pi d^3/32}\\le[\\sigma]\\)，解得 \\(d^3\\ge\\dfrac{32\\sqrt{17}\\,Fa}{\\pi[\\sigma]}=\\dfrac{32\\times\\sqrt{17}\\times20\\times10^3}{\\pi\\times120\\times10^6}=7.0\\times10^{-3}\\,\\mathrm{m^3}\\)，\\(d\\ge0.191\\,\\mathrm{m}\\)，取 \\(d=191\\,\\mathrm{mm}\\)。",
-    "（2）危险点应力分量：\\(\\sigma=\\dfrac{M}{W}=\\dfrac{32M}{\\pi d^3}=\\dfrac{32\\times80\\times10^3}{\\pi\\times0.191^3}=117.0\\,\\mathrm{MPa}\\)；\\(\\tau=\\dfrac{T}{W_p}=\\dfrac{16T}{\\pi d^3}=\\dfrac{16\\times20\\times10^3}{\\pi\\times0.191^3}=14.6\\,\\mathrm{MPa}\\)。注意 \\(W_p=2W\\)，旧解析把 \\(\\tau\\) 算成 \\(29.3\\,\\mathrm{MPa}\\)（大了一倍），连带主应力与 \\(\\sigma_{r3}\\) 全错。",
-    "主应力：\\(\\sigma_{1,3}=\\dfrac{\\sigma}{2}\\pm\\sqrt{\\left(\\dfrac{\\sigma}{2}\\right)^2+\\tau^2}=58.5\\pm\\sqrt{58.5^2+14.6^2}=58.5\\pm60.3\\)，得 \\(\\sigma_1\\approx118.8\\,\\mathrm{MPa}\\)，\\(\\sigma_3\\approx-1.8\\,\\mathrm{MPa}\\)，表面点 \\(\\sigma_2=0\\)。",
-    "最大切应力 \\(\\tau_{\\max}=\\dfrac{\\sigma_1-\\sigma_3}{2}\\approx60.3\\,\\mathrm{MPa}\\)。复核 \\(\\sigma_{r3}=\\sigma_1-\\sigma_3\\approx120\\,\\mathrm{MPa}\\)，与 \\([\\sigma]=120\\,\\mathrm{MPa}\\) 相符（微差来自 \\(d\\) 的圆整），说明 \\(d=191\\,\\mathrm{mm}\\) 正是设计值，无需像旧解析那样误判超限再加大到 \\(200\\,\\mathrm{mm}\\)。",
-    "最终结果：（1）\\(d\\approx191\\,\\mathrm{mm}\\)；（2）\\(\\sigma_1\\approx118.8\\,\\mathrm{MPa}\\)、\\(\\sigma_3\\approx-1.8\\,\\mathrm{MPa}\\)、\\(\\tau_{\\max}\\approx60.3\\,\\mathrm{MPa}\\)。"
+    "内力（见试题图与弯、扭矩图）：由 \\(AB\\) 段平衡（对 \\(A\\) 取矩）得铰 \\(B\\) 传力 \\(F_B=F/2\\)；危险截面在 \\(D\\) 处，弯矩 \\(M_D=Fa=20\\,\\mathrm{kN\\cdot m}\\)，扭矩 \\(T_D=\\dfrac{Fa}{4}=5\\,\\mathrm{kN\\cdot m}\\)。",
+    "（1）按第三强度理论：\\(\\sigma_{r3}=\\dfrac{\\sqrt{M_D^2+T_D^2}}{W}=\\dfrac{\\sqrt{17}\\,Fa/4}{\\pi d^3/32}\\le[\\sigma]\\)，解得 \\(d^3\\ge\\dfrac{32\\times\\sqrt{17}\\times20\\times10^3}{4\\pi\\times120\\times10^6}\\approx1.75\\times10^{-3}\\,\\mathrm{m^3}\\)，\\(d\\ge120.5\\,\\mathrm{mm}\\)，取 \\(d=121\\,\\mathrm{mm}\\)。",
+    "（2）危险点应力分量（按 \\(d=120.5\\,\\mathrm{mm}\\) 计）：\\(\\sigma=\\dfrac{M_D}{W}=\\dfrac{32\\times20\\times10^3}{\\pi\\times0.1205^3}\\approx116.4\\,\\mathrm{MPa}\\)；\\(\\tau=\\dfrac{T_D}{W_p}=\\dfrac{16\\times5\\times10^3}{\\pi\\times0.1205^3}\\approx14.6\\,\\mathrm{MPa}\\)（\\(W_p=2W\\)）。",
+    "主应力：\\(\\sigma_{1,3}=\\dfrac{\\sigma}{2}\\pm\\sqrt{\\left(\\dfrac{\\sigma}{2}\\right)^2+\\tau^2}=58.2\\pm60.0\\)，得 \\(\\sigma_1\\approx118.2\\,\\mathrm{MPa}\\)，\\(\\sigma_3\\approx-1.8\\,\\mathrm{MPa}\\)，表面点 \\(\\sigma_2=0\\)。",
+    "最大切应力 \\(\\tau_{\\max}=\\dfrac{\\sigma_1-\\sigma_3}{2}\\approx60.0\\,\\mathrm{MPa}\\)；复核 \\(\\sigma_{r3}=\\sigma_1-\\sigma_3\\approx120\\,\\mathrm{MPa}=[\\sigma]\\)，相符。"
    ],
    "figures": [
     "q807-2026-06.png"

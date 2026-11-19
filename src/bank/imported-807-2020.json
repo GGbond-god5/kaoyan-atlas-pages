@@ -119,13 +119,13 @@
    "source": "华工 807 2020（回忆版；官方答案校对）",
    "isReal": true,
    "text": "四．（20 分）图示桁架由 9 根杆组成，尺寸如图所示，各杆的拉压刚度 \\(EA\\) 相等，在图示载荷 \\(F\\) 作用下，试用能量法求 \\(A\\)、\\(C\\) 两结点间的相对位移 \\(\\Delta_{AC}\\)。",
-   "answer": "\\(\\Delta_{AC}=\\left(2+\\sqrt2\\right)\\dfrac{Fa}{EA}\\approx3.41\\dfrac{Fa}{EA}\\)（\\(A\\)、\\(C\\) 两结点相互靠近，间距缩短）。",
+   "answer": "\\(\\Delta_{AC}=\\left(2+\\dfrac{3}{\\sqrt2}\\right)\\dfrac{Fa}{EA}=\\left(2+\\dfrac{3\\sqrt2}{2}\\right)\\dfrac{Fa}{EA}\\approx4.12\\dfrac{Fa}{EA}\\)（\\(A\\)、\\(C\\) 两结点相互靠近，间距缩短）。",
    "steps": [
     "考点：桁架的单位载荷法（莫尔积分）求两结点相对位移，\\(\\Delta=\\sum\\dfrac{F_{Ni}\\overline{F}_{Ni}l_i}{EA}\\)。",
     "在 \\(A\\)、\\(C\\) 两结点沿其连线加一对单位力（取相向为正，即量度间距缩短）。实际荷载 \\(F\\) 下各杆轴力 \\(F_{Ni}\\) 由结点法求得；单位荷载下各杆轴力 \\(\\overline{F}_{Ni}\\) 同法求得。",
-    "列表（杆 1~9）：\\(F_{Ni}\\) 依次为 \\(0\\)、\\(-F\\)、\\(\\sqrt2F\\)、\\(-F\\)、\\(-F\\)、\\(F\\)、\\(\\sqrt2F\\)、\\(-2F\\)、\\(0\\)；\\(\\overline{F}_{Ni}\\) 中杆 1、2、4 为 \\(-1/\\sqrt2\\)，杆 3 为 \\(1\\)，杆 5~9 为 \\(0\\)；杆长：斜杆（杆 3、7）为 \\(\\sqrt2a\\)，其余为 \\(a\\)。",
-    "逐项乘积 \\(F_{Ni}\\overline{F}_{Ni}l_i\\)：杆 2：\\((-F)(-1/\\sqrt2)a=\\dfrac{Fa}{\\sqrt2}\\)；杆 3：\\((\\sqrt2F)(1)(\\sqrt2a)=2Fa\\)；杆 4：\\((-F)(-1/\\sqrt2)a=\\dfrac{Fa}{\\sqrt2}\\)；其余各杆或 \\(F_{Ni}=0\\) 或 \\(\\overline{F}_{Ni}=0\\)，乘积为零。求和 \\(\\sum F_{Ni}\\overline{F}_{Ni}l_i=\\left(2+\\sqrt2\\right)Fa\\approx3.41Fa\\)。（原解析求和时多写了一项 \\(\\dfrac{Fa}{\\sqrt2}\\) 而得 \\(4.12Fa\\)，且「结果为负」一语与正值矛盾，均已改正。）",
-    "相对位移 \\(\\Delta_{AC}=\\dfrac{\\sum F_{Ni}\\overline{F}_{Ni}l_i}{EA}=\\left(2+\\sqrt2\\right)\\dfrac{Fa}{EA}\\approx3.41\\dfrac{Fa}{EA}\\)，正号与所加单位力对的方向一致，即 \\(A\\)、\\(C\\) 相互靠近、间距缩短 \\(3.41\\dfrac{Fa}{EA}\\)。"
+    "列表（杆 1~9）：\\(F_{Ni}\\) 依次为 \\(0\\)、\\(-F\\)、\\(\\sqrt2F\\)、\\(-F\\)、\\(-F\\)、\\(F\\)、\\(\\sqrt2F\\)、\\(-2F\\)、\\(0\\)；\\(\\overline{F}_{Ni}\\) 中杆 1、2、4、5 为 \\(-1/\\sqrt2\\)，杆 3 为 \\(1\\)，杆 6~9 为 \\(0\\)；杆长：斜杆（杆 3、7）为 \\(\\sqrt2a\\)，其余为 \\(a\\)。",
+    "逐项乘积 \\(F_{Ni}\\overline{F}_{Ni}l_i\\)：杆 2：\\((-F)(-1/\\sqrt2)a=\\dfrac{Fa}{\\sqrt2}\\)；杆 3：\\((\\sqrt2F)(1)(\\sqrt2a)=2Fa\\)；杆 4：\\((-F)(-1/\\sqrt2)a=\\dfrac{Fa}{\\sqrt2}\\)；杆 5：\\((-F)(-1/\\sqrt2)a=\\dfrac{Fa}{\\sqrt2}\\)；其余各杆或 \\(F_{Ni}=0\\) 或 \\(\\overline{F}_{Ni}=0\\)，乘积为零。求和 \\(\\sum F_{Ni}\\overline{F}_{Ni}l_i=\\left(2+\\dfrac{3}{\\sqrt2}\\right)Fa\\approx4.12Fa\\)。注意：杆 5（水平杆 \\(FC\\)）在单位力对作用下的轴力为 \\(-1/\\sqrt2\\neq0\\)，是本题最易漏掉的一项。",
+    "相对位移 \\(\\Delta_{AC}=\\dfrac{\\sum F_{Ni}\\overline{F}_{Ni}l_i}{EA}=\\left(2+\\dfrac{3}{\\sqrt2}\\right)\\dfrac{Fa}{EA}\\approx4.12\\dfrac{Fa}{EA}\\)，正号与所加单位力对的方向一致，即 \\(A\\)、\\(C\\) 相互靠近、间距缩短 \\(4.12\\dfrac{Fa}{EA}\\)。"
    ],
    "figures": [
     "q807-2020-04.png"

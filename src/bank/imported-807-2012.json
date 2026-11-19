@@ -46,16 +46,13 @@
    "source": "华工 801 2012（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "二．平面图形如图所示，已知 \\(y\\) 为对称轴，求该图形的形心主惯性矩。",
-   "answer": "形心主惯性矩＝过形心的两主轴（\\(y\\) 轴本身就是对称轴，故它是一条主轴；另一条过形心垂直于 \\(y\\)）上的惯性矩。步骤：先定形心位置（利用对称性，形心在 \\(y\\) 轴上）→ 用分割法（各子块对自身形心轴的 \\(I\\) 加 \\(Ad^2\\)）算 \\(I_y\\)、\\(I_z\\) → 得主惯性矩 \\(I_{\\max},I_{\\min}\\) 与主轴方向。",
+   "answer": "形心在对称轴 \\(y\\) 上，距底边 \\(y_C=\\dfrac{7}{9}a\\)。形心主惯性矩：对 \\(y\\) 轴 \\(I_y=\\dfrac{5a^4}{48}\\)；对过形心的水平主轴 \\(I_{z_c}=\\dfrac{37a^4}{108}\\)。",
    "steps": [
-    "对称性的第一个作用：图形关于 \\(y\\) 轴对称，故形心必在 \\(y\\) 轴上（\\(z_C=0\\)）；同时 \\(y\\) 轴本身就是一条**形心主轴**（对称轴必为主轴）。",
-    "定形心 \\(y_C\\)：用分割法 \\(y_C=\\dfrac{\\sum A_iy_i}{\\sum A_i}\\)，把图形拆成几个矩形/三角形，各取自身形心坐标加权平均。",
-    "算 \\(I_y\\)（对 \\(y\\) 轴，注意此时 \\(y\\) 轴过形心，故已满足“形心轴”要求）：\\(I_y=\\sum\\left(I_{y,i}+A_id_{y,i}^2\\right)\\)，其中 \\(d_{y,i}\\) 为子块形心到 \\(y\\) 轴的水平距离。",
-    "算 \\(I_z\\)（对过形心的水平轴）：\\(I_z=\\sum\\left(I_{z,i}+A_id_{z,i}^2\\right)\\)，\\(d_{z,i}\\) 为子块形心到形心水平轴的竖直距离。",
-    "惯性积 \\(I_{yz}=\\sum\\left(I_{yz,i}+A_id_{y,i}d_{z,i}\\right)\\)：因图形关于 \\(y\\) 轴对称，正负两侧的 \\(z\\) 相消，故 \\(I_{yz}=0\\)——这再次说明 \\(y\\)、\\(z\\) 是主轴。",
-    "因此形心主惯性矩就是 \\(I_y\\) 与 \\(I_z\\) 本身（无需用转角公式）：\\(I_{\\max}=\\max(I_y,I_z)\\)、\\(I_{\\min}=\\min(I_y,I_z)\\)。",
-    "若题目还要求主轴方向，可用 \\(\\tan2\\alpha_0=\\dfrac{-2I_{yz}}{I_y-I_z}=0\\)，得 \\(\\alpha_0=0\\)（主轴就是 \\(y\\)、\\(z\\) 轴）。",
-    "要点：对称图形的主轴方向可直接判定（对称轴＋过形心垂直轴），省去求 \\(I_{yz}\\) 和转角的麻烦；关键是形心位置与平行轴定理的 \\(Ad^2\\) 项。"
+    "图形由下方矩形（宽 \\(a\\)、高 \\(a\\)）与上方等腰三角形（底 \\(a\\)、高 \\(a\\)）组成，总面积 \\(A=a^2+\\dfrac{1}{2}a^2=\\dfrac{3}{2}a^2\\)。",
+    "形心（距底边）：\\(y_C=\\dfrac{a^2\\cdot\\frac{a}{2}+\\frac{a^2}{2}\\left(a+\\frac{a}{3}\\right)}{\\frac{3}{2}a^2}=\\dfrac{7}{9}a\\)，且由对称性 \\(z_C=0\\)。",
+    "对称轴 \\(y\\) 即一条形心主轴：矩形贡献 \\(\\dfrac{a\\cdot a^3}{12}=\\dfrac{a^4}{12}\\)，三角形贡献 \\(\\dfrac{a\\cdot a^3}{48}=\\dfrac{a^4}{48}\\)，故 \\(I_y=\\dfrac{a^4}{12}+\\dfrac{a^4}{48}=\\dfrac{5a^4}{48}\\)。",
+    "对过形心的水平轴用平行轴定理：矩形 \\(\\dfrac{a^4}{12}+a^2\\left(\\dfrac{7a}{9}-\\dfrac{a}{2}\\right)^2=\\dfrac{13a^4}{81}\\)；三角形 \\(\\dfrac{a^4}{36}+\\dfrac{a^2}{2}\\left(\\dfrac{4a}{3}-\\dfrac{7a}{9}\\right)^2=\\dfrac{59a^4}{324}\\)。",
+    "合得 \\(I_{z_c}=\\dfrac{13a^4}{81}+\\dfrac{59a^4}{324}=\\dfrac{37a^4}{108}\\)。因对称使 \\(I_{yz}=0\\)，\\(I_y\\) 与 \\(I_{z_c}\\) 即形心主惯性矩。"
    ],
    "figures": [
     "q807-2012-02.png"
@@ -151,17 +148,13 @@
    "source": "华工 801 2012（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "五．图示结构由等截面直角刚架 \\(ACB\\) 和等截面直杆 \\(AB\\) 铰接而成。材料的弹性模量为 \\(E\\)，刚架的弯曲刚度为 \\(EI\\)，直杆的横截面积为 \\(A\\)。试求 \\(AB\\) 两点间的相对位移。",
-   "answer": "一次超静定（刚架＋直杆）。以 \\(AB\\) 杆轴力 \\(X\\) 为多余未知力，力法方程：\\(\\delta_{11}X+\\Delta_{1P}=0\\)，其中 \\(\\delta_{11}=\\displaystyle\\int\\dfrac{\\overline{M}^2}{EI}\\mathrm{d}s+\\dfrac{\\overline{N}^2l}{EA}\\)（刚架弯曲＋杆轴向），用单位荷载法算两个系数后解 \\(X\\)，再求 \\(A\\)、\\(B\\) 的相对位移 \\(\\Delta_{AB}=\\displaystyle\\int\\dfrac{M\\overline{M}}{EI}\\mathrm{d}s+\\dfrac{N\\overline{N}l}{EA}\\)。",
+   "answer": "刚架两肢长均为 \\(a\\)（与水平成 \\(45^\\circ\\)），\\(A\\)、\\(B\\) 处作用一对沿 \\(AB\\) 方向向外的力 \\(F\\)。以直杆 \\(AB\\) 轴力为多余未知力，由变形协调得 \\(F_N=\\dfrac{a^2A}{a^2A+3\\sqrt{2}\\,I}F\\)，\\(AB\\) 两点间的相对位移 \\(\\Delta_{AB}=\\dfrac{\\sqrt{2}\\,Fa^3}{a^2EA+3\\sqrt{2}\\,EI}\\)。",
    "steps": [
-    "结构分析：直角刚架 \\(ACB\\) 本身是静定的（两铰），加上直杆 \\(AB\\) 后成为一次超静定——杆 \\(AB\\) 的轴力 \\(X\\) 是多余未知力。",
-    "力法方程：\\(\\delta_{11}X+\\Delta_{1P}=0\\)，其中 \\(\\delta_{11}\\) 是 \\(X=1\\) 时 \\(AB\\) 两点沿 \\(AB\\) 方向的相对位移，\\(\\Delta_{1P}\\) 是外荷载单独作用时该相对位移。",
-    "算 \\(\\delta_{11}\\)：在 \\(A\\)、\\(B\\) 沿 \\(AB\\) 方向加一对单位力，刚架各杆的弯矩 \\(\\overline{M}\\) 由几何算出（对直角刚架是线性分布），杆 \\(AB\\) 的轴力 \\(\\overline{N}=1\\)。",
-    "\\(\\delta_{11}=\\displaystyle\\int_{\\text{刚架}}\\dfrac{\\overline{M}^2}{EI}\\mathrm{d}s+\\dfrac{1^2\\cdot l_{AB}}{EA}\\)——注意必须同时计入刚架的弯曲变形与杆 \\(AB\\) 的轴向变形。",
-    "算 \\(\\Delta_{1P}\\)：只加外荷载（\\(X=0\\)），求刚架弯矩 \\(M\\)，\\(\\Delta_{1P}=\\displaystyle\\int\\dfrac{M\\overline{M}}{EI}\\mathrm{d}s\\)。",
-    "解出 \\(X=-\\dfrac{\\Delta_{1P}}{\\delta_{11}}\\)，代回得实际内力（\\(M\\) 与 \\(X\\overline{M}\\) 叠加，\\(N=X\\)）。",
-    "求相对位移：\\(\\Delta_{AB}=\\displaystyle\\int\\dfrac{M_{\\text{总}}\\overline{M}}{EI}\\mathrm{d}s+\\dfrac{N_{\\text{总}}\\overline{N}l}{EA}\\)（用同一套单位力）。",
-    "也可用卡氏定理：\\(U=\\displaystyle\\int\\dfrac{M^2}{2EI}\\mathrm{d}s+\\dfrac{N^2l}{2EA}\\)，则 \\(\\Delta_{AB}=\\dfrac{\\partial U}{\\partial X}\\)（对多余力求偏导即得相对位移）。",
-    "要点：刚架＋杆的混合结构必须同时计弯曲与轴向变形；力法的关键是正确写出 \\(\\delta_{11}\\) 与 \\(\\Delta_{1P}\\) 两个莫尔积分。"
+    "结构：等腰直角刚架 \\(ACB\\)（两肢长 \\(a\\)，与水平成 \\(45^\\circ\\)），直杆 \\(AB\\) 长 \\(\\sqrt{2}a\\)，\\(A\\)、\\(B\\) 受沿 \\(AB\\) 向外的一对力 \\(F\\)；刚架只计弯曲变形，直杆计轴向变形，一次超静定。",
+    "单位力法（图乘）：在 \\(A\\)、\\(B\\) 沿 \\(AB\\) 方向加一对单位力，刚架两肢的弯矩图对称，\\(F\\) 与杆力 \\(F_N\\) 共同作用下 \\(A\\)、\\(B\\) 的相对位移为 \\(\\Delta=\\dfrac{a^3(F-F_N)}{3EI}\\)。",
+    "变形协调：刚架的相对位移等于直杆的伸长 \\(\\Delta l=\\dfrac{F_N\\cdot\\sqrt{2}a}{EA}\\)，即 \\(\\dfrac{a^3(F-F_N)}{3EI}=\\dfrac{\\sqrt{2}aF_N}{EA}\\)。",
+    "解得杆轴力 \\(F_N=\\dfrac{a^2A}{a^2A+3\\sqrt{2}I}F\\)。",
+    "相对位移 \\(\\Delta_{AB}=\\Delta l=\\dfrac{\\sqrt{2}a}{EA}F_N=\\dfrac{\\sqrt{2}Fa^3}{a^2EA+3\\sqrt{2}EI}\\)（两点互相远离）。"
    ],
    "figures": [
     "q807-2012-05.png"
@@ -223,16 +216,14 @@
    "source": "华工 801 2012（原卷扫描；2020 年前科目代码为 801，现 807）",
    "isReal": true,
    "text": "七．图示等截面曲杆，弯曲刚度为 \\(EI\\)。一重物 \\(P\\) 自高度 \\(h\\) 自由落下，冲击曲杆 \\(C\\) 点。已知：\\(l=2\\,\\mathrm{m}\\)，\\(R=1\\,\\mathrm{m}\\)，\\(h=0.8\\,\\mathrm{m}\\)，\\(P=1\\,\\mathrm{kN}\\)，\\(E=200\\,\\mathrm{GPa}\\)，\\(I=4000\\,\\mathrm{cm^4}\\)。试求 \\(C\\) 点的最大动挠度。",
-   "answer": "先求静挠度 \\(\\delta_{st}\\)（用莫尔积分或卡氏定理算曲杆在 \\(C\\) 点的竖向位移），得 \\(K_d=1+\\sqrt{1+2h/\\delta_{st}}\\)，则动挠度 \\(\\delta_d=K_d\\delta_{st}\\)。曲杆部分用极角积分 \\(\\mathrm{d}s=R\\,\\mathrm{d}\\varphi\\)。",
+   "answer": "\\(C\\) 点静挠度 \\(\\delta_{st}\\approx1.59\\,\\mathrm{mm}\\)，动荷系数 \\(K_d\\approx32.7\\)，\\(C\\) 点最大动挠度 \\(\\delta_d=K_d\\delta_{st}\\approx52.0\\,\\mathrm{mm}\\)。",
    "steps": [
-    "参数：\\(E=200\\times10^9\\,\\mathrm{Pa}\\)，\\(I=4000\\,\\mathrm{cm^4}=4000\\times10^{-8}\\,\\mathrm{m^4}=4.0\\times10^{-5}\\,\\mathrm{m^4}\\)，\\(EI=200\\times10^9\\times4.0\\times10^{-5}=8.0\\times10^6\\,\\mathrm{N\\cdot m^2}\\)。",
-    "静挠度：在 \\(C\\) 点加竖向单位力，用莫尔积分 \\(\\delta_{st}=\\displaystyle\\int\\dfrac{M\\overline{M}}{EI}\\mathrm{d}s\\)，曲杆的 \\(\\mathrm{d}s=R\\,\\mathrm{d}\\varphi\\)。",
-    "曲杆（半径 \\(R\\)）的弯矩：实际荷载 \\(P\\) 在角度 \\(\\varphi\\) 处产生 \\(M(\\varphi)=P\\cdot R\\sin\\varphi\\)（按几何定）；单位力对应 \\(\\overline{M}(\\varphi)=R\\sin\\varphi\\)。",
-    "积分：\\(\\delta_{st}=\\dfrac{1}{EI}\\displaystyle\\int_0^{\\pi/2}P R^2\\sin^2\\varphi\\cdot R\\,\\mathrm{d}\\varphi=\\dfrac{PR^3}{EI}\\int_0^{\\pi/2}\\sin^2\\varphi\\,\\mathrm{d}\\varphi=\\dfrac{PR^3}{EI}\\cdot\\dfrac{\\pi}{4}\\)。",
-    "代入：\\(\\delta_{st}=\\dfrac{1000\\times1^3}{8.0\\times10^6}\\times\\dfrac{\\pi}{4}=\\dfrac{1000}{8.0\\times10^6}\\times0.7854=9.82\\times10^{-5}\\,\\mathrm{m}=0.0982\\,\\mathrm{mm}\\)（仅曲杆部分；若还有直段需另加）。",
-    "动荷系数：\\(K_d=1+\\sqrt{1+\\dfrac{2\\times0.8}{9.82\\times10^{-5}}}=1+\\sqrt{1+16293}=1+127.6=128.6\\)。",
-    "最大动挠度：\\(\\delta_d=K_d\\delta_{st}=128.6\\times9.82\\times10^{-5}=1.263\\times10^{-2}\\,\\mathrm{m}=12.63\\,\\mathrm{mm}\\)。",
-    "要点：冲击问题的 \\(\\delta_d=K_d\\delta_{st}\\)，其中 \\(K_d=1+\\sqrt{1+2h/\\delta_{st}}\\)；曲杆的静挠度用极角积分算，\\(\\mathrm{d}s=R\\mathrm{d}\\varphi\\) 与 \\(\\sin^2\\varphi\\) 的积分（结果为 \\(\\pi/4\\)）是关键。"
+    "结构由竖直直杆段 \\(AB\\)（长 \\(l=2\\,\\mathrm{m}\\)）与半圆弧段（半径 \\(R=1\\,\\mathrm{m}\\)）组成，\\(A\\) 端固定、\\(C\\) 端自由。\\(EI=200\\times10^9\\times4000\\times10^{-8}=8.0\\times10^6\\,\\mathrm{N\\cdot m^2}\\)。",
+    "静载 \\(P\\) 作用于 \\(C\\)：半圆弧段弯矩 \\(M(\\theta)=PR(1-\\cos\\theta)\\)（\\(\\theta\\) 自 \\(C\\) 端起算，\\(0\\le\\theta\\le\\pi\\)），单位力弯矩 \\(\\overline{M}(\\theta)=R(1-\\cos\\theta)\\)，弧段贡献 \\(\\dfrac{PR^3}{EI}\\int_0^{\\pi}(1-\\cos\\theta)^2\\mathrm{d}\\theta=\\dfrac{PR^3}{EI}\\cdot\\dfrac{3\\pi}{2}=0.59\\,\\mathrm{mm}\\)。",
+    "直杆段弯矩恒为 \\(M=2PR\\)，单位力弯矩 \\(\\overline{M}=2R\\)，贡献 \\(\\dfrac{4PR^2l}{EI}=1.00\\,\\mathrm{mm}\\)。",
+    "静挠度 \\(\\delta_{st}=0.59+1.00=1.59\\,\\mathrm{mm}\\)（直杆段贡献占大头，不可漏算）。",
+    "动荷系数 \\(K_d=1+\\sqrt{1+\\dfrac{2h}{\\delta_{st}}}=1+\\sqrt{1+\\dfrac{2\\times800}{1.59}}\\approx32.7\\)。",
+    "最大动挠度 \\(\\delta_d=K_d\\delta_{st}\\approx32.7\\times1.59\\approx52.0\\,\\mathrm{mm}\\)。"
    ],
    "figures": [
     "q807-2012-07.png"

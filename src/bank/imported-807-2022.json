@@ -12,14 +12,13 @@
    "source": "华工 807 2022（回忆版）",
    "isReal": true,
    "text": "如图所示，BE 杆件的许用应力为 \\([\\sigma]=90\\,\\mathrm{MPa}\\)，横截面积为 \\(A=b\\cdot h=0.012\\times0.025\\,\\mathrm{m^2}\\)；C 处有一螺钉，直径 \\(d=10\\,\\mathrm{mm}\\)，单向剪切。求结构的最大剪切应力 \\(\\tau\\)。",
-   "answer": "按分段尺寸 A–C=300 mm 计算：\\(F_{\\max}\\approx7.11\\,\\mathrm{kN}\\)，\\(\\tau_{\\max}\\approx54.3\\,\\mathrm{MPa}\\)。若按图中 450 mm 总长理解，\\(\\tau_{\\max}\\approx43.9\\,\\mathrm{MPa}\\)；回忆版尺寸标注存在矛盾，考试以原图为准。",
+   "answer": "\\(F_{\\max}\\approx4.35\\,\\mathrm{kN}\\)，铰 \\(C\\) 处螺钉剪力 \\(F_C=0.6F\\approx2.61\\,\\mathrm{kN}\\)，最大剪切应力 \\(\\tau_{\\max}\\approx33.3\\,\\mathrm{MPa}\\)。",
    "steps": [
-    "取辅助梁 CD 为研究对象：C 为中间铰、D 为滚轴。设 C 到右侧 \\(F\\) 的距离为 100 mm，C–D=250 mm。由 \\(\\sum M_C=0\\) 得 \\(R_D=F\\cdot100/250=0.4F\\)；由 \\(\\sum F_y=0\\) 得铰 C 处剪力 \\(V_C=F-R_D=0.6F\\)。辅助梁在 C 受到向上的 0.6F，故它对主梁 AC 的作用为向下的 0.6F。",
-    "取主梁 AC：A 为铰支，B 处有 BE 杆的竖向力 \\(N_{BE}\\)，C 处受辅助梁传来的 0.6F 向下，主梁上还有一个 \\(F\\)。按 A–B=100 mm、B 到 F 为 100 mm、F 到 C 为 100 mm，取 A 为矩心：\\(N_{BE}\\cdot100=F\\cdot200+0.6F\\cdot300\\)，解得 \\(N_{BE}=3.8F\\)。",
-    "BE 杆强度控制：\\(N_{BE}\\le[\\sigma]A=90\\times10^6\\times(0.012\\times0.025)=27.0\\,\\mathrm{kN}\\)，所以 \\(F\\le27.0/3.8=7.11\\,\\mathrm{kN}\\)。",
-    "螺钉在 C 处单剪，剪力等于铰 C 的竖向力 \\(V_C=0.6F\\)。最大 \\(V_C=0.6\\times7.11=4.26\\,\\mathrm{kN}\\)。",
-    "单剪面积 \\(A_s=\\pi d^2/4=\\pi(10)^2/4=78.54\\,\\mathrm{mm^2}\\)，故 \\(\\tau_{\\max}=V_C/A_s=4260/78.54=54.3\\,\\mathrm{MPa}\\)。",
-    "校核：若把 450 mm 当作 A–C 的总长（C 两侧仍各 100 mm），则主梁力臂改变，\\(N_{BE}=4.7F\\)，\\(F_{\\max}=5.74\\,\\mathrm{kN}\\)，\\(\\tau_{\\max}=43.9\\,\\mathrm{MPa}\\)。两种读法都说明控制因素是 BE 杆强度，而不是螺钉先剪坏。"
+    "题图尺寸：\\(A\\!-\\!B=100\\,\\mathrm{mm}\\)、\\(A\\!-\\!C=450\\,\\mathrm{mm}\\)、\\(C\\!-\\!D=250\\,\\mathrm{mm}\\)，两个 \\(F\\) 分别作用于 \\(C\\) 左、右各 \\(100\\,\\mathrm{mm}\\) 处。",
+    "取辅助梁 \\(CD\\)：\\(C\\) 为中间铰、\\(D\\) 为滚轴。由 \\(\\sum M_D=0\\)：\\(F_C\\times250=F\\times150\\)，得铰 \\(C\\) 的传力 \\(F_C=\\dfrac35F=0.6F\\)。",
+    "取主梁 \\(AC\\)（\\(A\\) 铰支、\\(B\\) 处 \\(BE\\) 杆拉力 \\(N_{BE}\\)）：由 \\(\\sum M_A=0\\)：\\(N_{BE}\\times100=F\\times350+F_C\\times450=620F\\)，得 \\(N_{BE}=6.2F\\)。",
+    "\\(BE\\) 杆强度控制：\\(N_{BE}\\le[\\sigma]A=90\\times10^6\\times(0.012\\times0.025)=27.0\\,\\mathrm{kN}\\)，故 \\(F_{\\max}=27.0/6.2\\approx4.35\\,\\mathrm{kN}\\)。",
+    "螺钉在 \\(C\\) 处单剪，剪力为 \\(F_C=0.6\\times4.35\\approx2.61\\,\\mathrm{kN}\\)；\\(A_s=\\pi d^2/4=78.54\\,\\mathrm{mm^2}\\)，\\(\\tau_{\\max}=2613/78.54\\approx33.3\\,\\mathrm{MPa}\\)。"
    ],
    "figures": [
     "q807-2022-1.png"
@@ -74,15 +73,15 @@
    "source": "华工 807 2022（回忆版）",
    "isReal": true,
    "text": "结构如图所示，荷载为 \\(M_t=3\\,\\mathrm{kN\\cdot m}\\)、\\(m=2\\,\\mathrm{kN\\cdot m/m}\\)、\\(D=0.1\\,\\mathrm{m}\\)。试求：(1) 当荷载作用在图 a 时，求 \\(\\tau_{\\max}\\)、单元体以及主应力；(2) 当荷载作用在图 b 时，求 BC 杆内径，使 \\(\\varphi_{AB}=\\varphi_{BC}\\)。",
-   "answer": "(1) \\(T_{AB}=3.4\\,\\mathrm{kN\\cdot m}\\)，\\(\\tau_{\\max}=17.3\\,\\mathrm{MPa}\\)，主应力 \\(\\sigma_1=17.3\\,\\mathrm{MPa},\\sigma_2=0,\\sigma_3=-17.3\\,\\mathrm{MPa}\\)；(2) \\(d\\approx58.6\\,\\mathrm{mm}\\)。",
+   "answer": "(1) \\(T_{AB}=3.4\\,\\mathrm{kN\\cdot m}\\)，\\(\\tau_{\\max}=17.3\\,\\mathrm{MPa}\\)，主应力 \\(\\sigma_1=17.3\\,\\mathrm{MPa},\\sigma_2=0,\\sigma_3=-17.3\\,\\mathrm{MPa}\\)；(2) \\(d=50\\,\\mathrm{mm}\\)。",
    "steps": [
     "图 a：AB 段作用均布力偶 \\(m=2\\,\\mathrm{kN\\cdot m/m}\\)，长 0.2 m；BC 段长 0.2 m，端部作用 \\(M_t=3\\,\\mathrm{kN\\cdot m}\\)。由扭矩平衡，\\(T_{BC}=3\\,\\mathrm{kN\\cdot m}\\)，\\(T_{AB}=3+2\\times0.2=3.4\\,\\mathrm{kN\\cdot m}\\)。",
     "抗扭截面系数 \\(W_p=\\dfrac{\\pi D^3}{16}=\\dfrac{\\pi(0.1)^3}{16}=1.963\\times10^{-4}\\,\\mathrm{m^3}\\)。最大切应力在 AB 段外表面：\\(\\tau_{\\max}=\\dfrac{T_{AB}}{W_p}=\\dfrac{3400}{1.963\\times10^{-4}}=17.3\\,\\mathrm{MPa}\\)。",
     "取外表面纯剪切单元体：左右面切应力 \\(\\tau=17.3\\,\\mathrm{MPa}\\)，正应力为零。主应力 \\(\\sigma_{1,2}=\\pm\\tau\\)，即 \\(\\sigma_1=17.3\\,\\mathrm{MPa},\\sigma_2=0,\\sigma_3=-17.3\\,\\mathrm{MPa}\\)，主平面与轴线成 \\(45^\\circ\\)。",
     "图 b：BC 改为空心圆管，外径仍为 D，内径为 d。两段长度均为 0.2 m，材料相同，故 \\(GI_p\\) 为常数因子。",
-    "扭转角 \\(\\varphi_{AB}=\\dfrac{T_{AB}\\cdot0.2}{GI_{p1}}\\)，\\(\\varphi_{BC}=\\dfrac{T_{BC}\\cdot0.2}{GI_{p2}}\\)。令二者相等：\\(\\dfrac{I_{p2}}{I_{p1}}=\\dfrac{T_{BC}}{T_{AB}}=\\dfrac{3}{3.4}=0.8824\\)。",
-    "实心 \\(I_{p1}=\\pi D^4/32\\)，空心 \\(I_{p2}=\\pi(D^4-d^4)/32\\)，故 \\(1-(d/D)^4=0.8824\\)，即 \\((d/D)^4=0.1176\\)，\\(d/D=0.5857\\)。",
-    "代入 D=0.1 m：\\(d=0.0586\\,\\mathrm{m}\\approx58.6\\,\\mathrm{mm}\\)。此时两段单位长度扭转角相同，\\(\\varphi_{AB}=\\varphi_{BC}\\)。"
+    "图 b：\\(BC\\) 改为空心圆管（外径 \\(D\\)、内径 \\(d\\)）。注意 \\(AB\\) 段扭矩沿轴线线性变化 \\(T_{AB}(x)=3.4-2x\\,\\mathrm{kN\\cdot m}\\)（分布力偶 \\(m=2\\,\\mathrm{kN\\cdot m/m}\\)），故 \\(\\varphi_{AB}=\\dfrac{1}{GI_{p1}}\\int_0^{0.2}T_{AB}(x)\\,\\mathrm{d}x=\\dfrac{0.64}{GI_{p1}}\\)（单位 \\(\\mathrm{kN\\cdot m^2}\\)），不能按恒定扭矩 \\(3.4\\) 计算。",
+    "\\(\\varphi_{BC}=\\dfrac{T_{BC}\\cdot0.2}{GI_{p2}}=\\dfrac{0.60}{GI_{p2}}\\)。令 \\(\\varphi_{AB}=\\varphi_{BC}\\)：\\(\\dfrac{I_{p2}}{I_{p1}}=\\dfrac{0.60}{0.64}=0.9375\\)。",
+    "由 \\(1-(d/D)^4=0.9375\\) 得 \\((d/D)^4=0.0625\\)，\\(d/D=0.5\\)，即 \\(d=0.5\\times100=50\\,\\mathrm{mm}\\)。"
    ],
    "figures": [
     "q807-2022-3.png"
@@ -105,17 +104,16 @@
    "source": "华工 807 2022（回忆版）",
    "isReal": true,
    "text": "结构截面如图所示，\\(h_1=88\\,\\mathrm{mm}\\)、\\(h_2=52\\,\\mathrm{mm}\\)、\\(a=1\\,\\mathrm{m}\\)，\\([\\sigma_t]=40\\,\\mathrm{MPa}\\)、\\([\\sigma_c]=120\\,\\mathrm{MPa}\\)。试求：(1) \\(I_z\\)；(2) 画出内力图，并由危险截面求 \\([q]\\)。",
-   "answer": "(1) \\(I_z\\approx7.64\\times10^6\\,\\mathrm{mm^4}\\)；(2) \\([q]\\approx0.53\\,\\mathrm{kN/m}\\)（由拉应力控制）。",
+   "answer": "(1) \\(I_z\\approx7.64\\times10^6\\,\\mathrm{mm^4}\\)；(2) \\([q]\\approx2.94\\,\\mathrm{kN/m}\\)（由 \\(x=a\\) 截面左侧的拉应力控制）。",
    "steps": [
-    "截面分块：翼缘 80×20 mm，腹板 20×120 mm（总高 140 mm）。面积 \\(A=80\\times20+20\\times120=4000\\,\\mathrm{mm^2}\\)。",
-    "取顶边为参考，形心距顶 \\(\\bar y=\\dfrac{1600\\times10+2400\\times80}{4000}=52\\,\\mathrm{mm}\\)，故 \\(h_2=52\\,\\mathrm{mm}\\)、\\(h_1=88\\,\\mathrm{mm}\\)，与题给一致。",
-    "\\(I_z=\\left[\\dfrac{80\\times20^3}{12}+1600(52-10)^2\\right]+\\left[\\dfrac{20\\times120^3}{12}+2400(80-52)^2\\right]\\approx7.64\\times10^6\\,\\mathrm{mm^4}\\)。",
-    "截面模量：\\(W_t=I_z/52=1.469\\times10^5\\,\\mathrm{mm^3}\\)（上缘），\\(W_c=I_z/88=8.68\\times10^4\\,\\mathrm{mm^3}\\)（下缘）。",
-    "受力：悬臂梁总长 3a，自由端有 2qa 向下，x=a 处有力偶 3qa²，a 到 3a 段有均布 q。墙端反力 \\(R=4qa\\)，反力矩 \\(M_w=2qa\\cdot3a+3qa^2+2qa\\cdot a=11qa^2\\)（负弯矩）。",
-    "内力图：剪力 \\(V=2qa\\)（0<x<a），随后线性增至 \\(4qa\\)（墙端）；弯矩在自由端为 0，x=a 处 \\(-2qa^2\\)，墙端 \\(-11qa^2\\)，危险截面在墙端：\\(M=11qa^2,\\ V=4qa\\)。",
-    "墙端负弯矩使上缘受拉、下缘受压。拉应力 \\(\\sigma_t=\\dfrac{11qa^2}{W_t}=\\dfrac{11\\times10^6q}{1.469\\times10^5}=74.9q\\ \\mathrm{MPa}\\)（q 以 kN/m 计，a=1 m）。由 \\(\\sigma_t\\le40\\) 得 \\(q\\le0.534\\,\\mathrm{kN/m}\\)。",
-    "压应力 \\(\\sigma_c=\\dfrac{11\\times10^6q}{8.68\\times10^4}=126.7q\\le120\\)，得 \\(q\\le0.947\\,\\mathrm{kN/m}\\)；切应力按 \\(\\tau_{\\max}\\approx\\dfrac{3V}{2A}=\\dfrac{3\\times4q\\times10^3}{2\\times4000}=1.5q\\le120\\)，不控制。",
-    "取小值：\\([q]\\approx0.53\\,\\mathrm{kN/m}\\)。说明该截面很薄，弯曲拉应力是控制因素。"
+    "截面为槽形：上翼板 \\(80\\times20\\,\\mathrm{mm}\\)，两腿 \\(10\\times120\\,\\mathrm{mm}\\)（总高 \\(140\\,\\mathrm{mm}\\)）。面积 \\(A=1600+2400=4000\\,\\mathrm{mm^2}\\)。",
+    "形心距顶边 \\(\\bar y=\\dfrac{1600\\times10+2400\\times80}{4000}=52\\,\\mathrm{mm}\\)，即 \\(h_2=52\\,\\mathrm{mm}\\)、\\(h_1=88\\,\\mathrm{mm}\\)，与题给一致。",
+    "\\(I_z=\\left[\\dfrac{80\\times20^3}{12}+1600(52-10)^2\\right]+2\\left[\\dfrac{10\\times120^3}{12}+1200(80-52)^2\\right]\\approx7.64\\times10^6\\,\\mathrm{mm^4}\\)。",
+    "梁为悬臂梁（右端固定）：自由端作用 \\(2qa\\) 向下，\\(x=a\\) 处作用力偶 \\(3qa^2\\)，\\(a\\le x\\le3a\\) 段作用均布载荷 \\(q\\)（方向向上，见题图）。",
+    "弯矩：\\(0<x<a\\) 段 \\(M(x)=-2qax\\)，\\(x=a\\) 左侧 \\(M=-2qa^2\\)；\\(a<x<3a\\) 段 \\(M(x)=-2qax+3qa^2+\\dfrac q2(x-a)^2\\)，\\(x=a\\) 右侧 \\(M=+qa^2\\)，墙端 \\(M=-qa^2\\)。最大 \\(|M|=2qa^2\\) 在 \\(x=a\\) 左侧截面。",
+    "该截面负弯矩使上缘受拉（\\(y=h_2=52\\,\\mathrm{mm}\\)）：\\(q\\le\\dfrac{I_z[\\sigma_t]}{2a^2h_2}=2937\\,\\mathrm{N/m}\\)；下缘受压：\\(q\\le\\dfrac{I_z[\\sigma_c]}{2a^2h_1}=5207\\,\\mathrm{N/m}\\)。",
+    "其余截面（\\(|M|=qa^2\\)）：下缘受拉 \\(q\\le3472\\,\\mathrm{N/m}\\)，上缘受压 \\(q\\le17.6\\,\\mathrm{kN/m}\\)，均不控制。",
+    "取最小值：\\([q]\\approx2.94\\,\\mathrm{kN/m}\\)。"
    ],
    "figures": [
     "q807-2022-4.png"
