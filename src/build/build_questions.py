@@ -70,7 +70,7 @@ def main():
         except Exception as e:
             print("skip", f.name, e)
             continue
-        names = {"math": "数学一", "math2": "数学二", "english": "英语一", "english2": "英语二", "mechanics": "807 材料力学", "politics": "政治"}
+        names = {"math": "数学一", "math2": "数学二", "math3": "数学三", "english": "英语一", "english2": "英语二", "mechanics": "807 材料力学", "politics": "政治"}
         for it in extra:
             if it.get("id") and it["id"] not in seen:
                 it.setdefault("subjectName", names.get(it.get("subject"), ""))

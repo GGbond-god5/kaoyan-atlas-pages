@@ -1,11 +1,12 @@
 // 题目分值分配：卷面标注优先，没有标注时按科目与题型排分。
 // 套卷会尝试把整卷配到官方总分（数学/专业课 150，英语/政治 100）。
 
-const TOTALS = { math: 150, math2: 150, mechanics: 150, english: 100, english2: 100, politics: 100 };
+const TOTALS = { math: 150, math2: 150, math3: 150, mechanics: 150, english: 100, english2: 100, politics: 100 };
 
 const STANDARD = {
   math: { 选择题: 5, 单选题: 5, 多选题: 5, 填空题: 5, 计算题: 12, 证明题: 12, 简答题: 10, 概念题: 10 },
   math2: { 选择题: 5, 单选题: 5, 多选题: 5, 填空题: 5, 计算题: 12, 证明题: 12, 简答题: 10, 概念题: 10 },
+  math3: { 选择题: 5, 单选题: 5, 多选题: 5, 填空题: 5, 计算题: 12, 证明题: 12, 简答题: 10, 概念题: 10 },
   mechanics: { 计算题: 20, 证明题: 20, 简答题: 15, 概念题: 15 },
   english: { 完形: 0.5, 阅读: 2, 新题型: 2, 翻译: 2, 小作文: 10, 大作文: 20, 词汇: 0.5, 句式: 5 },
   english2: { 完形: 0.5, 阅读: 2, 新题型: 2, 翻译: 3, 小作文: 10, 大作文: 15, 词汇: 0.5, 句式: 5 },
@@ -41,7 +42,7 @@ export function questionScore(subject, kind, difficulty) {
     if (difficulty === "难") return 25;
     return 20;
   }
-  if (subject === "math" || subject === "math2") {
+  if (subject === "math" || subject === "math2" || subject === "math3") {
     if (!OBJECTIVE.has(kind)) return difficulty === "易" ? 10 : 12;
   }
   const table = STANDARD[subject] || STANDARD.math;
@@ -99,7 +100,7 @@ export function allocatePaper(subject, questions, mode) {
     return scores;
   }
 
-  if (subject === "math" || subject === "math2") {
+  if (subject === "math" || subject === "math2" || subject === "math3") {
     const objective = missing.filter(i => OBJECTIVE.has(list[i].kind));
     const subjective = missing.filter(i => !OBJECTIVE.has(list[i].kind));
     const objectiveSum = objective.reduce((sum, i) => sum + 5, 0);

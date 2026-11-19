@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   window.QUESTIONS = window.QUESTIONS || { items: [] };
-  var SUBJECTS = ['math', 'math2', 'english', 'english2', 'mechanics', 'politics'];
+  var SUBJECTS = ['math', 'math2', 'math3', 'english', 'english2', 'mechanics', 'politics'];
   var loaded = {}, loading = {};
   function add(subject, items) {
     var have = new Set(window.QUESTIONS.items.map(function (q) { return q.id; }));

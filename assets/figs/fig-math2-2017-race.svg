@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" role="img" aria-label="甲乙速度曲线图">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1.2;stroke-linecap:round}
+    .ax{stroke:#2A2723;fill:none;stroke-width:1.4}
+    .dash{stroke:#6B6357;fill:none;stroke-width:1.1;stroke-dasharray:5 4}
+    .shade{fill:rgba(168,52,42,.13);stroke:none}
+    .lbl{font:14px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .math{font:italic 14px Georgia,serif;fill:#2A2723}
+  </style>
+
+  <text class="sub" x="24" y="26">甲、乙速度曲线（据解析重绘示意图）：实线 v₁（甲），虚线 v₂（乙）</text>
+  <path class="shade" d="M90 118 L290 176 L290 168 L90 196 Z"/>
+  <path class="shade" d="M290 168 L450 118 L590 176 L590 168 L450 226 L290 176 Z" opacity="0.7"/>
+  <path class="shade" d="M590 168 L690 138 L690 178 L590 176 Z"/>
+  <path class="ax" d="M90 330 H700 M700 330 l-10 -5 v10 z"/>
+  <path class="ax" d="M90 330 V52 M90 52 l-5 10 h10 z"/>
+  <path class="ink" d="M90 118 Q190 140 290 176 Q420 226 450 226 Q540 210 590 168 Q640 146 690 138"/>
+  <path class="dash" d="M90 196 Q200 190 290 168 Q380 128 450 118 Q540 132 590 176 Q640 182 690 178" style="stroke:#2A2723;stroke-width:1.8"/>
+  <path class="dash" d="M290 176 V330 M590 168 V330" style="stroke:#6B6357"/>
+  <text class="math" x="82" y="352">0</text><text class="math" x="278" y="352">10</text>
+  <text class="math" x="578" y="352">25</text><text class="math" x="678" y="352">30</text>
+  <text class="math" x="692" y="322">t</text><text class="math" x="66" y="66">v</text>
+  <text class="lbl" x="168" y="150">10</text><text class="lbl" x="420" y="160">20</text>
+  <text class="lbl" x="626" y="152">3</text>
+  <text class="lbl" x="120" y="106">v₁（甲）</text><text class="lbl" x="120" y="222">v₂（乙）</text>
+
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 410" role="img" aria-label="f'(x) 的图形">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1.2;stroke-linecap:round}
+    .ax{stroke:#2A2723;fill:none;stroke-width:1.4}
+    .dash{stroke:#6B6357;fill:none;stroke-width:1.1;stroke-dasharray:5 4}
+    .shade{fill:rgba(168,52,42,.13);stroke:none}
+    .lbl{font:14px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .math{font:italic 14px Georgia,serif;fill:#2A2723}
+  </style>
+
+  <text class="sub" x="24" y="26">y = f'(x) 的图形（据解析重绘示意图）</text>
+  <path class="ax" d="M36 240 H700 M700 240 l-10 -5 v10 z"/>
+  <path class="dash" d="M400 52 V396"/>
+  <path class="ink" d="M52 148 Q84 128 112 132 Q150 190 170 238 Q210 322 282 330 Q352 322 392 292"/>
+  <path class="ink" d="M408 332 Q470 300 520 241 Q556 168 586 152 Q626 190 640 238 Q664 300 698 306"/>
+  <circle cx="170" cy="240" r="4" fill="#2A2723"/>
+  <circle cx="520" cy="240" r="4" fill="#2A2723"/>
+  <circle cx="640" cy="240" r="4" fill="#2A2723"/>
+  <text class="math" x="158" y="266">x₁</text><text class="math" x="406" y="266">x₂</text>
+  <text class="math" x="508" y="266">x₃</text><text class="math" x="628" y="266">x₄</text>
+  <text class="math" x="678" y="228">x</text><text class="math" x="52" y="56">y = f'(x)</text>
+
+</svg>

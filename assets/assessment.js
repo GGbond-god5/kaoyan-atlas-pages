@@ -94,8 +94,8 @@
       generic: { dims: ["知识理解", "概念辨析", "方法运用", "分析推理", "表达规范", "综合应用"], short: ["理解", "辨析", "运用", "推理", "表达", "综合"],
         kindMap: {"选择题": "知识理解", "单选题": "知识理解", "多选题": "知识理解", "填空题": "知识理解", "解答题": "方法运用", "计算题": "方法运用", "分析题": "方法运用", "简答题": "表达规范"} }
     };
-    SETS.math2 = SETS.math; SETS.english2 = SETS.english;
-    const SUBJECT_NAMES = { math: "数学一", math2: "数学二", english: "英语一", english2: "英语二", mechanics: "807 材料力学", politics: "政治" };
+    SETS.math2 = SETS.math; SETS.math3 = SETS.math; SETS.english2 = SETS.english;
+    const SUBJECT_NAMES = { math: "数学一", math2: "数学二", math3: "数学三", english: "英语一", english2: "英语二", mechanics: "807 材料力学", politics: "政治" };
     const radarQ = questions[0] || {};
     const radarSubject = radarQ.subject || "";
     const R = SETS[radarSubject] || SETS.generic;

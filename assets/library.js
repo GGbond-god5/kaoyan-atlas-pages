@@ -3,7 +3,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL('./pdfjs/pdf.worker.min.mjs', impo
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KINDS = ['选择题','单选题','多选题','填空题','计算题','证明题','简答题','分析题','完形','阅读','新题型','翻译','小作文','大作文'];
-const BUILTIN_SUBJECTS = {math:'数学一', math2:'数学二', english:'英语一', english2:'英语二', mechanics:'材料力学', politics:'政治'};
+const BUILTIN_SUBJECTS = {math:'数学一', math2:'数学二', math3:'数学三', english:'英语一', english2:'英语二', mechanics:'材料力学', politics:'政治'};
 let mySubjects = {};
 const subjectLabel = v => mySubjects[v] || BUILTIN_SUBJECTS[v] || v;
 const message = s => { $('#status').textContent = s; };

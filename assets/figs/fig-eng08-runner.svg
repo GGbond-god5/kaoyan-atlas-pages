@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 410" role="img" aria-label="跑者中途停下看别人超过自己">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1.3;stroke-linecap:round}
+    .dash{stroke:#6B6357;fill:none;stroke-width:1.2;stroke-dasharray:5 4}
+    .face{stroke:#2A2723;fill:none;stroke-width:1.2;stroke-linecap:round}
+    .lbl{font:15px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .en{font:italic 15px Georgia,serif;fill:#2A2723}
+    .sub{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+  </style>
+
+  <path class="ink" d="M30 356 H700 M30 306 H700 M30 256 H700"/>
+  <circle class="ink" cx="180" cy="150" r="15"/>
+  <path class="ink" d="M184 166 L206 204 M206 204 L252 196 M206 204 L196 248 M188 178 L232 168 M186 180 L150 200"/>
+  <path class="thin" d="M120 150 h-26 M128 172 h-22"/>
+  <circle class="ink" cx="330" cy="158" r="15"/>
+  <path class="ink" d="M334 174 L356 212 M356 212 L402 204 M356 212 L346 256 M338 186 L382 176 M336 188 L300 208"/>
+  <path class="thin" d="M272 158 h-26 M280 180 h-22"/>
+  <circle class="ink" cx="540" cy="216" r="16"/>
+  <path class="face" d="M532 224 q4 -4 8 0 M546 210 q6 2 4 8"/>
+  <path class="ink" d="M538 234 L520 276 M520 276 L486 300 M520 276 L548 306 M534 248 L496 262 M536 250 L566 236"/>
+  <path class="thin" d="M576 196 q6 10 0 16 q-6 -6 0 -16 M596 210 q6 10 0 16 q-6 -6 0 -16"/>
+  <text class="sub" x="420" y="392">中途停下，看着别人超过自己</text>
+
+</svg>

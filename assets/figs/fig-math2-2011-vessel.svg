@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 470" role="img" aria-label="容器生成曲线示意图">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1.2;stroke-linecap:round}
+    .ax{stroke:#2A2723;fill:none;stroke-width:1.4}
+    .dash{stroke:#6B6357;fill:none;stroke-width:1.1;stroke-dasharray:5 4}
+    .shade{fill:rgba(168,52,42,.13);stroke:none}
+    .lbl{font:14px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .math{font:italic 14px Georgia,serif;fill:#2A2723}
+  </style>
+
+  <text class="sub" x="24" y="26">容器内侧的生成曲线（据题面方程重绘示意图）</text>
+  <path class="dash" d="M360 40 V452"/>
+  <path class="dash" d="M120 240 H600"/>
+  <path class="ink" d="M360 420 A130 120 0 0 1 472.6 240 A130 120 0 0 0 360 60"/>
+  <path class="ink" d="M360 420 A130 120 0 0 0 247.4 240 A130 120 0 0 1 360 60"/>
+  <text class="math" x="368" y="66">2</text>
+  <text class="math" x="368" y="426">-1</text>
+  <text class="math" x="300" y="232">y = 1/2</text>
+  <text class="lbl" x="486" y="150">x² + y² = 2y (y ≥ 1/2)</text>
+  <text class="lbl" x="486" y="330">x² + y² = 1 (y ≤ 1/2)</text>
+  <path class="thin" d="M486 158 L452 176 M486 322 L448 306"/>
+  <text class="math" x="368" y="296">O</text>
+  <text class="math" x="606" y="232">x</text><text class="math" x="368" y="36">y</text>
+
+</svg>

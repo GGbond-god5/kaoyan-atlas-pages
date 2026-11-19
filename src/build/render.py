@@ -74,15 +74,20 @@ def figure(figs):
     parts = []
     for f in figs:
         src = f.get("src", "") if isinstance(f, dict) else str(f)
+        caption = f.get("caption", "") if isinstance(f, dict) else ""
+        cap = f'<figcaption>{inline(caption)}</figcaption>' if caption else ""
         path = ROOT / "assets" / "figs" / f"{src}.svg"
         if not path.exists():
+            # Raster originals (e.g. cropped exam-paper figures) are referenced
+            # by filename with extension and served from assets/figs/.
+            raster = ROOT / "assets" / "figs" / src
+            if "." in src and raster.exists():
+                parts.append(f'<figure class="kfig"><img src="assets/figs/{src}" alt="题图">{cap}</figure>')
             continue
         if src not in FIG_CACHE:
             svg = path.read_text(encoding="utf-8")
             svg = re.sub(r"<\?xml[^>]*\?>", "", svg).strip()
             FIG_CACHE[src] = svg
-        caption = f.get("caption", "") if isinstance(f, dict) else ""
-        cap = f'<figcaption>{inline(caption)}</figcaption>' if caption else ""
         parts.append(f'<figure class="kfig">{FIG_CACHE[src]}{cap}</figure>')
     return "".join(parts)
 
@@ -254,6 +259,7 @@ margin-bottom:1.4mm;font-weight:600}
 .disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
 .kfig{margin:3mm 0;break-inside:avoid}
 .kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig img{display:block;max-width:100%;height:auto;border:.4pt solid var(--rule2);background:#fff}
 .kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
 
 /* section kicker */

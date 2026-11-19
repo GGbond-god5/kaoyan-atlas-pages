@@ -38,8 +38,8 @@
   try { if (localStorage.getItem('atlasSideOpen') === '1') setSide(true); } catch (e) {}
 
   /* ---------------- 学情速览 ---------------- */
-  var SUBJ = { math: '数学一', math2: '数学二', english: '英语一', english2: '英语二', mechanics: '807 材料力学', politics: '政治' };
-  var COLORS = { math: '#B8860B', math2: '#8A6BA8', english: '#4A6FA5', english2: '#3E8E8A', mechanics: '#A53B30', politics: '#3E7A4E' };
+  var SUBJ = { math: '数学一', math2: '数学二', math3: '数学三', english: '英语一', english2: '英语二', mechanics: '807 材料力学', politics: '政治' };
+  var COLORS = { math: '#B8860B', math2: '#8A6BA8', math3: '#9C6644', english: '#4A6FA5', english2: '#3E8E8A', mechanics: '#A53B30', politics: '#3E7A4E' };
   function statsOf(a) {
     var g = 0, s = 0, m = 0;
     Object.keys(a.results || {}).forEach(function (qid) {

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 410" role="img" aria-label="计划写满一面墙却始终没有开始">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1.3;stroke-linecap:round}
+    .dash{stroke:#6B6357;fill:none;stroke-width:1.2;stroke-dasharray:5 4}
+    .face{stroke:#2A2723;fill:none;stroke-width:1.2;stroke-linecap:round}
+    .lbl{font:15px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .en{font:italic 15px Georgia,serif;fill:#2A2723}
+    .sub{font:12px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+  </style>
+
+  <rect class="ink" x="70" y="40" width="470" height="270"/>
+  <text class="lbl" x="96" y="76">计划 PLAN</text>
+  <path class="thin" d="M96 100 h180 M96 132 h240 M96 164 h200 M96 196 h250 M96 228 h170 M96 260 h220"/>
+  <path class="thin" d="M292 92 h14 v14 h-14 z M352 124 h14 v14 h-14 z M312 188 h14 v14 h-14 z M382 220 h14 v14 h-14 z"/>
+  <path class="thin" d="M294 99 l5 6 l9 -10 M354 131 l5 6 l9 -10"/>
+  <circle class="ink" cx="606" cy="216" r="16"/>
+  <path class="ink" d="M604 234 L596 282 M596 282 L566 330 M596 282 L630 322 M602 248 L574 268 M600 252 L584 236"/>
+  <path class="ink" d="M540 330 h150"/>
+  <circle class="thin" cx="636" cy="96" r="30"/>
+  <path class="thin" d="M636 96 v-18 M636 96 l12 8"/>
+  <text class="sub" x="330" y="392">计划写满一面墙，却迟迟没有开始</text>
+
+</svg>

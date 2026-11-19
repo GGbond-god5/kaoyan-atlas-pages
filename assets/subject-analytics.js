@@ -66,6 +66,22 @@ radar: [
 { name: '线性代数', short: '线代', chapters: ['math-09', 'math-10', 'math-11', 'math-12', 'math-13'], titles: ['行列式', '矩阵及其运算', '向量组与线性方程组', '特征值与特征向量', '二次型']}
 ]
 },
+math3: {
+name: '数学三',
+groupBy: 'chapter',
+groupTitle: '薄弱知识点（按章组归并）',
+radarNote: '雷达按内容章组取数：每道已批改题按其章节归入六个模块，以整题得分率计入；批改的能力维度评分（概念、方法、计算等）仍在逐题详情中展示，不混入本雷达。数学三不考向量代数与空间解析几何、三重积分与曲线曲面积分，多元微积分只含 math-05、math-06 中的二重积分部分。',
+aiFocus: '侧重点：按考点章组归组丢分，错因优先从概念不清、方法不会、计算失误、审题偏差、步骤不规范五类里定位，只说数据能支撑的类别；复盘动作落到具体题号、关键步骤的默写与重算，以及同考点变式题。数学三不考空间解析几何、三重积分、曲线曲面积分与傅里叶级数，分析中不得出现这些内容。',
+columns: [],
+radar: [
+{ name: '极限与连续', short: '极限', chapters: ['math-01'], titles: ['函数、极限与连续']},
+{ name: '一元微积分', short: '一元', chapters: ['math-02', 'math-03'], titles: ['一元函数微分学', '一元函数积分学']},
+{ name: '多元微积分', short: '多元', chapters: ['math-05', 'math-06'], titles: ['多元函数微分学', '多元函数积分学']},
+{ name: '级数与微分方程', short: '级数', chapters: ['math-07', 'math-08'], titles: ['无穷级数', '常微分方程']},
+{ name: '线性代数', short: '线代', chapters: ['math-09', 'math-10', 'math-11', 'math-12', 'math-13'], titles: ['行列式', '矩阵及其运算', '向量组与线性方程组', '特征值与特征向量', '二次型']},
+{ name: '概率统计', short: '概率', chapters: ['math-14', 'math-15', 'math-16', 'math-17', 'math-18', 'math-19', 'math-20'], titles: ['随机事件与概率', '一维随机变量及其分布', '多维随机变量及其分布', '随机变量的数字特征', '大数定律与中心极限定理', '数理统计基本概念与抽样分布', '参数估计与假设检验']}
+]
+},
 english: Object.assign({ name: '英语一'}, ENGLISH),
 english2: Object.assign({ name: '英语二'}, ENGLISH),
 politics: {

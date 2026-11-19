@@ -8,7 +8,7 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
-  var SUBJECTS = { math: '数学一', math2: '数学二', english: '英语一', english2: '英语二', mechanics: '807 材料力学', politics: '政治' };
+  var SUBJECTS = { math: '数学一', math2: '数学二', math3: '数学三', english: '英语一', english2: '英语二', mechanics: '807 材料力学', politics: '政治' };
   function subjectLabel(s) { return SUBJECTS[s] || s || '其他'; }
   function alertBox(msg, ok) {
     var a = $('#alert');

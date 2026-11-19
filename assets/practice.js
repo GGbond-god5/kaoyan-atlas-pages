@@ -213,7 +213,7 @@
     } catch (e) { /* ignore */ }
   }
 
-  const SUBJECT_NAMES = { math: "数学一", math2: "数学二", english: "英语一", english2: "英语二", mechanics: "807 材料力学", politics: "政治" };
+  const SUBJECT_NAMES = { math: "数学一", math2: "数学二", math3: "数学三", english: "英语一", english2: "英语二", mechanics: "807 材料力学", politics: "政治" };
   const SUBJECTS = Object.keys(SUBJECT_NAMES).map(id => ({
     id, name: SUBJECT_NAMES[id], count: ITEMS.filter(i => i.subject === id).length,
   }));
@@ -419,7 +419,7 @@
     return out;
   }
   function mockGroups(subject) {
-    if (["math", "math2"].includes(subject)) return [
+    if (["math", "math2", "math3"].includes(subject)) return [
       {name:"选择题", kinds:["选择题", "单选题"], count:10},
       {name:"填空题", kinds:["填空题"], count:6},
       {name:"解答题", kinds:["计算题", "证明题", "解答题"], count:6}
@@ -991,7 +991,7 @@
   }
   function isSubjective(q) {
     if (!q) return false;
-    if (["math", "math2"].includes(q.subject)) return ["计算题", "证明题", "解答题"].includes(q.kind);
+    if (["math", "math2", "math3"].includes(q.subject)) return ["计算题", "证明题", "解答题"].includes(q.kind);
     if (q.subject === "mechanics") return ["计算题", "简答题", "证明题"].includes(q.kind);
     if (["english", "english2"].includes(q.subject)) return ["翻译", "小作文", "大作文", "句式"].includes(q.kind);
     if (q.subject === "politics") return ["分析题"].includes(q.kind);

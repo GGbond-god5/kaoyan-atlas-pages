@@ -12,8 +12,8 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   };
-  var SUBJECT_NAMES = { math: '数学一', math2: '数学二', english: '英语一', english2: '英语二', mechanics: '807 材料力学', politics: '政治' };
-  var SUBJECT_ORDER = ['math', 'math2', 'english', 'english2', 'mechanics', 'politics'];
+  var SUBJECT_NAMES = { math: '数学一', math2: '数学二', math3: '数学三', english: '英语一', english2: '英语二', mechanics: '807 材料力学', politics: '政治' };
+  var SUBJECT_ORDER = ['math', 'math2', 'math3', 'english', 'english2', 'mechanics', 'politics'];
   var MODE_LABELS = { paper: '套卷', mock: '全真模考', diagnostic: '能力自测', knowledge: '知识点练习' };
 
   var state = { user: null, profile: null, practiceRec: {}, bankItems: {}, attempts: null };
@@ -538,7 +538,7 @@
    * 首页与「我的」的入口不再跳网页版页面：分析 / 单词 / 错题本 / 资料库 /
    * 社区 / 计划 / 档案 / 设置都在 App 自己的子页面框架里运行，共用同一套
    * 后端接口与状态（与网页版实时同步）。做题引擎与图谱仍是站内页面。 */
-  var FULL_SCORES = { math: 150, math2: 150, english: 100, english2: 100, mechanics: 150, politics: 100 };
+  var FULL_SCORES = { math: 150, math2: 150, math3: 150, english: 100, english2: 100, mechanics: 150, politics: 100 };
   var subRenderers = {};
   var subCurrent = null;
   function openSub(name) {

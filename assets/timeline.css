@@ -84,3 +84,24 @@ a{color:inherit;text-decoration:none}
   border-radius: 2px; padding: 5px 10px; text-decoration: none; white-space: nowrap; }
 .tdl:hover { background: #FAECE9; }
 @media(max-width:760px){ .tdl { order: 3; } }
+
+/* 毛中特关联（2026-11-18）：节点卡内的可展开关联条目，默认只显示计数按钮 */
+.trels{margin-top:9px}
+.trels-btn{font-size:10px;letter-spacing:.04em;color:var(--ver);border:1px dashed rgba(168,52,42,.45);
+  border-radius:99px;padding:3px 10px;background:transparent;white-space:nowrap}
+.trels-btn:hover{border-color:var(--ver)}
+.trels-btn.open{background:#FAECE9;border-style:solid}
+.trels-list{margin-top:9px;border-top:1px solid var(--rule2);padding-top:9px;display:grid;gap:9px}
+.trel{display:flex;gap:8px;min-width:0}
+.trel-badge{flex:none;height:18px;line-height:18px;padding:0 6px;margin-top:2px;font-size:9px;
+  letter-spacing:.08em;border-radius:2px;color:#F7F2E8}
+.trel-badge.t-work{background:#8A4B2A}
+.trel-badge.t-meeting{background:#1F3A5F}
+.trel-badge.t-thought{background:#2F6B4F}
+.trel-body{flex:1;min-width:0}
+.trel-body b{font-family:var(--serif);font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.trel-date{font-size:10px;color:var(--ink3);margin-left:7px;white-space:nowrap}
+.trel-body p{margin:2px 0 4px;font-size:11.5px;color:var(--ink2);line-height:1.75}
+.trel-body a{font-size:9.5px;letter-spacing:.03em;border:1px solid var(--rule);border-radius:2px;
+  padding:3px 7px;color:var(--ink3);display:inline-block}
+.trel-body a:hover{border-color:var(--era);color:var(--era)}

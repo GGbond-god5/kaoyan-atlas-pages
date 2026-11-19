@@ -2,7 +2,7 @@
  * 口径：得分率 = score/maxScore；满分=1，未满分<1，低分<0.5。只统计 status 为 graded 的题。 */
 (function () {
   'use strict';
-  var SUBJECT_NAMES = { math: '数学一', math2: '数学二', mechanics: '807 材料力学', english: '英语一', english2: '英语二', politics: '政治' };
+  var SUBJECT_NAMES = { math: '数学一', math2: '数学二', math3: '数学三', mechanics: '807 材料力学', english: '英语一', english2: '英语二', politics: '政治' };
   function subjectName(id, attempts) { if (SUBJECT_NAMES[id]) return SUBJECT_NAMES[id]; for (var i = 0; i < (attempts || []).length; i++) { var qs = attempts[i].questions || []; for (var j = 0; j < qs.length; j++) if (qs[j].subject === id && qs[j].subjectName) return qs[j].subjectName; } return id; }
   var state = { subject: 'all', attempts: [], targets: {} };
   var $ = function (s) { return document.querySelector(s); };
@@ -145,7 +145,7 @@ async function clearPaperRecords(qids) {
 
   function lineChart() {
     // 折线只做同科比较：每科一条线，横轴是该科的第 N 套；选了科目页签就只画那一科。
-    var COLORS = { math: '#B8860B', math2: '#8A6BA8', english: '#4A6FA5', english2: '#3E8E8A', mechanics: '#A53B30', politics: '#3E7A4E' };
+    var COLORS = { math: '#B8860B', math2: '#8A6BA8', math3: '#9C6644', english: '#4A6FA5', english2: '#3E8E8A', mechanics: '#A53B30', politics: '#3E7A4E' };
     var all = state.attempts.map(function (a) { return paperStats(a); }).filter(function (p) { return p.graded > 0 && p.rate !== null; });
     var bySub = {};
     all.forEach(function (p) { (bySub[p.subject] = bySub[p.subject] || []).push(p); });
@@ -230,7 +230,7 @@ async function clearPaperRecords(qids) {
     $('#subjectChart').innerHTML = subjectChart();
 
     /* 目标差距：每科取最近一套的得分率，折算到满分后与自设目标分对比 */
-    var FULL = { math: 150, math2: 150, mechanics: 150, english: 100, english2: 100, politics: 100 };
+    var FULL = { math: 150, math2: 150, math3: 150, mechanics: 150, english: 100, english2: 100, politics: 100 };
     var bySubject = {};
     papers.forEach(function (p) { bySubject[p.subject] = p; });
     var gapRows = [], estSum = 0, tgtSum = 0, allTgt = true;

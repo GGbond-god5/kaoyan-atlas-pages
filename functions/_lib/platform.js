@@ -5,7 +5,7 @@ import { allocatePaper, questionScore } from './scoring.js';
 import { gradeSystemFor, TRANSCRIBE_SYSTEM, GUIDE_SYSTEM, ANALYSIS_SYSTEM, ANALYSIS_SUBJECT_GUIDE, PLAIN_STYLE } from './prompts.js';
 import { checkQuota, noteUsage, getMeta } from './layer1.js';
 
-const subjects = new Set(['math','math2','english','english2','mechanics','politics']);
+const subjects = new Set(['math','math2','math3','english','english2','mechanics','politics']);
 const schema = [
  `CREATE TABLE IF NOT EXISTS platform_files (id TEXT PRIMARY KEY, uid TEXT NOT NULL, name TEXT NOT NULL, subject TEXT NOT NULL, size INTEGER NOT NULL, mime TEXT NOT NULL, object_key TEXT NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL)`,
  `CREATE TABLE IF NOT EXISTS platform_drafts (id TEXT PRIMARY KEY, uid TEXT NOT NULL, file_id TEXT NOT NULL, data TEXT NOT NULL)`,
@@ -25,7 +25,7 @@ const id = () => crypto.randomUUID();
 const str = x => typeof x === 'string' ? x : '';
 const changes = result => result.meta?.changes ?? 0;
 const notFound = () => fail(404, '资源不存在');
-const SUBJECT_NAMES = {math:'数学一', math2:'数学二', english:'英语一', english2:'英语二', mechanics:'材料力学', politics:'政治'};
+const SUBJECT_NAMES = {math:'数学一', math2:'数学二', math3:'数学三', english:'英语一', english2:'英语二', mechanics:'材料力学', politics:'政治'};
 async function subjectAllowed(db, uid, s) { return subjects.has(s) || !!(await row(db, 'SELECT id FROM platform_subjects WHERE uid=? AND id=?', uid, s)); }
 async function subjectNameOf(db, uid, s) { if (SUBJECT_NAMES[s]) return SUBJECT_NAMES[s]; const r = await row(db, 'SELECT name FROM platform_subjects WHERE uid=? AND id=?', uid, s); return r ? r.name : s; }
 const fileOut = f => ({id:f.id,name:f.name,subject:f.subject,category:f.category || '',size:f.size,status:f.status,createdAt:f.created_at});

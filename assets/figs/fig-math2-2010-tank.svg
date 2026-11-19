@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" role="img" aria-label="椭圆贮油罐油面高度示意图">
+  <style>
+    .ink{stroke:#2A2723;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke:#2A2723;fill:none;stroke-width:1.2;stroke-linecap:round}
+    .ax{stroke:#2A2723;fill:none;stroke-width:1.4}
+    .dash{stroke:#6B6357;fill:none;stroke-width:1.1;stroke-dasharray:5 4}
+    .shade{fill:rgba(168,52,42,.13);stroke:none}
+    .lbl{font:14px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#2A2723}
+    .sub{font:11.5px "Noto Sans SC","Microsoft YaHei",sans-serif;fill:#6B6357}
+    .math{font:italic 14px Georgia,serif;fill:#2A2723}
+  </style>
+
+  <text class="sub" x="24" y="26">贮油罐底面（椭圆）与油面位置（据解析重绘示意图）</text>
+  <defs><clipPath id="ell"><ellipse cx="330" cy="216" rx="238" ry="132"/></clipPath></defs>
+  <rect class="shade" x="92" y="151" width="476" height="197" clip-path="url(#ell)"/>
+  <ellipse class="ink" cx="330" cy="216" rx="238" ry="132"/>
+  <path class="dash" d="M92 216 H568 M330 84 V348"/>
+  <path class="ink" d="M92 151 H568"/>
+  <circle cx="330" cy="216" r="3.5" fill="#2A2723"/>
+  <text class="math" x="340" y="210">O</text>
+  <text class="lbl" x="500" y="142">油面</text>
+  <path class="ax" d="M330 216 H568 M568 216 l-10 -5 v10 z"/>
+  <text class="math" x="440" y="206">a</text>
+  <path class="ax" d="M330 216 V84 M330 84 l-5 10 h10 z"/>
+  <text class="math" x="340" y="150">b</text>
+  <text class="math" x="316" y="290">b/2</text>
+  <path class="thin" d="M606 151 V348 M598 151 h16 M598 348 h16"/>
+  <path class="ax" d="M606 151 v-2 M606 348 v2"/>
+  <text class="lbl" x="622" y="256">3b/2</text>
+  <text class="math" x="566" y="376">x</text><text class="math" x="340" y="76">y</text>
+
+</svg>
