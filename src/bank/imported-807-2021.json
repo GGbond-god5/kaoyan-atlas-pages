@@ -187,16 +187,16 @@
    "year": "2021",
    "source": "华工 807 2021（回忆版；官方答案校对）",
    "isReal": true,
-   "text": "六．（20 分）图示圆环截面压杆，一端固定、一端自由（或按图示支承），已知截面壁厚与几何尺寸（按图），材料 \\(E=200\\,\\mathrm{GPa}\\)、\\(\\sigma_p=200\\,\\mathrm{MPa}\\)，试校核其稳定性并求截面应力分布。",
-   "answer": "先算柔度判公式：\\(\\lambda_p=\\pi\\sqrt{\\dfrac{E}{\\sigma_p}}=\\pi\\sqrt{\\dfrac{200\\times10^9}{200\\times10^6}}=99.3\\)。压杆失稳需分“平面内”与“出平面”两个方向分别计算（两方向计算长度不同）。官方给出截面上下边缘应力 \\(-65.25\\,\\mathrm{MPa}\\) 与 \\(63.78\\,\\mathrm{MPa}\\)。",
+   "text": "六．（20 分）由两根无缝钢管在 \\(C\\) 处焊接成的人字架如图，已知两钢管的外径均为 \\(140\\,\\mathrm{mm}\\)，壁厚均为 \\(10\\,\\mathrm{mm}\\)。试求：（1）人字架危险截面上的最大拉应力和最大压应力；（2）危险截面上中性轴的位置。",
+   "answer": "（1）危险截面（紧靠 \\(C\\) 的截面）最大压应力 \\(-65.25\\,\\mathrm{MPa}\\)（上缘）、最大拉应力 \\(63.78\\,\\mathrm{MPa}\\)（下缘）；（2）中性轴偏离形心轴约 \\(0.8\\,\\mathrm{mm}\\)，偏向受拉一侧。",
    "steps": [
-    "临界柔度：\\(\\lambda_p=\\pi\\sqrt{\\dfrac{E}{\\sigma_p}}=\\pi\\sqrt{\\dfrac{200\\times10^9}{200\\times10^6}}=3.1416\\times31.62=99.3\\)。",
-    "本题的关键（官方考点提示）：压杆稳定需分别考虑**平面内失稳**与**垂直平面内失稳**两种情况，两者的计算长度不同。",
-    "平面内失稳属“二次屈曲”，计算长度只取一半（\\(\\mu l/2\\)）；出平面失稳按实际支承取 \\(\\mu\\)。",
-    "分别算出两个方向的柔度 \\(\\lambda_{\\mathrm{in}}\\)、\\(\\lambda_{\\mathrm{out}}\\)，与 \\(\\lambda_p=99.3\\) 比较后选择欧拉公式或经验公式。",
-    "对每个方向求临界力 \\(P_{cr}\\)，取较小者作为结构的临界荷载，再与工作荷载比较得稳定安全系数。",
-    "截面应力：由压应力 \\(\\sigma_c=\\dfrac{N}{A}\\) 与弯曲应力 \\(\\sigma_M=\\dfrac{M}{W}\\) 叠加，得上下边缘应力（官方值：上缘 \\(-65.25\\,\\mathrm{MPa}\\)、下缘 \\(63.78\\,\\mathrm{MPa}\\)，一压一拉）。",
-    "要点：压杆稳定必须按两个方向分别校核并取不利者；本截面为圆环（薄壁），惯性矩按 \\(I=\\dfrac{\\pi(D^4-d^4)}{64}\\) 计算。"
+    "支座反力与杆件内力：结构与载荷对称，\\(A\\)、\\(B\\) 两支座竖向反力均为 \\(\\dfrac{10}{2}=5\\,\\mathrm{kN}\\)。每根钢管长 \\(\\sqrt{1.6^2+1.2^2}=2.0\\,\\mathrm{m}\\)，轴线与水平线夹角 \\(\\theta\\) 满足 \\(\\sin\\theta=\\dfrac{1.2}{2.0}=0.6\\)、\\(\\cos\\theta=0.8\\)。把支座反力沿杆轴与垂直杆轴方向分解：轴向分量 \\(5\\sin\\theta=3\\,\\mathrm{kN}\\) 使钢管受压，横向分量 \\(5\\cos\\theta=4\\,\\mathrm{kN}\\) 使钢管弯曲。",
+    "内力：每根钢管为压弯构件，轴力恒为 \\(N=3\\,\\mathrm{kN}\\)（压）；弯矩在铰支端为零、向刚接端 \\(C\\) 线性增大，\\(C\\) 端最大 \\(M_C=4\\times2.0=8\\,\\mathrm{kN\\cdot m}\\)（即支座反力对 \\(C\\) 的力矩 \\(5\\times1.6=8\\,\\mathrm{kN\\cdot m}\\)）。危险截面为紧靠 \\(C\\) 处的截面。",
+    "截面几何：内径 \\(d=140-2\\times10=120\\,\\mathrm{mm}\\)。\\(A=\\dfrac{\\pi}{4}(D^2-d^2)=\\dfrac{\\pi}{4}(140^2-120^2)=4084\\,\\mathrm{mm^2}\\)；\\(I=\\dfrac{\\pi}{64}(D^4-d^4)=8.68\\times10^6\\,\\mathrm{mm^4}\\)；\\(W=\\dfrac{I}{D/2}=1.24\\times10^5\\,\\mathrm{mm^3}\\)。",
+    "应力分量：弯曲正应力 \\(\\sigma_M=\\dfrac{M_C}{W}=\\dfrac{8\\times10^6}{1.24\\times10^5}\\approx64.5\\,\\mathrm{MPa}\\)；轴压应力 \\(\\sigma_N=\\dfrac{N}{A}=\\dfrac{3000}{4084}\\approx0.73\\,\\mathrm{MPa}\\)。",
+    "（1）叠加：上缘弯曲压应力与轴压应力同号相加，得最大压应力 \\(\\sigma_{c,\\max}\\approx-(64.5+0.73)=-65.25\\,\\mathrm{MPa}\\)；下缘弯曲拉应力与轴压应力相减，得最大拉应力 \\(\\sigma_{t,\\max}\\approx64.5-0.73=63.78\\,\\mathrm{MPa}\\)。",
+    "（2）中性轴位置：正应力沿截面高度线性分布并整体平移，\\(\\sigma(y)=-\\sigma_N+\\dfrac{M}{I}y\\)（\\(y\\) 自形心轴向受拉侧量起）。令 \\(\\sigma=0\\) 得 \\(y_0=\\dfrac{\\sigma_N I}{M}=\\dfrac{NI}{AM}=\\dfrac{3000\\times8.68\\times10^6}{4084\\times8\\times10^6}\\approx0.80\\,\\mathrm{mm}\\)，即中性轴偏离形心轴约 \\(0.8\\,\\mathrm{mm}\\)，偏向受拉一侧。",
+    "要点：压弯组合变形的危险截面取弯矩最大处；轴力使正应力图整体平移、中性轴偏离形心轴，本题轴力虽小，仍使最大拉、压应力相差约 \\(1.5\\,\\mathrm{MPa}\\)。"
    ],
    "figures": [
     "q807-2021-06.png"
@@ -205,8 +205,8 @@
    "sourcePdf": "bank/mech-zhenti/OtB06cwpOPbXD97zfUheRsKnQuQ9A-vZ.pdf",
    "sourcePage": 3,
    "subjectName": "807 材料力学",
-   "topicChapter": "mech-09",
-   "topicTitle": "压杆稳定"
+   "topicChapter": "mech-08",
+   "topicTitle": "组合变形"
   },
   {
    "id": "807-2021-7",
@@ -220,28 +220,59 @@
    "year": "2021",
    "source": "华工 807 2021（回忆版；官方答案校对）",
    "isReal": true,
-   "text": "七．（20 分）图示简支梁 \\(AB\\)，跨度为 \\(L\\)，\\(C\\) 为跨中点，在 \\(C\\) 处作用一集中力 \\(P=1\\)（单位力），梁上还承受均布载荷 \\(q\\)（方向向下），求 \\(C\\) 截面的挠度 \\(w_C\\)。",
-   "answer": "\\(w_C=\\dfrac{5qL^4}{384EI}\\)（均布荷载单独作用）。用单位载荷法：\\(C\\) 处加单位力 \\(P=1\\)，得单位弯矩 \\(\\overline{M}(x_1)=\\dfrac{x_1}{2}\\)，与实际弯矩 \\(M(x_1)=F_Ax_1-\\dfrac{qx_1^2}{2}\\) 积分即得。",
+   "text": "七．（15 分）如图杆件 \\(ABC\\)，在 \\(A\\)、\\(C\\) 端由球铰支撑，承受轴向载荷 \\(P\\) 作用。在杆中点 \\(B\\) 处布置横向约束（该约束仅作用于图示平面内），杆由工字型钢制成，弹性模量 \\(E=200\\,\\mathrm{GPa}\\)，比例极限 \\(\\sigma_p=200\\,\\mathrm{MPa}\\)，杆总长为 \\(L=8\\,\\mathrm{m}\\)，若稳定安全系数为 \\(n_{st}=2.5\\)，试确定许可载荷 \\([P]\\)。附：工字型截面面积 \\(A=39.5\\,\\mathrm{cm^2}\\)，截面对 1-1 和 2-2 轴的惯性矩 \\(I_1=2500\\,\\mathrm{cm^4}\\)，\\(I_2=169\\,\\mathrm{cm^4}\\)。",
+   "answer": "\\([P]\\approx83.4\\,\\mathrm{kN}\\)（由图示平面内绕 2-2 轴的失稳控制）。",
    "steps": [
-    "这是求挠度的标准题：用单位载荷法（莫尔积分）求 \\(C\\) 点挠度。在 \\(C\\) 处沿竖向加单位力 \\(P=1\\)。",
-    "支座反力（实际荷载与单位荷载分别求）：实际均布 \\(q\\) 下 \\(F_A=F_B=\\dfrac{qL}{2}\\)；单位力下 \\(F_A'=F_B'=\\dfrac{1}{2}\\)。",
-    "弯矩方程（取左半跨 \\(0\\le x_1\\le L/2\\)）：实际 \\(M(x_1)=\\dfrac{qL}{2}x_1-\\dfrac{qx_1^2}{2}\\)；单位 \\(\\overline{M}(x_1)=\\dfrac{1}{2}x_1\\)。",
-    "由对称性，只需对左半跨积分再乘 2：\\(w_C=2\\displaystyle\\int_0^{L/2}\\dfrac{M\\overline{M}}{EI}\\mathrm{d}x_1\\)。",
-    "代入：\\(w_C=\\dfrac{2}{EI}\\displaystyle\\int_0^{L/2}\\left(\\dfrac{qL}{2}x_1-\\dfrac{qx_1^2}{2}\\right)\\dfrac{x_1}{2}\\mathrm{d}x_1=\\dfrac{1}{EI}\\displaystyle\\int_0^{L/2}\\left(\\dfrac{qL}{2}x_1^2-\\dfrac{q}{2}x_1^3\\right)\\mathrm{d}x_1\\)。",
-    "积分：\\(\\displaystyle\\int_0^{L/2}\\dfrac{qL}{2}x_1^2\\mathrm{d}x_1=\\dfrac{qL}{2}\\cdot\\dfrac{(L/2)^3}{3}=\\dfrac{qL^4}{48}\\)；\\(\\displaystyle\\int_0^{L/2}\\dfrac{q}{2}x_1^3\\mathrm{d}x_1=\\dfrac{q}{2}\\cdot\\dfrac{(L/2)^4}{4}=\\dfrac{qL^4}{128}\\)。",
-    "故 \\(w_C=\\dfrac{1}{EI}\\left(\\dfrac{qL^4}{48}-\\dfrac{qL^4}{128}\\right)=\\dfrac{qL^4}{EI}\\left(\\dfrac{8-3}{384}\\right)=\\dfrac{5qL^4}{384EI}\\)。",
-    "结论：\\(w_C=\\dfrac{5qL^4}{384EI}\\)，与简支梁受均布荷载的标准挠度公式一致，结果自洽。",
-    "要点：单位载荷法的关键是“单位力只加在所求位移处”；利用对称性只算半跨可省一半工作。"
+    "失稳形式分析：两端均为球铰，两方向的长度系数都取 \\(\\mu=1\\)。在图示平面内失稳时，中点 \\(B\\) 的横向约束起作用，杆被分成两段、每段长 \\(L/2=4\\,\\mathrm{m}\\)，弯曲绕 2-2 轴（\\(I_2=169\\,\\mathrm{cm^4}\\)）；在垂直于图示平面方向失稳时，\\(B\\) 处约束不起作用，计算长度为全长 \\(L=8\\,\\mathrm{m}\\)，弯曲绕 1-1 轴（\\(I_1=2500\\,\\mathrm{cm^4}\\)）。两方向须分别计算、取临界力小者。",
+    "临界柔度：\\(\\lambda_p=\\pi\\sqrt{\\dfrac{E}{\\sigma_p}}=\\pi\\sqrt{\\dfrac{200\\times10^9}{200\\times10^6}}=99.3\\)。",
+    "回转半径：\\(i_2=\\sqrt{\\dfrac{I_2}{A}}=\\sqrt{\\dfrac{169}{39.5}}=2.07\\,\\mathrm{cm}\\)；\\(i_1=\\sqrt{\\dfrac{I_1}{A}}=\\sqrt{\\dfrac{2500}{39.5}}=7.96\\,\\mathrm{cm}\\)。",
+    "图示平面内：\\(\\lambda=\\dfrac{\\mu l}{i_2}=\\dfrac{1\\times400}{2.07}=193>\\lambda_p\\)，为大柔度杆，欧拉公式给出 \\(\\sigma_{cr}=\\dfrac{\\pi^2E}{\\lambda^2}=\\dfrac{\\pi^2\\times200\\times10^3}{193^2}\\approx52.8\\,\\mathrm{MPa}\\)，\\(P_{cr}=\\sigma_{cr}A=52.8\\times3950\\approx2.08\\times10^5\\,\\mathrm{N}=208\\,\\mathrm{kN}\\)。",
+    "垂直图示平面：\\(\\lambda=\\dfrac{\\mu l}{i_1}=\\dfrac{1\\times800}{7.96}=100.6>\\lambda_p=99.3\\)（仅略大于 \\(\\lambda_p\\)，欧拉公式仍适用），\\(\\sigma_{cr}=\\dfrac{\\pi^2E}{\\lambda^2}\\approx195\\,\\mathrm{MPa}\\)，\\(P_{cr}=195\\times3950\\approx771\\,\\mathrm{kN}\\)，远大于平面内临界力。",
+    "许可载荷：取两方向临界力小者，\\([P]=\\dfrac{P_{cr}}{n_{st}}=\\dfrac{208}{2.5}\\approx83.4\\,\\mathrm{kN}\\)。",
+    "要点：同一压杆在两个主平面内的计算长度与回转半径都可能不同，必须分别算柔度再比临界力；中点的单向约束只缩短被约束平面内的计算长度。本题平面外柔度 100.6 与 \\(\\lambda_p=99.3\\) 非常接近，选用公式时不可想当然。"
    ],
    "figures": [
     "q807-2021-07.png"
    ],
-   "pageImage": "content/bank-pages/2021-hi-p3.png",
+   "pageImage": "content/bank-pages/2021-hi-p4.png",
    "sourcePdf": "bank/mech-zhenti/OtB06cwpOPbXD97zfUheRsKnQuQ9A-vZ.pdf",
-   "sourcePage": 3,
+   "sourcePage": 4,
    "subjectName": "807 材料力学",
    "topicChapter": "mech-06",
    "topicTitle": "弯曲变形"
+  },
+  {
+   "id": "807-2021-8",
+   "subject": "mechanics",
+   "chapter": "mech-807-2021",
+   "chapterTitle": "华南理工 807 · 2021 真题",
+   "kp": "",
+   "kpName": "第8题",
+   "kind": "计算题",
+   "difficulty": "中",
+   "year": "2021",
+   "source": "华工 807 2021（回忆版）",
+   "isReal": true,
+   "text": "八．（15 分）一长为 \\(L\\)，弯曲刚度为 \\(EI\\) 的简支梁 \\(AB\\)，\\(C\\) 为其中点，梁上荷载如图所示（\\(C\\) 点作用集中力 \\(P\\)，\\(CB\\) 段作用均布荷载 \\(q\\)），试用能量法求跨中截面 \\(C\\) 的挠度 \\(w_C\\)。",
+   "answer": "\\(w_C=\\dfrac{PL^3}{48EI}+\\dfrac{5qL^4}{768EI}\\)（向下）。",
+   "steps": [
+    "方法：在 \\(C\\) 点加竖向单位力，用单位载荷法（莫尔积分）求挠度；\\(P\\) 与 \\(q\\) 的贡献可分别计算后叠加。",
+    "单位力作用下：两支座反力均为 \\(\\dfrac{1}{2}\\)，左半跨单位弯矩 \\(\\bar M(x)=\\dfrac{x}{2}\\)（\\(0\\le x\\le L/2\\)），右半跨 \\(\\bar M(x)=\\dfrac{L-x}{2}\\)。",
+    "集中力 \\(P\\) 的贡献：\\(P\\) 单独作用的弯矩图与单位力弯矩图成比例，\\(w_C^{(P)}=\\dfrac{2}{EI}\\displaystyle\\int_0^{L/2}P\\bar M^2\\,\\mathrm{d}x=\\dfrac{2P}{EI}\\displaystyle\\int_0^{L/2}\\dfrac{x^2}{4}\\,\\mathrm{d}x=\\dfrac{PL^3}{48EI}\\)。",
+    "均布载荷 \\(q\\) 的支座反力：\\(q\\) 只分布在 \\(CB\\) 段，总量 \\(\\dfrac{qL}{2}\\)、作用点距 \\(A\\) 为 \\(\\dfrac{3L}{4}\\)，故 \\(F_A=\\dfrac{qL}{8}\\)、\\(F_B=\\dfrac{3qL}{8}\\)。弯矩：左半跨 \\(M_q(x)=\\dfrac{qL}{8}x\\)；右半跨 \\(M_q(x)=\\dfrac{qL}{8}x-\\dfrac{q}{2}\\left(x-\\dfrac{L}{2}\\right)^2\\)。",
+    "均布载荷的贡献：\\(w_C^{(q)}=\\dfrac{1}{EI}\\left[\\displaystyle\\int_0^{L/2}\\dfrac{qLx}{8}\\cdot\\dfrac{x}{2}\\,\\mathrm{d}x+\\displaystyle\\int_{L/2}^{L}\\left(\\dfrac{qLx}{8}-\\dfrac{q}{2}\\left(x-\\dfrac{L}{2}\\right)^2\\right)\\dfrac{L-x}{2}\\,\\mathrm{d}x\\right]=\\dfrac{1}{EI}\\left(\\dfrac{qL^4}{384}+\\dfrac{qL^4}{256}\\right)=\\dfrac{5qL^4}{768EI}\\)。",
+    "叠加：\\(w_C=w_C^{(P)}+w_C^{(q)}=\\dfrac{PL^3}{48EI}+\\dfrac{5qL^4}{768EI}\\)，方向向下。",
+    "要点：半跨均布载荷不能直接套用全跨均布的标准挠度公式；莫尔积分必须按载荷分段，右半跨的单位弯矩要用 \\(\\dfrac{L-x}{2}\\)。"
+   ],
+   "figures": [
+    "q807-2021-08.png"
+   ],
+   "pageImage": "content/bank-pages/2021-hi-p4.png",
+   "sourcePdf": "华工807回忆版真题汇编（站长2026-11-19上传）",
+   "sourcePage": 4,
+   "subjectName": "807 材料力学",
+   "topicChapter": "mech-10",
+   "topicTitle": "能量法"
   }
  ]
 }

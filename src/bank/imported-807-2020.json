@@ -241,6 +241,41 @@
    "subjectName": "807 材料力学",
    "topicChapter": "mech-12",
    "topicTitle": "平面图形的几何性质"
+  },
+  {
+   "id": "807-2020-8",
+   "subject": "mechanics",
+   "chapter": "mech-807-2020",
+   "chapterTitle": "华南理工 807 · 2020 真题",
+   "kp": "",
+   "kpName": "第8题",
+   "kind": "计算题",
+   "difficulty": "中",
+   "year": "2020",
+   "source": "华工 807 2020（回忆版）",
+   "isReal": true,
+   "text": "八．（20 分）图示各杆材料的弹性模量 \\(E=200\\,\\mathrm{GPa}\\)，横截面均为边长 \\(a=10\\,\\mathrm{mm}\\) 的正方形，冲击物重 \\(P=20\\,\\mathrm{N}\\)，\\(l=600\\,\\mathrm{mm}\\)，\\([\\sigma]=160\\,\\mathrm{MPa}\\)，压杆的临界柔度为 \\(\\lambda_p=100\\)，安全因数是 8。试求许可高度 \\([h]\\)。",
+   "answer": "\\([h]\\approx35\\,\\mathrm{mm}\\)（由梁的弯曲强度控制；压杆 \\(CD\\) 的稳定安全系数远大于 8，不控制）。",
+   "steps": [
+    "结构与静力分析：\\(A\\) 为固定端，\\(B\\)、\\(C\\) 为铰，\\(E\\) 为 \\(BC\\) 的中点，\\(AB=l\\)、\\(BE=EC=l\\)，\\(CD\\) 高 \\(l\\)、\\(D\\) 为固定端。重物 \\(P\\) 静置于 \\(E\\) 时，由 \\(BC\\) 的平衡得两铰 \\(B\\)、\\(C\\) 的竖向力均为 \\(P/2=10\\,\\mathrm{N}\\)；\\(AB\\) 在 \\(B\\) 端受向下的 \\(P/2\\)，\\(CD\\) 只受轴向压力 \\(P/2\\)（无弯矩）。",
+    "截面几何：\\(A=a^2=100\\,\\mathrm{mm^2}\\)，\\(I=\\dfrac{a^4}{12}=\\dfrac{10^4}{12}=833\\,\\mathrm{mm^4}\\)，\\(W=\\dfrac{a^3}{6}=166.7\\,\\mathrm{mm^3}\\)。",
+    "冲击点静位移（单位载荷法）：\\(BC\\) 自身弯曲（跨度 \\(2l\\) 简支梁跨中受力）贡献 \\(\\dfrac{P(2l)^3}{48EI}=\\dfrac{Pl^3}{6EI}\\)；\\(B\\) 点位移为悬臂梁 \\(AB\\) 端部受 \\(P/2\\) 的挠度 \\(\\dfrac{(P/2)l^3}{3EI}=\\dfrac{Pl^3}{6EI}\\)，\\(C\\) 点位移为 \\(CD\\) 的轴向缩短 \\(\\dfrac{(P/2)l}{EA}\\)，\\(E\\) 为 \\(BC\\) 中点，取两端位移平均。合计 \\(\\Delta_{st}=\\dfrac{Pl^3}{6EI}+\\dfrac{1}{2}\\left(\\dfrac{Pl^3}{6EI}+\\dfrac{Pl}{2EA}\\right)=\\dfrac{Pl^3}{4EI}+\\dfrac{Pl}{4EA}\\)。",
+    "代入数值：\\(\\Delta_{st}=\\dfrac{20\\times0.6^3}{4\\times200\\times10^9\\times833\\times10^{-12}}+\\dfrac{20\\times0.6}{4\\times200\\times10^9\\times10^{-4}}=6.48\\,\\mathrm{mm}+0.00015\\,\\mathrm{mm}\\approx6.48\\,\\mathrm{mm}\\)（\\(CD\\) 的轴向变形可忽略，位移几乎全来自梁的弯曲）。",
+    "静应力：最大弯矩在 \\(A\\) 截面与 \\(BC\\) 的 \\(E\\) 截面，\\(M_{\\max}=\\dfrac{P}{2}l=10\\times0.6=6\\,\\mathrm{N\\cdot m}\\)，\\(\\sigma_{st}=\\dfrac{M_{\\max}}{W}=\\dfrac{6}{166.7\\times10^{-9}}=36\\,\\mathrm{MPa}\\)。",
+    "强度条件：动荷系数 \\(K_d=1+\\sqrt{1+\\dfrac{2h}{\\Delta_{st}}}\\)，由 \\(\\sigma_d=K_d\\sigma_{st}\\le[\\sigma]\\) 得 \\(K_d\\le\\dfrac{160}{36}=4.44\\)。",
+    "许可高度：\\(\\sqrt{1+\\dfrac{2[h]}{\\Delta_{st}}}=4.44-1=3.44\\)，\\(\\dfrac{2[h]}{\\Delta_{st}}=3.44^2-1=10.86\\)，\\([h]=\\dfrac{10.86\\times6.48}{2}\\approx35\\,\\mathrm{mm}\\)。",
+    "压杆 \\(CD\\) 稳定校核：\\(CD\\) 一端固定、一端铰支，\\(\\mu=0.7\\)，\\(i=\\dfrac{a}{\\sqrt{12}}=2.89\\,\\mathrm{mm}\\)，\\(\\lambda=\\dfrac{\\mu l}{i}=\\dfrac{0.7\\times600}{2.89}=145>\\lambda_p=100\\)，欧拉临界力 \\(P_{cr}=\\dfrac{\\pi^2EI}{(\\mu l)^2}\\approx9.3\\,\\mathrm{kN}\\)。冲击时 \\(CD\\) 的动压力仅 \\(K_d\\cdot\\dfrac{P}{2}=4.44\\times10=44\\,\\mathrm{N}\\)，稳定安全系数 \\(n=\\dfrac{9300}{44}\\approx210\\gg8\\)，稳定不控制。",
+    "结论：\\([h]\\approx35\\,\\mathrm{mm}\\)，由梁的弯曲强度控制。要点：组合结构冲击问题先按位移协调叠加求冲击点静位移，再用 \\(K_d\\) 放大静应力；其中的压杆另行校核稳定性。"
+   ],
+   "figures": [
+    "q807-2020-08.png"
+   ],
+   "pageImage": "content/bank-pages/2020-hi-p4.png",
+   "sourcePdf": "华工807回忆版真题汇编（站长2026-11-19上传）",
+   "sourcePage": 4,
+   "subjectName": "807 材料力学",
+   "topicChapter": "mech-11",
+   "topicTitle": "动载荷与冲击"
   }
  ]
 }
