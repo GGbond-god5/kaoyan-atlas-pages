@@ -1,4 +1,21 @@
 /* 错题本：屏幕上是纸册卡片，打印时切换为纯净版式 */
+.wb-tabs {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 2px;
+}
+.wb-tab {
+  font: inherit; font-size: 13px; padding: 6px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(120, 96, 40, .4); background: #fffdf6; color: #2a2620;
+}
+.wb-tab .wb-tab-n { font-weight: 700; color: #7a5b12; }
+.wb-tab.on { background: #2a2620; color: #fffdf6; border-color: #2a2620; }
+.wb-tab.on .wb-tab-n { color: #f0c96a; }
+.wb-actions { margin-top: 10px; text-align: right; }
+.wb-act {
+  font: inherit; font-size: 12px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(120, 96, 40, .4); background: transparent; color: #6d6250;
+}
+.wb-act:hover { border-color: #a33b2e; color: #a33b2e; }
+.wb-act.armed { background: #a33b2e; border-color: #a33b2e; color: #fff; }
 .wb-toolbar {
   display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin: 10px 0 4px;
 }
@@ -27,7 +44,7 @@
 .wb-steps p { margin: 3px 0; line-height: 1.7; color: #3d382e; }
 
 @media print {
-  header.top, .wb-toolbar, #wbPrint, .hub-wrap, .account-hub, #planCard { display: none !important; }
+  header.top, .wb-toolbar, .wb-tabs, .wb-actions, #wbPrint, #wbDownload, .hub-wrap, .account-hub, #planCard { display: none !important; }
   body { background: #fff; }
   .panel { padding: 0; max-width: none; }
   .wb-card { border: 0; box-shadow: none; padding: 0; }

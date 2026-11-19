@@ -15,7 +15,8 @@ const schema = [
  `CREATE TABLE IF NOT EXISTS platform_attempts (uid TEXT NOT NULL, id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,id))`,
  `CREATE TABLE IF NOT EXISTS platform_results (uid TEXT NOT NULL, attempt_id TEXT NOT NULL, question_id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,attempt_id,question_id))`,
  `CREATE TABLE IF NOT EXISTS platform_coach (uid TEXT NOT NULL, id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,id))`,
-  `CREATE TABLE IF NOT EXISTS platform_subjects (uid TEXT NOT NULL, id TEXT NOT NULL, name TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(uid,id))`
+  `CREATE TABLE IF NOT EXISTS platform_subjects (uid TEXT NOT NULL, id TEXT NOT NULL, name TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(uid,id))`,
+ `CREATE TABLE IF NOT EXISTS platform_wrongbook_exports (id TEXT PRIMARY KEY, uid TEXT NOT NULL, name TEXT NOT NULL, html TEXT NOT NULL, created_at TEXT NOT NULL)`
 ];
 const row = (db, sql, ...args) => db.prepare(sql).bind(...args).first();
 const run = (db, sql, ...args) => db.prepare(sql).bind(...args).run();
@@ -495,6 +496,28 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     if (!did) return fail(400,'题目 ID 无效');
     const r = await run(db,'DELETE FROM platform_questions WHERE uid=? AND draft_id=?',uid,did);
     return ok({deleted:changes(r) > 0});
+  }
+  if (action === 'wrongbookExport') {
+    /* 错题本导出下载：客户端把已渲染好的册子 HTML 存进来，再以附件形式取回。
+     * 网页端打印走 window.print；App 的 WebView 里 window.print 无反应，
+     * 附件响应能被客户端的下载通道接住，故用「存一次 → 跳下载地址」两段式。 */
+    if (method === 'POST') {
+      const b = await body();
+      const name = str(b && b.name).trim().slice(0, 80) || '错题本.html';
+      const html = typeof (b && b.html) === 'string' ? b.html : '';
+      if (!html || html.length > 3000000 || !/<html[\s>]/i.test(html)) return fail(400,'导出内容无效');
+      const eid = id();
+      await run(db,'INSERT INTO platform_wrongbook_exports VALUES (?,?,?,?,?)',eid,uid,name,html,new Date().toISOString());
+      await run(db,'DELETE FROM platform_wrongbook_exports WHERE uid=? AND id NOT IN (SELECT id FROM platform_wrongbook_exports WHERE uid=? ORDER BY created_at DESC LIMIT 3)',uid,uid);
+      return ok({id:eid,url:'/api/wrongbook/export?id=' + eid});
+    }
+    if (method === 'GET') {
+      const eid = fid || new URL(request.url).searchParams.get('id') || '';
+      const r = await row(db,'SELECT name,html FROM platform_wrongbook_exports WHERE uid=? AND id=?',uid,eid);
+      if (!r) return notFound();
+      return new Response(r.html,{headers:{'Content-Type':'text/html; charset=utf-8','Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(r.name)}`,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
+    }
+    return fail(405,'方法不支持');
   }
   if (action === 'state') {
     const ns = params.namespace; if (!['practice','vocab','review','goals','onboarding','plan','inbox','marks','basket'].includes(ns)) return notFound();

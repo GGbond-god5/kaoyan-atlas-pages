@@ -853,7 +853,7 @@ async function clearPaperRecordsApp(qids) {
           html += '<div class="qd-sec"><span>' + workLabel + '</span><p>' + esc(cleanText(work)) + '</p></div>';
         }
         var ansImgs = Array.isArray(ans.images) && ans.images.length ? ans.images : (ans.image ? [ans.image] : []);
-        if (ansImgs.length) html += '<div class="qd-sec"><span>作答照片' + (ansImgs.length > 1 ? '（共 ' + ansImgs.length + ' 页）' : '') + '</span>' + ansImgs.map(function (u, i) { return (ansImgs.length > 1 ? '<p class="qd-pagelabel">第 ' + (i + 1) + ' 页</p>' : '') + '<img class="qd-photo" src="' + u + '" alt="作答照片第 ' + (i + 1) + ' 页">'; }).join('') + '</div>';
+        if (ansImgs.length) html += '<div class="qd-sec"><span>作答照片' + (ansImgs.length > 1 ? '（共 ' + ansImgs.length + ' 页）' : '') + '</span>' + ansImgs.map(function (u, i) { return (ansImgs.length > 1 ? '<p class="qd-pagelabel">第 ' + (i + 1) + ' 页</p>' : '') + '<img class="qd-photo" loading="lazy" decoding="async" src="' + u + '" alt="作答照片第 ' + (i + 1) + ' 页">'; }).join('') + '</div>';
         if (r.level) html += '<div class="qd-sec"><span>等级</span><p>' + esc(r.level) + '</p></div>';
         if (r.comments) html += '<div class="qd-sec"><span>AI 总评</span><p>' + esc(cleanText(r.comments)) + '</p></div>';
         if (Array.isArray(r.breakdown) && r.breakdown.length) {
@@ -1100,21 +1100,49 @@ async function clearPaperRecordsApp(qids) {
 
   /* ---------- 错题本（App 内） ---------- */
   var wbCache = null;
+  /* 移出错题本：与网页版错题本、App「重置这套」同一口径——手动标记摘除、错次清零（做过/对题统计保留）、艾宾浩斯排期删除 */
+  async function removeWrongInApp(id, body, filter) {
+    if (wbCache && wbCache.marks && wbCache.marks.wb[id] && window.AtlasMarks) {
+      try { await AtlasMarks.toggle('wb', id); } catch (e) {}
+      delete wbCache.marks.wb[id];
+    }
+    try {
+      var st = await AtlasUser.load('practice', { rec: {} });
+      if (st && st.rec && st.rec[id] && st.rec[id].wrong > 0) { st.rec[id].wrong = 0; await AtlasUser.save('practice', st); state.practiceRec = st.rec; }
+    } catch (e) {}
+    try {
+      var rv = await AtlasUser.load('review', { sched: {} });
+      if (rv && rv.sched && rv.sched[id]) { delete rv.sched[id]; await AtlasUser.save('review', rv); }
+    } catch (e) {}
+    toast('已移出错题本');
+    renderWrongbook(body, filter);
+  }
   subRenderers.wrongbook = { title: '错题本', render: function (body) { renderWrongbook(body, 'all'); } };
   function renderWrongbook(body, filter) {
     var marksP = window.AtlasMarks ? window.AtlasMarks.load() : Promise.resolve({ fav: {}, wb: {} });
+    /* 先拿到做题记录与收藏标记，再按涉及的科目按需加载题库分片（原先无条件全量加载约 15MB）；
+       loadForIds 对推断不出或缺题的情况回退全量，最终题目映射与全量加载一致。 */
     var load = wbCache ? Promise.resolve(wbCache) : Promise.all([
-      AtlasQuestions.load('all'),
       AtlasUser.json('/api/personal/questions').catch(function () { return { questions: [] }; }),
       AtlasUser.load('practice', { rec: {} }),
       marksP
     ]).then(function (res) {
-      var map = {};
-      (window.QUESTIONS.items || []).forEach(function (q) { map[q.id] = q; });
-      ((res[1] && res[1].questions) || []).forEach(function (q) { if (q && q.id) map[q.id] = q; });
-      state.practiceRec = (res[2] && res[2].rec) || state.practiceRec || {};
-      wbCache = { map: map, marks: res[3] || { fav: {}, wb: {} } };
-      return wbCache;
+      state.practiceRec = (res[1] && res[1].rec) || state.practiceRec || {};
+      var marks = res[2] || { fav: {}, wb: {} };
+      var needIds = [];
+      Object.keys(state.practiceRec).forEach(function (id) { var r = state.practiceRec[id]; if (r && r.wrong > 0) needIds.push(id); });
+      Object.keys(marks.wb || {}).forEach(function (id) { needIds.push(id); });
+      Object.keys(marks.fav || {}).forEach(function (id) { needIds.push(id); });
+      var loadQ = (window.AtlasQuestions && window.AtlasQuestions.loadForIds)
+        ? window.AtlasQuestions.loadForIds(needIds)
+        : AtlasQuestions.load('all');
+      return loadQ.then(function () {
+        var map = {};
+        (window.QUESTIONS.items || []).forEach(function (q) { map[q.id] = q; });
+        ((res[0] && res[0].questions) || []).forEach(function (q) { if (q && q.id) map[q.id] = q; });
+        wbCache = { map: map, marks: marks };
+        return wbCache;
+      });
     });
     body.innerHTML = '<div class="sub-loading">正在整理错题…</div>';
     load.then(function (data) {
@@ -1146,7 +1174,7 @@ async function clearPaperRecordsApp(qids) {
           var q = x.q;
           return '<div class="list-row"><div class="row-title">' + esc(snippet(q.text, 110)) + '</div>' +
             '<div class="row-meta">' + esc(SUBJECT_NAMES[q.subject] || q.subject || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + (x.r.manual ? ' · 手动加入错题本' : ' · 错 ' + x.r.wrong + ' 次 · 做过 ' + (x.r.seen || 0) + ' 次') + '</div>' +
-            '<div class="row-actions"><button type="button" class="btn-sub" data-wrong-toggle="' + i + '">看答案与解析</button></div>' +
+            '<div class="row-actions"><button type="button" class="btn-sub" data-wrong-toggle="' + i + '">看答案与解析</button> <button type="button" class="btn-sub" data-wrong-remove="' + esc(q.id) + '">移出错题本</button></div>' +
             '<div class="wrong-detail" id="wd-' + i + '" hidden><b>参考答案：</b>' + esc(q.answer || '暂无') +
             ((q.steps && q.steps.length) ? '<ol>' + q.steps.map(function (st) { return '<li>' + esc(st) + '</li>'; }).join('') + '</ol>' : '') + '</div></div>';
         }).join('') : '<div class="today-empty">这个分类下暂无错题。</div>') + '</div>';
@@ -1155,6 +1183,18 @@ async function clearPaperRecordsApp(qids) {
         b.addEventListener('click', function () {
           var d = document.getElementById('wd-' + b.dataset.wrongToggle);
           if (d) { d.hidden = !d.hidden; if (!d.hidden) gMath(d); }
+        });
+      });
+      $$('[data-wrong-remove]', body).forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (!b.dataset.armed) {
+            b.dataset.armed = '1';
+            var old = b.textContent;
+            b.textContent = '确认移出？';
+            setTimeout(function () { if (b.isConnected && b.dataset.armed) { delete b.dataset.armed; b.textContent = old; } }, 2600);
+            return;
+          }
+          removeWrongInApp(b.dataset.wrongRemove, body, filter);
         });
       });
       if (favRows.length) {

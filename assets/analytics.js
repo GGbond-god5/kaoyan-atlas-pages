@@ -442,7 +442,7 @@ async function clearPaperRecords(qids) {
           myAnswer += '<div class="ad-sec"><span>' + workLabel + '</span><p>' + esc(clean(work)) + '</p></div>';
         }
         var ansImgs = Array.isArray(ans.images) && ans.images.length ? ans.images : (ans.image ? [ans.image] : []);
-        if (ansImgs.length) myAnswer += '<div class="ad-sec"><span>作答照片' + (ansImgs.length > 1 ? '（共 ' + ansImgs.length + ' 页）' : '') + '</span>' + ansImgs.map(function (u, i) { return (ansImgs.length > 1 ? '<p class="ad-pagelabel">第 ' + (i + 1) + ' 页</p>' : '') + '<img class="ad-photo" src="' + u + '" alt="作答照片第 ' + (i + 1) + ' 页">'; }).join('') + '</div>';
+        if (ansImgs.length) myAnswer += '<div class="ad-sec"><span>作答照片' + (ansImgs.length > 1 ? '（共 ' + ansImgs.length + ' 页）' : '') + '</span>' + ansImgs.map(function (u, i) { return (ansImgs.length > 1 ? '<p class="ad-pagelabel">第 ' + (i + 1) + ' 页</p>' : '') + '<img class="ad-photo" loading="lazy" decoding="async" src="' + u + '" alt="作答照片第 ' + (i + 1) + ' 页">'; }).join('') + '</div>';
         var html = '<div class="ad-card" id="adCard' + idx + '"><div class="ad-head" data-toggle="' + idx + '"><b>第 ' + (idx + 1) + ' 题</b><span>' + esc(q.kind || '') + (q.kpName ? ' · ' + esc(q.kpName) : '') + '</span>' +
           '<b class="ad-score ' + rateCls(rt) + '">' + (graded ? (Math.round(Number(r.score) * 10) / 10) + ' / ' + (Math.round(Number(r.maxScore) * 10) / 10) : '待批改') + '</b><span class="ad-caret">' + (open ? '▾' : '▸') + '</span></div><div class="ad-body"' + (open ? '' : ' hidden') + '>';
         var stemText = it.text || q.text || '';
@@ -509,6 +509,16 @@ async function clearPaperRecords(qids) {
         '<div class="ad-analysis-bar"><button type="button" class="btn ghost" id="adAnalysisBtn">AI 教学分析</button><span class="sub">' + (anaCfg ? '按本科目口径（' + esc(anaCfg.groupTitle) + '）归组丢分、错因分类，并给出复盘动作与下一阶段安排；只分析' + esc(anaCfg.name) + '，不串科。' : '按考点归组丢分、错因分类，并给出复盘动作与下一阶段安排。') + '</span></div>' +
         '<div id="adAnalysis" class="ad-analysis" hidden></div>' + cards +
         '<div class="ad-detail-foot"><button type="button" class="btn ghost" data-back>← 返回学情分析</button><button type="button" class="btn ghost danger" id="paperDetailReset">重置这套（删除记录，二刷用）</button></div>';
+      /* 公式按卡懒渲染：整卷一次性对全页跑 renderMathInElement，会把几百个公式的排版压成一个长任务，
+       * 是大题量详情页卡顿的主因之一。改为卡片进入视口或被展开时才渲染该卡，渲染结果与整页渲染一致。 */
+      var mathDone = new WeakSet();
+      function renderCardMath(card) {
+        if (!card || mathDone.has(card) || !window.AtlasKatex) return;
+        var body = card.querySelector('.ad-body');
+        if (body && body.hidden) return;
+        mathDone.add(card);
+        window.AtlasKatex.render(card);
+      }
       bindDetailBack(sec);
       var resetBtn = sec.querySelector('#paperDetailReset');
       if (resetBtn) resetBtn.addEventListener('click', function () { resetPaper(a.id, resetBtn); });
@@ -518,7 +528,7 @@ async function clearPaperRecords(qids) {
           if (!card) return;
           var body = card.querySelector('.ad-body');
           var caret = h.querySelector('.ad-caret');
-          if (body) { body.hidden = !body.hidden; if (caret) caret.textContent = body.hidden ? '▸' : '▾'; }
+          if (body) { body.hidden = !body.hidden; if (caret) caret.textContent = body.hidden ? '▸' : '▾'; if (!body.hidden) renderCardMath(card); }
         });
       });
       sec.querySelectorAll('[data-goto]').forEach(function (c) {
@@ -527,6 +537,7 @@ async function clearPaperRecords(qids) {
           if (!card) return;
           var body = card.querySelector('.ad-body');
           if (body && body.hidden) { body.hidden = false; var ct = card.querySelector('.ad-caret'); if (ct) ct.textContent = '▾'; }
+          renderCardMath(card);
           card.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       });
@@ -569,15 +580,33 @@ async function clearPaperRecords(qids) {
       if (window.AtlasMarks) window.AtlasMarks.wire(sec);
       var mh = sec.querySelector('#adMastery');
       if (mh && window.AtlasAssessment) { try { window.AtlasAssessment.renderMastery(mh, a.questions || [], a.results || {}, { subjectAnalytics: true, subject: a.subject }); } catch (e) {} }
+      if (mh && window.AtlasKatex) window.AtlasKatex.render(mh);
       if (focusIdx != null) {
         var fc = document.getElementById('adCard' + focusIdx);
         if (fc) {
           var fb = fc.querySelector('.ad-body');
           if (fb && fb.hidden) { fb.hidden = false; var fct = fc.querySelector('.ad-caret'); if (fct) fct.textContent = '▾'; }
+          renderCardMath(fc);
           setTimeout(function () { fc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
         }
       }
-      if (window.AtlasKatex) window.AtlasKatex.render(sec);
+      /* 逐卡懒渲染公式（替代原先对整页的一次性渲染）；无 IntersectionObserver 时回退整页渲染，行为不变。 */
+      if ('IntersectionObserver' in window) {
+        if (sec._mathIO) sec._mathIO.disconnect();
+        var mathIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            var bd = en.target.querySelector('.ad-body');
+            if (bd && bd.hidden) return;
+            renderCardMath(en.target);
+            mathIO.unobserve(en.target);
+          });
+        }, { rootMargin: '600px 0px' });
+        sec._mathIO = mathIO;
+        sec.querySelectorAll('.ad-card').forEach(function (c) { mathIO.observe(c); });
+      } else if (window.AtlasKatex) {
+        window.AtlasKatex.render(sec);
+      }
     } catch (err) {
       sec.innerHTML = '<button type="button" class="btn ghost pd-back" data-back>← 返回学情分析</button><h2>做题详情</h2><p class="sub">加载失败：' + esc(err.message) + '</p>';
       bindDetailBack(sec);

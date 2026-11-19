@@ -401,3 +401,7 @@ html.atlas-app #gradePill { bottom: 84px; }
 .blank-tool{border:1px solid #D9CFB4;background:#fff;border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer;min-height:34px;color:#17161A}
 .blank-tool:active{background:#FBF3E2}
 .blank-preview{font-size:14px;line-height:1.8;color:#4A4232;background:#FFFDF6;border:1px dashed #D9CFB4;border-radius:8px;padding:8px 10px;margin-bottom:10px}
+/* 政治背题模式：开关点亮态 + 答题卡/结果里「看过答案」题的灰标记（未计入统计） */
+#peekBtn.on{border-color:var(--ver);color:var(--ver);background:#FAECE9}
+.qbtn.peeked{background:#EFEDE8;border-color:#B9B2A2;color:var(--ink3);text-decoration:line-through}
+.rgrid button.peeked{background:#EFEDE8;color:#8a8378;border-color:#B9B2A2}

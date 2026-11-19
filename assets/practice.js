@@ -455,6 +455,10 @@
     return stratified(single, state.count || 500).sort((a,b) => paperNo(a) - paperNo(b));
   }
   const sealed = () => session && session.mode !== "knowledge" && !session.ended;
+  /* 政治背题模式：只在「按知识点刷」+ 政治题上出现。开启后看答案解析不判分、
+   * 不写做题记录（rec）、不进错题艾宾浩斯回流，看过的题记 session.peeked 并在交卷时跳过。 */
+  const peekApplies = q => !!(session && session.mode === "knowledge" && q && q.subject === "politics");
+  const peekOn = q => peekApplies(q) && !!session.peekMode;
   function setExamPure(on) {
     document.body.classList.toggle("exam-pure", !!on);
     try { if (window.AtlasApp && AtlasApp.setExamMode) AtlasApp.setExamMode(!!on); } catch (e) {}
@@ -477,7 +481,7 @@
     if (!pool.length || (state.mode !== "knowledge" && pool.some(q => q.subject !== state.subject))) { $("#pcount").textContent = "题型不足或科目不一致，无法组卷"; return; }
     if (!poolOverride && state.mode === "paper") pool = pool.slice().sort((a, b) => paperNo(a) - paperNo(b));
     $("#sideSubmit").hidden = false;
-    session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, startTime: Date.now(), ended: false, mode: state.mode, limitSec: state.mode === "mock" ? MOCK_SECONDS : 0, subject: state.subject, structure: $("#structureInfo").hidden ? "" : $("#structureInfo").textContent };
+    session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, peekMode: false, peeked: {}, startTime: Date.now(), ended: false, mode: state.mode, limitSec: state.mode === "mock" ? MOCK_SECONDS : 0, subject: state.subject, structure: $("#structureInfo").hidden ? "" : $("#structureInfo").textContent };
     const sub = SUBJECTS.find(s => s.id === state.subject);
     const title = poolTitle || (poolOverride ? "错题重练" : (state.mode === "mock" ? `${sub ? sub.name : state.subject} · 全真模考` : state.mode === "paper" ? pool[0].chapterTitle
       : (state.chapter !== "all" ? pool[0].chapterTitle
@@ -536,7 +540,8 @@
       const answered = (session.picks[q.id] || []).length > 0 || !!st;
       // 交卷前只显示「未答 / 已答」，不泄露对错；交卷后显示 ok/wrong
       const cls = ended ? st : (answered ? "answered" : "");
-      return `<button class="qbtn ${cls} ${i === session.i ? "cur" : ""}" data-i="${i}">${i + 1}</button>`;
+      const pk = session.peeked && session.peeked[q.id] ? " peeked" : "";
+      return `<button class="qbtn ${cls}${pk} ${i === session.i ? "cur" : ""}" data-i="${i}">${i + 1}</button>`;
     }).join("");
     const ok = qs.filter(q => session.status[q.id] === "ok").length;
     const wrong = qs.filter(q => session.status[q.id] === "wrong").length;
@@ -619,6 +624,13 @@
       $("#reveal").textContent = "返回结果";
       if (["english", "english2"].includes(q.subject) && /翻译|作文/.test(q.kind)) { $("#aiAsk").hidden = false; $("#aiAsk").textContent = "AI 多轮指导"; }
     } else $("#reveal").textContent = "显示解析（Space）";
+    if (!session.ended && peekOn(q)) $("#reveal").textContent = "看答案解析";
+    const pkBtn = $("#peekBtn");
+    if (pkBtn) {
+      pkBtn.hidden = !peekApplies(q) || session.ended;
+      pkBtn.classList.toggle("on", !!session.peekMode);
+      pkBtn.textContent = session.peekMode ? "背题模式：开" : "背题模式";
+    }
     const readCh = q.topicChapter || (q.kp ? q.chapter : "");
     $("#pklink").hidden = !readCh || state.mode === "mock";
     $("#pklink").href = `index.html#read=${encodeURIComponent(readCh)}` +
@@ -645,8 +657,11 @@
     const q = current(); if (!q || sealed()) return;
     const obj = OBJ_KINDS.includes(q.kind);
     const unverified = ["pending", "needs_review"].includes(q.reviewStatus);
-    // 客观题在交卷前不给答案，避免边做边对——交卷后统一揭示
-    const answerSealed = obj && !session.ended;
+    /* 背题模式下直接给答案解析：本题记为「看过」，不判分、不写 rec、不进回流（见 doSubmit 与 grade） */
+    const peek = peekOn(q);
+    if (peek && !alreadyGraded && !session.peeked[q.id]) { session.peeked[q.id] = true; renderSheet(); }
+    // 客观题在交卷前不给答案，避免边做边对——交卷后统一揭示（背题模式除外）
+    const answerSealed = obj && !session.ended && !peek;
     const ans = (!answerSealed && q.answer)
       ? `<div class="slabel2">${unverified ? "待核参考" : "要点"}</div><div class="sans">${fmt(q.answer)}</div>` : "";
     const steps = (!answerSealed && (q.steps || []).length)
@@ -655,10 +670,11 @@
       ? `<div class="sans" style="color:var(--ink3)">客观题答案将在交卷后统一公布。先选好你的答案。</div>`
       : (!q.answer ? `<div class="sans" style="color:var(--ink3)">这题暂无已核对答案，可自评。</div>` : "");
     const warning = !answerSealed && unverified ? `<div class="sans">答案与解析待核，不能作为确定的评分依据。${q.reviewReason ? ` ${esc(q.reviewReason)}` : ""}</div>` : "";
-    $("#solution").innerHTML = warning + ans + steps + hint;
+    const peekNote = peek && !session.ended ? `<div class="sans" style="color:var(--ink3)">背题模式：这道题已记为「看过答案」，不会计入做题统计，也不会进错题本。</div>` : "";
+    $("#solution").innerHTML = peekNote + warning + ans + steps + hint;
     renderMath($("#solution"));
     $("#solution").hidden = false;
-    $("#gradebar").hidden = answerSealed || obj;
+    $("#gradebar").hidden = answerSealed || obj || peek;
     if (alreadyGraded) {
       $$("#gradebar button").forEach(b => { b.disabled = true; });
       const st = session.status[q.id];
@@ -682,7 +698,7 @@
 
   function grade(kind) {
     const q = current();
-    if (!q || sealed() || session.ended || session.status[q.id]) return;
+    if (!q || sealed() || session.ended || session.status[q.id] || peekOn(q)) return;
     session.status[q.id] = kind;
     const r = store.rec[q.id] || { seen: 0, ok: 0, wrong: 0, last: 0 };
     r.seen += 1; r.last = Date.now();
@@ -729,7 +745,7 @@
     if (session.submitting) return;
     session.submitting = true;
     if (session.mode === "knowledge") {
-      session.queue.forEach(q => { const ans = answerLetters(q), picks = session.picks[q.id] || []; if (!session.status[q.id] && ans && picks.length) { const kind = picks.slice().sort().join("") === ans.split("").sort().join("") ? "ok" : "wrong"; session.status[q.id] = kind; const r = store.rec[q.id] || {seen:0, ok:0, wrong:0, last:0}; r.seen++; r[kind]++; r.last = Date.now(); store.rec[q.id] = r; if (window.AtlasReview) window.AtlasReview.note(q.id, kind); } }); save();
+      session.queue.forEach(q => { const ans = answerLetters(q), picks = session.picks[q.id] || []; if (!session.status[q.id] && !(session.peeked && session.peeked[q.id]) && ans && picks.length) { const kind = picks.slice().sort().join("") === ans.split("").sort().join("") ? "ok" : "wrong"; session.status[q.id] = kind; const r = store.rec[q.id] || {seen:0, ok:0, wrong:0, last:0}; r.seen++; r[kind]++; r.last = Date.now(); store.rec[q.id] = r; if (window.AtlasReview) window.AtlasReview.note(q.id, kind); } }); save();
       finishSubmit(); return;
     }
     const answers = {};
@@ -796,6 +812,7 @@
     $("#submitBtn").hidden = true; $("#exitBtn").hidden = true; $("#tocBtn").hidden = true; $("#exam").hidden = true; $("#result").hidden = false; $("#bankLink").hidden = false; document.body.classList.remove("paper-run"); setExamPure(false); renderResult();
   }
   function qStatus(q) {
+    if (session.peeked && session.peeked[q.id]) return "peeked";
     const results = session.attempt && session.attempt.results || {};
     const r = results[q.id];
     if (isObjective(q) && answerLetters(q) && (session.picks[q.id] || []).length) return (session.picks[q.id] || []).slice().sort().join("") === answerLetters(q).split("").sort().join("") ? "ok" : "wrong";
@@ -910,7 +927,7 @@
     const masteryWasOpen = !!$("#masteryDialog[open]");
     const results = session.attempt && session.attempt.results || {};
     const structureBrief = session.structure ? session.structure.split("。")[0] + "。" : "";
-    $("#result").innerHTML = `<div class="ekicker">${session.mode === "mock" ? "MOCK EXAM" : "RESULT"}</div><h2>${session.mode === "mock" ? "全真模考 · 交卷完成" : "交卷完成"}</h2>${session.mode === "mock" ? `<p class="rsum">用时 ${Math.max(1, Math.round(((session.endTime || Date.now()) - session.startTime) / 60000))} 分钟（限时 180 分钟）${session.timeUp ? " · 时间到自动交卷" : ""}</p>` : ""}<p class="rsum">${esc(structureBrief)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span class="rcheck" aria-hidden="true">✓</span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
+    $("#result").innerHTML = `<div class="ekicker">${session.mode === "mock" ? "MOCK EXAM" : "RESULT"}</div><h2>${session.mode === "mock" ? "全真模考 · 交卷完成" : "交卷完成"}</h2>${session.mode === "mock" ? `<p class="rsum">用时 ${Math.max(1, Math.round(((session.endTime || Date.now()) - session.startTime) / 60000))} 分钟（限时 180 分钟）${session.timeUp ? " · 时间到自动交卷" : ""}</p>` : ""}<p class="rsum">${esc(structureBrief)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span class="rcheck" aria-hidden="true">✓</span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。${Object.keys(session.peeked || {}).length ? "灰色划线：背题模式看过答案，未计入统计。" : ""}</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
     window.AtlasAssessment.renderMastery(document.getElementById("mastery"), session.queue, results);
     if (masteryWasOpen) $("#masteryDialog").showModal();
     $("#result").querySelectorAll("[data-review]").forEach(b => b.onclick = () => { $("#result").hidden = true; $("#exam").hidden = false; $("#sheet").hidden = false; $("#sideSubmit").hidden = true; session.i = Number(b.dataset.review); renderQuestion(); });
@@ -1142,6 +1159,11 @@
   $("#prev").addEventListener("click", () => go(session.i - 1));
   $("#next").addEventListener("click", () => go(session.i + 1));
   $("#reveal").addEventListener("click", () => { if (session.ended) { $("#exam").hidden = true; $("#result").hidden = false; renderResult(); } else showSolution(false); });
+  $("#peekBtn").addEventListener("click", () => {
+    if (!session || session.ended || session.mode !== "knowledge") return;
+    session.peekMode = !session.peekMode;
+    renderQuestion();
+  });
   $("#submitBtn").addEventListener("click", requestSubmit);
   $("#sideSubmit").addEventListener("click", requestSubmit);
   $("#exitBtn").addEventListener("click", requestExit);
@@ -1277,7 +1299,13 @@
     if (window.AtlasQuestions) {
       try {
         const p0 = new URLSearchParams(location.search);
-        if (p0.get("review")) await window.AtlasQuestions.load("all");
+        if (p0.get("review")) {
+          /* 到期复盘只需到期错题涉及科目的分片（原先无条件全量加载约 15MB，进页先卡一轮）；
+             到期列表取不到、或 loadForIds 内部判定需全量时回退 load("all")，题目集合不变。 */
+          const dueIds = window.AtlasReview ? await window.AtlasReview.due().catch(() => null) : null;
+          if (dueIds && window.AtlasQuestions.loadForIds) await window.AtlasQuestions.loadForIds(dueIds);
+          else await window.AtlasQuestions.load("all");
+        }
         else await window.AtlasQuestions.load(p0.get("subject") || "math");
         MANIFEST = await window.AtlasQuestions.manifest;
       } catch (err) { console.error("题库分片加载失败", err); }
