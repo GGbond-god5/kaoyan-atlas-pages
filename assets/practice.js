@@ -196,6 +196,7 @@
 
   const state = { mode: "knowledge", subject: "all", chapter: "all", kp: "", bank: "all", paper: "all", diff: "all", source: "all", count: 10 };
   let session = null;
+  const photoCount = {}; // 每题已传照片数（内存镜像，供已答判定同步读取）
   let timerId = null;
   let confirmCb = null;
   let mockPreview = [];
@@ -483,6 +484,7 @@
     if (!poolOverride && state.mode === "paper") pool = pool.slice().sort((a, b) => paperNo(a) - paperNo(b));
     $("#sideSubmit").hidden = false;
     session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, peekMode: false, peeked: {}, startTime: Date.now(), ended: false, mode: state.mode, limitSec: state.mode === "mock" ? MOCK_SECONDS : 0, subject: state.subject, structure: $("#structureInfo").hidden ? "" : $("#structureInfo").textContent };
+    Object.keys(photoCount).forEach(k => { delete photoCount[k]; });
     const sub = SUBJECTS.find(s => s.id === state.subject);
     const title = poolTitle || (poolOverride ? "错题重练" : (state.mode === "mock" ? `${sub ? sub.name : state.subject} · 全真模考` : state.mode === "paper" ? pool[0].chapterTitle
       : (state.chapter !== "all" ? pool[0].chapterTitle
@@ -532,13 +534,26 @@
     el.textContent = fmtClock(sec);
   }
 
+  /* 已答判定（统一口径）：选了选项 / 写了作答（作文、翻译、填空都同步进 notes）/
+   * 传了照片 / 已自评出状态，任一成立即已答。答题卡、顶部计数、交卷提醒共用此口径，
+   * 避免「格子显示未答、交卷却按已答批改」或反过来的不一致。 */
+  function qAnswered(q) {
+    return (session.picks[q.id] || []).length > 0
+      || String(session.notes[q.id] || "").trim().length > 0
+      || (photoCount[q.id] || 0) > 0
+      || !!session.status[q.id];
+  }
+  function refreshSheetOnAnswerChange(q, before) {
+    if (session && !session.ended && qAnswered(q) !== before) renderSheet();
+  }
+
   function renderSheet() {
     const qs = session.queue;
     $("#sheetMeta").textContent = `${qs.length} 题`;
     const ended = !!(session && session.ended);
     $("#qgrid").innerHTML = qs.map((q, i) => {
       const st = session.status[q.id] || "";
-      const answered = (session.picks[q.id] || []).length > 0 || !!st;
+      const answered = qAnswered(q);
       // 交卷前只显示「未答 / 已答」，不泄露对错；交卷后显示 ok/wrong
       const cls = ended ? st : (answered ? "answered" : "");
       const pk = session.peeked && session.peeked[q.id] ? " peeked" : "";
@@ -550,7 +565,7 @@
     if (ended) {
       $("#sheetStats").innerHTML = `已做 ${ok + wrong + fuzzy} / ${qs.length}<br>对 ${ok} · 错 ${wrong}${fuzzy ? ` · 模糊 ${fuzzy}` : ""}`;
     } else {
-      const answered = qs.filter(q => (session.picks[q.id] || []).length || session.status[q.id]).length;
+      const answered = qs.filter(q => qAnswered(q)).length;
       $("#sheetStats").innerHTML = `已答 ${answered} / ${qs.length}<br>交卷后统一判分`;
     }
   }
@@ -634,6 +649,8 @@
     showPhotos([]);
     if (subjective || fillN > 0) {
       photoGet(q.id).then(urls => {
+        photoCount[q.id] = urls.length;
+        if (session && !session.ended) renderSheet();
         if (urls.length && session && current() && current().id === q.id) showPhotos(urls);
       });
     }
@@ -773,7 +790,7 @@
 
   function requestSubmit() {
     if (!session || session.ended) return;
-    const left = session.queue.filter(q => !(session.picks[q.id] || []).length && !session.notes[q.id]).length;
+    const left = session.queue.filter(q => !qAnswered(q)).length;
     askConfirm("交卷", left > 0
       ? `还有 ${left} 题未作答。检查完毕，确认交卷吗？`
       : "已检查完毕，确认交卷吗？", doSubmit);
@@ -796,7 +813,7 @@
       try { const c = window.AtlasAiCfg && window.AtlasAiCfg.get ? window.AtlasAiCfg.get() : null; if (c && c.mode === "user" && c.base && c.key && c.model) aiCfg = { base: c.base, key: c.key, model: c.model }; } catch (e) {}
       const data = await window.AtlasUser.json("/api/attempts", "POST", {id, subject:session.queue[0].subject, mode:session.mode, questions:session.queue, answers, serverGrade, aiCfg});
       session.attempt = data.attempt;
-      const hasAnswer = q => (session.picks[q.id] || []).length || String(session.notes[q.id] || "").trim() || (answers[q.id] && answers[q.id].image);
+      const hasAnswer = q => qAnswered(q) || (answers[q.id] && answers[q.id].image);
       session.gradeQueue = session.queue.filter(q => hasAnswer(q)).map(q => q.id);
       session.gradeSkipped = session.queue.length - session.gradeQueue.length;
       session.gradeTotal = session.gradeQueue.length;
@@ -1246,7 +1263,12 @@
     if (btn) chooseOption(btn.dataset.opt);
   });
   $("#qtext").addEventListener("input", e => {
-    if (e.target.classList && e.target.classList.contains("blank-in")) syncBlanks();
+    if (e.target.classList && e.target.classList.contains("blank-in")) {
+      const q = session ? current() : null;
+      const before = q ? qAnswered(q) : false;
+      syncBlanks();
+      if (q) refreshSheetOnAnswerChange(q, before);
+    }
   });
   $("#qtext").addEventListener("focusin", e => {
     if (e.target.classList && e.target.classList.contains("blank-in")) lastBlank = e.target;
@@ -1262,7 +1284,13 @@
   $("#gradebar").addEventListener("click", e => {
     const b = e.target.closest("[data-grade]"); if (b && !b.disabled) grade(b.dataset.grade);
   });
-  $("#work").addEventListener("input", e => { if (session) session.notes[current().id] = e.target.value; });
+  $("#work").addEventListener("input", e => {
+    if (!session) return;
+    const q = current(); if (!q) return;
+    const before = qAnswered(q);
+    session.notes[q.id] = e.target.value;
+    refreshSheetOnAnswerChange(q, before);
+  });
   $("#aiAsk").addEventListener("click", () => { const q = current(); if (session.ended && ["english", "english2"].includes(q.subject) && /翻译|作文/.test(q.kind)) window.AtlasCoach.open({subject:q.subject, question:q, work:session.notes[q.id] || "", attemptId:session.attempt && session.attempt.id}); else aiGrade(false); });
   function choosePhoto(input) {
     if (!session || session.ended) return;
@@ -1287,6 +1315,8 @@
     const next = existing.concat(urls);
     await photoPut(target.id, next);
     if (session === target.session && !session.ended && current().id === target.id) showPhotos(next);
+    photoCount[target.id] = next.length;
+    if (session === target.session && !session.ended) renderSheet();
   }
   $("#photoCamera").addEventListener("change", onPhotoChange);
   $("#photoFile").addEventListener("change", onPhotoChange);
@@ -1295,6 +1325,8 @@
     const q = current(); if (!q) return;
     const next = (await photoGet(q.id)).filter((_, i) => i !== Number(b.dataset.del));
     await photoPut(q.id, next);
+    photoCount[q.id] = next.length;
+    if (!session.ended) renderSheet();
     if (current() && current().id === q.id) showPhotos(next);
   });
   $("#aiGrade").addEventListener("click", aiGrade);
