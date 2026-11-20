@@ -40,11 +40,12 @@
    * 其他科目的 passage 渲染不进此分支、行为一字不变；词表由模块内部懒加载。 */
   let engWordsPromise = null;
   function enhanceEnglishWords(el) {
-    if (window.EnglishWords) { window.EnglishWords.enhance(el); return; }
+    const opts = { exam: !!(session && session.mode === "mock") }; // 全真模考一律不提示
+    if (window.EnglishWords) { window.EnglishWords.enhance(el, opts); return; }
     if (!engWordsPromise) {
       engWordsPromise = new Promise(res => {
         const sc = document.createElement("script");
-        sc.src = "assets/english-words.js?v=2";
+        sc.src = "assets/english-words.js?v=3";
         sc.onload = res;
         sc.onerror = res;
         document.head.appendChild(sc);
@@ -52,7 +53,7 @@
     }
     engWordsPromise.then(() => {
       const cq = current();
-      if (window.EnglishWords && cq && ["english", "english2"].includes(cq.subject)) window.EnglishWords.enhance(el);
+      if (window.EnglishWords && cq && ["english", "english2"].includes(cq.subject)) window.EnglishWords.enhance(el, opts);
     });
   }
   const OBJ_KINDS = ["选择题", "单选题", "多选题", "阅读", "完形", "新题型"];
@@ -554,6 +555,42 @@
     }
   }
 
+  /* 查词段位（英语专属）：青铜全文可点 / 黄金只提示生僻词与生词本词 / 王者不提示；
+   * 全真模考一律关闭（模块侧 opts.exam 硬关，这里只显示关闭说明）。段位存 vocab 状态。 */
+  const HINT_NOTES = {
+    bronze: "青铜：全文单词可点查释义",
+    gold: "黄金：只提示生僻词和生词本里的词",
+    king: "王者：不提示，硬读原文"
+  };
+  let hintLevelCur = "bronze";
+  function renderHintLevel() {
+    const box = $("#hintLevel"); if (!box) return;
+    const q = session && !session.ended ? current() : null;
+    if (!q || !["english", "english2"].includes(q.subject)) { box.hidden = true; return; }
+    box.hidden = false;
+    const btns = $("#hintLevelBtns"), note = $("#hintLevelNote");
+    if (session.mode === "mock") {
+      btns.style.display = "none";
+      note.textContent = "全真模考：查词提示已关闭";
+      return;
+    }
+    btns.style.display = "";
+    note.textContent = HINT_NOTES[hintLevelCur] || "";
+    btns.querySelectorAll("button").forEach(b2 => b2.classList.toggle("on", b2.dataset.lv === hintLevelCur));
+    if (window.EnglishWords && window.EnglishWords.level) {
+      window.EnglishWords.level().then(lv => {
+        if (lv && lv !== hintLevelCur) { hintLevelCur = lv; renderHintLevel(); }
+      }).catch(() => {});
+    }
+  }
+  function refreshPassageWords() {
+    const q = current(); if (!q || !(q.passage && q.passage.trim())) return;
+    const el = $("#qpassagebody"); if (!el) return;
+    el.innerHTML = passageHTML(q.passage, q.kind === "完形");
+    renderMath(el);
+    if (["english", "english2"].includes(q.subject)) enhanceEnglishWords(el);
+  }
+
   function current() { return session.queue[session.i]; }
 
   function renderQuestion() {
@@ -584,6 +621,7 @@
       if (["english", "english2"].includes(q.subject)) enhanceEnglishWords($("#qpassagebody"));
       $("#qpassage").open = true;
     }
+    renderHintLevel();
     $("#work").value = session.notes[q.id] || "";
     const subjective = isSubjective(q);
     $("#photoBox").hidden = !(subjective || fillN > 0);
@@ -1172,6 +1210,14 @@
     $("#sheet").hidden = hidden;
     $("#examGrid").classList.toggle("sheet-hidden", hidden);
     $("#tocBtn").textContent = hidden ? "目录" : "收起目录";
+  });
+  const hlBtns = $("#hintLevelBtns");
+  if (hlBtns) hlBtns.addEventListener("click", e => {
+    const b2 = e.target.closest("button[data-lv]"); if (!b2) return;
+    hintLevelCur = b2.dataset.lv;
+    if (window.EnglishWords && window.EnglishWords.setLevel) window.EnglishWords.setLevel(hintLevelCur);
+    renderHintLevel();
+    refreshPassageWords();
   });
   $("#qgrid").addEventListener("click", e => {
     const b = e.target.closest("[data-i]"); if (!b) return;

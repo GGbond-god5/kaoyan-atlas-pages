@@ -238,8 +238,29 @@
   }
 
   /* ---------------- 生词本（复用 vocab 状态的 star 机制） ---------------- */
-  var STAR_FALLBACK = { rec: {}, star: {}, days: {}, tts: true };
+  var STAR_FALLBACK = { rec: {}, star: {}, days: {}, tts: true, hintLevel: "bronze" };
   var vocabState = null, statePromise = null;
+
+  /* ---------------- 查词段位（青铜 bronze / 黄金 gold / 王者 king） ----------------
+   * 存放在 vocab 状态的 hintLevel 字段，与生词本 star 同一份状态、先 load 再改再 save。
+   * 青铜：全文单词可点查（原行为）；黄金：只提示生僻词（大纲外 ECDICT 独有词条）
+   * 与生词本收藏词；王者：不包裹、不提示。全真模考由调用方传 opts.exam 硬关。 */
+  var hintLevel = "bronze", levelResolved = false;
+  var levelReady = ensureVocabState().then(function (st) {
+    if (st && ["bronze", "gold", "king"].indexOf(st.hintLevel) >= 0) hintLevel = st.hintLevel;
+    levelResolved = true;
+    return hintLevel;
+  }).catch(function () { levelResolved = true; return hintLevel; });
+  function getLevel() { return levelReady.then(function () { return hintLevel; }); }
+  function setLevel(lv) {
+    if (["bronze", "gold", "king"].indexOf(lv) < 0) return Promise.resolve(hintLevel);
+    hintLevel = lv; levelResolved = true;
+    return ensureVocabState().then(function (st) {
+      if (!st || !window.AtlasUser || !window.AtlasUser.save) return hintLevel;
+      st.hintLevel = lv;
+      return window.AtlasUser.save("vocab", st).then(function () { return hintLevel; }).catch(function () { return hintLevel; });
+    }).catch(function () { return hintLevel; });
+  }
   function ensureVocabState() {
     if (vocabState) return Promise.resolve(vocabState);
     if (!window.AtlasUser || !window.AtlasUser.load || !window.AtlasUser.save) return Promise.resolve(null);
@@ -275,12 +296,13 @@
     }
     return false;
   }
-  function wrapTextNode(node) {
+  function wrapTextNode(node, filter) {
     var text = node.nodeValue;
     var re = new RegExp(WORD_RE.source, "g");
     var frag = document.createDocumentFragment();
     var last = 0, m, changed = false;
     while ((m = re.exec(text))) {
+      if (filter && !filter(m[0])) continue;
       changed = true;
       if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
       var sp = document.createElement("span");
@@ -297,11 +319,8 @@
     if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
     node.parentNode.replaceChild(frag, node);
   }
-  function enhance(container) {
-    if (!container || !document.createTreeWalker) return;
+  function doWrap(container, filter) {
     if (container.querySelector(".ew-word")) return; // 已处理过，避免重复包裹
-    ensureCss();
-    loadDict().catch(function () { /* 词典失败不影响包裹，点击时再提示 */ });
     var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
       acceptNode: function (node) {
         if (!node.nodeValue || !/[A-Za-z]/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
@@ -310,7 +329,36 @@
     });
     var nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
-    for (var i = 0; i < nodes.length; i++) wrapTextNode(nodes[i]);
+    for (var i = 0; i < nodes.length; i++) wrapTextNode(nodes[i], filter);
+  }
+  /* 黄金段位过滤：生词本收藏词（本人标记的重要词）恒提示；其余只提示
+   * 大纲外生僻词——查词命中且词条为 ECDICT 独有（dictOnly，大纲词表未收）。
+   * 大纲内常见词与查无此词的噪声不包裹。 */
+  function goldHintable(word) {
+    var hit = DICT ? lookupFull(word, DICT, FORMS) : null;
+    if (vocabState && vocabState.star) {
+      if (vocabState.star[String(word).toLowerCase()]) return true;
+      if (hit && vocabState.star[hit.lemma]) return true;
+    }
+    if (!hit) return false;
+    return !!(hit.entry && hit.entry.dictOnly);
+  }
+  function enhance(container, opts) {
+    if (!container || !document.createTreeWalker) return;
+    if (opts && opts.exam) return; // 全真模考：一律不提示，与段位无关
+    if (!levelResolved) { levelReady.then(function () { enhance(container, opts); }); return; }
+    if (hintLevel === "king") return; // 王者：不提示
+    if (container.querySelector(".ew-word")) return; // 已处理过，避免重复包裹
+    ensureCss();
+    if (hintLevel === "gold") {
+      // 黄金需先有词典才能判定生僻词，异步包裹；容器已脱离文档（切题）则放弃
+      loadDict().catch(function () { }).then(function () {
+        if (container.isConnected) doWrap(container, goldHintable);
+      });
+      return;
+    }
+    loadDict().catch(function () { /* 词典失败不影响包裹，点击时再提示 */ });
+    doWrap(container, null);
   }
 
   /* ---------------- 浮层 ---------------- */
@@ -463,6 +511,8 @@
   window.EnglishWords = {
     enhance: enhance,
     close: closePop,
+    level: getLevel,
+    setLevel: setLevel,
     _test: {
       candidates: candidates, lookup: lookup, lookupFull: lookupFull,
       deriveRoots: deriveRoots, mergeDicts: mergeDicts, formsText: formsText,

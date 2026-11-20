@@ -10,7 +10,7 @@
 <script>if(/[?&]motion=0/.test(location.search))document.documentElement.classList.add("motion-off");</script>
 <title>大观题库 · 考研科目大观</title>
 <link rel="stylesheet" href="assets/theme.css">
-<link rel="stylesheet" href="assets/practice.css?v=28">
+<link rel="stylesheet" href="assets/practice.css?v=29">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
   <link rel="stylesheet" href="assets/account-hub.css?v=2">
 </head>
@@ -72,10 +72,17 @@
         <div class="sheet-head"><b>答题卡</b><span id="sheetMeta"></span></div>
         <div class="qgrid" id="qgrid"></div>
         <div class="legend">
-          <span><i class="st-new"></i>未做</span><span><i class="st-ok"></i>做对</span>
+          <span><i class="st-new"></i>未答</span><span><i class="st-answered"></i>已答</span><span><i class="st-ok"></i>做对</span>
           <span><i class="st-wrong"></i>做错</span><span><i class="st-fuzzy"></i>模糊</span>
         </div>
         <div class="sheet-stats" id="sheetStats"></div>
+        <div class="hint-level" id="hintLevel" hidden>
+          <div class="hint-level-title">查词段位（英语）</div>
+          <div class="hint-level-btns" id="hintLevelBtns">
+            <button type="button" data-lv="bronze">青铜</button><button type="button" data-lv="gold">黄金</button><button type="button" data-lv="king">王者</button>
+          </div>
+          <p class="hint-level-note" id="hintLevelNote"></p>
+        </div>
         <button class="side-submit" id="sideSubmit">交卷</button>
       </aside>
 
@@ -157,7 +164,7 @@
 <script src="assets/review.js?v=1"></script>
 <script src="assets/assessment.js?v=9"></script>
 <script src="assets/plain-text.js?v=1"></script>
-<script src="assets/practice.js?v=56"></script>
+<script src="assets/practice.js?v=57"></script>
 <script src="assets/site-tools.js?v=4"></script>
 <script src="assets/pwa.js?v=1"></script>
 <script src="assets/account-hub.js?v=3"></script>
