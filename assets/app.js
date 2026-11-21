@@ -14,7 +14,7 @@
   };
   var SUBJECT_NAMES = { math: '数学一', math2: '数学二', math3: '数学三', english: '英语一', english2: '英语二', mechanics: '807 材料力学', politics: '政治' };
   var SUBJECT_ORDER = ['math', 'math2', 'math3', 'english', 'english2', 'mechanics', 'politics'];
-  var MODE_LABELS = { paper: '套卷', mock: '全真模考', diagnostic: '能力自测', knowledge: '知识点练习' };
+  var MODE_LABELS = { paper: '套卷', mock: '随机组卷模拟', exampaper: '真题考场模拟', diagnostic: '能力自测', knowledge: '知识点练习' };
 
   var state = { user: null, profile: null, practiceRec: {}, bankItems: {}, attempts: null };
 
@@ -1672,11 +1672,11 @@ async function clearPaperRecordsApp(qids) {
       if (startSel.kp) q.push('kp=' + encodeURIComponent(startSel.kp));
       if (startSel.diff && startSel.diff !== 'all') q.push('difficulty=' + encodeURIComponent(startSel.diff));
     }
-    if (startSel.mode === 'paper') q.push('paper=' + encodeURIComponent(startSel.paper));
+    if (startSel.mode === 'paper' || startSel.mode === 'exampaper') q.push('paper=' + encodeURIComponent(startSel.paper));
     return 'practice.html?' + q.join('&');
   }
   function renderStartPicker(body) {
-    var modes = [['knowledge', '按知识点'], ['paper', '按套卷'], ['mock', '全真模考']];
+    var modes = [['knowledge', '按知识点'], ['paper', '按套卷'], ['exampaper', '真题考场'], ['mock', '随机组卷']];
     var profSubs = ((state.profile || {}).subjects || []).filter(function (x) { return SUBJECT_NAMES[x]; });
     var ordered = profSubs.concat(Object.keys(SUBJECT_NAMES).filter(function (x) { return profSubs.indexOf(x) < 0; }));
     if (!startSel.subject || !SUBJECT_NAMES[startSel.subject]) startSel.subject = ordered[0];
@@ -1688,7 +1688,7 @@ async function clearPaperRecordsApp(qids) {
         return '<button type="button" class="f-chip' + (startSel.subject === x ? ' on' : '') + '" data-ss="' + x + '">' + SUBJECT_NAMES[x] + '</button>';
       }).join('') + '</div>' +
       '<div id="startExtra"><div class="sub-loading">正在加载题库…</div></div>' +
-      '<button class="btn-main" id="startGo" type="button" disabled>' + (startSel.mode === 'mock' ? '开始全真模考' : '开始刷题') + '</button>' +
+      '<button class="btn-main" id="startGo" type="button" disabled>' + (startSel.mode === 'mock' ? '开始随机组卷模拟' : startSel.mode === 'exampaper' ? '开始真题考场模拟' : '开始刷题') + '</button>' +
       '<p class="view-note">在 App 里选好，进作答页自动开始，不用再到网页里二次选择。</p>';
     $$('[data-sm]', body).forEach(function (b) { b.addEventListener('click', function () { startSel.mode = b.dataset.sm; startSel.paper = ''; renderStartPicker(body); }); });
     $$('[data-ss]', body).forEach(function (b) { b.addEventListener('click', function () { startSel.subject = b.dataset.ss; startSel.chapter = 'all'; startSel.kp = ''; startSel.paper = ''; renderStartPicker(body); }); });
@@ -1707,9 +1707,32 @@ async function clearPaperRecordsApp(qids) {
     var go = document.getElementById('startGo');
     if (!ex || !go) return;
     if (startSel.mode === 'mock') {
-      ex.innerHTML = '<div class="card"><div class="row-title">' + esc(SUBJECT_NAMES[startSel.subject]) + ' · 全真模考</div>' +
-        '<div class="row-meta">按正式考试结构组卷 · 限时 180 分钟 · 到时自动交卷。点开始后先确认考试须知。</div></div>';
+      ex.innerHTML = '<div class="card"><div class="row-title">' + esc(SUBJECT_NAMES[startSel.subject]) + ' · 随机组卷模拟</div>' +
+        '<div class="row-meta">按正式考试结构随机组卷 · 限时 180 分钟 · 到时自动交卷。点开始后先确认考试须知。</div></div>';
       go.disabled = false;
+      return;
+    }
+    if (startSel.mode === 'exampaper') {
+      var exByChapter = {};
+      items.forEach(function (i) {
+        var c = exByChapter[i.chapter] || (exByChapter[i.chapter] = { id: i.chapter, title: i.chapterTitle || i.chapter, count: 0, year: 0, mock: false });
+        c.count++; if (i.isMock) c.mock = true;
+        var y = Number(i.year) || (String(c.title).match(/(19|20)\d{2}/) || [0])[0];
+        c.year = Math.max(c.year, Number(y) || 0);
+      });
+      var exPapers = Object.keys(exByChapter).map(function (k) { return exByChapter[k]; })
+        .filter(function (p) { return !p.mock; })
+        .sort(function (a, b) { return b.year - a.year || b.count - a.count; });
+      if (!exPapers.length) { ex.innerHTML = '<div class="sub-loading">这个科目暂时没有已录入的真题套卷。</div>'; go.disabled = true; return; }
+      ex.innerHTML = '<div class="row-meta" style="margin-bottom:6px">整套真题 · 限时 180 分钟 · 到时自动交卷，考场规矩抗压训练。</div><label class="f-label">选择真题套卷</label>' + exPapers.map(function (p) {
+        return '<div class="hist-row" data-paper="' + esc(p.id) + '"><div class="hist-main"><div class="hist-title">' + esc(p.title) + '</div>' +
+          '<div class="hist-meta">' + p.count + ' 题 · 真题</div></div>' +
+          (startSel.paper === p.id ? '<span class="tag-chip">已选</span>' : '') + '</div>';
+      }).join('');
+      $$('[data-paper]', ex).forEach(function (row) {
+        row.addEventListener('click', function () { startSel.paper = row.dataset.paper; paintStartExtra(body, items); });
+      });
+      go.disabled = !startSel.paper;
       return;
     }
     if (startSel.mode === 'paper') {

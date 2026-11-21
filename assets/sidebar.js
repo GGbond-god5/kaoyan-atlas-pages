@@ -50,7 +50,8 @@
   }
   function titleOf(a) {
     var q = (a.questions || [])[0] || {};
-    if (a.mode === 'mock') return (SUBJ[a.subject] || a.subject) + ' · 全真模考';
+    if (a.mode === 'mock') return (SUBJ[a.subject] || a.subject) + ' · 随机组卷模拟';
+    if (a.mode === 'exampaper') return (q.chapterTitle || SUBJ[a.subject] || a.subject) + ' · 真题考场模拟';
     if (a.mode === 'diagnostic') return (SUBJ[a.subject] || a.subject) + ' · 能力自测';
     return q.chapterTitle || (SUBJ[a.subject] || a.subject) + ' · 套卷';
   }
@@ -160,7 +161,7 @@
   /* ---------------- 顶栏搜索 ---------------- */
   var FEATURES = [
     { n: '刷题练习', href: 'practice.html', k: '刷题 练习 做题 知识点 套卷' },
-    { n: '全真模考', href: 'practice.html', k: '全真模考 模考 模拟考试 限时' },
+    { n: '考场模拟', href: 'practice.html', k: '考场模拟 真题考场 随机组卷 全真模考 模考 模拟考试 限时 抗压' },
     { n: '学情分析', href: 'analytics.html', k: '学情分析 成绩 得分率 雷达 复盘' },
     { n: '错题本', href: 'wrongbook.html', k: '错题本 错题 复盘 打印' },
     { n: '我的收藏', href: 'wrongbook.html?scope=fav', k: '收藏 收藏夹 星标' },

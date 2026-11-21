@@ -20,7 +20,8 @@
   function rate(r) { return r && r.status === 'graded' && Number(r.maxScore) > 0 ? Number(r.score) / Number(r.maxScore) : null; }
 
   function paperTitle(a) {
-    if (a.mode === 'mock') return subjectName(a.subject, [a]) + ' · 全真模考';
+    if (a.mode === 'mock') return subjectName(a.subject, [a]) + ' · 随机组卷模拟';
+    if (a.mode === 'exampaper') { var q0e = (a.questions || [])[0] || {}; return (q0e.chapterTitle || subjectName(a.subject, [a])) + ' · 真题考场模拟'; }
     if (a.mode === 'diagnostic') return subjectName(a.subject, [a]) + ' · 能力自测';
     var q0 = (a.questions || [])[0] || {};
     return q0.chapterTitle || subjectName(a.subject, [a]) + ' · 套卷';
