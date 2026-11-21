@@ -63,7 +63,13 @@
       if (window.AtlasUser) {
         await window.AtlasUser.ready;
         var prof = await window.AtlasUser.load('profile', {});
-        var mine = ((prof && prof.subjects) || []).filter(function (s) { return avail.includes(s); });
+        var vars = (prof && prof.variants) || {};
+        var poolIds = [];
+        ((prof && prof.subjects) || []).forEach(function (s) {
+          if (s === 'math') poolIds.push(vars.math === 'math2' ? 'math2' : vars.math === 'math3' ? 'math3' : 'math');
+          else if (s === 'politics') poolIds.push('politics');
+        });
+        var mine = poolIds.filter(function (s) { return avail.includes(s); });
         if (mine.length) subjects = ROTATION.filter(function (s) { return mine.includes(s); });
       }
     } catch (e) {}

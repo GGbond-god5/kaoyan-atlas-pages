@@ -222,3 +222,7 @@
 - **只刷错题一键入口**：practice.html 模式区下方加直达链接（复用 ?wrongbook=1 既有通路），sidebar 功能搜索新增「只刷错题」条目（sidebar.js，index 引用 v3→v4）。
 - **807 考场速查（一页纸）**：src/chapters/mechanics/00.json 新增 topic-03 专题（拉压扭转/弯曲/应力状态与强度理论/组合变形/压杆稳定/能量法与动载荷核心公式 + 临场检查清单；弯扭相当应力按圆轴 Wp=2W 口径 σr3=√(M²+T²)/W、σr4=√(M²+0.75T²)/W），已重跑 make_index.py 与 build_web.py（data.js、web/mech-00.js 同步，专题总数 100→101）。
 - 验证：node --check（daily.js/sidebar.js）通过；npm run check 通过；build-pages 构建通过；题池数据自检四科各 60 题、选项/答案/解析零残缺；本地误生成的 lazy-index.js 变更已回退（本批未动笔记库）。前端效果待站长抽查：首页节点轴与每日一题卡位置/作答/答错进错题本、刷题页只刷错题入口。
+
+## 每日一题变体修复：按档案 variants 出题（2026-11-21，待推送）
+- 多学科结构审计（kaoyan-audit/多学科结构调研与本站方案-2026-11-21.md）发现：每日一题初版用档案基础科 id 与题池 id 求交集，档案 subjects 只有基础科 'math'，数二/数三用户会被轮换到数学一题池。站长当晚拍板立即修此条（其余两处同源偏差——plan.js 新题推进链接与 english2 死分支——按方案排考后随 resolveSubjects 一并收敛）。
+- 修复（assets/daily.js v2）：出题前按档案 variants.math 把基础科 'math' 映射为题池 id（math1→math、math2→math2、math3→math3），政治直通；无档案时回退全池轮换不变。harness 验证数一/二/三三种档案映射均正确。
