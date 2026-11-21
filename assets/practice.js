@@ -384,7 +384,7 @@
       const missing = selected.filter(q => !Number.isFinite(Number(q.maxScore)) || q.maxScore == null || Number(q.maxScore) <= 0).length;
       const knownMax = selected.filter(q => q.maxScore != null && Number.isFinite(Number(q.maxScore)) && Number(q.maxScore) > 0).reduce((sum,q) => sum + Number(q.maxScore), 0);
       const missingNo = selected.filter(q => paperNo(q) === 9999).length;
-      info.textContent = (counts ? `随机组卷模拟按正式考试结构组卷，限时 180 分钟，时间到自动交卷。题型配额：${counts.join("；")}。${["english", "english2"].includes(state.subject) ? "完形、阅读、新题型按原文及完整题组抽取，英语一翻译按原卷题组抽取；原文或题目不全的不计入。" : ""}` : `随机组卷模拟限时 180 分钟，时间到自动交卷。材料力学未设统一题型配额，按可用原卷题号排序，${missingNo} 题题号待核并排在末尾，题量由下方选择。`) + `实际抽取 ${selected.length} 题，已知满分合计 ${knownMax} 分，其中 ${missing} 题满分待核；${counts ? "未列入的题型不计入模考。" : ""}`;
+      info.textContent = (counts ? `随机组卷模拟按正式考试结构组卷，限时 180 分钟，时间到自动交卷。题型配额：${counts.join("；")}。${["math", "math2", "math3"].includes(state.subject) ? "卷面顺序照真题规律排：每类题内高数→线代→概率，板块题量照 2024/2025 真题配比。" : state.subject === "politics" ? "卷面顺序照真题规律排：每类题内马原→毛中特/习思想→史纲→思修→时政。" : ""}${["english", "english2"].includes(state.subject) ? "完形、阅读、新题型按原文及完整题组抽取，英语一翻译按原卷题组抽取；原文或题目不全的不计入。" : ""}` : `随机组卷模拟限时 180 分钟，时间到自动交卷。材料力学未设统一题型配额，按可用原卷题号排序，${missingNo} 题题号待核并排在末尾，题量由下方选择。`) + `实际抽取 ${selected.length} 题，已知满分合计 ${knownMax} 分，其中 ${missing} 题满分待核；${counts ? "未列入的题型不计入模考。" : ""}`;
       info.hidden = false; $("#pcount").textContent = `当前可组卷：${selected.length} 题`;
       $("#pstart").disabled = !selected.length; return selected.length;
     }
@@ -440,10 +440,52 @@
     ];
     return null;
   }
+  /* 卷面顺序调研（2024/2025 真题逐题统计）：考研卷面不只是题型结构，
+   * 每类题内部还有固定的知识板块顺序——数学：高数（math-01~08）→ 线代（09~13）→ 概率（14~20）；
+   * 政治：马原（pol-01/02）→ 毛中特（03）/习思想（04）→ 史纲（05）→ 思修（06）→ 时政（07）。
+   * 数学每类题的板块题量也照真题配比（数一/数三选择 4/3/3、填空 4/1/1、解答 4/1/1；数二无概率，选择 7/3、填空 5/1、解答 5/1）。 */
+  const MATH_AREA_QUOTA = {
+    math: { "选择题": [4, 3, 3], "填空题": [4, 1, 1], "解答题": [4, 1, 1] },
+    math3: { "选择题": [4, 3, 3], "填空题": [4, 1, 1], "解答题": [4, 1, 1] },
+    math2: { "选择题": [7, 3], "填空题": [5, 1], "解答题": [5, 1] }
+  };
+  function mathArea(q) {
+    const m = /math-(\d+)/.exec(q.kpChapter || q.topicChapter || "");
+    if (m) { const n = Number(m[1]); return n <= 8 ? 0 : n <= 13 ? 1 : 2; }
+    const t = `${q.kpName || ""} ${q.chapterTitle || ""}`;
+    if (/概率|随机变量|统计|分布|期望|方差/.test(t)) return 2;
+    if (/行列式|矩阵|向量组|线性方程组|特征值|二次型|线性代数/.test(t)) return 1;
+    return 0;
+  }
+  function polRank(q) {
+    const m = /pol-(\d+)/.exec(q.kpChapter || q.topicChapter || "");
+    if (!m) return 5;
+    const n = Number(m[1]);
+    return n <= 2 ? 0 : n <= 4 ? 1 : n === 5 ? 2 : n === 6 ? 3 : 4;
+  }
+  function orderSection(list, subject) {
+    if (subject === "politics") return list.slice().sort((a, b) => polRank(a) - polRank(b));
+    return list;
+  }
+  function mathSectionPick(candidates, subject, g) {
+    const quota = (MATH_AREA_QUOTA[subject] || {})[g.name];
+    if (!quota) return stratified(candidates, g.count);
+    const byArea = [[], [], []];
+    candidates.forEach(q => byArea[mathArea(q)].push(q));
+    const picked = [];
+    quota.forEach((want, area) => { picked.push(...stratified(byArea[area], Math.min(want, byArea[area].length))); });
+    if (picked.length < g.count) { // 某板块题量不足时从其余板块补足，本类总题量不变
+      const rest = candidates.filter(q => !picked.includes(q));
+      picked.push(...stratified(rest, g.count - picked.length));
+    }
+    return picked.slice().sort((a, b) => mathArea(a) - mathArea(b)); // 稳定排序：板块内保留抽题随机序
+  }
   function mockPool(pool, subject) {
     const single = pool.filter(q => q.subject === subject), groups = mockGroups(subject);
     if (groups) return groups.flatMap(g => {
       const candidates = single.filter(q => g.kinds.includes(q.kind));
+      if (["math", "math2", "math3"].includes(subject)) return mathSectionPick(candidates, subject, g);
+      if (subject === "politics") return orderSection(stratified(candidates, g.count), subject);
       if (!["english", "english2"].includes(subject) || !["完形", "阅读", "新题型", "翻译"].includes(g.name) || (g.name === "翻译" && subject === "english2")) return stratified(candidates, g.count);
       const size = g.name === "完形" ? 20 : 5, sets = new Map();
       candidates.forEach(q => {
