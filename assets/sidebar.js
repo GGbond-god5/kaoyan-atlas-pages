@@ -164,6 +164,7 @@
     { n: '考场模拟', href: 'practice.html', k: '考场模拟 真题考场 随机组卷 全真模考 模考 模拟考试 限时 抗压' },
     { n: '学情分析', href: 'analytics.html', k: '学情分析 成绩 得分率 雷达 复盘' },
     { n: '错题本', href: 'wrongbook.html', k: '错题本 错题 复盘 打印' },
+    { n: '只刷错题', href: 'practice.html?wrongbook=1', k: '只刷错题 错题速刷 错题重练 错题模式' },
     { n: '我的收藏', href: 'wrongbook.html?scope=fav', k: '收藏 收藏夹 星标' },
     { n: '资料上传 · 资料库', href: 'library.html', k: '资料 上传 资料库 文件 导入' },
     { n: '社区', href: 'community.html', k: '社区 交流 广场 分享' },
