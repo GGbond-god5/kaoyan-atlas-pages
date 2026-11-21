@@ -32,3 +32,21 @@
   border-top: 1px dashed rgba(31,58,95,.25); padding-top: 8px; }
 #dailyCard .d-exp b { color: #22314a; }
 #dailyCard .d-note { margin-top: 6px; font-size: 12px; color: #A53B30; }
+
+#dailyCard .d-collapse { margin-left: auto; font-size: 12px; color: #7a6a45; background: none;
+  border: 1px solid rgba(31,58,95,.22); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+#dailyCard .d-collapse:hover { border-color: #1F3A5F; color: #1F3A5F; }
+#dailyTab { position: fixed; right: 0; top: 46%; z-index: 60; writing-mode: vertical-rl;
+  font-size: 13px; letter-spacing: .2em; color: #F7F2E8; background: #1F3A5F; border: none;
+  border-radius: 8px 0 0 8px; padding: 12px 7px; cursor: pointer; box-shadow: 0 2px 10px rgba(31,58,95,.3); }
+#dailyTab:hover { background: #A53B30; }
+
+#examAxis .ax-head { display: flex; align-items: center; }
+#examAxis .ax-head .ax-title { margin-bottom: 0; }
+#examAxis .ax-collapse { margin-left: auto; font-size: 12px; color: #7a6a45; background: none;
+  border: 1px solid rgba(31,58,95,.22); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+#examAxis .ax-collapse:hover { border-color: #1F3A5F; color: #1F3A5F; }
+#axisTab { position: fixed; right: 0; top: 60%; z-index: 60; writing-mode: vertical-rl;
+  font-size: 13px; letter-spacing: .2em; color: #F7F2E8; background: #7a6a45; border: none;
+  border-radius: 8px 0 0 8px; padding: 12px 7px; cursor: pointer; box-shadow: 0 2px 10px rgba(31,58,95,.3); }
+#axisTab:hover { background: #A53B30; }
