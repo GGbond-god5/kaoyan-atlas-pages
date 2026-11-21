@@ -63,3 +63,7 @@
 
 .hub-btn { position: relative; }
 .hub-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; border-radius: 50%; background: #C0392B; border: 2px solid #fff; }
+.hub-uiprefs { display: flex; flex-direction: column; gap: 2px; }
+.hub-sw { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; font-size: 13px; cursor: pointer; }
+.hub-sw input { width: 16px; height: 16px; accent-color: #1F3A5F; cursor: pointer; }
+.hub-sw-note { font-size: 11px; color: #8a8378; margin: 2px 0 0; }

@@ -65,6 +65,12 @@
           '<input type="password" id="hubNewPw" placeholder="新密码（8–32 位，含字母和数字）" autocomplete="new-password">' +
           '<input type="password" id="hubNewPw2" placeholder="再输一次新密码" autocomplete="new-password">' +
           '<button type="submit" class="hub-act">更新密码</button></form>' +
+        '<div class="hub-uiprefs"><b>功能开关（首页扩展）</b>' +
+          '<label class="hub-sw"><span>学习计划</span><input type="checkbox" data-uipref="plan"></label>' +
+          '<label class="hub-sw"><span>考试节点</span><input type="checkbox" data-uipref="axis"></label>' +
+          '<label class="hub-sw"><span>每日一题</span><input type="checkbox" data-uipref="daily"></label>' +
+          '<label class="hub-sw"><span>顶栏搜索</span><input type="checkbox" data-uipref="search"></label>' +
+          '<p class="hub-sw-note">关掉只隐藏对应卡片或入口，不影响刷题、批改等基本功能。</p></div>' +
         '<div class="hub-row"><b>我的数据</b><button type="button" class="hub-act ghost" id="hubExport">导出全部数据（JSON）</button></div>' +
         '<form id="hubDelForm"><b class="danger">注销账号</b>' +
           '<input type="password" id="hubDelPw" placeholder="输入密码确认注销">' +
@@ -92,6 +98,16 @@
       if (inboxItem) inboxItem.addEventListener("click", function () { window.AtlasGradeBg.markAllRead().catch(function () {}); });
     }
     if (window.AtlasAiCfg) { var aiMount = panel.querySelector('#hubAiCfg'); if (aiMount) window.AtlasAiCfg.renderSettings(aiMount); }
+    panel.querySelectorAll("[data-uipref]").forEach(function (cb) {
+      var k = cb.getAttribute("data-uipref");
+      var prefs = { plan: 1, axis: 1, daily: 1, search: 1 };
+      try { var raw = JSON.parse(localStorage.getItem("atlas.uiprefs") || "{}"); Object.keys(prefs).forEach(function (x) { if (raw[x] === 0) prefs[x] = 0; }); } catch (e) {}
+      cb.checked = !!prefs[k];
+      cb.addEventListener("change", function () {
+        if (window.AtlasUiPrefs) window.AtlasUiPrefs.set(k, cb.checked);
+        else { prefs[k] = cb.checked ? 1 : 0; try { localStorage.setItem("atlas.uiprefs", JSON.stringify(prefs)); } catch (e) {} }
+      });
+    });
     panel.querySelector("#hubEdit").onclick = function () {
       closePanel();
       if (window.AtlasProfile && typeof window.AtlasProfile.open === "function") window.AtlasProfile.open();
