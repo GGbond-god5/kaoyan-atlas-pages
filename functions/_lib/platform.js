@@ -35,10 +35,14 @@ export async function auth(request, env) {
   let session; try { session = await currentSession(request, env); } catch { return null; }
   return session && typeof session.uid === 'string' && session.uid ? session.uid : null;
 }
+let platformSchemaReady = false;
 async function database(env) {
   if (!env.DB) throw new Error('数据库未配置');
-  await env.DB.batch(schema.map(s => env.DB.prepare(s)));
-  try { await env.DB.prepare('ALTER TABLE platform_files ADD COLUMN category TEXT').run(); } catch (_) { /* 列已存在 */ }
+  if (!platformSchemaReady) {
+    await env.DB.batch(schema.map(s => env.DB.prepare(s)));
+    try { await env.DB.prepare('ALTER TABLE platform_files ADD COLUMN category TEXT').run(); } catch (_) { /* 列已存在 */ }
+    platformSchemaReady = true;
+  }
   return env.DB;
 }
 /** 用户自带 API 配置（请求头传入，服务器只即时转发、从不存储）：
@@ -172,7 +176,7 @@ function validImages(a) {
 async function retrieveContext(db, uid, query) {
   const q = String(query || '').trim();
   if (q.length < 2) return [];
-  const rows = await all(db, 'SELECT data FROM platform_questions WHERE uid=? LIMIT 300', uid);
+  const rows = await all(db, "SELECT json_extract(data,'$.text') AS text, json_extract(data,'$.answer') AS answer, json_extract(data,'$.kpName') AS kpName, json_extract(data,'$.chapterTitle') AS chapterTitle FROM platform_questions WHERE uid=? AND json_extract(data,'$.text') IS NOT NULL AND json_extract(data,'$.text')<>'' LIMIT 300", uid);
   const grams = value => {
     const clean = String(value).replace(/[^\p{L}\p{N}]+/gu, '');
     const set = new Set();
@@ -182,9 +186,7 @@ async function retrieveContext(db, uid, query) {
   const queryGrams = grams(q);
   if (!queryGrams.size) return [];
   const scored = [];
-  for (const row of rows) {
-    let item;
-    try { item = parse(row.data); } catch { continue; }
+  for (const item of rows) {
     if (!item || !item.text) continue;
     const docGrams = grams([item.text, item.answer, item.kpName, item.chapterTitle].join(' '));
     let hits = 0;
@@ -532,7 +534,20 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     if (method === 'DELETE') { const b = await body(); const ids = Array.isArray(b?.ids) ? [...new Set(b.ids.map(str).filter(Boolean))].slice(0, 100) : []; let n = 0;
       for (const aid of ids) { const r = await run(db,'DELETE FROM platform_attempts WHERE uid=? AND id=?',uid,aid); if (changes(r)) { n++; await run(db,'DELETE FROM platform_results WHERE uid=? AND attempt_id=?',uid,aid); } }
       return ok({deleted:n}); }
-    if (method === 'GET') {const rows=await all(db,'SELECT id FROM platform_attempts WHERE uid=?',uid); return ok({attempts:await Promise.all(rows.map(r=>attempt(db,uid,r.id)))});}
+    if (method === 'GET') { const arows = await all(db, 'SELECT id, data FROM platform_attempts WHERE uid=?', uid);
+      const byAttempt = new Map();
+      for (let i = 0; i < arows.length; i += 50) { const chunk = arows.slice(i, i + 50).map(r => r.id);
+        const rrows = await all(db, `SELECT attempt_id, question_id, data FROM platform_results WHERE uid=? AND attempt_id IN (${chunk.map(() => '?').join(',')})`, uid, ...chunk);
+        for (const r of rrows) { if (!byAttempt.has(r.attempt_id)) byAttempt.set(r.attempt_id, []); byAttempt.get(r.attempt_id).push(r); } }
+      const attempts = [];
+      for (const r of arows) { const obj = parse(r.data); if (!obj) continue; delete obj.aiCfg; obj.results = {};
+        for (const rr of byAttempt.get(r.id) || []) obj.results[rr.question_id] = parse(rr.data);
+        const results = Object.values(obj.results);
+        obj.status = results.length === obj.questions.length && results.every(x => x.status === 'graded') ? 'graded' : 'pending';
+        obj.score = results.reduce((sum, x) => sum + (x.status === 'graded' ? x.score : 0), 0);
+        obj.knownMaxScore = results.reduce((sum, x) => sum + (x.status === 'graded' ? x.maxScore : 0), 0);
+        attempts.push(obj); }
+      return ok({ attempts }); }
     if (method === 'POST') {const b=await body(); if (!b || !(await subjectAllowed(db, uid, b.subject)) || !str(b.mode) || !Array.isArray(b.questions) || !b.questions.length || b.questions.length > 500 || !b.answers || typeof b.answers !== 'object' || Array.isArray(b.answers) || b.questions.some(q=>!q || typeof q.id !== 'string' || !q.id || q.subject !== b.subject) || new Set(b.questions.map(q=>q.id)).size !== b.questions.length) return fail(400,'试卷必须包含同一科目且题号唯一的题目');
       if (Object.values(b.answers).some(a=>!a || typeof a !== 'object' || !validImage(a.image) || !validImages(a.images))) return fail(400,'作答格式无效');
       const scores = allocatePaper(b.subject, b.questions, b.mode);

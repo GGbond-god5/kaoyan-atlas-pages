@@ -41,7 +41,11 @@
   }
   const DEFAULT_KEYS = { known: "ArrowLeft", fuzzy: " ", unknown: "ArrowRight", reveal: "Enter", speak: "s", next: "Enter" };
   S.keys = Object.assign({}, DEFAULT_KEYS, S.keys || {});
-  function save() { window.AtlasUser.save("vocab", S).catch(e => toast("同步失败：" + e.message)); }
+  let saveTimer = 0, savePending = false;
+  function flushSave() { if (!savePending) return; savePending = false; clearTimeout(saveTimer); window.AtlasUser.save("vocab", S).catch(e => toast("同步失败：" + e.message)); }
+  function save() { savePending = true; clearTimeout(saveTimer); saveTimer = setTimeout(flushSave, 600); }
+  window.addEventListener("pagehide", flushSave);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushSave(); });
   const fmtDate = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   const today = () => fmtDate(new Date());
   const recOf = w => S.rec[lower(w)] || null;

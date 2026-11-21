@@ -238,3 +238,11 @@
 - 实现：#examAxis 与 #dailyCard 从 #homeCards（左下固定列）移入图谱 stage 内绝对定位——节点轴 top:60px/left:16px（宽 470px），每日一题 right:16px/垂直居中（宽 352px、超高滚动）；窄屏（≤900px）回退为顶部通栏/底部卡片。daily.css v4。
 - 功能开关（assets/ui-prefs.js v1）：localStorage atlas.uiprefs 保存四项开关（学习计划 #planCard/#planSlot、考试节点 #examAxis/#axisTab、每日一题 #dailyCard/#dailyTab、顶栏搜索 .top-search），以注入 CSS 控制显隐、与卡片渲染时机无关；头像菜单「账号设置」新增「功能开关（首页扩展）」四行勾选（account-hub.js v4/css v3，全站页面 bump），在非首页改开关只存状态、回首页生效。卡片原有「收起→右缘竖条」保留为临时折叠，与功能开关（整体启停）分工。
 - 验证：node --check（account-hub/ui-prefs/daily）通过；npm run check 通过（见本批执行记录）。待站长抽查：节点轴左上位置与图谱节点是否打架、每日一题右侧展开、头像菜单四个开关逐个开关效果。
+
+## 后端性能优化四项（2026-11-22，待推送）
+- 背景：站长转发外部《后端与性能优化方案》（四阶段）并指示结合本站现状只做值得做的。评估结论：方案 3.1 题库分片已于 2026-11-20 落地、2.2 AI 超时与结果缓存/2.3 每日限额/3.4 安全头均已具备（方案基线偏旧）；本批落阶段一三项 + 2.1，3.2 版本号指纹、3.3 索引瘦身与阶段四留考后。
+- ① platform.js 建表只跑一次：database() 原每次请求都 batch 8 条 DDL 并试 ALTER，现加 platformSchemaReady 标志（与 db.js 同口径），每 isolate 仅首次执行。
+- ② 答题列表去 N+1：GET /attempts 原为逐份 attempt()（每份 2 次查询）；改为一份全量查询 + results 按 attempt_id 分 50 一组 IN 批量查询后内存组装，status/score/knownMaxScore 计算与 aiCfg 剥离口径与原 attempt() 逐字段一致。
+- ③ 教练检索去全表扫描：retrieveContext 原读 platform_questions 最多 300 行全量 JSON 逐条 parse，现用 json_extract 只投影 text/answer/kpName/chapterTitle 并在 SQL 侧滤空题面，匹配（双字组命中）与返回结构不变。
+- ④ 词汇状态写入去抖：vocab.js 的 save() 改 600ms 合并（连续背词只发最后一次全量状态），pagehide/切后台立即补发防丢；vocab.js v4。
+- 验证：node --check 通过；自写 node:sqlite harness 三项全过（batch 只跑 1 次、列表组装字段正确、教练问答命中「导数应用」参考）；tests/platform-api.mjs 与 master 基线在同一断言处失败（500≠200，内存 shim 既有问题，与本批无关，已 stash 对照确认）；npm run check 通过。
