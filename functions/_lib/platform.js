@@ -45,6 +45,8 @@ async function database(env) {
   }
   return env.DB;
 }
+/** 供体验账号等模块复用：确保平台相关表结构存在 */
+export async function ensurePlatform(env) { return database(env); }
 /** 用户自带 API 配置（请求头传入，服务器只即时转发、从不存储）：
  * x-ai-mode: user 时启用；x-ai-base / x-ai-key / x-ai-model 为 OpenAI 兼容接口参数。 */
 export function userAiConfig(request) {

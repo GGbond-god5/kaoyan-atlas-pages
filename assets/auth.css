@@ -384,6 +384,117 @@ form[aria-busy="true"] .btn-main::before {
   color: var(--ink2);
   font-weight: 500;
 }
+.auth-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 0;
+  color: var(--ink3);
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+}
+.auth-or::before,
+.auth-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule2);
+}
+.btn-demo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--rule);
+  border-radius: 9px;
+  background: linear-gradient(180deg, #fbf7ee 0%, #f3ebdc 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.72) inset;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s,
+    transform 0.18s;
+}
+.btn-demo:hover:not(:disabled) {
+  border-color: #c6ac8e;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.72) inset,
+    0 12px 26px -20px rgba(86, 62, 34, 0.55);
+}
+.btn-demo:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn-demo:disabled {
+  opacity: 0.62;
+  cursor: progress;
+}
+.btn-demo-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.btn-demo-copy b {
+  color: var(--ink);
+  font: 500 14px/1.45 var(--serif);
+  letter-spacing: 0.03em;
+}
+.btn-demo-copy small {
+  color: var(--ink3);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+.btn-demo-arrow {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--sheet);
+  font-size: 13px;
+  transition: transform 0.18s;
+}
+.btn-demo:hover:not(:disabled) .btn-demo-arrow {
+  transform: translateX(2px);
+}
+.btn-demo[aria-busy="true"] .btn-demo-arrow {
+  font-size: 0;
+}
+.btn-demo[aria-busy="true"] .btn-demo-arrow::after {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.demo-note {
+  margin: 9px 0 0;
+  color: var(--ink3);
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: center;
+}
+/* 短屏（常见 1440×900 笔记本视口）收紧纵向节奏，让一键体验入口不用滚动就能看到 */
+@media (max-height: 940px) {
+  .auth-main { padding-top: 16px; padding-bottom: 24px; justify-content: flex-start; }
+  .auth-intro { margin-bottom: 18px; }
+  .auth-intro h1 { font-size: clamp(28px, 2.6vw, 34px); margin-bottom: 8px; }
+  .acard { padding: 24px 32px 22px; }
+  .tabs { margin: 18px 0; }
+  .field { margin-bottom: 14px; }
+  .field input { height: 44px; }
+  .form-foot { margin-top: 16px; padding-top: 12px; }
+  .auth-or { margin-top: 16px; }
+  .btn-demo { margin-top: 10px; padding: 10px 14px; }
+  .demo-note { margin-top: 6px; }
+}
 .alert {
   display: none;
   padding: 11px 13px;

@@ -1,53 +1,57 @@
 /* 首页：考试节点轴 + 每日一题卡（与 plan.css/today.css 同族视觉） */
-#examAxis { position: absolute; top: 10px; left: 16px; z-index: 30; width: 500px; max-width: calc(100vw - 32px);
-  padding: 9px 14px 7px;
-  background: rgba(255,255,255,.88); border: 1px solid rgba(31,58,95,.16); border-radius: 12px;
-  box-shadow: 0 10px 28px rgba(31,58,95,.12); }
-#examAxis .ax-title { font-size: 11px; letter-spacing: .12em; color: #7a6a45; margin-bottom: 6px; }
+#examAxis { position: absolute; top: 12px; left: 16px; z-index: 30; width: 500px; max-width: calc(100vw - 32px);
+  padding: 10px 15px 8px;
+  background: rgba(252, 250, 245, .86); border: 1px solid rgba(120, 96, 40, .18); border-radius: 16px;
+  box-shadow: 0 18px 40px -34px rgba(60, 48, 16, .55), inset 0 1px 0 rgba(255, 255, 255, .7);
+  backdrop-filter: blur(10px) saturate(120%); }
+#examAxis .ax-title { font-size: 10.5px; letter-spacing: .14em; color: #8a7a52; margin-bottom: 8px; }
 #examAxis .ax-track { display: flex; align-items: flex-start; gap: 0; }
 #examAxis .ax-node { flex: 1; text-align: center; position: relative; padding-top: 12px; min-width: 0; }
-#examAxis .ax-node::before { content: ""; position: absolute; top: 5px; left: 0; right: 0; height: 2px; background: rgba(31,58,95,.18); }
+#examAxis .ax-node::before { content: ""; position: absolute; top: 5px; left: 0; right: 0; height: 1px; background: rgba(120, 96, 40, .3); }
 #examAxis .ax-node:first-child::before { left: 50%; }
 #examAxis .ax-node:last-child::before { right: 50%; }
 #examAxis .ax-dot { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 12px; height: 12px;
-  border-radius: 50%; background: #fff; border: 2px solid rgba(31,58,95,.35); }
-#examAxis .ax-node.done .ax-dot { background: #1F3A5F; border-color: #1F3A5F; }
-#examAxis .ax-node.now .ax-dot { background: #A53B30; border-color: #A53B30; box-shadow: 0 0 0 4px rgba(165,59,48,.18); }
-#examAxis .ax-name { font-size: 12px; font-weight: 600; color: #22314a; white-space: nowrap; }
-#examAxis .ax-node.now .ax-name { color: #A53B30; }
-#examAxis .ax-date { font-size: 10.5px; color: #8a8378; margin-top: 1px; white-space: nowrap; }
+  border-radius: 50%; background: #fffdf7; border: 2px solid rgba(120, 96, 40, .34); }
+#examAxis .ax-node.done .ax-dot { background: var(--ink, #17161A); border-color: var(--ink, #17161A); }
+#examAxis .ax-node.now .ax-dot { background: var(--vermilion, #A8342A); border-color: var(--vermilion, #A8342A); box-shadow: 0 0 0 4px rgba(168, 52, 42, .15); }
+#examAxis .ax-name { font-size: 12px; font-weight: 600; color: var(--ink, #17161A); white-space: nowrap; }
+#examAxis .ax-node.now .ax-name { color: var(--vermilion, #A8342A); }
+#examAxis .ax-date { font-size: 10.5px; color: #8a8378; margin-top: 2px; white-space: nowrap; }
 
 #dailyCard { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); z-index: 30;
-  width: 352px; max-width: calc(100vw - 32px); max-height: calc(100% - 40px); overflow: auto; padding: 14px 16px;
-  background: rgba(255,255,255,.92); border: 1px solid rgba(31,58,95,.16); border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(31,58,95,.16); }
+  width: 352px; max-width: calc(100vw - 32px); max-height: calc(100% - 40px); overflow: auto;
+  padding: 16px 17px 15px;
+  background: rgba(252, 250, 245, .94); border: 1px solid rgba(120, 96, 40, .18); border-radius: 16px;
+  box-shadow: 0 26px 54px -42px rgba(60, 48, 16, .58), 0 0 0 1px rgba(255, 255, 255, .5) inset;
+  backdrop-filter: blur(10px); }
 @media (max-width: 900px) {
   #examAxis { left: 10px; right: 10px; width: auto; top: 8px; }
   #dailyCard { left: 10px; right: 10px; width: auto; top: auto; bottom: 12px; transform: none; max-height: 46%; }
 }
-#dailyCard .d-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
-#dailyCard .d-title { font-size: 15px; font-weight: 700; color: #22314a; }
-#dailyCard .d-sub { font-size: 12px; color: #7a6a45; }
-#dailyCard .d-stem { font-size: 14px; line-height: 1.75; color: #2b2b2b; margin-bottom: 10px; }
-#dailyCard .d-opts { display: grid; gap: 6px; }
-#dailyCard .d-opt { text-align: left; font-size: 13.5px; line-height: 1.6; padding: 8px 10px; border-radius: 8px;
-  border: 1px solid rgba(31,58,95,.22); background: #fff; cursor: pointer; color: #2b2b2b; }
-#dailyCard .d-opt:hover { border-color: #1F3A5F; }
-#dailyCard .d-opt.right { background: #e7f2e4; border-color: #4a7c43; }
-#dailyCard .d-opt.wrong { background: #f9e8e5; border-color: #A53B30; }
-#dailyCard .d-opt:disabled { cursor: default; opacity: .92; }
-#dailyCard .d-exp { margin-top: 10px; font-size: 13px; line-height: 1.75; color: #3c4656;
-  border-top: 1px dashed rgba(31,58,95,.25); padding-top: 8px; }
-#dailyCard .d-exp b { color: #22314a; }
-#dailyCard .d-note { margin-top: 6px; font-size: 12px; color: #A53B30; }
+#dailyCard .d-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+#dailyCard .d-title { font-family: var(--serif, serif); font-size: 15px; font-weight: 600; color: var(--ink, #17161A); }
+#dailyCard .d-sub { font-size: 11.5px; color: #8a7a52; }
+#dailyCard .d-stem { font-size: 13.5px; line-height: 1.78; color: #2f2c27; margin-bottom: 11px; }
+#dailyCard .d-opts { display: grid; gap: 7px; }
+#dailyCard .d-opt { text-align: left; font-size: 13px; line-height: 1.62; padding: 9px 11px; border-radius: 10px;
+  border: 1px solid rgba(120, 96, 40, .2); background: rgba(255, 253, 247, .9); cursor: pointer; color: #2f2c27;
+  transition: border-color .16s, background .16s, transform .16s; }
+#dailyCard .d-opt:hover { border-color: rgba(120, 96, 40, .55); background: #fff; transform: translateY(-1px); }
+#dailyCard .d-opt.right { background: #edf4e8; border-color: #6f8f5f; }
+#dailyCard .d-opt.wrong { background: #f8e9e5; border-color: var(--vermilion, #A8342A); }
+#dailyCard .d-opt:disabled { cursor: default; opacity: .94; transform: none; }
+#dailyCard .d-exp { margin-top: 11px; font-size: 12.5px; line-height: 1.8; color: #4a453d;
+  border-top: 1px dashed rgba(120, 96, 40, .28); padding-top: 9px; }
+#dailyCard .d-exp b { color: var(--ink, #17161A); }
+#dailyCard .d-note { margin-top: 7px; font-size: 12px; color: var(--vermilion, #A8342A); }
 
-#dailyCard .d-collapse { margin-left: auto; font-size: 12px; color: #7a6a45; background: none;
-  border: 1px solid rgba(31,58,95,.22); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
-#dailyCard .d-collapse:hover { border-color: #1F3A5F; color: #1F3A5F; }
+#dailyCard .d-collapse { margin-left: auto; font-size: 11.5px; color: #8a7a52; background: none;
+  border: 1px solid rgba(120, 96, 40, .28); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+#dailyCard .d-collapse:hover { border-color: rgba(120, 96, 40, .6); color: var(--ink, #17161A); }
 #dailyTab { position: fixed; right: 0; top: 46%; z-index: 60; writing-mode: vertical-rl;
-  font-size: 13px; letter-spacing: .2em; color: #F7F2E8; background: #1F3A5F; border: none;
-  border-radius: 8px 0 0 8px; padding: 12px 7px; cursor: pointer; box-shadow: 0 2px 10px rgba(31,58,95,.3); }
-#dailyTab:hover { background: #A53B30; }
+  font-size: 13px; letter-spacing: .2em; color: #F7F2E8; background: var(--ink, #17161A); border: none;
+  border-radius: 10px 0 0 10px; padding: 12px 7px; cursor: pointer; box-shadow: 0 2px 10px rgba(23, 22, 26, .28); }
+#dailyTab:hover { background: var(--vermilion, #A8342A); }
 
 #examAxis .ax-head { display: flex; align-items: center; }
 #examAxis .ax-head .ax-title { margin-bottom: 0; }

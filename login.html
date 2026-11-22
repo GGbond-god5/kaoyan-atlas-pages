@@ -8,7 +8,7 @@
 <title>登录 · 考研科目大观</title>
 <meta name="description" content="登录考研科目大观，同步刷题记录、错题本与词汇进度。">
 <link rel="stylesheet" href="assets/theme.css">
-<link rel="stylesheet" href="assets/auth.css?v=20261116">
+<link rel="stylesheet" href="assets/auth.css?v=20261122b">
 </head>
 <body class="login-page">
 <div class="auth-wrap">
@@ -82,6 +82,16 @@
             验证码仅用于确认手机号归属，不做其他用途。
           </div>
         </form>
+
+        <div class="auth-or" role="separator"><span>或</span></div>
+        <button class="btn-demo" id="demoBtn" type="button">
+          <span class="btn-demo-copy">
+            <b>评委体验账号 · 一键进入</b>
+            <small>预置学习计划、成绩、错题与笔记，可直接体验全部功能</small>
+          </span>
+          <span class="btn-demo-arrow" aria-hidden="true">→</span>
+        </button>
+        <p class="demo-note">免注册。每次进入都会把体验数据重置为初始状态，方便演示。</p>
       </div>
 
       <!-- 已登录：账号面板 -->
@@ -267,6 +277,34 @@
       submitBtn.textContent = tab === 'password' ? '登录' : '验证码登录';
     }
   });
+
+  /* ---------- 评委体验账号 ---------- */
+  var demoBtn = document.getElementById('demoBtn');
+  var demoLabel = demoBtn && demoBtn.querySelector('.btn-demo-copy b');
+  if (demoBtn) {
+    if (window.ATLAS_CONTEST) demoBtn.hidden = true;
+    else demoBtn.addEventListener('click', async function () {
+      if (demoBtn.disabled) return;
+      var original = demoLabel.textContent;
+      demoBtn.disabled = true;
+      demoBtn.setAttribute('aria-busy', 'true');
+      demoLabel.textContent = '正在准备体验数据…';
+      A.alertBox(alertEl, '正在装载学习档案、成绩与错题，请稍候…', 'ok');
+      try {
+        var data = await A.post('/api/auth/demo', {});
+        A.alertBox(alertEl, '体验账号已就绪，正在进入图谱…', 'ok');
+        setTimeout(function () {
+          location.href = nextTarget();
+        }, 500);
+        return data;
+      } catch (err) {
+        demoBtn.disabled = false;
+        demoBtn.removeAttribute('aria-busy');
+        demoLabel.textContent = original;
+        A.alertBox(alertEl, err.message);
+      }
+    });
+  }
 
   /* ---------- 账号面板操作 ---------- */
   document.getElementById('goAtlas').addEventListener('click', function () {

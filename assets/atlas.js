@@ -10,12 +10,12 @@
   const linkLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
   linksEl.appendChild(linkLayer);
 
-  const X = { root: 64, subject: 320, chapter: 620, leaf: 1010 };
-  const W = { root: 196, subject: 232, chapter: 302, leaf: 300 };
-  const WORLD_W = 1360;
+  const X = { root: 24, subject: 236, chapter: 486, leaf: 820 };
+  const W = { root: 178, subject: 204, chapter: 288, leaf: 276 };
+  const WORLD_W = 1110;
   const GAP = 26;
 
-  const state = { subject: null, chapter: null, scale: 0.9, x: 40, y: 40 };
+  const state = { subject: null, chapter: null, zoom: 1, scale: 1, x: 24, y: 96 };
   let layout = null;
 
   /* ---------------- helpers ---------------- */
@@ -76,7 +76,7 @@
     const list = state.subject ? SUBJECTS.filter(s => s.id === state.subject) : SUBJECTS;
     const blocks = list.map(s => {
       const open = state.subject === s.id;
-      const h = open ? Math.max(110, s.chapters.length * 38 + 58) : 88;
+      const h = open ? Math.max(104, s.chapters.length * 36 + 54) : 88;
       return { s, open, h };
     });
     let cursor = 0;
@@ -155,7 +155,7 @@
       if (!b.open) return;
       b.chapters = [];
       s.chapters.forEach((ch, i) => {
-        const cy = b.chapterTop + i * 38;
+        const cy = b.chapterTop + i * 36;
         const chapNode = el("div", "node chapter" + (state.chapter === ch.id ? " selected" : ""), `
           <span class="c-no">${esc(ch.no)}</span>
           <span class="c-title">${esc(ch.title)}</span>
@@ -231,7 +231,7 @@
           <button type="button" data-open-lazy>笔记库 →</button>
         </div>
         <div class="note">目标：${esc(school)} · ${esc(major)} · 初试 ${esc(examDateText(P.examDate || DATA.examDate))}。<br>点击左侧科目展开章节；点章节或考点进入网页阅读，顶部可「返回图谱」或下载 PDF 原版。<br><b>真题标注</b>：年份·题号为原卷原题；「同型」为同考点真题风格改编。内容按 <b>2027 考研大纲</b> 校对。${hasMech ? "<br>807 以华工官方 2026 版 11 条为准（2027 新版截至 2026-11 未见公开）。" : ""}</div>`);
-      panel.style.cssText = `left:720px;top:${Math.max(20, layout.rootY - 190)}px;width:500px`;
+      panel.style.cssText = `left:580px;top:${Math.max(20, layout.rootY - 190)}px;width:520px`;
       nodesEl.appendChild(panel);
     } else if (!selectedChapter) {
       const s = SUBJECTS.find(x => x.id === state.subject);
@@ -251,10 +251,11 @@
           ${s.id === "politics" ? `<a class="cta ghost" href="timeline.html" style="--accent:${s.accent};border-color:${s.accent}">政治时间轴 →</a>` : ""}
         </div>
         <div class="tip">点击章节直接在页内阅读；章节右侧可展开考点或下载 PDF。</div>`);
-      panel.style.cssText = `left:950px;top:${Math.max(16, b.top + 10)}px;width:370px`;
+      panel.style.cssText = `left:800px;top:${Math.max(16, b.top + 10)}px;width:300px`;
       nodesEl.appendChild(panel);
     }
 
+    layoutView();
     apply();
     syncNav();
   }
@@ -263,46 +264,28 @@
   function viewport() {
     return { vw: stage.clientWidth, vh: stage.clientHeight };
   }
-  function fitAll() {
+  /* 图谱锚点固定：栏宽变化、展开科目都只重算适配比例，不再平移画布。 */
+  function railReserve() {
+    if (window.innerWidth < 1201) return 0;
+    const rail = document.getElementById("atlasRail");
+    if (!rail) return 0;
+    if (getComputedStyle(rail).display === "none") return 0;
+    return rail.getBoundingClientRect().width + 40;
+  }
+  function layoutView() {
     const { vw, vh } = viewport();
-    const worldH = Math.max(layout.total + 140, 520);
-    const s = Math.min((vw - 70) / WORLD_W, (vh - 120) / worldH, 1.06);
-    state.scale = Math.max(0.42, s);
-    state.x = (vw - WORLD_W * state.scale) / 2;
-    state.y = (vh - worldH * state.scale) / 2 + 26;
+    const availW = Math.max(360, vw - railReserve() - 48);
+    const availH = Math.max(320, vh - 168);
+    const worldH = Math.max(layout.total + 120, 520);
+    const base = Math.min(availW / WORLD_W, availH / worldH, 1.08);
+    state.scale = Math.max(0.36, Math.min(1.8, base * state.zoom));
+    state.x = 24 + (availW - WORLD_W * state.scale) / 2;
+    state.y = 96 + (availH - worldH * state.scale) / 2;
+  }
+  function fitView() {
+    state.zoom = 1;
+    layoutView();
     apply();
-  }
-  function fitHeight(height, pad = 60, maxScale = 0.96, minScale = 0.84) {
-    const { vw, vh } = viewport();
-    const s = Math.min((vw - 80) / WORLD_W, (vh - pad) / Math.max(height, 1), maxScale);
-    return Math.max(minScale, s);
-  }
-  function focusSubject(sid) {
-    const { vh } = viewport();
-    const needH = layout.total + 70;
-    state.scale = fitHeight(needH);
-    state.x = 40;
-    state.y = Math.max(110, (vh - needH * state.scale) / 2);
-    clampPan();
-    apply();
-  }
-  function focusChapter(y) {
-    const { vh } = viewport();
-    const needH = Math.max(layout.total + 70, 520);
-    state.scale = fitHeight(needH);
-    state.x = 40;
-    state.y = Math.max(110, vh / 2 - (y + 19) * state.scale);
-    clampPan();
-    apply();
-  }
-  function clampPan() {
-    const { vw, vh } = viewport();
-    const worldH = Math.max(layout.total + 140, 520) * state.scale;
-    const worldW = WORLD_W * state.scale;
-    const yA = 110, yB = vh - worldH - 40;
-    state.y = Math.max(Math.min(yA, yB), Math.min(Math.max(yA, yB), state.y));
-    const xA = 40, xB = vw - worldW - 40;
-    state.x = Math.max(Math.min(xA, xB), Math.min(Math.max(xA, xB), state.x));
   }
 
   /* ---------------- events ---------------- */
@@ -340,7 +323,6 @@
       state.subject = wasOpen ? null : sid;
       state.chapter = null;
       render();
-      if (state.subject) focusSubject(sid); else fitAll();
       updateCrumb();
     } else if (node.dataset.type === "chapter") {
       const cid = node.dataset.id;
@@ -352,8 +334,6 @@
       if (e.target.closest("[data-expand]")) {
         state.chapter = state.chapter === cid ? null : cid;
         render();
-        const targeted = [...nodesEl.querySelectorAll(".chapter")].find(n => n.dataset.id === cid);
-        if (targeted) focusChapter(parseFloat(targeted.style.top));
         updateCrumb();
         return;
       }
@@ -369,50 +349,12 @@
     node.click();
   });
 
-  // drag to pan
-  let drag = null;
-  stage.addEventListener("pointerdown", e => {
-    if (e.target.closest(".node") || e.target.closest(".stage-bottom") || e.target.closest(".zoom")) return;
-    if (e.target.closest("a, button, input, select, textarea")) return;
-    drag = { x: e.clientX, y: e.clientY, ox: state.x, oy: state.y };
-    stage.classList.add("dragging");
-    stage.setPointerCapture(e.pointerId);
-  });
-  stage.addEventListener("pointermove", e => {
-    if (!drag) return;
-    state.x = drag.ox + (e.clientX - drag.x);
-    state.y = drag.oy + (e.clientY - drag.y);
-    clampPan();
-    apply();
-  });
-  stage.addEventListener("pointerup", () => { drag = null; stage.classList.remove("dragging"); });
-  stage.addEventListener("pointercancel", () => { drag = null; stage.classList.remove("dragging"); });
-
-  stage.addEventListener("wheel", e => {
-    e.preventDefault();
-    const rect = stage.getBoundingClientRect();
-    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-    const wx = (mx - state.x) / state.scale;
-    const wy = (my - state.y) / state.scale;
-    const factor = Math.exp(-e.deltaY * 0.0014);
-    state.scale = Math.max(0.4, Math.min(1.8, state.scale * factor));
-    state.x = mx - wx * state.scale;
-    state.y = my - wy * state.scale;
-    clampPan();
-    apply();
-  }, { passive: false });
-
   document.querySelectorAll("[data-zoom]").forEach(btn => {
     btn.addEventListener("click", () => {
-      const { vw, vh } = viewport();
       const action = btn.dataset.zoom;
-      if (action === "fit") { fitAll(); return; }
-      const cx = vw / 2, cy = vh / 2;
-      const wx = (cx - state.x) / state.scale, wy = (cy - state.y) / state.scale;
-      state.scale = Math.max(0.4, Math.min(1.8, state.scale * (action === "in" ? 1.15 : 0.87)));
-      state.x = cx - wx * state.scale;
-      state.y = cy - wy * state.scale;
-      clampPan();
+      if (action === "fit") { fitView(); return; }
+      state.zoom = Math.max(0.6, Math.min(1.45, state.zoom * (action === "in" ? 1.15 : 0.87)));
+      layoutView();
       apply();
     });
   });
@@ -548,8 +490,6 @@
       state.subject = ch.subject;
       state.chapter = ch.id;
       render();
-      const target = [...nodesEl.querySelectorAll(".chapter")].find(n => n.dataset.id === ch.id);
-      if (target) focusChapter(parseFloat(target.style.top));
       updateCrumb();
     }
   }
@@ -795,10 +735,10 @@
       const sid = btn.dataset.sid;
       if (state.subject === sid) {
         state.subject = null; state.chapter = null;
-        render(); fitAll();
+        render();
       } else {
         state.subject = sid; state.chapter = null;
-        render(); focusSubject(sid);
+        render();
       }
       updateCrumb();
     });
@@ -845,16 +785,11 @@
     input.value = params.get("q");
     renderSearch(params.get("q"));
   }
-  if (state.subject) {
-    const target = state.chapter && [...nodesEl.querySelectorAll(".chapter")].find(n => n.dataset.id === state.chapter);
-    if (target) focusChapter(parseFloat(target.style.top)); else focusSubject(state.subject);
-  } else {
-    fitAll();
-  }
+  fitView();
   fillStats();
   buildMobile();
   updateCrumb();
   routeHash();
   window.addEventListener("hashchange", routeHash);
-  window.addEventListener("resize", () => { render(); });
+  window.addEventListener("resize", () => { layoutView(); apply(); });
 })();

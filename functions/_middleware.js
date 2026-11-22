@@ -13,7 +13,7 @@ import { getUser } from "./_lib/db.js";
 const PUBLIC = [
   /^\/login(\.html)?$/,
   /^\/register(\.html)?$/,
-  /^\/api\/auth\/(login|register|logout|me)$/,
+  /^\/api\/auth\/(login|register|logout|me|demo)$/,
   /^\/api\/sms\/send$/,
   /^\/api\/health$/,
   /^\/api\/worker$/,
