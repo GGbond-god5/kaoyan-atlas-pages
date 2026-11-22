@@ -246,3 +246,11 @@
 - ③ 教练检索去全表扫描：retrieveContext 原读 platform_questions 最多 300 行全量 JSON 逐条 parse，现用 json_extract 只投影 text/answer/kpName/chapterTitle 并在 SQL 侧滤空题面，匹配（双字组命中）与返回结构不变。
 - ④ 词汇状态写入去抖：vocab.js 的 save() 改 600ms 合并（连续背词只发最后一次全量状态），pagehide/切后台立即补发防丢；vocab.js v4。
 - 验证：node --check 通过；自写 node:sqlite harness 三项全过（batch 只跑 1 次、列表组装字段正确、教练问答命中「导数应用」参考）；tests/platform-api.mjs 与 master 基线在同一断言处失败（500≠200，内存 shim 既有问题，与本批无关，已 stash 对照确认）；npm run check 通过。
+
+## 测试模式重组 + 数学真题修复 + 节点轴嵌入（2026-11-22，待推送）
+- 站长指令四点：①考试节点轴不要展开式浮层，直接嵌入首页左上角成为固定组成；②刷题入口改称「测试」，页内分两大模式——刷题模式（按知识点刷、按套卷刷，政治背题/英语查词/数学解析等辅助功能不改）与考试模式（真题模拟 + 能力测试，均无解析无辅助、标准 180 分钟倒计时、准时交卷批改打分）；③能力测试调用全题库、按标准试卷结构与知识点顺序排题、带难度梯度；④补上数学真题（此前数学真题刷不了）。
+- 数学真题根因与修复：套卷章节旧判定 isPaperChapter 要求整章题目无 kp 且 kpName 为「第N题」，数学真题在 2026-11-18 知识点打标后 kpName 变为知识点名，被整批排除出套卷/真题模拟列表。改为年份真题口径（章节 id 形如 math/math2/math3/eng/eng2/pol/807-YYYY 直接认定套卷），paperNo 在 kpName 无题号时按题目 id 尾数兜底（math-2025-7 即第 7 题）。数据侧验证：套卷章节 132→183，数一/二/三 2009–2025 共 51 套真题全部入列，math-2025 题序 1–22 连续；数学真题 topicChapter 齐全，按知识点刷不受影响。
+- 模式重组实现：practice 页签改为两组（刷题模式：按知识点刷/按套卷刷 + 只刷错题入口；考试模式：真题模拟 exampaper、能力测试 ability）。能力测试由随机组卷升级：mode id 改 ability（旧 ?mode=mock 与历史 mock 记录均映射为能力测试显示），组卷沿用标准题型配额与板块顺序（mockPool），新增 abilityPool 在同题型段、同板块内按难度由易到难重排形成梯度（英语整组抽取不动组内序）；harness 对真实题库验证：数学 10/6/6、政治 16/17/5 配额命中，段序→板块序→难度三级单调。考试须知、结果页、后台批改标题、学情/侧边栏/App 的模式名同步（真题考场模拟→真题模拟、随机组卷模拟→能力测试）；App 开始测试选择器与模式卡同步两组结构。
+- 入口改名：顶栏与 App 底部导航「刷题」→「测试」，App「开始刷题」→「开始测试」，新手引导、档案引导、站内 GUIDE（prompts.js）同步新结构。
+- 节点轴嵌入：daily.js 撤下节点轴的收起按钮/右缘竖条/localStorage 状态，ui-prefs 与头像菜单功能开关去掉「考试节点」项（剩学习计划/每日一题/顶栏搜索三项）；每日一题的收起竖条保留不变。
+- 版本号：practice.js v62/css v31、daily.js v5/css v5、app.js v36、analytics v19、sidebar v5、onboarding v7、profile-boot v17、account-hub.js v5、ui-prefs v2。验证：node --check 全过、组卷 harness 全过、npm run check 通过（见本批执行记录）。待站长抽查：测试页两组页签、数学真题模拟能选到数一历年卷、能力测试卷面梯度、节点轴固定显示。

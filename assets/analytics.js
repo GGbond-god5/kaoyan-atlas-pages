@@ -20,8 +20,8 @@
   function rate(r) { return r && r.status === 'graded' && Number(r.maxScore) > 0 ? Number(r.score) / Number(r.maxScore) : null; }
 
   function paperTitle(a) {
-    if (a.mode === 'mock') return subjectName(a.subject, [a]) + ' · 随机组卷模拟';
-    if (a.mode === 'exampaper') { var q0e = (a.questions || [])[0] || {}; return (q0e.chapterTitle || subjectName(a.subject, [a])) + ' · 真题考场模拟'; }
+    if (a.mode === 'mock' || a.mode === 'ability') return subjectName(a.subject, [a]) + ' · 能力测试';
+    if (a.mode === 'exampaper') { var q0e = (a.questions || [])[0] || {}; return (q0e.chapterTitle || subjectName(a.subject, [a])) + ' · 真题模拟'; }
     if (a.mode === 'diagnostic') return subjectName(a.subject, [a]) + ' · 能力自测';
     var q0 = (a.questions || [])[0] || {};
     return q0.chapterTitle || subjectName(a.subject, [a]) + ' · 套卷';
@@ -354,7 +354,7 @@ async function clearPaperRecords(qids) {
     try {
       await window.AtlasUser.ready;
       var data = await window.AtlasUser.json('/api/attempts', 'GET');
-      state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'diagnostic' || a.mode === 'mock') && Array.isArray(a.questions); });
+      state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'diagnostic' || a.mode === 'mock' || a.mode === 'ability') && Array.isArray(a.questions); });
       var subjects = Array.from(new Set(state.attempts.map(function (a) { return a.subject; })));
       try { var g = await window.AtlasUser.load('goals', { targets: {} }); state.targets = (g && g.targets) || {}; } catch (e) {}
       renderTabs(subjects);

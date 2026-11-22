@@ -38,31 +38,13 @@
     for (var i = 0; i < MILESTONES.length; i++) {
       if (today < new Date(MILESTONES[i].date + 'T00:00:00')) { nowIdx = i; break; }
     }
-    box.innerHTML = '<div class="ax-head"><span class="ax-title">2027 考研 · 考试节点</span>' +
-      '<button type="button" class="ax-collapse" id="axisCollapse">收起 ›</button></div><div class="ax-track">' +
+    // 考试节点轴是首页固定组成部分：直接嵌入图谱区左上角，不收起、无开关。
+    box.innerHTML = '<div class="ax-head"><span class="ax-title">2027 考研 · 考试节点</span></div><div class="ax-track">' +
       MILESTONES.map(function (m, i) {
         var cls = i < nowIdx ? 'done' : i === nowIdx ? 'now' : '';
         return '<div class="ax-node ' + cls + '"><span class="ax-dot"></span>' +
           '<div class="ax-name">' + esc(m.name) + '</div><div class="ax-date">' + esc(m.label) + '</div></div>';
       }).join('') + '</div>';
-    var tab = document.getElementById('axisTab');
-    if (!tab) {
-      tab = document.createElement('button');
-      tab.id = 'axisTab';
-      tab.type = 'button';
-      tab.textContent = '考试节点';
-      document.body.appendChild(tab);
-    }
-    function setAxisCollapsed(on) {
-      try { localStorage.setItem('atlas.axis.collapsed', on ? '1' : '0'); } catch (e) {}
-      box.hidden = on;
-      tab.hidden = !on;
-    }
-    box.querySelector('#axisCollapse').addEventListener('click', function () { setAxisCollapsed(true); });
-    tab.addEventListener('click', function () { setAxisCollapsed(false); });
-    var collapsed = false;
-    try { collapsed = localStorage.getItem('atlas.axis.collapsed') === '1'; } catch (e) {}
-    setAxisCollapsed(collapsed);
   }
 
   /* ---------------- 每日一题 ---------------- */

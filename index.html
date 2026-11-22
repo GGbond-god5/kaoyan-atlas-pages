@@ -19,7 +19,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <link rel="stylesheet" href="assets/guide.css?v=1">
 <link rel="stylesheet" href="assets/today.css?v=1">
 <link rel="stylesheet" href="assets/plan.css?v=3">
-<link rel="stylesheet" href="assets/daily.css?v=4">
+<link rel="stylesheet" href="assets/daily.css?v=5">
 <link rel="stylesheet" href="assets/atlas.css?v=19">
 <link rel="stylesheet" href="assets/web.css?v=15">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
@@ -41,7 +41,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
   <nav class="subject-nav" id="subjectNav" aria-label="科目切换"></nav>
   <div class="top-search"><input id="topSearchInput" type="text" placeholder="搜索知识点或功能…" autocomplete="off" spellcheck="false"><div class="top-search-results" id="topSearchResults" hidden></div></div>
   <div class="actions">
-    <a class="btn ghost" href="practice.html">刷题</a>
+    <a class="btn ghost" href="practice.html">测试</a>
     <a class="btn ghost" href="community.html">社区</a>
     <button class="btn ghost" id="lazyBtn" type="button">笔记库</button>
     <a class="btn ghost" href="library.html">资料上传</a>
@@ -163,9 +163,9 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <script src="assets/lazy-index.js"></script>
 <script src="assets/user-state.js?v=2"></script><script src="assets/grading-bg.js?v=3"></script><script src="assets/ai-config.js?v=1"></script>
 <script src="assets/assessment.js?v=8"></script>
-<script src="assets/profile-boot.js?v=16"></script>
+<script src="assets/profile-boot.js?v=17"></script>
 <script src="assets/lazy.js?v=8"></script>
-<script src="assets/account-hub.js?v=4"></script>
+<script src="assets/account-hub.js?v=5"></script>
 <script src="assets/site-tools.js?v=4"></script>
 <script>
 /* 播放器体量大，等首屏画完、空闲时再取，避免和首屏脚本抢带宽 */
@@ -180,14 +180,14 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
   else setTimeout(start, 1000);
 })();
 </script>
-<script src="assets/onboarding.js?v=6"></script>
+<script src="assets/onboarding.js?v=7"></script>
 <script src="assets/plain-text.js?v=1"></script>
 <script src="assets/guide.js?v=4"></script>
 <script src="assets/review.js?v=1"></script>
 <script src="assets/today.js?v=2"></script>
 <script src="assets/marks.js?v=1"></script>
-<script src="assets/daily.js?v=4"></script>
-<script src="assets/ui-prefs.js?v=1"></script>
+<script src="assets/daily.js?v=5"></script>
+<script src="assets/ui-prefs.js?v=2"></script>
 <script src="assets/plan.js?v=4"></script>
 <script>
 /* 站点公告：管理员在后台发布后，首页顶部展示一条 */
@@ -203,6 +203,6 @@ fetch('/api/announcement', { credentials: 'include' })
   .catch(function () {});
 </script>
 <script src="assets/pwa.js?v=1"></script>
-<script src="assets/sidebar.js?v=4"></script>
+<script src="assets/sidebar.js?v=5"></script>
 </body>
 </html>

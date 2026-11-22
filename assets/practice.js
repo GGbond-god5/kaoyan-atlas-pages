@@ -227,6 +227,9 @@
   }
 
   function isPaperChapter(id) {
+    // 年份真题章（math-2025 等）直接认定为套卷：数学真题带 kp 打标、kpName 是知识点名，
+    // 过不了下面的旧口径，这正是数学真题一度进不了套卷/真题模拟的原因。
+    if (/^(math|math2|math3|eng|eng2|pol|807)-\d{4}$/.test(id || "")) return true;
     const list = ITEMS.filter(i => i.chapter === id);
     return list.length > 0 && list.every(i => !i.kp && /第\d+题/.test(i.kpName || ""));
   }
@@ -290,7 +293,7 @@
   }
 
   function renderPaperOptions() {
-    const examOnly = state.mode === "exampaper"; // 真题考场模拟只列已逐题录入的真题（原卷 PDF 不能逐题作答批改，不列）
+    const examOnly = state.mode === "exampaper"; // 真题模拟只列已逐题录入的真题（原卷 PDF 不能逐题作答批改，不列）
     const list = paperList().filter(p => state.subject === "all" || p.subject === state.subject);
     const real = [];
     const transcribed = new Set();
@@ -344,7 +347,7 @@
     return ITEMS.filter(i => {
       if (state.bank !== "all" && i._bank !== state.bank) return false;
       if (state.mode === "knowledge" && !inTopicMode(i)) return false;
-      if ((state.mode === "mock" || state.mode === "exampaper") && state.subject === "all") return false;
+      if ((state.mode === "ability" || state.mode === "exampaper") && state.subject === "all") return false;
       if (state.mode === "knowledge" && state.kp && i.kp !== state.kp) return false;
       if (state.subject !== "all" && i.subject !== state.subject) return false;
       if (state.mode === "knowledge" && state.chapter !== "all" && topicOf(i) !== state.chapter) return false;
@@ -358,7 +361,7 @@
 
   function updateCount() {
     const info = $("#structureInfo"); info.hidden = true; info.textContent = "";
-    if ((state.mode === "paper" || state.mode === "mock" || state.mode === "exampaper") && state.subject === "all") {
+    if ((state.mode === "paper" || state.mode === "ability" || state.mode === "exampaper") && state.subject === "all") {
       $("#pcount").textContent = "请先选择单一科目"; $("#pstart").disabled = true; $("#paperSol").hidden = true; return 0;
     }
     const arc = state.mode === "paper" ? archiveOf(state.paper) : null;
@@ -372,23 +375,23 @@
     $("#paperSol").hidden = true;
     const n = currentPool().length;
     if ((state.mode === "paper" || state.mode === "exampaper") && state.paper === "all") {
-      $("#pcount").textContent = state.mode === "exampaper" ? "真题考场模拟：请先在「套卷」里选一份真题" : "套卷模式：请先在「套卷」里选一份完整试卷";
+      $("#pcount").textContent = state.mode === "exampaper" ? "真题模拟：请先在「套卷」里选一份真题" : "套卷模式：请先在「套卷」里选一份完整试卷";
       $("#pstart").disabled = true;
       return 0;
     }
     const pool = currentPool();
-    if (state.mode === "mock") {
-      const groups = mockGroups(state.subject), selected = mockPool(pool, state.subject);
+    if (state.mode === "ability") {
+      const groups = mockGroups(state.subject), selected = abilityPool(pool, state.subject);
       mockPreview = selected;
       const counts = groups && groups.map(g => { const available = selected.filter(q => g.kinds.includes(q.kind)).length; return `${g.name} ${available}/${g.count}${available < g.count ? "（缺题）" : ""}`; });
       const missing = selected.filter(q => !Number.isFinite(Number(q.maxScore)) || q.maxScore == null || Number(q.maxScore) <= 0).length;
       const knownMax = selected.filter(q => q.maxScore != null && Number.isFinite(Number(q.maxScore)) && Number(q.maxScore) > 0).reduce((sum,q) => sum + Number(q.maxScore), 0);
       const missingNo = selected.filter(q => paperNo(q) === 9999).length;
-      info.textContent = (counts ? `随机组卷模拟按正式考试结构组卷，限时 180 分钟，时间到自动交卷。题型配额：${counts.join("；")}。${["math", "math2", "math3"].includes(state.subject) ? "卷面顺序照真题规律排：每类题内高数→线代→概率，板块题量照 2024/2025 真题配比。" : state.subject === "politics" ? "卷面顺序照真题规律排：每类题内马原→毛中特/习思想→史纲→思修→时政。" : ""}${["english", "english2"].includes(state.subject) ? "完形、阅读、新题型按原文及完整题组抽取，英语一翻译按原卷题组抽取；原文或题目不全的不计入。" : ""}` : `随机组卷模拟限时 180 分钟，时间到自动交卷。材料力学未设统一题型配额，按可用原卷题号排序，${missingNo} 题题号待核并排在末尾，题量由下方选择。`) + `实际抽取 ${selected.length} 题，已知满分合计 ${knownMax} 分，其中 ${missing} 题满分待核；${counts ? "未列入的题型不计入模考。" : ""}`;
+      info.textContent = (counts ? `能力测试从全题库按正式考试结构组卷，限时 180 分钟，时间到自动交卷。题型配额：${counts.join("；")}。${["math", "math2", "math3"].includes(state.subject) ? "卷面顺序照真题规律排：每类题内高数→线代→概率，板块题量照 2024/2025 真题配比；每类题内按难度由易到难排，呈难度梯度。" : state.subject === "politics" ? "卷面顺序照真题规律排：每类题内马原→毛中特/习思想→史纲→思修→时政；每类题内按难度由易到难排，呈难度梯度。" : ""}${["english", "english2"].includes(state.subject) ? "完形、阅读、新题型按原文及完整题组抽取，英语一翻译按原卷题组抽取；原文或题目不全的不计入。" : ""}` : `能力测试限时 180 分钟，时间到自动交卷。材料力学未设统一题型配额，按难度由易到难排（同难度按原卷题号），${missingNo} 题题号待核并排在末尾，题量由下方选择。`) + `实际抽取 ${selected.length} 题，已知满分合计 ${knownMax} 分，其中 ${missing} 题满分待核；${counts ? "未列入的题型不计入模考。" : ""}`;
       info.hidden = false; $("#pcount").textContent = `当前可组卷：${selected.length} 题`;
       $("#pstart").disabled = !selected.length; return selected.length;
     }
-    if (state.mode === "paper" || state.mode === "exampaper") { const missing = pool.filter(q => q.maxScore == null || !Number.isFinite(Number(q.maxScore)) || Number(q.maxScore) <= 0).length; const counts = {}; pool.forEach(q => { const kind = q.kind || "未分类"; counts[kind] = (counts[kind] || 0) + 1; }); const known = pool.filter(q => q.maxScore != null && Number.isFinite(Number(q.maxScore)) && Number(q.maxScore) > 0).reduce((sum,q) => sum + Number(q.maxScore),0); const no = pool.filter(q => paperNo(q) === 9999).length; const comp = `原卷录入 ${n} 题：${Object.entries(counts).map(([k,v]) => `${k} ${v} 题`).join("；")}。已知满分合计 ${known} 分，${missing} 题满分待核；${no} 题题号待核并排在末尾。`; info.textContent = state.mode === "exampaper" ? `真题考场模拟：整套真题按考场规矩来——限时 180 分钟，时间到自动交卷；交卷前不能看解析，查词、背题、考点直达全部关闭，中途退出不保存成绩。${comp}` : comp; info.hidden = false; }
+    if (state.mode === "paper" || state.mode === "exampaper") { const missing = pool.filter(q => q.maxScore == null || !Number.isFinite(Number(q.maxScore)) || Number(q.maxScore) <= 0).length; const counts = {}; pool.forEach(q => { const kind = q.kind || "未分类"; counts[kind] = (counts[kind] || 0) + 1; }); const known = pool.filter(q => q.maxScore != null && Number.isFinite(Number(q.maxScore)) && Number(q.maxScore) > 0).reduce((sum,q) => sum + Number(q.maxScore),0); const no = pool.filter(q => paperNo(q) === 9999).length; const comp = `原卷录入 ${n} 题：${Object.entries(counts).map(([k,v]) => `${k} ${v} 题`).join("；")}。已知满分合计 ${known} 分，${missing} 题满分待核；${no} 题题号待核并排在末尾。`; info.textContent = state.mode === "exampaper" ? `真题模拟：整套真题按考场规矩来——限时 180 分钟，时间到自动交卷；交卷前不能看解析，查词、背题、考点直达全部关闭，中途退出不保存成绩。${comp}` : comp; info.hidden = false; }
     $("#pcount").textContent = (state.mode === "paper" || state.mode === "exampaper") ? `本套卷：${n} 题` : `当前可组卷：${n} 题`;
     $("#pstart").disabled = n === 0;
     return n;
@@ -398,11 +401,11 @@
     state.mode = mode;
     $$("#modeTabs button").forEach(b => b.classList.toggle("on", b.dataset.mode === mode));
     const paper = mode === "paper" || mode === "exampaper";
-    $("#rowChapter").hidden = paper || mode === "mock";
+    $("#rowChapter").hidden = paper || mode === "ability";
     $("#rowPaper").hidden = !paper;
     $("#rowDiff").hidden = paper;
     $("#rowSource").hidden = paper;
-    $("#countRow").hidden = paper || (mode === "mock" && state.subject !== "mechanics");
+    $("#countRow").hidden = paper || (mode === "ability" && state.subject !== "mechanics");
     $("#paperNote").hidden = mode !== "paper";
     if (paper) renderPaperOptions();
     updateCount();
@@ -411,7 +414,8 @@
   function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
   function paperNo(q) {
     const m = /第\s*(\d+)\s*题/.exec(q.kpName || "");
-    const value = q.questionNo || q.paperNo || (m && m[1]);
+    const tail = /-(\d+)$/.exec(q.id || ""); // 数学真题 kpName 是知识点名、无题号，id 尾数即原卷题序（math-2025-7 → 7）
+    const value = q.questionNo || q.paperNo || (m && m[1]) || (tail && tail[1]);
     return Number(value) || 9999;
   }
 
@@ -500,6 +504,20 @@
     });
     return stratified(single, state.count || 500).sort((a,b) => paperNo(a) - paperNo(b));
   }
+  const DIFF_RANK = { "易": 0, "中": 1, "难": 2, "较难": 3 };
+  const diffRank = q => (q.difficulty in DIFF_RANK) ? DIFF_RANK[q.difficulty] : 1;
+  /* 能力测试组卷：与随机组卷同一套题量结构与板块顺序（标准试卷结构），在此之上加难度梯度——
+   * 同一题型段、同一板块内按难度由易到难排，整卷渐进。英语按原卷题组整组抽取，组内顺序不动。 */
+  function abilityPool(pool, subject) {
+    const picked = mockPool(pool, subject);
+    if (!["math", "math2", "math3", "politics", "mechanics"].includes(subject)) return picked;
+    const groups = mockGroups(subject);
+    const gIdx = q => { if (!groups) return 0; const i = groups.findIndex(g => g.kinds.includes(q.kind)); return i < 0 ? 99 : i; };
+    return picked.slice().sort((a, b) =>
+      gIdx(a) - gIdx(b) ||
+      (subject === "politics" ? polRank(a) - polRank(b) : ["math", "math2", "math3"].includes(subject) ? mathArea(a) - mathArea(b) : 0) ||
+      diffRank(a) - diffRank(b));
+  }
   const sealed = () => session && session.mode !== "knowledge" && !session.ended;
   /* 政治背题模式：只在「按知识点刷」+ 政治题上出现。开启后看答案解析不判分、
    * 不写做题记录（rec）、不进错题艾宾浩斯回流，看过的题记 session.peeked 并在交卷时跳过。 */
@@ -511,7 +529,7 @@
   }
 
   function start(poolOverride, poolTitle) {
-    if ((state.mode === "paper" || state.mode === "mock" || state.mode === "exampaper") && state.subject === "all") return;
+    if ((state.mode === "paper" || state.mode === "ability" || state.mode === "exampaper") && state.subject === "all") return;
     if (state.mode === "paper") {
       const arc = archiveOf(state.paper);
       if (arc) {
@@ -523,15 +541,15 @@
     if (!pool.length) { $("#pcount").textContent = "没有符合条件的题目"; return; }
     if (!poolOverride && state.mode === "knowledge") pool = shuffle(pool.slice());
     if (!poolOverride && state.mode === "knowledge" && state.count > 0) pool = pool.slice(0, state.count);
-    if (!poolOverride && state.mode === "mock") pool = mockPreview.slice();
+    if (!poolOverride && state.mode === "ability") pool = mockPreview.slice();
     if (!pool.length || (state.mode !== "knowledge" && pool.some(q => q.subject !== state.subject))) { $("#pcount").textContent = "题型不足或科目不一致，无法组卷"; return; }
     if (!poolOverride && (state.mode === "paper" || state.mode === "exampaper")) pool = pool.slice().sort((a, b) => paperNo(a) - paperNo(b));
     $("#sideSubmit").hidden = false;
-    const isExam = state.mode === "mock" || state.mode === "exampaper";
+    const isExam = state.mode === "ability" || state.mode === "exampaper";
     session = { queue: pool, i: 0, status: {}, notes: {}, picks: {}, locked: {}, peekMode: false, peeked: {}, startTime: Date.now(), ended: false, mode: state.mode, exam: isExam, limitSec: isExam ? MOCK_SECONDS : 0, subject: state.subject, structure: $("#structureInfo").hidden ? "" : $("#structureInfo").textContent };
     Object.keys(photoCount).forEach(k => { delete photoCount[k]; });
     const sub = SUBJECTS.find(s => s.id === state.subject);
-    const title = poolTitle || (poolOverride ? "错题重练" : (state.mode === "mock" ? `${sub ? sub.name : state.subject} · 随机组卷模拟` : state.mode === "exampaper" ? `${pool[0].chapterTitle} · 真题考场模拟` : state.mode === "paper" ? pool[0].chapterTitle
+    const title = poolTitle || (poolOverride ? "错题重练" : (state.mode === "ability" ? `${sub ? sub.name : state.subject} · 能力测试` : state.mode === "exampaper" ? `${pool[0].chapterTitle} · 真题模拟` : state.mode === "paper" ? pool[0].chapterTitle
       : (state.chapter !== "all" ? pool[0].chapterTitle
         : (sub ? sub.name : "全科综合"))));
     $("#paperTitle").textContent = `${title} · ${pool.length} 题`;
@@ -863,7 +881,7 @@
       session.gradeSkipped = session.queue.length - session.gradeQueue.length;
       session.gradeTotal = session.gradeQueue.length;
       session.gradeDone = 0;
-      if (window.AtlasGradeBg && !serverGrade) window.AtlasGradeBg.save({ attemptId: id, title: (SUBJECT_NAMES[session.queue[0].subject] || '套卷') + (session.exam ? (session.mode === "exampaper" ? " · 真题考场模拟" : " · 随机组卷模拟") : " · 套卷"), pending: session.gradeQueue.slice(), total: session.gradeTotal });
+      if (window.AtlasGradeBg && !serverGrade) window.AtlasGradeBg.save({ attemptId: id, title: (SUBJECT_NAMES[session.queue[0].subject] || '套卷') + (session.exam ? (session.mode === "exampaper" ? " · 真题模拟" : " · 能力测试") : " · 套卷"), pending: session.gradeQueue.slice(), total: session.gradeTotal });
       finishSubmit();
       await runGradeQueue(id);
     } catch (err) { session.submitting = false; askConfirm("保存失败", `交卷未完成：${err.message}。请重试。`, () => {}); }
@@ -1027,7 +1045,7 @@
     const masteryWasOpen = !!$("#masteryDialog[open]");
     const results = session.attempt && session.attempt.results || {};
     const structureBrief = session.structure ? session.structure.split("。")[0] + "。" : "";
-    $("#result").innerHTML = `<div class="ekicker">${session.exam ? "EXAM SIMULATION" : "RESULT"}</div><h2>${session.exam ? `${session.mode === "exampaper" ? "真题考场模拟" : "随机组卷模拟"} · 交卷完成` : "交卷完成"}</h2>${session.exam ? `<p class="rsum">用时 ${Math.max(1, Math.round(((session.endTime || Date.now()) - session.startTime) / 60000))} 分钟（限时 180 分钟）${session.timeUp ? " · 时间到自动交卷" : ""}</p>` : ""}<p class="rsum">${esc(structureBrief)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span class="rcheck" aria-hidden="true">✓</span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。${Object.keys(session.peeked || {}).length ? "灰色划线：背题模式看过答案，未计入统计。" : ""}</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
+    $("#result").innerHTML = `<div class="ekicker">${session.exam ? "EXAM SIMULATION" : "RESULT"}</div><h2>${session.exam ? `${session.mode === "exampaper" ? "真题模拟" : "能力测试"} · 交卷完成` : "交卷完成"}</h2>${session.exam ? `<p class="rsum">用时 ${Math.max(1, Math.round(((session.endTime || Date.now()) - session.startTime) / 60000))} 分钟（限时 180 分钟）${session.timeUp ? " · 时间到自动交卷" : ""}</p>` : ""}<p class="rsum">${esc(structureBrief)}</p><div class="rprogress" id="rprogress" hidden><span class="spinner"></span><span class="rcheck" aria-hidden="true">✓</span><span id="rprogressText"></span><div class="rbar"><i id="rprogressBar"></i></div></div><div class="rsum" id="rsummary"></div><div class="rgrid">${session.queue.map((q,i) => `<button class="${qStatus(q)}" data-review="${i}" aria-label="回顾第 ${i+1} 题，${qStatus(q)}">${i+1}</button>`).join("")}</div><p class="rsum">点击任意题号回顾解析和反馈。绿色：正确；红色：错误；其他：待核或部分得分。${Object.keys(session.peeked || {}).length ? "灰色划线：背题模式看过答案，未计入统计。" : ""}</p><div id="rerrors"></div><div id="mastery"></div><div class="racts"><button id="backSetup">再组一卷</button></div>`;
     window.AtlasAssessment.renderMastery(document.getElementById("mastery"), session.queue, results);
     if (masteryWasOpen) $("#masteryDialog").showModal();
     $("#result").querySelectorAll("[data-review]").forEach(b => b.onclick = () => { $("#result").hidden = true; $("#exam").hidden = false; $("#sheet").hidden = false; $("#sideSubmit").hidden = true; session.i = Number(b.dataset.review); renderQuestion(); });
@@ -1227,7 +1245,7 @@
       catch (err) { console.error("题库分片加载失败", err); }
     }
     if (state.mode === "paper" || state.mode === "exampaper") renderPaperOptions(); else renderChapterOptions();
-    $("#countRow").hidden = state.mode === "paper" || state.mode === "exampaper" || (state.mode === "mock" && state.subject !== "mechanics");
+    $("#countRow").hidden = state.mode === "paper" || state.mode === "exampaper" || (state.mode === "ability" && state.subject !== "mechanics");
     updateCount();
   });
   $("#fChapter").addEventListener("change", e => { state.chapter = e.target.value; state.kp = ""; updateCount(); });
@@ -1249,15 +1267,15 @@
         populateSubjects(); $("#fSubject").value = state.subject;
       } catch (err) { console.error("题库加载失败", err); }
     }
-    if (state.mode === "mock") {
+    if (state.mode === "ability") {
       const sub = SUBJECTS.find(s => s.id === state.subject);
-      askConfirm("随机组卷模拟 · 考试须知", `${sub ? sub.name : ""}随机组卷模拟按正式考试结构组卷，限时 180 分钟，倒计时结束自动交卷。交卷前不能查看解析与答案；中途退出本次模拟不保存成绩。确认开始吗？`, () => start());
+      askConfirm("能力测试 · 考试须知", `${sub ? sub.name : ""}能力测试从全题库按正式考试结构与难度梯度组卷，限时 180 分钟，倒计时结束自动交卷批改。交卷前不能查看解析与答案，查词、背题全部关闭；中途退出本次测试不保存成绩。确认开始吗？`, () => start());
       return;
     }
     if (state.mode === "exampaper") {
       const sel = $("#fPaper");
       const paperName = sel && sel.selectedIndex >= 0 ? sel.options[sel.selectedIndex].textContent : "本套真题";
-      askConfirm("真题考场模拟 · 考试须知", `${paperName}：整套真题限时 180 分钟，倒计时结束自动交卷。交卷前不能查看解析与答案，查词、背题、考点直达全部关闭；中途退出本次模拟不保存成绩。确认开始吗？`, () => start());
+      askConfirm("真题模拟 · 考试须知", `${paperName}：整套真题限时 180 分钟，倒计时结束自动交卷。交卷前不能查看解析与答案，查词、背题、考点直达全部关闭；中途退出本次模拟不保存成绩。确认开始吗？`, () => start());
       return;
     }
     start();
@@ -1398,7 +1416,7 @@
   });
 
   function init() {
-    $("#pintro").textContent = `共 ${publicCount("") + ITEMS.filter(i => i._bank === "private").length} 题：数学 ${publicCount("math")}、英语 ${publicCount("english")}、材力 ${publicCount("mechanics")}、政治 ${publicCount("politics")}。按知识点刷有答题卡目录；真题考场模拟选整套真题、随机组卷模拟按正式结构组卷，两种都是限时 180 分钟、到时自动交卷的抗压训练；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷与 ${PAPERS.mock.length} 套模拟卷。题库按科目分片加载，切换科目时自动补齐。`;
+    $("#pintro").textContent = `共 ${publicCount("") + ITEMS.filter(i => i._bank === "private").length} 题：数学 ${publicCount("math")}、英语 ${publicCount("english")}、材力 ${publicCount("mechanics")}、政治 ${publicCount("politics")}。按知识点刷有答题卡目录；真题模拟选整套真题、能力测试按正式结构组卷，两种都是限时 180 分钟、到时自动交卷的抗压训练；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷与 ${PAPERS.mock.length} 套模拟卷。题库按科目分片加载，切换科目时自动补齐。`;
     populateSubjects();
     const params = new URLSearchParams(location.search);
     if (SUBJECTS.some(s => s.id === params.get("subject"))) state.subject = params.get("subject");
@@ -1407,7 +1425,8 @@
     state.kp = params.get("kp") || "";
     if ([...$("#fDiff").options].some(o => o.value === params.get("difficulty"))) { state.diff = params.get("difficulty"); $("#fDiff").value = state.diff; }
     updateCount();
-    const wantMode = ["knowledge", "paper", "mock", "exampaper"].includes(params.get("mode")) ? params.get("mode") : "knowledge";
+    const wantModeRaw = params.get("mode");
+    const wantMode = ["knowledge", "paper", "ability", "exampaper"].includes(wantModeRaw) ? wantModeRaw : wantModeRaw === "mock" ? "ability" : "knowledge";
     setMode(wantMode);
     if ((wantMode === "paper" || wantMode === "exampaper") && params.get("paper")) {
       const pv = params.get("paper");

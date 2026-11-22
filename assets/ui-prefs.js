@@ -1,4 +1,4 @@
-/* 首页扩展功能开关：学习计划 / 考试节点 / 每日一题 / 顶栏搜索。
+/* 首页扩展功能开关：学习计划 / 每日一题 / 顶栏搜索。（考试节点轴是首页固定组成部分，不设开关。）
  * 这些都是不影响基本功能的扩展项，开关在头像菜单「账号设置 → 功能开关」里，
  * 状态存 localStorage（atlas.uiprefs），通过一段注入的 CSS 控制显隐，
  * 与各卡片自身的渲染时机无关（元素出现即按开关状态显示或隐藏）。 */
@@ -7,12 +7,11 @@
   var KEY = 'atlas.uiprefs';
   var SELECTORS = {
     plan: '#planCard, #planSlot',
-    axis: '#examAxis, #axisTab',
     daily: '#dailyCard, #dailyTab',
     search: '.top-search'
   };
   function get() {
-    var p = { plan: 1, axis: 1, daily: 1, search: 1 };
+    var p = { plan: 1, daily: 1, search: 1 };
     try {
       var raw = JSON.parse(localStorage.getItem(KEY) || '{}');
       Object.keys(p).forEach(function (k) { if (raw[k] === 0) p[k] = 0; });

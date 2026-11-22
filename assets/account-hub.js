@@ -67,7 +67,6 @@
           '<button type="submit" class="hub-act">更新密码</button></form>' +
         '<div class="hub-uiprefs"><b>功能开关（首页扩展）</b>' +
           '<label class="hub-sw"><span>学习计划</span><input type="checkbox" data-uipref="plan"></label>' +
-          '<label class="hub-sw"><span>考试节点</span><input type="checkbox" data-uipref="axis"></label>' +
           '<label class="hub-sw"><span>每日一题</span><input type="checkbox" data-uipref="daily"></label>' +
           '<label class="hub-sw"><span>顶栏搜索</span><input type="checkbox" data-uipref="search"></label>' +
           '<p class="hub-sw-note">关掉只隐藏对应卡片或入口，不影响刷题、批改等基本功能。</p></div>' +
@@ -100,7 +99,7 @@
     if (window.AtlasAiCfg) { var aiMount = panel.querySelector('#hubAiCfg'); if (aiMount) window.AtlasAiCfg.renderSettings(aiMount); }
     panel.querySelectorAll("[data-uipref]").forEach(function (cb) {
       var k = cb.getAttribute("data-uipref");
-      var prefs = { plan: 1, axis: 1, daily: 1, search: 1 };
+      var prefs = { plan: 1, daily: 1, search: 1 };
       try { var raw = JSON.parse(localStorage.getItem("atlas.uiprefs") || "{}"); Object.keys(prefs).forEach(function (x) { if (raw[x] === 0) prefs[x] = 0; }); } catch (e) {}
       cb.checked = !!prefs[k];
       cb.addEventListener("change", function () {

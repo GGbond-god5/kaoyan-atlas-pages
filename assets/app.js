@@ -14,7 +14,7 @@
   };
   var SUBJECT_NAMES = { math: '数学一', math2: '数学二', math3: '数学三', english: '英语一', english2: '英语二', mechanics: '807 材料力学', politics: '政治' };
   var SUBJECT_ORDER = ['math', 'math2', 'math3', 'english', 'english2', 'mechanics', 'politics'];
-  var MODE_LABELS = { paper: '套卷', mock: '随机组卷模拟', exampaper: '真题考场模拟', diagnostic: '能力自测', knowledge: '知识点练习' };
+  var MODE_LABELS = { paper: '套卷', mock: '能力测试', ability: '能力测试', exampaper: '真题模拟', diagnostic: '能力自测', knowledge: '知识点练习' };
 
   var state = { user: null, profile: null, practiceRec: {}, bankItems: {}, attempts: null };
 
@@ -106,7 +106,7 @@
 
   function renderRecent(attempts) {
     var list = (attempts || []).filter(function (a) {
-      return a.mode === 'paper' || a.mode === 'mock' || a.mode === 'diagnostic';
+      return a.mode === 'paper' || a.mode === 'mock' || a.mode === 'ability' || a.mode === 'diagnostic';
     }).slice(-3).reverse();
     var box = $('#recentList');
     if (!list.length) {
@@ -685,7 +685,7 @@ async function clearPaperRecordsApp(qids) {
   /* ---------- 学情分析（App 内） ---------- */
   subRenderers.analytics = { title: '学情分析', render: function (body) { renderAnalytics(body); } };
   function paperAttempts() {
-    return (state.attempts || []).filter(function (a) { return a.mode === 'paper' || a.mode === 'mock' || a.mode === 'diagnostic'; })
+    return (state.attempts || []).filter(function (a) { return a.mode === 'paper' || a.mode === 'mock' || a.mode === 'ability' || a.mode === 'diagnostic'; })
       .slice().sort(function (x, y) { return String(y.createdAt || '') > String(x.createdAt || '') ? 1 : -1; });
   }
   function renderAnalytics(body) {
@@ -1676,7 +1676,7 @@ async function clearPaperRecordsApp(qids) {
     return 'practice.html?' + q.join('&');
   }
   function renderStartPicker(body) {
-    var modes = [['knowledge', '按知识点'], ['paper', '按套卷'], ['exampaper', '真题考场'], ['mock', '随机组卷']];
+    var modes = [['knowledge', '按知识点'], ['paper', '按套卷'], ['exampaper', '真题模拟'], ['ability', '能力测试']];
     var profSubs = ((state.profile || {}).subjects || []).filter(function (x) { return SUBJECT_NAMES[x]; });
     var ordered = profSubs.concat(Object.keys(SUBJECT_NAMES).filter(function (x) { return profSubs.indexOf(x) < 0; }));
     if (!startSel.subject || !SUBJECT_NAMES[startSel.subject]) startSel.subject = ordered[0];
@@ -1688,7 +1688,7 @@ async function clearPaperRecordsApp(qids) {
         return '<button type="button" class="f-chip' + (startSel.subject === x ? ' on' : '') + '" data-ss="' + x + '">' + SUBJECT_NAMES[x] + '</button>';
       }).join('') + '</div>' +
       '<div id="startExtra"><div class="sub-loading">正在加载题库…</div></div>' +
-      '<button class="btn-main" id="startGo" type="button" disabled>' + (startSel.mode === 'mock' ? '开始随机组卷模拟' : startSel.mode === 'exampaper' ? '开始真题考场模拟' : '开始刷题') + '</button>' +
+      '<button class="btn-main" id="startGo" type="button" disabled>' + (startSel.mode === 'ability' ? '开始能力测试' : startSel.mode === 'exampaper' ? '开始真题模拟' : '开始测试') + '</button>' +
       '<p class="view-note">在 App 里选好，进作答页自动开始，不用再到网页里二次选择。</p>';
     $$('[data-sm]', body).forEach(function (b) { b.addEventListener('click', function () { startSel.mode = b.dataset.sm; startSel.paper = ''; renderStartPicker(body); }); });
     $$('[data-ss]', body).forEach(function (b) { b.addEventListener('click', function () { startSel.subject = b.dataset.ss; startSel.chapter = 'all'; startSel.kp = ''; startSel.paper = ''; renderStartPicker(body); }); });
@@ -1706,9 +1706,9 @@ async function clearPaperRecordsApp(qids) {
     var ex = document.getElementById('startExtra');
     var go = document.getElementById('startGo');
     if (!ex || !go) return;
-    if (startSel.mode === 'mock') {
-      ex.innerHTML = '<div class="card"><div class="row-title">' + esc(SUBJECT_NAMES[startSel.subject]) + ' · 随机组卷模拟</div>' +
-        '<div class="row-meta">按正式考试结构随机组卷 · 限时 180 分钟 · 到时自动交卷。点开始后先确认考试须知。</div></div>';
+    if (startSel.mode === 'ability') {
+      ex.innerHTML = '<div class="card"><div class="row-title">' + esc(SUBJECT_NAMES[startSel.subject]) + ' · 能力测试</div>' +
+        '<div class="row-meta">从全题库按正式考试结构与难度梯度组卷 · 限时 180 分钟 · 到时自动交卷批改。点开始后先确认考试须知。</div></div>';
       go.disabled = false;
       return;
     }

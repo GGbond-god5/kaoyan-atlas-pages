@@ -413,3 +413,5 @@ html.atlas-app #gradePill { bottom: 84px; }
 #peekBtn.on{border-color:var(--ver);color:var(--ver);background:#FAECE9}
 .qbtn.peeked{background:#EFEDE8;border-color:#B9B2A2;color:var(--ink3);text-decoration:line-through}
 .rgrid button.peeked{background:#EFEDE8;color:#8a8378;border-color:#B9B2A2}
+.mode-group-label { display: inline-flex; align-items: center; padding: 0 8px 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--ink3); }
+.mode-group-label.exam { color: #A53B30; border-left: 1px solid var(--rule); margin-left: 6px; }

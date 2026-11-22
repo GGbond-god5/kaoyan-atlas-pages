@@ -50,8 +50,8 @@
   }
   function titleOf(a) {
     var q = (a.questions || [])[0] || {};
-    if (a.mode === 'mock') return (SUBJ[a.subject] || a.subject) + ' · 随机组卷模拟';
-    if (a.mode === 'exampaper') return (q.chapterTitle || SUBJ[a.subject] || a.subject) + ' · 真题考场模拟';
+    if (a.mode === 'mock' || a.mode === 'ability') return (SUBJ[a.subject] || a.subject) + ' · 能力测试';
+    if (a.mode === 'exampaper') return (q.chapterTitle || SUBJ[a.subject] || a.subject) + ' · 真题模拟';
     if (a.mode === 'diagnostic') return (SUBJ[a.subject] || a.subject) + ' · 能力自测';
     return q.chapterTitle || (SUBJ[a.subject] || a.subject) + ' · 套卷';
   }
@@ -161,7 +161,7 @@
   /* ---------------- 顶栏搜索 ---------------- */
   var FEATURES = [
     { n: '刷题练习', href: 'practice.html', k: '刷题 练习 做题 知识点 套卷' },
-    { n: '考场模拟', href: 'practice.html', k: '考场模拟 真题考场 随机组卷 全真模考 模考 模拟考试 限时 抗压' },
+    { n: '考试模式（真题模拟/能力测试）', href: 'practice.html', k: '考试模式 真题模拟 能力测试 考场模拟 随机组卷 模考 模拟考试 限时 抗压' },
     { n: '学情分析', href: 'analytics.html', k: '学情分析 成绩 得分率 雷达 复盘' },
     { n: '错题本', href: 'wrongbook.html', k: '错题本 错题 复盘 打印' },
     { n: '只刷错题', href: 'practice.html?wrongbook=1', k: '只刷错题 错题速刷 错题重练 错题模式' },

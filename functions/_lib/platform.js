@@ -669,7 +669,7 @@ async function workerInbox(db, uid, a) {
   const data = r ? parse(r.data) : { messages: [] };
   const list = Array.isArray(data.messages) ? data.messages : [];
   if (list.some(m => m && m.id === mid)) return;
-  const title = (SUBJECT_NAMES[a.subject] || a.subject) + (a.mode === 'mock' ? ' · 随机组卷模拟' : a.mode === 'exampaper' ? ' · 真题考场模拟' : ' · 套卷');
+  const title = (SUBJECT_NAMES[a.subject] || a.subject) + ((a.mode === 'mock' || a.mode === 'ability') ? ' · 能力测试' : a.mode === 'exampaper' ? ' · 真题模拟' : ' · 套卷');
   list.unshift({ id: mid, kind: 'grade', attemptId: a.id, title, at: Date.now(), read: false });
   data.messages = list.slice(0, 30);
   if (r) await run(db, 'UPDATE platform_state SET data=?, revision=revision+1 WHERE uid=? AND namespace=?', JSON.stringify(data), uid, 'inbox');
