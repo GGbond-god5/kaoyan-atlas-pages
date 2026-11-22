@@ -99,5 +99,16 @@ for (const [subj, list] of bySubject) {
   manifest.subjects[subj] = list.length;
 }
 writeFileSync(`${OUT}/assets/questions/manifest.json`, JSON.stringify(manifest));
+// 游客分片（2026-11-22）：只含真题（isReal），供未登录游客与参赛版使用；全量分片由中间件对游客屏蔽。
+mkdirSync(`${OUT}/assets/questions-guest`, { recursive: true });
+const gManifest = { total: 0, subjects: {} };
+for (const [subj, list] of bySubject) {
+  const real = list.filter((q) => q.isReal === true);
+  writeFileSync(`${OUT}/assets/questions-guest/${subj}.js`, `AtlasQuestions._add(${JSON.stringify(subj)}, ${JSON.stringify(real)});\n`);
+  gManifest.subjects[subj] = real.length;
+  gManifest.total += real.length;
+}
+writeFileSync(`${OUT}/assets/questions-guest/manifest.json`, JSON.stringify(gManifest));
+console.log(`guest shards: ${gManifest.total} real-only items`);
 rmSync(`${OUT}/assets/questions.js`);
 console.log(`questions split into ${bySubject.size} shards, ${manifest.total} items total`);

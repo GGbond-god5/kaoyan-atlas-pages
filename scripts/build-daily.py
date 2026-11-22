@@ -1,6 +1,6 @@
 """每日一题题池：从 src/bank 抽各科独立客观单选题（无原文、含解析），
 按年份与知识点分层抽样，生成 assets/daily-data.js（前端按日期轮换取题）。
-只收：kind 为单选类、text 内嵌 A–D 四个选项、answer 为 A–D、steps 非空、无 passage 的题。
+只收：真题（isReal 为真，2026-11-22 起游客口径与题库分片一致）、kind 为单选类、text 内嵌 A–D 四个选项、answer 为 A–D、steps 非空、无 passage 的题。
 运行：python3 scripts/build-daily.py
 """
 import json, glob, re, random
@@ -34,6 +34,7 @@ for f in glob.glob(str(ROOT / "src/bank/*.json")):
     for q in qs:
         s = q.get("subject")
         if s not in pool: continue
+        if q.get("isReal") is not True: continue  # 只收真题：肖1000/模拟卷不进每日一题（游客可见）
         if q.get("passage"): continue
         if (q.get("kind") or "") not in ("选择题", "单选题", "单项选择题"): continue
         if (q.get("answer") or "") not in ("A", "B", "C", "D"): continue

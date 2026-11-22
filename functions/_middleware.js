@@ -43,6 +43,7 @@ const SHIELDED_PATHS = [
   /^\/content\/math-pages\/(mock|_tmp_crop)/,
   /^\/content\/_((mock|zy|ll|yl|cy|lyf|ocr)[^/]*|vocab_[^/]*)$/,
   /^\/pdf\/(vocab-|aliyun-)/,
+  /^\/assets\/questions\//, // 全量题库分片：游客走 questions-guest（只真题），登录用户照常
 ];
 
 export async function onRequest({ request, env, next }) {

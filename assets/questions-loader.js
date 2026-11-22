@@ -5,6 +5,18 @@
   window.QUESTIONS = window.QUESTIONS || { items: [] };
   var SUBJECTS = ['math', 'math2', 'math3', 'english', 'english2', 'mechanics', 'politics'];
   var loaded = {}, loading = {};
+  /* 分片目录（2026-11-22）：游客只给真题分片（questions-guest），登录用户用全量分片（questions）。
+     内测版（ATLAS_BETA）满血走全量；参赛版（ATLAS_CONTEST）走游客分片；正式站按 /api/auth/me 判定登录态。 */
+  var dirPromise = null;
+  function shardDir() {
+    if (dirPromise) return dirPromise;
+    if (window.ATLAS_BETA) dirPromise = Promise.resolve('assets/questions/');
+    else if (window.ATLAS_CONTEST) dirPromise = Promise.resolve('assets/questions-guest/');
+    else dirPromise = fetch('/api/auth/me', { credentials: 'include' })
+      .then(function (r) { return r.ok ? 'assets/questions/' : 'assets/questions-guest/'; })
+      .catch(function () { return 'assets/questions-guest/'; });
+    return dirPromise;
+  }
   function add(subject, items) {
     var have = new Set(window.QUESTIONS.items.map(function (q) { return q.id; }));
     var fresh = [];
@@ -22,12 +34,14 @@
     if (!subject || subject === 'all') return Promise.all(SUBJECTS.map(load));
     if (loaded[subject]) return Promise.resolve();
     if (loading[subject]) return loading[subject];
-    loading[subject] = new Promise(function (resolve, reject) {
-      var sc = document.createElement('script');
-      sc.src = 'assets/questions/' + encodeURIComponent(subject) + '.js?v=1';
-      sc.onload = function () { loaded[subject] = true; resolve(); };
-      sc.onerror = function () { delete loading[subject]; reject(new Error('题库分片加载失败：' + subject)); };
-      document.head.appendChild(sc);
+    loading[subject] = shardDir().then(function (dir) {
+      return new Promise(function (resolve, reject) {
+        var sc = document.createElement('script');
+        sc.src = dir + encodeURIComponent(subject) + '.js?v=1';
+        sc.onload = function () { loaded[subject] = true; resolve(); };
+        sc.onerror = function () { delete loading[subject]; reject(new Error('题库分片加载失败：' + subject)); };
+        document.head.appendChild(sc);
+      });
     });
     return loading[subject];
   }
@@ -75,8 +89,10 @@
     _add: add,
     _sink: null,
     isLoaded: function (s) { return !!loaded[s]; },
-    manifest: fetch('assets/questions/manifest.json', { credentials: 'include' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .catch(function () { return null; }),
+    manifest: shardDir().then(function (dir) {
+      return fetch(dir + 'manifest.json', { credentials: 'include' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    }),
   };
 })();
