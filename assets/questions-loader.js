@@ -13,7 +13,8 @@
     if (window.ATLAS_BETA) dirPromise = Promise.resolve('assets/questions/');
     else if (window.ATLAS_CONTEST) dirPromise = Promise.resolve('assets/questions-guest/');
     else dirPromise = fetch('/api/auth/me', { credentials: 'include' })
-      .then(function (r) { return r.ok ? 'assets/questions/' : 'assets/questions-guest/'; })
+      .then(function (r) { return r.json().catch(function () { return null; }); })
+      .then(function (d) { return (d && d.user) ? 'assets/questions/' : 'assets/questions-guest/'; }) // me 接口对游客也回 200（user 为 null），必须看 user 字段不能看状态码
       .catch(function () { return 'assets/questions-guest/'; });
     return dirPromise;
   }
