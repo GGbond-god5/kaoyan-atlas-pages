@@ -7,8 +7,7 @@
 
   /* ---------------- 侧边栏 ---------------- */
   var panel = $('sidePanel'), scrim = $('sideScrim');
-  var planCard = $('planCard'), planSlot = $('planSlot');
-  if (planCard && planSlot) planSlot.appendChild(planCard);
+  /* planCard 的位置由 plan.js 的 place() 统一决定（宽屏右侧 dock、窄屏本侧栏 planSlot），这里不再抢占 */
   var sheet = $('listSheet'), listSlot = $('listSlot');
   if (sheet && listSlot) listSlot.appendChild(sheet);
   var listBuilt = false;

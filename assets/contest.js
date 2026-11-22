@@ -2,6 +2,17 @@
  * 作用：隐藏纯后端入口、给游客标识、在测试页与首页提供「AI 批改样例」入口。
  * 正式版不加载本文件，站点行为不受影响。 */
 (function () {
+  'use strict';
+  /* 参赛版跳过新手引导：onboarding 自动弹出先读 AtlasUser 的 onboarding 状态，
+     这里直接返回已完成（localStorage 预置只对读取失败的兜底路径有效，单靠它不够）。 */
+  if (window.AtlasUser && AtlasUser.load) {
+    var origLoad = AtlasUser.load.bind(AtlasUser);
+    AtlasUser.load = function (ns, def) {
+      if (ns === 'onboarding') return Promise.resolve({ done: true });
+      return origLoad(ns, def);
+    };
+  }
+
   "use strict";
   if (!window.ATLAS_CONTEST) return;
 

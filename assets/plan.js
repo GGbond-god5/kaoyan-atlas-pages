@@ -55,6 +55,9 @@
   }
 
   async function fetchProfile() {
+    if (window.ATLAS_CONTEST) { // 参赛版无后端：用演示档案（profile-boot 提供），否则计划卡在游客模式不生成
+      try { var pc = window.ATLAS_PROFILE || (window.__profilePromise ? (await window.__profilePromise).profile : null); if (pc) return pc; } catch (e) {}
+    }
     try {
       var r = await fetch('/api/profile', { credentials: 'include' });
       var j = await r.json();
@@ -286,8 +289,9 @@
     var mq = window.matchMedia('(min-width: 761px)');
     function place() {
       inDock = !!(mq.matches && dock);
-      var parent = inDock ? dock : home;
-      if (parent && card.parentElement !== parent) parent.insertBefore(card, parent.firstChild);
+      var slot = document.getElementById('planSlot');
+      var parent = inDock ? dock : (slot || home);
+      if (parent && card.parentElement !== parent) parent.appendChild(card);
     }
     place();
     if (mq.addEventListener) mq.addEventListener('change', function () { place(); if (plan) render(); });

@@ -276,3 +276,9 @@
 
 ## 参赛版跳过新手引导（2026-11-22，待推送）
 - 助手本地跑参赛版截图自查发现：首次打开先弹 8 步新手引导浮层，评委会先撞上教程而不是产品。改：contest 构建注入 ATLAS_CONTEST 的同时预置 localStorage atlas_tour_done，参赛版直达首页内容；正式版不受影响。待发布 Sites 后由站长复核首访体验。
+
+## 计划卡右侧停靠补修 + 参赛版两处适配（2026-11-22，待推送）
+- 补修（助手自查发现）：上午上线的计划卡右侧停靠实际未生效——sidebar.js 会把 planCard 抢进「学习中心」侧边栏的 planSlot，与 plan.js 的 place() 冲突且 sidebar 后执行获胜，桌面端卡片仍在侧栏里。改：sidebar.js 不再抢占，place() 统一落位（宽屏 planDock 小卡片、窄屏 planSlot 全量）。sidebar v6、plan.js v6。
+- 参赛版适配一：contest.js 接管 AtlasUser.load('onboarding') 返回已完成，参赛版跳过 8 步新手引导（仅靠 localStorage 预置无效，因 onboarding 先读服务端状态）。
+- 参赛版适配二：plan.js 的 fetchProfile 在 ATLAS_CONTEST 时改读 profile-boot 的演示档案，否则游客模式下 /api/profile 404、计划卡不生成。
+- 待站长抽查：正式站首页右侧计划小卡片这次应真实出现；参赛版发布后首访应直达首页且计划卡可见。
