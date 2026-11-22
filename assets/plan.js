@@ -296,7 +296,7 @@
     place();
     if (mq.addEventListener) mq.addEventListener('change', function () { place(); if (plan) render(); });
     try { if (localStorage.getItem('atlas.plan.dismissed') === dayKey(new Date())) return; } catch (e) {}
-    await window.AtlasUser.ready;
+    await window.AtlasUser.ready.catch(() => null);
     try { plan = await window.AtlasUser.load('plan', null); } catch (e) { plan = null; }
     if (plan && plan.settings) settings = normSettings(plan.settings);
     if (!profileCache) { try { profileCache = await fetchProfile(); } catch (e) {} }

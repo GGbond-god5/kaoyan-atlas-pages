@@ -18,7 +18,7 @@
   }
   async function init() {
     if (!window.AtlasUser) return;
-    await window.AtlasUser.ready;
+    await window.AtlasUser.ready.catch(() => null);
     var rows = [];
     if (window.AtlasReview) {
       try {

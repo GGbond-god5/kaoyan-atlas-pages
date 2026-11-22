@@ -195,6 +195,7 @@
   const KEY = "atlas.practice.v1";
   const AI_ENDPOINT = (window.ATLAS_CONFIG && window.ATLAS_CONFIG.gradeEndpoint) || "";
 
+  let IS_GUEST = false; // 游客（未登录）：题库走真题分片，套卷不列模拟卷，个人区选项隐藏
   const state = { mode: "knowledge", subject: "all", chapter: "all", kp: "", bank: "all", paper: "all", diff: "all", source: "all", count: 10 };
   let session = null;
   const photoCount = {}; // 每题已传照片数（内存镜像，供已答判定同步读取）
@@ -224,7 +225,8 @@
   function populateSubjects() {
     const priv = id => ITEMS.filter(i => i._bank === "private" && (!id || i.subject === id)).length;
     $("#fSubject").innerHTML = `<option value="all">全部科目（${publicCount("") + priv("")}）</option>` +
-      SUBJECTS.map(s => `<option value="${s.id}">${esc(s.name)}（${publicCount(s.id) + priv(s.id)}）</option>`).join("");
+      SUBJECTS.filter(s => !(window.ATLAS_CONTEST && publicCount(s.id) + priv(s.id) === 0)) // 参赛版只放公共课：题量为 0 的科目（如 807）不列
+        .map(s => `<option value="${s.id}">${esc(s.name)}（${publicCount(s.id) + priv(s.id)}）</option>`).join("");
   }
 
   function isPaperChapter(id) {
@@ -312,9 +314,9 @@
     });
     real.sort((a, b) => b.year - a.year || a.label.localeCompare(b.label));
 
-    const mock = examOnly ? [] : list.filter(p => p.mock)
+    const mock = (examOnly || IS_GUEST) ? [] : list.filter(p => p.mock)
       .map(p => ({ value: p.id, label: `${p.title} · ${p.count} 题 · 可刷题` }));
-    if (!examOnly && (state.subject === "all" || state.subject === "math")) {
+    if (!examOnly && !IS_GUEST && (state.subject === "all" || state.subject === "math")) {
       const mockTitles = list.filter(p => p.mock).map(p => p.title);
       PAPERS.mock.forEach((p, i) => {
         const base = p.title.replace(/（数一）$/, "");
@@ -1417,8 +1419,11 @@
   });
 
   function init() {
-    $("#pintro").textContent = `共 ${publicCount("") + ITEMS.filter(i => i._bank === "private").length} 题：数学 ${publicCount("math")}、英语 ${publicCount("english")}、材力 ${publicCount("mechanics")}、政治 ${publicCount("politics")}。按知识点刷有答题卡目录；真题模拟选整套真题、能力测试按正式结构组卷，两种都是限时 180 分钟、到时自动交卷的抗压训练；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷与 ${PAPERS.mock.length} 套模拟卷。题库按科目分片加载，切换科目时自动补齐。`;
+    $("#pintro").textContent = `共 ${publicCount("") + ITEMS.filter(i => i._bank === "private").length} 题：数学 ${publicCount("math")}、英语 ${publicCount("english")}、${window.ATLAS_CONTEST ? "" : `材力 ${publicCount("mechanics")}、`}政治 ${publicCount("politics")}。按知识点刷有答题卡目录；真题模拟选整套真题、能力测试按正式结构组卷，两种都是限时 180 分钟、到时自动交卷的抗压训练；按套卷刷为纯净全屏，套卷还附带 ${PAPERS.real.length} 套真题原卷${IS_GUEST ? "" : `与 ${PAPERS.mock.length} 套模拟卷`}。题库按科目分片加载，切换科目时自动补齐。`;
     populateSubjects();
+    if (IS_GUEST) { // 游客没有个人题库与非真题来源，收起对应选项免得选了个空
+      ["#fBank option[value='private']", "#fSource option[value='same']", "#fSource option[value='mock']"].forEach(sel => { const o = document.querySelector(sel); if (o) o.remove(); });
+    }
     const params = new URLSearchParams(location.search);
     if (SUBJECTS.some(s => s.id === params.get("subject"))) state.subject = params.get("subject");
     $("#fSubject").value = state.subject; renderChapterOptions();
@@ -1440,7 +1445,7 @@
   }
 
   async function bootstrap() {
-    await window.AtlasUser.ready; DB_NAME = window.AtlasUser.key("atlas-practice-photos");
+    const bootUser = await window.AtlasUser.ready.catch(() => null); IS_GUEST = !bootUser; DB_NAME = window.AtlasUser.key("atlas-practice-photos");
     store = await window.AtlasUser.load("practice", {rec:{}}) || {rec:{}}; if (!store.rec) store.rec = {};
     try { const data = await window.AtlasUser.json("/api/personal/questions", "GET"); const mine = (data.items || []).map(q => ({...q, _bank:"private"}));
       mine.forEach(q => { if (q.subject && !SUBJECT_NAMES[q.subject]) { SUBJECT_NAMES[q.subject] = q.subjectName || q.subject; SUBJECTS.push({id:q.subject, name:SUBJECT_NAMES[q.subject], count:0}); } });

@@ -23,7 +23,23 @@
     if (!res.ok || data.ok === false) { const e = new Error(data.error || `请求失败（${res.status}）`); e.status = res.status; e.data = data; throw e; }
     return data;
   }
-  const api = { user: null, json, key(name) { if (!api.user || api.user.id == null) throw new Error('请先登录'); return `atlas.user.${encodeURIComponent(String(api.user.id))}.${name}`; } };
+  const api = { user: null, guest: false, json, key(name) { const id = (!api.user || api.user.id == null) ? 'guest' : String(api.user.id); return `atlas.user.${encodeURIComponent(id)}.${name}`; } };
+  // 游客（未登录）状态走 localStorage 本地存取，与参赛版同口径；登录态判定仍以 ready 的成败为准，不改变各页登录检测。
+  function localLoad(namespace, fallback) {
+    try {
+      const raw = localStorage.getItem(api.key(namespace));
+      const data = raw == null ? clone(fallback) : JSON.parse(raw);
+      snapshots[namespace] = { data: clone(data), revision: 0 };
+      localBases[namespace] = clone(data);
+      return clone(data);
+    } catch (_) { return clone(fallback); }
+  }
+  function localSave(namespace, data) {
+    const v = clone(data);
+    localBases[namespace] = clone(v);
+    try { localStorage.setItem(api.key(namespace), JSON.stringify(v)); } catch (_) {}
+    return Promise.resolve(clone(v));
+  }
   if (window.ATLAS_CONTEST) {
     // 参赛版（纯静态托管、无后端）：状态只走 localStorage，api.json 直接报错由调用方按离线处理。
     api.user = { id: 'guest', name: '游客' };
@@ -47,9 +63,10 @@
     window.AtlasUser = api;
     return;
   }
-  api.ready = json('/api/auth/me').then(r => { if (!r.user || r.user.id == null) throw new Error('请先登录'); api.user = r.user; return r.user; });
+  api.ready = json('/api/auth/me').then(r => { if (!r.user || r.user.id == null) { api.guest = true; throw new Error('请先登录'); } api.user = r.user; return r.user; });
   api.load = async function (namespace, fallback) {
-    await api.ready;
+    const user = await api.ready.catch(() => null);
+    if (!user) return localLoad(namespace, fallback);
     const r = await json('/api/state/' + encodeURIComponent(namespace));
     const data = r.data == null ? clone(fallback) : r.data;
     snapshots[namespace] = { data: clone(data), revision: r.revision };
@@ -57,6 +74,7 @@
     return clone(data);
   };
   api.save = function (namespace, data) {
+    if (api.guest) return localSave(namespace, data);
     const desired = clone(data);
     const observed = clone(localBases[namespace]);
     localBases[namespace] = clone(desired);

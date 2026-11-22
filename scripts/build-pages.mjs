@@ -79,6 +79,21 @@ if (CONTEST || BETA) {
 
 console.log(`staged ${FILES.length} pages and ${DIRS.length} asset directories into ${OUT}/`);
 
+// 参赛版科目收口（2026-11-22 站长定版）：只放公共课——题库数一/二/三、英一/二、政治；
+// 知识库只留数学/英语/政治三系。章节总数据剔除力学科目、删力学讲义文件、套卷目录清空模拟卷。
+if (CONTEST) {
+  const atlasPath = `${OUT}/assets/data.js`;
+  const atlasData = JSON.parse(readFileSync(atlasPath, "utf-8").replace(/^window\.ATLAS\s*=\s*/, "").replace(/;\s*$/, ""));
+  atlasData.subjects = atlasData.subjects.filter((x) => x.id !== "mechanics");
+  writeFileSync(atlasPath, `window.ATLAS = ${JSON.stringify(atlasData)};\n`);
+  for (const f of readdirSync(`${OUT}/web`)) if (f.startsWith("mech-")) rmSync(`${OUT}/web/${f}`);
+  const papersPath = `${OUT}/assets/papers.js`;
+  const papers = JSON.parse(readFileSync(papersPath, "utf-8").replace(/^window\.PAPERS\s*=\s*/, "").replace(/;\s*$/, ""));
+  papers.mock = [];
+  writeFileSync(papersPath, `window.PAPERS=${JSON.stringify(papers)};\n`);
+  console.log("contest scope: public subjects only (no mechanics, no mock papers)");
+}
+
 // 题库分片：把整包 questions.js 按科目拆成 dist/assets/questions/<科目>.js + manifest.json，
 // 刷题页按需加载（见 assets/questions-loader.js）；dist 里不再保留整包，仓库里的源文件不动。
 import { readFileSync, writeFileSync } from "node:fs";
@@ -92,17 +107,21 @@ for (const q of qData.items || []) {
   if (!bySubject.has(s)) bySubject.set(s, []);
   bySubject.get(s).push(q);
 }
-mkdirSync(`${OUT}/assets/questions`, { recursive: true });
-const manifest = { total: (qData.items || []).length, subjects: {} };
-for (const [subj, list] of bySubject) {
-  writeFileSync(`${OUT}/assets/questions/${subj}.js`, `AtlasQuestions._add(${JSON.stringify(subj)}, ${JSON.stringify(list)});\n`);
-  manifest.subjects[subj] = list.length;
+const manifest = { total: 0, subjects: {} };
+if (!CONTEST) { // 参赛版不带全量分片（含肖1000/模拟卷数据），只发游客分片
+  mkdirSync(`${OUT}/assets/questions`, { recursive: true });
+  for (const [subj, list] of bySubject) {
+    writeFileSync(`${OUT}/assets/questions/${subj}.js`, `AtlasQuestions._add(${JSON.stringify(subj)}, ${JSON.stringify(list)});\n`);
+    manifest.subjects[subj] = list.length;
+    manifest.total += list.length;
+  }
+  writeFileSync(`${OUT}/assets/questions/manifest.json`, JSON.stringify(manifest));
 }
-writeFileSync(`${OUT}/assets/questions/manifest.json`, JSON.stringify(manifest));
 // 游客分片（2026-11-22）：只含真题（isReal），供未登录游客与参赛版使用；全量分片由中间件对游客屏蔽。
 mkdirSync(`${OUT}/assets/questions-guest`, { recursive: true });
 const gManifest = { total: 0, subjects: {} };
 for (const [subj, list] of bySubject) {
+  if (CONTEST && subj === "mechanics") continue; // 参赛版只放公共课：无 807
   const real = list.filter((q) => q.isReal === true);
   writeFileSync(`${OUT}/assets/questions-guest/${subj}.js`, `AtlasQuestions._add(${JSON.stringify(subj)}, ${JSON.stringify(real)});\n`);
   gManifest.subjects[subj] = real.length;
