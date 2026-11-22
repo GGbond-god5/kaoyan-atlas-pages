@@ -276,7 +276,8 @@
       await regenerate();
       render();
     });
-    document.getElementById('planClose').addEventListener('click', function () {
+    document.getElementById('planClose').addEventListener('click', function (e) {
+      if (e) e.stopPropagation(); /* 收起会把卡片重渲染为小卡并给整卡绑点击展开；同一次点击若继续冒泡到卡片，会刚收起就被重新展开（表现为点收起没反应） */
       if (inDock) { setPlanCollapsed(true); return; }
       card.hidden = true;
       try { localStorage.setItem('atlas.plan.dismissed', todayK); } catch (e) {}

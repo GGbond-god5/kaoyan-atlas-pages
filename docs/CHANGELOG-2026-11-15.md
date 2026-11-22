@@ -349,3 +349,10 @@
 - 自选 AI：接口地址增加 localhost/私网/IPv6 本地地址/云元数据地址拦截，降低 SSRF 风险；本地联调需显式设置 `ALLOW_LOCAL_AI=1`。
 - 工作流：新增 `npm run test:backend`（Node 24 + `node:sqlite`），CI 增加 backend job；覆盖改密 CAS、旧 token、跨通道批改租约、SSRF、注销对象归属；`validate` 增加同 ref 取消旧运行，`build-questions` 增加串行 concurrency。
 - 验证：`npm run test:backend`、`npm run check`、`npm run build` 全过；`git diff` 无 `assets/**`、根 HTML/CSS 或前端脚本改动。
+
+## 2026-11-22 晚 · 学习计划卡「收起」失效修复
+
+- 现象：桌面端右侧停靠的学习计划卡展开后，点击顶部「收起」无任何反应，无法收回小卡（站长反馈，演示账号 GGBOND 已复现）；计划设置的打开/关闭正常，移动端隐藏逻辑不受影响。
+- 根因：`assets/plan.js` 中收起按钮的点击处理先调用 `setPlanCollapsed(true)` 把卡片重渲染为小卡，而小卡给整卡绑了点击展开；同一次点击随后冒泡到卡片本身，刚收起即被重新展开，视觉上像按钮失效。
+- 修复：收起按钮点击先 `stopPropagation()` 再收起；`index.html` 同步把 `plan.js` 缓存版本号 `?v=7` 升到 `?v=8`。
+- 验证：部署后以演示账号在首页复测展开 → 收起 → 再展开全程生效（见当晚会话记录）。
