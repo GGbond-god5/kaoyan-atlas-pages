@@ -92,28 +92,35 @@ assert.equal(forced.status, 201, '确认重复上传后应放行');
 /* ---------------- 跨页成组抽取 ---------------- */
 let aiCalls = [];
 let aiReply = { items: [] };
+let aiResponder = null; // 分组变小后同一请求会多次调用，可按本次调用的页码定制回包
 globalThis.fetch = async (_url, init) => {
   const payload = JSON.parse(init.body);
   aiCalls.push(payload.messages[1].content);
   assert.ok(payload.max_tokens >= 3000, '组页调用应带 token 预算');
-  return Response.json({ choices: [{ message: { content: JSON.stringify(aiReply) } }] });
+  const reply = aiResponder ? aiResponder(payload) : aiReply;
+  return Response.json({ choices: [{ message: { content: JSON.stringify(reply) } }] });
 };
+const callPages = (payload) => JSON.parse(payload.messages[1].content[0].text).pages.map(p => p.page);
 const mkItem = (over = {}) => ({
   text: '设 lim(x→0) (tan x − sin x)/x^3 =', answer: '1/2', pages: [1], incomplete: false, missing: '',
   steps: ['考点：等价无穷小；方法：先通分'], kind: '计算题', difficulty: '中',
   chapter: 'math-01', chapterTitle: '函数、极限与连续', kp: 'kp-03', kpName: '无穷小比较', topicChapter: '', passage: '', maxScore: null, ...over,
 });
 
-// 连续三页只调一次模型；跨页题带着两页的页码回来
+// 连续三页按每组 2 页拆成 [1,2]、[3] 两次调用（2026-11-22 超时修复后口径）；
+// 跨页题（题干页 1 + 选项页 2）仍落在同一组里合并回来，不在页边界被切断
 aiCalls = [];
-aiReply = { items: [mkItem({ pages: [1, 2], text: '第 1 题（题干在第 1 页、选项在第 2 页）\nA. 1\nB. 2\nC. 3\nD. 4' }), mkItem({ pages: [3], answer: '', incomplete: true, missing: '缺 D 选项，应在第 4 页' })] };
+aiResponder = (payload) => callPages(payload).includes(1)
+  ? { items: [mkItem({ pages: [1, 2], text: '第 1 题（题干在第 1 页、选项在第 2 页）\nA. 1\nB. 2\nC. 3\nD. 4' })] }
+  : { items: [mkItem({ pages: [3], answer: '', incomplete: true, missing: '缺 D 选项，应在第 4 页' })] };
 const grouped = await call('extract', 'POST', { pages: [
   { page: 1, text: '一、选择题 1. 设函数……（选项见下页）', image: '' },
   { page: 2, text: 'A. 1  B. 2  C. 3  D. 4  2. 下一条题干', image: '' },
   { page: 3, text: '3. 本题选项为 A. 1 B. 2 C. 3', image: '' },
 ] }, { id: fileId });
 assert.equal(grouped.status, 200, JSON.stringify(grouped));
-assert.equal(aiCalls.length, 1, '连续页应合成一次模型调用，而不是逐页调用');
+assert.equal(aiCalls.length, 2, '连续三页应按每组 2 页拆成两次模型调用');
+aiResponder = null;
 assert.equal(grouped.items.length, 2);
 const cross = grouped.items.find(x => x.sourcePage === 1);
 assert.deepEqual(cross.sourcePages, [1, 2], '跨页题要记下全部来源页');
@@ -143,8 +150,15 @@ const edited = await call('extract', 'PUT', { draftId: cut.draftId, incomplete: 
 assert.equal(edited.draft.incomplete, false);
 assert.equal(edited.draft.missing, '');
 
-// 单请求页数与图片总量有上限
-assert.equal((await call('extract', 'POST', { pages: Array.from({ length: 9 }, (_, i) => ({ page: i + 1, text: '题干', image: '' })) }, { id: fileId })).status, 400);
+// 恰好 4 页（单请求上限）可受理，按每组 2 页拆成 2 次调用
+aiCalls = [];
+aiReply = { items: [mkItem()] };
+const four = await call('extract', 'POST', { pages: [10, 11, 12, 13].map(n => ({ page: n, text: `${n}. 题干`, image: '' })) }, { id: fileId });
+assert.equal(four.status, 200, JSON.stringify(four));
+assert.equal(aiCalls.length, 2, '4 页应拆成 2 组（每组 2 页）调用');
+
+// 单请求页数（上限 4 页）与图片总量有上限
+assert.equal((await call('extract', 'POST', { pages: Array.from({ length: 5 }, (_, i) => ({ page: i + 1, text: '题干', image: '' })) }, { id: fileId })).status, 400);
 assert.equal((await call('extract', 'POST', { pages: [{ page: 1, text: '', image: 'data:image/png;base64,' + 'A'.repeat(20_000_001) }] }, { id: fileId })).status, 400);
 
 /* ---------------- 分片断点续传 ---------------- */

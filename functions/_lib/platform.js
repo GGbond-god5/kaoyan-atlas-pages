@@ -286,7 +286,7 @@ function validImage(s) { return !s || (typeof s === 'string' && s.length <= 9800
  * 老数据只有 image 单字符串时，answerImages 按单图读出，双向兼容。 */
 const MAX_ANSWER_IMAGES = 6;
 const MAX_INLINE_IMAGE_CHARS = 19600000; /* 单次请求内 base64 图片合计上限（约 2 张满格单图），作答照片与抽题页图共用，防请求体失控膨胀 */
-const MAX_PAGES_PER_EXTRACTION = 4; /* 一次 AI 调用最多合并的连续页数 */
+const MAX_PAGES_PER_EXTRACTION = 2; /* 一次 AI 调用最多合并的连续页数（2026-11-22 由 4 改 2：单页图识别约 1 分钟，4 页一组时单请求串行多组调用会超时） */
 export function answerImages(a) {
   if (!a || typeof a !== 'object') return [];
   if (Array.isArray(a.images)) { const list = a.images.filter(s => typeof s === 'string' && s); if (list.length) return list.slice(0, MAX_ANSWER_IMAGES); }
@@ -589,7 +589,9 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     }
     if (action === 'extract' && method === 'POST') {
       const b = await body();
-      if (!Array.isArray(b?.pages) || !b.pages.length || b.pages.length > 8 || b.pages.some(p => !Number.isInteger(p.page) || p.page < 1 || typeof p.text !== 'string' || p.text.length > 100000 || !validImage(p.image) || (!p.text.trim() && !p.image))) return fail(400,'页面数据无效');
+      // 单请求上限 4 页（与前端批次同口径）：一组最多 2 页，一个请求最多 2 次串行 AI 调用，
+      // 把整请求时长压回可控范围；上限外的大文件由前端分多请求依次提取，草稿池汇总。
+      if (!Array.isArray(b?.pages) || !b.pages.length || b.pages.length > 4 || b.pages.some(p => !Number.isInteger(p.page) || p.page < 1 || typeof p.text !== 'string' || p.text.length > 100000 || !validImage(p.image) || (!p.text.trim() && !p.image))) return fail(400,'页面数据无效');
       if (b.pages.reduce((n, p) => n + (p.image ? p.image.length : 0), 0) > MAX_INLINE_IMAGE_CHARS) return fail(400,'本次附带的页面图片过大，请减少每次提取的页数');
       const items = [];
       let skipped = 0, incomplete = 0;

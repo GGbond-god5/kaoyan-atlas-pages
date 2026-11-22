@@ -17,6 +17,11 @@ export async function ensureLayer1(env) {
     `CREATE TABLE IF NOT EXISTS platform_invites (
        code TEXT PRIMARY KEY, note TEXT NOT NULL DEFAULT '',
        used_by TEXT, used_at TEXT, created_at TEXT NOT NULL)`,
+    // 内测码（2026-11-22 版权分级）：一码一号，兑换后账号 edition 升为 beta，
+    // 题库全量分片与内部资料路径只对 beta / admin 下发，普通版只给真题。
+    `CREATE TABLE IF NOT EXISTS platform_beta_codes (
+       code TEXT PRIMARY KEY, note TEXT NOT NULL DEFAULT '',
+       used_by TEXT, used_at TEXT, created_at TEXT NOT NULL)`,
     `CREATE TABLE IF NOT EXISTS platform_meta (
        key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
     `CREATE TABLE IF NOT EXISTS platform_shares (
@@ -26,6 +31,7 @@ export async function ensureLayer1(env) {
     `ALTER TABLE users ADD COLUMN banned INTEGER NOT NULL DEFAULT 0`,
     `ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'`,
     `ALTER TABLE users ADD COLUMN session_version INTEGER NOT NULL DEFAULT 0`,
+    `ALTER TABLE users ADD COLUMN edition TEXT NOT NULL DEFAULT 'normal'`,
   ];
   for (const sql of stmts) {
     try {
@@ -141,6 +147,67 @@ export async function markInviteUsed(env, code, phone) {
     .prepare("UPDATE platform_invites SET used_by = ?, used_at = ? WHERE code = ? AND used_by IS NULL")
     .bind(phone, new Date().toISOString(), code)
     .run();
+}
+
+/* ---------------- 内测版分级与内测码（2026-11-22） ----------------
+ * 背景：肖1000、模拟卷、章节同型题等第三方/内部资料只供内测版；普通版题库只下发真题。
+ * edition 存 users.edition（normal / beta）；管理员（role=admin 或 ADMIN_PHONES）视为内测版。
+ * 内测码在管理台生成、一码一号，账号在头像菜单兑换；演示账号不配码，保持普通版。 */
+
+export function effectiveEdition(env, user) {
+  if (!user) return "normal";
+  return isAdminUser(env, user) || user.edition === "beta" ? "beta" : "normal";
+}
+
+export function isBetaUser(env, user) {
+  return effectiveEdition(env, user) === "beta";
+}
+
+const BETA_CODE_ALPHABET = INVITE_ALPHABET; // 与邀请码共用去易混字符集
+
+export function newBetaCode() {
+  const bytes = new Uint8Array(12);
+  crypto.getRandomValues(bytes);
+  let s = "";
+  for (const b of bytes) s += BETA_CODE_ALPHABET[b % BETA_CODE_ALPHABET.length];
+  return `ATLAS-${s.slice(0, 6)}-${s.slice(6)}`;
+}
+
+export function normalizeBetaCode(raw) {
+  return String(raw || "").trim().toUpperCase().replace(/\s+/g, "");
+}
+
+export async function getBetaCode(env, code) {
+  const db = await getDb(env);
+  if (!db) return null;
+  return db.prepare("SELECT * FROM platform_beta_codes WHERE code = ?").bind(code).first();
+}
+
+/** 原子占用：只有 used_by 为空时才写得进，changes=1 才算抢到，防并发重复兑换 */
+export async function claimBetaCode(env, code, phone) {
+  const db = await getDb(env);
+  if (!db) return false;
+  const r = await db
+    .prepare("UPDATE platform_beta_codes SET used_by = ?, used_at = ? WHERE code = ? AND used_by IS NULL")
+    .bind(phone, new Date().toISOString(), code)
+    .run();
+  return (r?.meta?.changes || 0) === 1;
+}
+
+export async function releaseBetaCode(env, code) {
+  const db = await getDb(env);
+  if (!db) return;
+  await db
+    .prepare("UPDATE platform_beta_codes SET used_by = NULL, used_at = NULL WHERE code = ?")
+    .bind(code)
+    .run()
+    .catch(() => {});
+}
+
+export async function setUserEdition(env, phone, edition) {
+  const db = await getDb(env);
+  if (!db) return;
+  await db.prepare("UPDATE users SET edition = ? WHERE phone = ?").bind(edition, phone).run();
 }
 
 /* ---------------- 站点元数据（公告等） ---------------- */

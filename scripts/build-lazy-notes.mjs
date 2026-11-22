@@ -392,8 +392,12 @@ function main() {
     const ctx = { image: makeImageResolver(dirname(file), noteId, copied) };
     const html = markdownToHtml(body, ctx);
     const type = meta.type || "笔记";
+    // 版本分级标记（2026-11-22）：frontmatter 写 tier: beta 的笔记标为内测，其余默认公开。
+    // 目前只是标记机制：笔记按章节打包成一个 JSON，同一文件里可混两种 tier，
+    // 按 tier 拆分分发（内测笔记单独成包 + 中间件门禁）需等确有 beta 笔记后再做，不要在此猜来源。
+    const tier = meta.tier === "beta" ? "beta" : "public";
     (groups[groupId] ||= { notes: [] }).notes.push({
-      id: noteId, title, type, tags: meta.tags ? meta.tags.split(/,\s*/).filter(Boolean) : [], html,
+      id: noteId, title, type, tier, tags: meta.tags ? meta.tags.split(/,\s*/).filter(Boolean) : [], html,
     });
   }
 
@@ -412,7 +416,7 @@ function main() {
     index.order.push(id);
     index.groups[id] = {
       subject: meta.subject, title: meta.title, count: g.notes.length,
-      notes: g.notes.map(n => ({ id: n.id, title: n.title, type: n.type })),
+      notes: g.notes.map(n => ({ id: n.id, title: n.title, type: n.type, tier: n.tier })),
     };
   }
   for (const id of Object.keys(groups)) {
@@ -424,7 +428,7 @@ function main() {
     index.order.push(id);
     index.groups[id] = {
       subject: meta.subject, title: meta.title, count: g.notes.length,
-      notes: g.notes.map(n => ({ id: n.id, title: n.title, type: n.type })),
+      notes: g.notes.map(n => ({ id: n.id, title: n.title, type: n.type, tier: n.tier })),
     };
   }
 

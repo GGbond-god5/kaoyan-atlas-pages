@@ -10,6 +10,7 @@ import {
   isAdminUser,
   dayCN,
   newInviteCode,
+  newBetaCode,
   getMeta,
   setMeta,
 } from "../../_lib/layer1.js";
@@ -64,7 +65,7 @@ async function users(env) {
   const day = dayCN();
   const rows = await db
     .prepare(
-      `SELECT u.phone, u.nickname, u.created_at, u.last_login_at, u.banned, u.role,
+      `SELECT u.phone, u.nickname, u.created_at, u.last_login_at, u.banned, u.role, u.edition,
               COALESCE(SUM(p.calls),0) AS ai_calls_today
        FROM users u
        LEFT JOIN platform_usage p ON p.uid = u.id AND p.day = ?
@@ -82,7 +83,21 @@ async function users(env) {
     lastLoginAt: r.last_login_at,
     banned: Boolean(r.banned),
     role: r.role || "user",
+    edition: r.edition || "normal",
     aiCallsToday: r.ai_calls_today || 0,
+  }));
+}
+
+async function betaCodesList(env) {
+  const rows = await env.DB.prepare(
+    "SELECT code, note, used_by, used_at, created_at FROM platform_beta_codes ORDER BY created_at DESC LIMIT 200"
+  ).all();
+  return (rows.results || []).map((r) => ({
+    code: r.code,
+    note: r.note || "",
+    usedBy: r.used_by ? maskPhone(r.used_by) : null,
+    usedAt: r.used_at,
+    createdAt: r.created_at,
   }));
 }
 
@@ -107,6 +122,7 @@ export async function onRequestGet({ request, env }) {
     if (action === "stats") return ok({ stats: await stats(env) });
     if (action === "users") return ok({ users: await users(env) });
     if (action === "invites") return ok({ invites: await invitesList(env) });
+    if (action === "betaCodes") return ok({ betaCodes: await betaCodesList(env) });
     if (action === "announcement") return ok({ announcement: await getMeta(env, "announcement") });
     if (action === "workerToken") return ok({ set: !!(await getMeta(env, "worker_token")) || !!env.WORKER_TOKEN });
     return fail(400, "未知 action");
@@ -144,6 +160,21 @@ export async function onRequestPost({ request, env }) {
         const code = newInviteCode();
         await db
           .prepare("INSERT INTO platform_invites (code, note, created_at) VALUES (?, ?, ?)")
+          .bind(code, note, now)
+          .run();
+        codes.push(code);
+      }
+      return ok({ codes });
+    }
+    if (action === "betaCodes.create") {
+      const count = Math.min(50, Math.max(1, Math.floor(Number(body.count) || 5)));
+      const note = String(body.note || "").trim().slice(0, 40);
+      const now = new Date().toISOString();
+      const codes = [];
+      for (let i = 0; i < count; i++) {
+        const code = newBetaCode();
+        await db
+          .prepare("INSERT INTO platform_beta_codes (code, note, created_at) VALUES (?, ?, ?)")
           .bind(code, note, now)
           .run();
         codes.push(code);
