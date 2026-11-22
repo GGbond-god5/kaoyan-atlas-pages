@@ -5,6 +5,8 @@
 // （GATE_OPEN=true），评委免登录直达全站页面与静态资源；比赛结束、评审过关后把 GATE_OPEN
 // 改回 false 即恢复原门禁。开放仅限「看」：/admin 与 /api/admin 仍走原会话校验，各 /api
 // 接口自身的会话校验不变，游客的写操作仍会被接口层拦下；已登录用户行为不受影响。
+// 内部资料屏蔽（2026-11-22 站长指令）：开放期内，第三方版权资料路径（SHIELDED_PATHS，与
+// 参赛版剔除清单同口径）不走开放捷径，仍按原门禁校验——游客挡住、登录用户照常使用。
 import { currentSession } from "./_lib/security.js";
 import { getUser } from "./_lib/db.js";
 
@@ -36,11 +38,17 @@ function wantsHtml(request) {
 
 const GATE_OPEN = true; // 参赛开放期开关，见文件头说明；恢复门禁改回 false
 const ADMIN_PATHS = [/^\/admin(\.html)?$/, /^\/api\/admin\//];
+const SHIELDED_PATHS = [
+  /^\/content\/x1000-pages(\/|$)/,
+  /^\/content\/math-pages\/(mock|_tmp_crop)/,
+  /^\/content\/_((mock|zy|ll|yl|cy|lyf|ocr)[^/]*|vocab_[^/]*)$/,
+  /^\/pdf\/(vocab-|aliyun-)/,
+];
 
 export async function onRequest({ request, env, next }) {
   const url = new URL(request.url);
   if (isPublic(url.pathname)) return next();
-  if (GATE_OPEN && !ADMIN_PATHS.some((re) => re.test(url.pathname))) return next();
+  if (GATE_OPEN && !ADMIN_PATHS.some((re) => re.test(url.pathname)) && !SHIELDED_PATHS.some((re) => re.test(url.pathname))) return next();
 
   const session = await currentSession(request, env);
   if (session) {

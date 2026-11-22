@@ -302,3 +302,6 @@
 - 参赛版（--contest）：build-pages 复制 content/pdf 时加过滤——剔除肖1000 原页扫描（content/x1000-pages）、模拟卷页图（content/math-pages/mock* 与根目录 _mock/_zy/_ll/_yl/_cy/_lyf 页图）、大纲词汇 PDF（pdf/vocab-*）与无关文件；保留真题原卷页图（bank-pages/math-pages 年份卷/pol-pages/new-subjects）、章节页与本站自编内容。包体 516MB→359MB。参赛版里指向被剔资料的「看原卷」入口会 404，属预期（主站不受影响）。
 - 内测版（新增 --beta → dist-beta/，已进 .gitignore）：与参赛版同一套无后端游客模式，但资料全量（含上述内部资料），另注入 ATLAS_BETA 标记，左下胶囊显示「内测版 · 含内部资料」与参赛版区分。供内部测试使用，不对外发布。
 - 正式版构建与主站资料库不变。
+
+## 开放期内部资料屏蔽（2026-11-22，待推送）
+- 站长批准：主站开放期内，第三方版权资料路径不走开放捷径。_middleware.js 加 SHIELDED_PATHS（与参赛版剔除清单同口径：content/x1000-pages、content/math-pages/mock* 与 _tmp_crop、content 根目录模拟卷页图与词汇打印页、pdf/vocab-* 与 aliyun-*），命中时仍走原会话校验：游客 401/跳登录，登录用户照常使用。真题页图与其他内容保持开放。
