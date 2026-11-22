@@ -51,7 +51,7 @@ if (CONTEST) {
   for (const file of FILES) {
     if (!file.endsWith(".html")) continue;
     let html = rf(`${OUT}/${file}`, "utf-8");
-    html = html.replace(/<head[^>]*>/, "$&\n<script>window.ATLAS_CONTEST=true;</script>");
+    html = html.replace(/<head[^>]*>/, "$&\n<script>window.ATLAS_CONTEST=true;try{localStorage.setItem('atlas_tour_done','1');}catch(e){}</script>"); // 参赛版跳过新手引导：评委打开直达内容
     html = html.replace("</body>", '<script src="assets/contest-sample.js"></script><script src="assets/contest.js"></script></body>');
     wf(`${OUT}/${file}`, html);
   }
