@@ -17,13 +17,12 @@
 #examAxis .ax-node.now .ax-name { color: #A53B30; }
 #examAxis .ax-date { font-size: 10.5px; color: #8a8378; margin-top: 1px; white-space: nowrap; }
 
-#dailyCard { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); z-index: 30;
-  width: 352px; max-width: calc(100vw - 32px); max-height: calc(100% - 40px); overflow: auto; padding: 14px 16px;
+/* 每日一题住在右侧边栏 #atlasRail 内（静态排布），与学习计划卡上下相邻、互不压盖 */
+#dailyCard { width: auto; padding: 14px 16px;
   background: rgba(255,255,255,.92); border: 1px solid rgba(31,58,95,.16); border-radius: 12px;
   box-shadow: 0 12px 32px rgba(31,58,95,.16); }
 @media (max-width: 900px) {
   #examAxis { left: 10px; right: 10px; width: auto; top: 8px; }
-  #dailyCard { left: 10px; right: 10px; width: auto; top: auto; bottom: 12px; transform: none; max-height: 46%; }
 }
 #dailyCard .d-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
 #dailyCard .d-title { font-size: 15px; font-weight: 700; color: #22314a; }
@@ -44,9 +43,11 @@
 #dailyCard .d-collapse { margin-left: auto; font-size: 12px; color: #7a6a45; background: none;
   border: 1px solid rgba(31,58,95,.22); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
 #dailyCard .d-collapse:hover { border-color: #1F3A5F; color: #1F3A5F; }
-#dailyTab { position: fixed; right: 0; top: 46%; z-index: 60; writing-mode: vertical-rl;
-  font-size: 13px; letter-spacing: .2em; color: #F7F2E8; background: #1F3A5F; border: none;
-  border-radius: 8px 0 0 8px; padding: 12px 7px; cursor: pointer; box-shadow: 0 2px 10px rgba(31,58,95,.3); }
+/* 收起后的展开条：留在右侧边栏内、占每日一题原来的位置，不再用固定定位的竖条压住其他内容 */
+#dailyTab { width: 100%; text-align: left;
+  font-size: 13px; letter-spacing: .14em; color: #F7F2E8; background: #1F3A5F; border: none;
+  border-radius: 12px; padding: 11px 14px; cursor: pointer; box-shadow: 0 2px 10px rgba(31,58,95,.3); }
+#dailyTab::after { content: "展开 ›"; float: right; letter-spacing: .04em; opacity: .85; }
 #dailyTab:hover { background: #A53B30; }
 
 #examAxis .ax-head { display: flex; align-items: center; }

@@ -285,6 +285,8 @@
   }
 
   async function init() {
+    var railEl = document.getElementById('atlasRail');
+    if (railEl) railEl.addEventListener('wheel', function (e) { e.stopPropagation(); }, { passive: true }); /* 栏内滚轮只滚边栏，不触发图谱缩放 */
     var dock = document.getElementById('planDock');
     var home = document.getElementById('homeCards');
     var mq = window.matchMedia('(min-width: 761px)');

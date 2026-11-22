@@ -66,9 +66,13 @@
 .pday-head span { color: #8A8172; font-size: 12.5px; }
 .pday.today .pday-head b { color: #B8860B; }
 
-/* 右侧停靠（桌面）：学习计划小卡片在 stage 右侧、每日一题上方，点击展开 */
-#planDock { position: absolute; right: 16px; top: 76px; width: 352px; max-width: calc(100vw - 32px); z-index: 31; }
-#planDock #planCard { width: auto; max-height: calc(100vh - 190px); overflow: auto; }
+/* 右侧边栏（桌面）：学习计划 + 每日一题同栏上下排列，各自独立收起/展开、互不遮挡；
+   两卡都不再用绝对定位互相压盖，栏内超高时整栏滚动 */
+#atlasRail { position: absolute; right: 16px; top: 76px; bottom: 70px; width: 352px; max-width: calc(100vw - 32px); z-index: 31;
+  display: flex; flex-direction: column; gap: 12px; overflow-y: auto; overscroll-behavior: contain; padding: 2px; scrollbar-width: thin; }
+#atlasRail > * { flex: none; }
+#planDock { width: auto; }
+#planDock #planCard { width: auto; }
 #planCard.mini { cursor: pointer; padding: 10px 14px 8px; }
 #planCard .phead .ptext-btn { font-size: 12px; letter-spacing: .04em; color: #7a5b12; font-weight: 600; }
 #planCard.mini .pprogress { margin-bottom: 0; }

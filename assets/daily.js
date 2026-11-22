@@ -4,7 +4,7 @@
  * 按日期在用户档案科目内轮换（档案经 profile-boot 的 __profilePromise/ATLAS_PROFILE 读取，
  * 数学按 variants.math 映射到数一/二/三题池）；答错自动加入错题本（AtlasMarks wb），当日结果存 localStorage。
  * 公式渲染走全站统一的 AtlasKatex.render（懒加载 KaTeX），不要直接调 renderMathInElement（未加载时不存在）。
- * 卡片可收起：收起后首页右缘留「每日一题」竖条，点开恢复；状态存 localStorage 跨日保留。
+ * 卡片可收起：收起后右侧边栏内留「每日一题」展开条，点开恢复；状态存 localStorage 跨日保留。
  * 英语/807 暂无独立客观题（阅读/作文/大题形态不适合一题卡），轮换只在数学一二三与政治间进行。 */
 (function () {
   'use strict';
@@ -114,7 +114,9 @@
       tab.id = 'dailyTab';
       tab.type = 'button';
       tab.textContent = '每日一题';
-      document.body.appendChild(tab);
+      var rail = document.getElementById('atlasRail');
+      if (rail && card.parentElement === rail) rail.insertBefore(tab, card.nextSibling);
+      else document.body.appendChild(tab);
     }
     var collapsed = false;
     try { collapsed = localStorage.getItem('atlas.daily.collapsed') === '1'; } catch (e) {}
