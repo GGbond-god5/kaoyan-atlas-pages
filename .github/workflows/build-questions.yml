@@ -12,6 +12,11 @@ on:
 permissions:
   contents: write
 
+# 同一分支同时只跑一个重建任务，其余排队，避免两个回提交并发 push 冲突
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   rebuild:
     runs-on: ubuntu-latest
