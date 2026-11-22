@@ -72,6 +72,11 @@ if (CONTEST || BETA) {
     html = html.replace(/<head[^>]*>/, "$&\n<script>window.ATLAS_CONTEST=true;" + (BETA ? "window.ATLAS_BETA=true;document.documentElement.classList.add('beta-locked');" : "") + "try{localStorage.setItem('atlas_tour_done','1');}catch(e){}</script>"); // 参赛/内测版跳过新手引导：打开直达内容
     html = html.replace("</body>", '<script src="assets/contest-sample.js"></script><script src="assets/contest.js"></script>' + (BETA ? '<script src="assets/beta-gate.js"></script>' : '') + '</body>');
     if (BETA) html = html.replace(/<head[^>]*>/, "$&\n<style>html.beta-locked body{visibility:hidden!important}</style>"); // 内测码通过前不露内容
+    if (CONTEST && file === "bank.html") { // 参赛版资料库文案只讲真题（原稿提到模拟卷/肖1000/807，与参赛包内容不符且涉第三方版权）
+      html = html.replace(/<p>这里可以直接刷大观自带的[\s\S]*?勘误。<\/p>/, "<p>这里可以直接刷大观自带的 3,290 道公共课真题：题干、题图、完整解答与自评判分都在网页里完成。数学一/二/三 2009–2025 年真题、英语一/二历年真题、政治 2017–2026 年真题已全部逐题入库，并按知识点章节打标签，可直接在「按知识点刷」里按章节筛选；其余年份可在套卷模式打开原卷与解析 PDF。</p>");
+      html = html.replace("开始刷题（4662 题）→", "开始刷题（3290 题）→");
+      html = html.replace(/<p class="bnote">来源说明：[\s\S]*?<\/p>/, '<p class="bnote">来源说明：历年真题版权归原作者/出版社所有；本页仅提供索引与跳转，不存储、不转载题目内容。</p>');
+    }
     wf(`${OUT}/${file}`, html);
   }
   console.log((BETA ? "beta" : "contest") + " build: ATLAS_CONTEST injected" + (BETA ? " + ATLAS_BETA" : ""));
@@ -85,7 +90,22 @@ if (CONTEST) {
   const atlasPath = `${OUT}/assets/data.js`;
   const atlasData = JSON.parse(readFileSync(atlasPath, "utf-8").replace(/^window\.ATLAS\s*=\s*/, "").replace(/;\s*$/, ""));
   atlasData.subjects = atlasData.subjects.filter((x) => x.id !== "mechanics");
-  writeFileSync(atlasPath, `window.ATLAS = ${JSON.stringify(atlasData)};\n`);
+  let atlasJson = JSON.stringify(atlasData)
+    .replaceAll("年度具体事件以肖四、腿姐冲刺手册为准", "年度具体事件以最新时政材料为准")
+    .replaceAll("再用肖八肖四收口", "再用冲刺卷收口"); // 章节文案里的博主产品名在参赛版中性化
+  writeFileSync(atlasPath, `window.ATLAS = ${atlasJson};\n`);
+  const bankCatPath = `${OUT}/assets/bank-catalog.js`; // 资料目录只留真题条目（模拟题/讲义等第三方资料不进参赛包）
+  const bankCat = JSON.parse(readFileSync(bankCatPath, "utf-8").replace(/^window\.BANK_CATALOG\s*=\s*/, "").replace(/;\s*$/, ""));
+  writeFileSync(bankCatPath, `window.BANK_CATALOG=${JSON.stringify(bankCat.filter((e) => e.type === "真题"))};\n`);
+  const bankJsPath = `${OUT}/assets/bank.js`; // 资料种子清单里的第三方条目整行剔除（文件层面也不留）
+  const bankJs = readFileSync(bankJsPath, "utf-8").split("\n")
+    .filter((line) => !/id: "(pol-xiao1000|pol-xiao8|pol-xiao4|math-lin6|math-zhang4|math-hefei|mech-zhang|mech-330)"/.test(line))
+    .join("\n");
+  writeFileSync(bankJsPath, bankJs);
+  const importPath = `${OUT}/assets/import-list.js`; // 导入来源清单是内部 sourcing 记录，参赛版清空
+  const importList = JSON.parse(readFileSync(importPath, "utf-8").replace(/^window\.IMPORT_LIST\s*=\s*/, "").replace(/;\s*$/, ""));
+  importList.items = []; importList.share = "";
+  writeFileSync(importPath, `window.IMPORT_LIST=${JSON.stringify(importList)};\n`);
   for (const f of readdirSync(`${OUT}/web`)) if (f.startsWith("mech-")) rmSync(`${OUT}/web/${f}`);
   const papersPath = `${OUT}/assets/papers.js`;
   const papers = JSON.parse(readFileSync(papersPath, "utf-8").replace(/^window\.PAPERS\s*=\s*/, "").replace(/;\s*$/, ""));
@@ -123,7 +143,12 @@ const gManifest = { total: 0, subjects: {} };
 for (const [subj, list] of bySubject) {
   if (CONTEST && subj === "mechanics") continue; // 参赛版只放公共课：无 807
   const real = list.filter((q) => q.isReal === true);
-  writeFileSync(`${OUT}/assets/questions-guest/${subj}.js`, `AtlasQuestions._add(${JSON.stringify(subj)}, ${JSON.stringify(real)});\n`);
+  let guestShard = `AtlasQuestions._add(${JSON.stringify(subj)}, ${JSON.stringify(real)});\n`;
+  if (CONTEST) guestShard = guestShard // 真题解析批注里引用过的出版解析名在参赛版中性化（仅参赛包，不动源数据）
+    .replaceAll("（如张宇、李永乐版）", "（如通行解析版）")
+    .replaceAll("（如张宇、李永乐）", "（如通行解析）")
+    .replaceAll("（如李永乐《复习全书》", "（如通行解析");
+  writeFileSync(`${OUT}/assets/questions-guest/${subj}.js`, guestShard);
   gManifest.subjects[subj] = real.length;
   gManifest.total += real.length;
 }

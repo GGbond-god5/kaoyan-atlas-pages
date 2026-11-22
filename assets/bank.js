@@ -23,7 +23,9 @@
     { id: "mech-zhenti", subject: "mechanics", name: "807 历年真题与解析", kind: "真题", coverage: "1995–2026（2020 前代码 801）", note: "重点 2024–2026；超静定、能量法、稳定、组合变形按题型归类。" },
     { id: "mech-zhang", subject: "mechanics", name: "张晓晴教材与学习指导", kind: "教材题", coverage: "例题 + 课后题", note: "华工本科教材，真题多由此改编；课后题至少两遍。" },
     { id: "mech-330", subject: "mechanics", name: "瞌睡哥 220 / 330 题", kind: "强化题", coverage: "基础 + 强化", note: "220 打底，330 强化；图乘法、超静定、稳定优先。" }
-  ];
+  ].filter(function (s) { // 参赛版只放公共课真题与本站自编内容：模拟卷/第三方题册与 807 条目不列（公开比赛侵权口径）
+    return !window.ATLAS_CONTEST || ((s.kind === "真题" || s.id === "eng-writing") && s.subject !== "mechanics");
+  });
 
   const SUBJECT_META = {
     politics: { name: "政治", color: "#A02C2C" },
