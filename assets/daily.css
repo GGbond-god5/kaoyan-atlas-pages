@@ -1,13 +1,13 @@
 /* 首页：考试节点轴 + 每日一题卡（与 plan.css/today.css 同族视觉） */
 /* 考试节点轴：嵌入顶部信息行（.stage-top）中间，不再做悬浮卡压住图谱；
    单行胶囊：标题 + 节点横排（圆点+名称同行，日期只在当前节点旁显示） */
-#examAxis { position: static; flex: 0 1 auto; display: flex; align-items: center; gap: 14px;
-  max-width: min(560px, 46vw); padding: 5px 14px; pointer-events: none;
+#examAxis { position: static; flex: 0 1 auto; display: flex; align-items: center; gap: 22px;
+  max-width: min(680px, 54vw); padding: 8px 22px; pointer-events: none;
   background: rgba(255,255,255,.72); border: 1px solid rgba(31,58,95,.13); border-radius: 999px;
   box-shadow: 0 4px 14px rgba(31,58,95,.07); backdrop-filter: blur(3px); }
 #examAxis .ax-title { font-size: 11px; letter-spacing: .12em; color: #7a6a45; white-space: nowrap; }
 #examAxis .ax-track { display: flex; align-items: center; gap: 0; flex: 1; min-width: 0; }
-#examAxis .ax-node { flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; position: relative; min-width: 0; padding: 0 2px; }
+#examAxis .ax-node { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; position: relative; min-width: 0; padding: 0 10px; }
 #examAxis .ax-node::before { content: ""; position: absolute; top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%); background: rgba(31,58,95,.15); }
 #examAxis .ax-node:first-child::before { left: 50%; }
 #examAxis .ax-node:last-child::before { right: 50%; }

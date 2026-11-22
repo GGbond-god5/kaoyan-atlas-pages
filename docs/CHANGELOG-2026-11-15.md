@@ -377,3 +377,4 @@
 - 改法：①`#examAxis` 移入顶部信息行 `.stage-top` 中间，改单行胶囊嵌入式（圆点+名称同行、日期只在当前节点旁显示、半透明毛玻璃），不再悬浮于图谱之上；窄屏（≤900px）隐藏。②`#atlasRail` 顶部加栏头「学习计划 · 每日一题 / 收起 »」，整栏收起后右缘只留一个竖排小按键 `#railTab`（点击展开整栏），状态存 localStorage（atlas.rail.collapsed）；栏内两卡原有各自收起/展开不变。③AI 向导悬浮按钮与对话面板 bottom 22px→78px，避开底部缩放栏，面板高度上限同步调整。
 - 文件：`index.html`（节点轴移位、栏头与 #railTab 结构、版本号 guide.css v2 / plan.css v6 / daily.css v8 / plan.js v10）、`assets/daily.css`、`assets/plan.css`、`assets/plan.js`、`assets/guide.css`。
 - 验证：部署后以演示账号实测三处布局（见当晚会话记录）。
+- 跟进（站长看图反馈「排版太挤」）：节点轴胶囊放宽——最大宽度 560→680px、内边距 5px/14px→8px/22px、标题与轴间距 14→22px、节点内边距 2→10px；daily.css 版本号升至 v9。
