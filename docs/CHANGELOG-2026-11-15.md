@@ -332,11 +332,20 @@
 - 站长强调：给评委看的参赛包不能放模拟卷与博主/老师资料（公开比赛侵权）。在既有收口（题库只真题、套卷目录清空模拟卷、原卷页图剔除）之上补齐资料库一层：bank-catalog 参赛版只保留「真题」188 条（模拟题 299 与讲义/词汇等第三方条目全剔）；import-list 参赛版清空条目与分享链接；bank.js 资料种子在参赛版过滤且构建时整行剔除（肖1000/肖八/肖四/李林/张宇/合工大/瞌睡哥与 807 条目）；bank.html 参赛文案改只讲 3,290 道公共课真题、来源说明去具名；章节数据与真题解析批注里的具名产品引用中性化。构建后全包检索：资料层已无任何博主/老师名字与模拟卷条目。
 - 站长 2026-11-22 拍板：笔记正文里约 234 处老师姓名提及（武忠祥 72、腿姐 60、张宇 58、徐涛 34、肖秀荣 10）属行文引用、非资料本体，参赛版不处理，保持原样。
 
-## 一键评委体验账号 + 首页图谱固定（2026-11-22）
-- 登录页新增「评委体验账号 · 一键进入」（`POST /api/auth/demo`）：免注册创建/重置体验账号（`19900000000`，role=demo），预置华南理工 085500 档案、7 类平台状态、5 套已批改套卷（19 条评分）、4 条笔记与收藏/错题标记；每次进入都重置为初始体验数据。每 IP 每小时默认 20 次（`DEMO_HOURLY_LIMIT`），`DEMO_LOGIN=0` 可关闭入口；写操作照常落库，AI 额度不豁免防滥用。
-- 首页图谱改为固定锚点：去掉拖拽与滚轮平移，保留右下角缩放与「适应」；版心按右侧学习卡片栏自动让位，展开科目/章节不再整图位移。
-- 首页右侧学习卡片栏（学习计划 + 每日一题）与今日任务卡视觉精修；缩放控件右移，让出 AI 向导悬浮球，短屏不再遮挡。
-- 学情分析页补齐此前缺失的版心/科目页签/统计卡/列表样式（线上长期裸样式），折线图同一横坐标的多个点标签自动错开。
-- 登录页短屏（≤940px 高）收紧纵向间距，一键体验入口在 1440×900 视口无需滚动即可见。
-- 文档：`docs/功能说明.md` 补充体验账号与固定视图；小观站内地图加入体验入口。
-- 验证：`npm run check` 通过；本地 Wrangler + 无头 Edge 实测体验登录、`/api/auth/me`、`/api/attempts` 与首页/登录/错题本/学情分析截图；`assets/katex` 属稀疏检出未含，本地截图公式为原文，线上资源正常。
+## 评委体验账号后端接口（2026-11-22，只上线接口）
+- 新增 `POST /api/auth/demo`（`functions/api/auth/demo.js` + `functions/_lib/demo.js`、`functions/_lib/demo-questions.js`）：免注册创建/重置体验账号（`19900000000`，role=demo），预置华南理工 085500 档案、7 类平台状态、5 套已批改套卷（19 条评分）、4 条笔记与收藏/错题标记；每次进入都重置为初始体验数据。每 IP 每小时默认 20 次（`DEMO_HOURLY_LIMIT`），`DEMO_LOGIN=0` 可关闭入口；写操作照常落库，AI 额度不豁免防滥用。中间件把该路由列入免登录白名单，`ensurePlatform` 导出供种子复用。
+- 配套前端（登录页「一键进入」入口、首页图谱固定、右栏与学情分析视觉精修、短屏间距）按站长指令不上线，改动只留本地分支 `codex/atlas-frontend`；因此线上体验账号目前只能由接口调用进入，页面上无入口。
+- 验证：本地 Wrangler 实测 `POST /api/auth/demo` 200 且 `/api/auth/me`、`/api/attempts`、`/api/state/*` 返回种子数据。
+
+## 后端安全与批改并发收口（2026-11-22，分支 codex/backend-reliability）
+
+- `functions/_middleware.js`：私有路径改为 fail-closed，D1 未绑定/查询异常返回 503；登录/注册页补充 `theme.css` 白名单；损坏 token 按未登录处理。
+- 会话版本：`users.session_version` + token `sv` 字段。旧 token 无 `sv` 按 0 兼容；改密使用版本 CAS，其他设备旧 token 失效，当前设备响应换发新 token；`/api/auth/me`、改密、注销二次校验版本与封禁，登录接口直接拒绝封禁账号。
+- 注销：补齐社区/批改租约等表，匿名化邀请码手机号；R2 清理资料、历史附件、笔记附件和头像。对象归属判断抽到 `object-keys.js`，注销与单文件删除都不会误删社区共享原文件。
+- 自带 AI 配置：新增 `aiCfgAt` 与 24 小时 TTL，过期自动清除并降级系统 AI；attempt POST 响应不再回显 `aiCfg`。
+- Worker claim：SQL 过滤已通知、活跃租约、非 `serverGrade` 记录；使用 attempt 原 JSON 做 CAS，两个 worker 同时读取时只有一个领取成功。
+- 单题批改：新增 `platform_grading_claims` 与过期索引，浏览器与 ECS worker 竞争单题租约；等待方能读取对方结果，AI 失败释放租约，过期时间 5 分钟，worker claim 定期清理过期租约。
+- 分值：`scoring.js` 新增 `allocatePaperDetailed()`；显式分值超过 math/mechanics 150 或 english/politics 100 时返回 400，保留 `allocatePaper()` 旧接口。
+- 自选 AI：接口地址增加 localhost/私网/IPv6 本地地址/云元数据地址拦截，降低 SSRF 风险；本地联调需显式设置 `ALLOW_LOCAL_AI=1`。
+- 工作流：新增 `npm run test:backend`（Node 24 + `node:sqlite`），CI 增加 backend job；覆盖改密 CAS、旧 token、跨通道批改租约、SSRF、注销对象归属；`validate` 增加同 ref 取消旧运行，`build-questions` 增加串行 concurrency。
+- 验证：`npm run test:backend`、`npm run check`、`npm run build` 全过；`git diff` 无 `assets/**`、根 HTML/CSS 或前端脚本改动。

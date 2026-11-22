@@ -17,7 +17,10 @@ const SCHEMA = [
      hash TEXT NOT NULL,
      iterations INTEGER NOT NULL DEFAULT 20000,
      created_at TEXT NOT NULL,
-     last_login_at TEXT
+     last_login_at TEXT,
+     banned INTEGER NOT NULL DEFAULT 0,
+     role TEXT NOT NULL DEFAULT 'user',
+     session_version INTEGER NOT NULL DEFAULT 0
    )`,
   `CREATE TABLE IF NOT EXISTS sms_send (
      id INTEGER PRIMARY KEY AUTOINCREMENT,

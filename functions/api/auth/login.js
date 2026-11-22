@@ -24,6 +24,7 @@ export async function onRequestPost({ request, env }) {
     return fail(503, "数据库未就绪，请检查 Pages 的 D1 绑定（变量名应为 DB）");
   }
   if (!user) return fail(404, "该手机号还没有注册，请先注册");
+  if (user.banned) return fail(403, "账号已被封禁");
 
   if (useCode) {
     if (!CODE_RE.test(code)) return fail(400, "请输入 6 位数字验证码");
@@ -44,7 +45,7 @@ export async function onRequestPost({ request, env }) {
   }
 
   await touchLogin(env, phone);
-  const token = await signSession({ uid: user.id, phone }, env.SESSION_SECRET);
+  const token = await signSession({ uid: user.id, phone, sessionVersion: Number(user.session_version) || 0 }, env.SESSION_SECRET);
   const fresh = await getUser(env, phone);
   return ok(
     { user: publicUser(fresh || user), token },

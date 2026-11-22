@@ -233,7 +233,13 @@ export async function onRequestPost({ request, env }) {
     }
     if (action === "unshare") {
       const id = String(body.id || "");
-      await db.prepare("DELETE FROM platform_shares WHERE id=? AND uid=?").bind(id, uid).run();
+      const own = await db.prepare("SELECT id FROM platform_shares WHERE id=? AND uid=?").bind(id, uid).first();
+      if (!own) return ok({});
+      await db.batch([
+        db.prepare("DELETE FROM platform_share_likes WHERE share_id=?").bind(id),
+        db.prepare("DELETE FROM platform_share_comments WHERE share_id=?").bind(id),
+        db.prepare("DELETE FROM platform_shares WHERE id=? AND uid=?").bind(id, uid),
+      ]);
       return ok({});
     }
     if (action === "import") {

@@ -79,8 +79,14 @@ async function hmacBytes(secret, data) {
   return crypto.subtle.sign("HMAC", key, enc.encode(data));
 }
 
-export async function signSession({ uid, phone }, secret) {
-  const payload = { uid, phone, exp: Date.now() + SESSION_DAYS * 24 * 3600 * 1000 };
+export function normalizedSessionVersion(value) {
+  const n = Number(value);
+  return Number.isInteger(n) && n >= 0 ? n : 0;
+}
+
+export async function signSession({ uid, phone, sessionVersion = 0 }, secret) {
+  const sv = normalizedSessionVersion(sessionVersion);
+  const payload = { uid, phone, sv, exp: Date.now() + SESSION_DAYS * 24 * 3600 * 1000 };
   const body = b64url(enc.encode(JSON.stringify(payload)));
   const mac = b64url(await hmacBytes(secret, body));
   return `${body}.${mac}`;
@@ -126,7 +132,12 @@ export function parseCookies(header) {
     if (idx < 0) continue;
     const k = part.slice(0, idx).trim();
     const v = part.slice(idx + 1).trim();
-    if (k) out[k] = decodeURIComponent(v);
+    if (!k) continue;
+    try {
+      out[k] = decodeURIComponent(v);
+    } catch {
+      // 单个损坏 Cookie 不应让公开接口抛 500；按未设置处理。
+    }
   }
   return out;
 }

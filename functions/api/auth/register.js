@@ -78,7 +78,7 @@ export async function onRequestPost({ request, env }) {
     }
   }
 
-  const token = await signSession({ uid: user.id, phone }, env.SESSION_SECRET);
+  const token = await signSession({ uid: user.id, phone, sessionVersion: 0 }, env.SESSION_SECRET);
   return ok(
     { user: publicUser(user), token },
     200,

@@ -168,31 +168,12 @@ async function clearPaperRecords(qids) {
     for (var xi = 0; xi < maxN; xi++) {
       out += '<text x="' + X(xi) + '" y="' + (H - 10) + '" text-anchor="middle" font-size="10.5" fill="#8A8172">第 ' + (xi + 1) + ' 套</text>';
     }
-    /* 同一横坐标上可能挤着多科的点（各科都只有一套卷时），标签按得分率从低到高向上错开，避免数值叠字 */
-    var clusters = {}, labelY = {};
-    sids.forEach(function (sid) {
-      bySub[sid].forEach(function (p, i) {
-        var key = X(i).toFixed(0);
-        (clusters[key] = clusters[key] || []).push({ key: sid + '|' + i, y: Y(p.rate) - 9 });
-      });
-    });
-    Object.keys(clusters).forEach(function (k) {
-      var arr = clusters[k].sort(function (a, b) { return b.y - a.y; });
-      arr.forEach(function (it, j) {
-        if (j && it.y > arr[j - 1].y - 16) it.y = arr[j - 1].y - 16;
-        if (it.y < 14) it.y = 14;
-        labelY[it.key] = it.y;
-      });
-    });
     sids.forEach(function (sid) {
       var ps = bySub[sid], color = COLORS[sid] || '#888';
       if (ps.length > 1) out += '<polyline fill="none" stroke="' + color + '" stroke-width="2.2" points="' + ps.map(function (p, i) { return X(i).toFixed(1) + ',' + Y(p.rate).toFixed(1); }).join(' ') + '"/>';
       ps.forEach(function (p, i) {
-        var lx = X(i), anchor = 'middle';
-        if (maxN > 1 && i === 0) { lx += 7; anchor = 'start'; }
-        else if (maxN > 1 && i === maxN - 1) { lx -= 7; anchor = 'end'; }
         out += '<circle cx="' + X(i) + '" cy="' + Y(p.rate) + '" r="4" fill="' + color + '" stroke="#fff" stroke-width="1.6"><title>' + esc(p.title) + '：' + pct(p.rate) + '</title></circle>' +
-          '<text x="' + lx + '" y="' + (labelY[sid + '|' + i] || (Y(p.rate) - 9)) + '" text-anchor="' + anchor + '" font-size="11" font-weight="700" fill="#4A4436">' + pct(p.rate) + '</text>';
+          '<text x="' + X(i) + '" y="' + (Y(p.rate) - 9) + '" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4A4436">' + pct(p.rate) + '</text>';
       });
     });
     return out + '</svg>';

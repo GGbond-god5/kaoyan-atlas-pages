@@ -131,6 +131,11 @@ git switch -c codex/<主题>        # 或 claude/<主题>
   构建脚本与 `scripts/check.mjs` 已对此双重拦截，不要绕过校验。
 - 提交前跑 `npm run check`（JS 语法 + 题库 JSON + 页面登记）；题库源改动可依赖
   `build-questions` Action 自动重建 `assets/questions.js`，或本地 `npm run build:questions` 后一并提交。
+- 后端改动必须加跑 `npm run test:backend`。该测试使用 Node 24 的 `node:sqlite`，覆盖门禁、会话版本、批改租约、AI 配置 TTL、注销清理与分值不变量。
+- 私有接口和中间件不得 fail-open；会话/权限查询异常返回 503。新增会话字段必须兼容没有该字段的旧 token（按 0 回退）。
+- 批改同一题必须经过 `platform_grading_claims` 租约；不要让浏览器和 ECS worker 各自直接调用 AI。
+- 自选 AI 地址必须经过公网校验，不能放行 localhost、私网或云元数据地址；本地联调仅用 `ALLOW_LOCAL_AI=1`。
+- R2 删除必须复用 `functions/_lib/object-keys.js` 的归属规则，避免删除社区导入记录时误删原分享者对象。
 - 视觉令牌只改 `assets/theme.css`；新页面默认接 theme 并用统一页眉 `.top`。
 - 首页 AI 向导的人设与站内地图在 `functions/_lib/prompts.js` 的 `GUIDE_SYSTEM`；
   站内功能增删时同步更新这份地图与 `docs/功能说明.md`，否则向导会给出错指引。

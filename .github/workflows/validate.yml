@@ -6,6 +6,10 @@ on:
     branches: [master]
   pull_request:
 
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -21,3 +25,14 @@ jobs:
         run: node scripts/check.mjs
       - name: Pages 构建演练（生成 dist 并校验页面齐全）
         run: node scripts/build-pages.mjs
+
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 后端回归（门禁 / 批改租约 / 分值 / 注销 / API）
+        run: npm run test:backend

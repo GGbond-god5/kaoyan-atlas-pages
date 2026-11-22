@@ -61,7 +61,7 @@
     if (window.__atlasMapLoaded) return;
     window.__atlasMapLoaded = true;
     const script = document.createElement("script");
-    script.src = "assets/atlas.js?v=24";
+    script.src = "assets/atlas.js?v=23";
     script.onload = () => {
       if (window.AtlasProfile) window.AtlasProfile.afterMap();
     };

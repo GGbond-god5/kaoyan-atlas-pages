@@ -286,7 +286,7 @@
   async function init() {
     var dock = document.getElementById('planDock');
     var home = document.getElementById('homeCards');
-    var mq = window.matchMedia('(min-width: 1201px)');
+    var mq = window.matchMedia('(min-width: 761px)');
     function place() {
       inDock = !!(mq.matches && dock);
       var slot = document.getElementById('planSlot');

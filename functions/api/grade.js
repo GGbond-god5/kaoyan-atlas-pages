@@ -10,7 +10,7 @@ export async function onRequestPost({request,env}) {
   let user = null;
   try { user = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(uid).first(); } catch { /* 查不到用户时配额放行 */ }
   let userCfg = null;
-  try { userCfg = userAiConfig(request); } catch (e) { return fail(400, e.message); }
+  try { userCfg = userAiConfig(request, env); } catch (e) { return fail(400, e.message); }
   if (!userCfg) {
     const blocked = await checkQuota(env, user, 'grade');
     if (blocked) return fail(429, blocked);

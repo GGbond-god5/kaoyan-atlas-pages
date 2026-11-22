@@ -9,6 +9,10 @@ on:
       - "src/bank/**"
       - "src/chapters/**"
 
+concurrency:
+  group: build-questions-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
 

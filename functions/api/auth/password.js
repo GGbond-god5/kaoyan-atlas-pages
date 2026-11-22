@@ -7,7 +7,12 @@ import {
   randomHex,
   iterations as pbkdf2Rounds,
   safeEqual,
+  signSession,
+  sessionCookie,
+  isSecureRequest,
+  normalizedSessionVersion,
 } from "../../_lib/security.js";
+import { ensureLayer1 } from "../../_lib/layer1.js";
 
 export async function onRequestPost({ request, env }) {
   if (!env.SESSION_SECRET) return fail(500, "站点配置缺失：未设置 SESSION_SECRET");
@@ -31,19 +36,31 @@ export async function onRequestPost({ request, env }) {
     return fail(503, "数据库未就绪，请稍后再试");
   }
   if (!user) return fail(401, "账号不存在，请重新登录");
+  const currentVersion = normalizedSessionVersion(user.session_version);
+  if (user.id !== session.uid || user.banned || normalizedSessionVersion(session.sv) !== currentVersion) {
+    return fail(401, "登录状态已失效，请重新登录");
+  }
 
   const oldHash = await hashPassword(oldPassword, user.salt, user.iterations);
   if (!safeEqual(oldHash, user.hash)) return fail(403, "旧密码不正确");
 
+  await ensureLayer1(env);
   const salt = randomHex(16);
   const rounds = pbkdf2Rounds(env);
   const hash = await hashPassword(newPassword, salt, rounds);
   const db = env.DB;
-  await db
-    .prepare("UPDATE users SET salt = ?, hash = ?, iterations = ? WHERE phone = ?")
-    .bind(salt, hash, rounds, user.phone)
+  const nextVersion = currentVersion + 1;
+  const updated = await db
+    .prepare("UPDATE users SET salt = ?, hash = ?, iterations = ?, session_version = ? WHERE phone = ? AND COALESCE(session_version, 0) = ?")
+    .bind(salt, hash, rounds, nextVersion, user.phone, currentVersion)
     .run();
+  if ((updated.meta?.changes ?? 0) !== 1) return fail(409, "密码已被其他会话更新，请重新登录后重试");
 
-  // 会话是无状态令牌，改密后已登录设备仍保持登录；如需强制下线请在各设备退出登录。
-  return ok({ changed: true });
+  // 改密后其它设备的旧令牌立即失效；当前设备换发新版本令牌，保持登录。
+  const token = await signSession({ uid: user.id, phone: user.phone, sessionVersion: nextVersion }, env.SESSION_SECRET);
+  return ok(
+    { changed: true, token },
+    200,
+    { "Set-Cookie": sessionCookie(token, isSecureRequest(request)) }
+  );
 }

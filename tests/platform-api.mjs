@@ -5,6 +5,7 @@ import { handle } from '../functions/_lib/platform.js';
 import { onRequestPost as legacyGrade } from '../functions/api/grade.js';
 
 const sql = new DatabaseSync(':memory:');
+sql.exec("CREATE TABLE users (phone TEXT PRIMARY KEY, id TEXT NOT NULL, nickname TEXT NOT NULL, salt TEXT NOT NULL, hash TEXT NOT NULL, iterations INTEGER NOT NULL DEFAULT 20000, created_at TEXT NOT NULL, last_login_at TEXT, banned INTEGER NOT NULL DEFAULT 0, role TEXT NOT NULL DEFAULT 'user', session_version INTEGER NOT NULL DEFAULT 0)");
 const db = {prepare(query) { let values=[]; return {bind(...v) {values=v; return this;}, async first(){return sql.prepare(query).get(...values) || null;}, async all(){return {results:sql.prepare(query).all(...values)};}, async run(){return {meta:{changes:Number(sql.prepare(query).run(...values).changes)}};}};}, async batch(stmts){return Promise.all(stmts.map(s=>s.run()));}};
 const objects=new Map();
 const env={DB:db,SESSION_SECRET:'test-only-secret', AI_API_KEY:'test-only-key',LIBRARY_FILES:{async put(k,v){objects.set(k,v);},async get(k){return objects.has(k)?{body:objects.get(k)}:null;},async delete(k){objects.delete(k);}}};
@@ -42,5 +43,5 @@ const c=await req('a','coach','POST',{context:{topic:'作文'},messages:[{role:'
 assert.equal((await req('b','coachItem','GET',null,{id:c.conversationId})).status,404);
 assert.equal((await req('b','coach','POST',{conversationId:c.conversationId,context:{},messages:[{role:'user',content:'x'}]})).status,404);
 const unauth=await legacyGrade({request:new Request('https://x/',{method:'POST'}),env});assert.equal(unauth.status,401);
-const legacy=await legacyGrade({request:new Request('https://x/',{method:'POST',headers:{Authorization:`Bearer ${tokens.a}`,'Content-Type':'application/json'},body:JSON.stringify({question:'q',answer:'A',selected:'A'})}),env});assert.equal((await legacy.json()).status,'pending');
+const legacy=await legacyGrade({request:new Request('https://x/',{method:'POST',headers:{Authorization:`Bearer ${tokens.a}`,'Content-Type':'application/json'},body:JSON.stringify({question:'q',answer:'A',selected:['A']})}),env});assert.equal(legacy.status,200);assert.equal((await legacy.json()).status,'graded');
 console.log('platform API checks passed');
