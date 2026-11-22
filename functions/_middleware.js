@@ -1,5 +1,10 @@
 // 全站登录门禁：除登录/注册页及其必要资源外，未登录一律拦下。
 // 账号体系启用后不再使用 Basic Auth，避免两层密码。
+//
+// 【参赛开放期，2026-11-22 站长指令】Qoder 高校创造力大赛以主站参赛，评审期间临时撤除门禁
+// （GATE_OPEN=true），评委免登录直达全站页面与静态资源；比赛结束、评审过关后把 GATE_OPEN
+// 改回 false 即恢复原门禁。开放仅限「看」：/admin 与 /api/admin 仍走原会话校验，各 /api
+// 接口自身的会话校验不变，游客的写操作仍会被接口层拦下；已登录用户行为不受影响。
 import { currentSession } from "./_lib/security.js";
 import { getUser } from "./_lib/db.js";
 
@@ -29,9 +34,13 @@ function wantsHtml(request) {
   return (request.headers.get("Accept") || "").includes("text/html");
 }
 
+const GATE_OPEN = true; // 参赛开放期开关，见文件头说明；恢复门禁改回 false
+const ADMIN_PATHS = [/^\/admin(\.html)?$/, /^\/api\/admin\//];
+
 export async function onRequest({ request, env, next }) {
   const url = new URL(request.url);
   if (isPublic(url.pathname)) return next();
+  if (GATE_OPEN && !ADMIN_PATHS.some((re) => re.test(url.pathname))) return next();
 
   const session = await currentSession(request, env);
   if (session) {
