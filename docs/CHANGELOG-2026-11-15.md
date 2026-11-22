@@ -378,3 +378,20 @@
 - 文件：`index.html`（节点轴移位、栏头与 #railTab 结构、版本号 guide.css v2 / plan.css v6 / daily.css v8 / plan.js v10）、`assets/daily.css`、`assets/plan.css`、`assets/plan.js`、`assets/guide.css`。
 - 验证：部署后以演示账号实测三处布局（见当晚会话记录）。
 - 跟进（站长看图反馈「排版太挤」）：节点轴胶囊放宽——最大宽度 560→680px、内边距 5px/14px→8px/22px、标题与轴间距 14→22px、节点内边距 2→10px；daily.css 版本号升至 v9。
+
+## 2026-11-22 深夜 · 内测码分级（普通版只下发真题，内部资料仅内测版）
+
+- 定版口径（站长）：肖1000、数学模拟卷、章节同型题及名师/机构非公开资料只供内测版；普通账号题库只下发真题。账号在头像（个人中心）兑换内测码升级，管理台发码、一码一号；演示账号 GGBOND 不配码，保持普通版。
+- 现状衔接：题库双包构建其实已存在——`scripts/build-pages.mjs` 构建时把 `assets/questions.js`（由 `src/build/build_questions.py` 从章节与导入卷生成）按科目切成全量包 `assets/questions/` 与公开包 `assets/questions-guest/`（只含 `isReal===true`），本次核对计数：全量 6,428 题、公开包 3,502 题（数一 386 / 数二 386 / 数三 386 / 英一 936 / 英二 816 / 政治 380 / 807 212），与交接文档口径一致。故未新建 `questions-public` 目录，公开包即既有 guest 包，避免双轨与部署体积翻倍。
+- 改动（后端）：`functions/_lib/layer1.js` 幂等补 `users.edition` 列（默认 normal）与新表 `platform_beta_codes`，新增 `newBetaCode()`（`ATLAS-XXXXXX-XXXXXX`，复用邀请码去易混字符集）、`effectiveEdition/isBetaUser`（edition='beta' 或管理员）、原子占用/释放/升版原语；新增兑换接口 `functions/api/auth/beta.js`（GET 查版本、POST 兑换：格式校验→未用校验→原子占用→升版，失败释放占用，本人重复提交幂等成功，他人已用码明确报错）；`/api/auth/me` 经 `publicUser` 返回有效 edition（前端统一从此读）；管理 API 新增 `betaCodes` 列表与 `betaCodes.create` 生成，用户列表带 edition。
+- 改动（门禁）：`functions/_middleware.js` 把 SHIELDED_PATHS（全量分片、肖1000 原页、模拟卷页图、大纲词汇等）从「开放期游客屏蔽」收紧为「内测版专属」——不论 GATE_OPEN 状态，游客 401、普通版 403（文案提示去头像菜单兑换内测码）、内测/管理员放行，DB 异常仍 fail-closed 503；套卷清单 `/assets/papers.js` 同口径：非内测请求由中间件清空 mock 清单后再下发（真题卷 34 套保留，模拟卷 12 套过滤），内测拿原文。
+- 改动（前端）：`assets/questions-loader.js` 正式站选包从「登录即全量」改为按 `me.edition`（beta→全量包，其余→公开包），与服务端门禁同口径；`assets/account-hub.js/.css` 个人中心新增「版本」区——内测版显示「当前为内测版」，普通版显示「普通版」+ 内测码输入与兑换按钮，成功后提示刷新页面加载全量题库；管理台新增「内测码」区块（生成/列表/状态，用户列表标内测版）；小观 GUIDE_SYSTEM 在「账号与档案」补版本分级说明。缓存版本号：account-hub.js v6→v7（11 页）、questions-loader.js v4→v5（4 页）、admin.js v2→v3。
+- 参赛版（dist-contest）：构建本就只发公开包分片、papers.mock 清空、科目只留公共课，与新口径一致，未改动。笔记库：内置笔记目前无逐篇来源/tier 元数据（frontmatter 只有 title/type/tags），`scripts/build-lazy-notes.mjs` 已加标记机制——frontmatter 写 `tier: beta` 即标内测并进章节 JSON 与索引，其余默认公开；按 tier 拆分分发需等确有 beta 笔记后再做，未逐篇猜来源。
+- 验证：本地 `npm run test:backend` 全链通过（scoring / backend-hardening / platform-api / multi-image / user-state / library-upload / 新增 beta-edition）；新测试 `tests/beta-edition.mjs` 覆盖：users 无 edition 列时幂等补列、码格式与字符集、非管理员发码 403、管理生成与列表、错格式/无效码 400、未登录 401、兑换成功后 users.edition 落库翻转且 me 口径同步、他人已用码 400、本人重复提交幂等、中间件全量分片游客 401 / 普通版 403 / 内测与管理员 200、公开分片照常、肖1000 路径普通版 403、papers.js 普通版与游客拿到 mock 清空版而内测拿全量。双包计数用仓库生成的 questions.js 按构建脚本同逻辑复算，与 manifest 口径一致（见上）。本条为本地实现与测试，未部署；`npm run check` 与整站构建需在完整仓库副本上跑（本工作副本未拉 src/bank 与全部静态目录）。
+
+## 2026-11-22 深夜 · 抽题超时修复（批次与分组调小）
+
+- 现象（站长实测）：抽 1–2 页约 2 分钟成功出草稿；抽全 19 页两次报「AI 服务连接失败」。单页图识别约 1 分钟，原前端一次请求发 8 页、服务端每组 4 页串行多次 AI 调用，整请求时长失控超时。
+- 改动：`assets/library.js` 抽题批次 8→4 页/请求；`functions/_lib/platform.js` 每组连续页 4→2 页/次 AI 调用（`MAX_PAGES_PER_EXTRACTION`），单请求页数上限同步 8→4（一个请求最多 2 次串行调用，与前端批次同口径）；maxTokens 仍随组页数计算（2 页组为 6000）。额度口径说明：抽题额度按 AI 调用次数记账，分组变小后同样页数消耗约翻倍（19 页约 10 次），默认每日 20 次，可用 AI_EXTRACT_DAILY 调整，本次未改默认值。
+- 改动（测试）：`tests/library-upload.mjs` 回包改为可按调用页码定制；预期更新——连续 3 页由 1 次调用改判 2 次（[1,2]、[3] 两组），跨页题 pages=[1,2] 仍同组且 sourcePages=[1,2]、截断标记与撤标不变；新增「恰好 4 页受理且拆 2 组」用例，超限用例改判 5 页 400。
+- 验证：本地 `node tests/library-upload.mjs` 通过（文件头校验、直传 400/409/force、分片续传全流程、分组抽取新预期均过），`npm run test:backend` 其余套件回归全过。真实 PDF 的线上端到端耗时需部署后由主会话实测确认。
