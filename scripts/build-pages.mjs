@@ -38,24 +38,42 @@ const DIRS = ["assets", "web", "content", "pdf"];
 // 同一套代码产出可纯静态托管的游客版：注入 ATLAS_CONTEST 标记与 contest.js，
 // 前端在该标记下走无后端降级（演示档案、localStorage 状态、批改样例）。正式版构建不受影响。
 const CONTEST = process.argv.includes("--contest") || process.env.ATLAS_CONTEST === "1";
-const OUT = CONTEST ? "dist-contest" : "dist";
+// 内测版构建：node scripts/build-pages.mjs --beta → dist-beta/
+// 与参赛版同一套无后端游客模式（复用 ATLAS_CONTEST 注入），区别在资料范围：
+// 内测版保留全部内部资料（含第三方版权资料：肖1000 原页、模拟卷页图、大纲词汇），参赛版只放真题。
+// 另注入 ATLAS_BETA 标记，左下胶囊显示「内测版 · 含内部资料」以免与参赛版混淆。
+const BETA = process.argv.includes("--beta") || process.env.ATLAS_BETA === "1";
+const OUT = BETA ? "dist-beta" : CONTEST ? "dist-contest" : "dist";
 
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 for (const file of FILES) cpSync(file, `${OUT}/${file}`);
-for (const dir of DIRS) cpSync(dir, `${OUT}/${dir}`, { recursive: true });
+// 参赛版资料收口（2026-11-22 站长指令）：参赛包的资料目录只放真题与本站自编内容，
+// 第三方版权资料不进包——肖1000 原页扫描、模拟卷（张宇/李林/超越等）页图、大纲词汇 PDF。
+// 正式版构建不走此过滤，主站资料库不受影响。
+const CONTEST_EXCLUDE = [
+  /^content\/x1000-pages(\/|$)/,
+  /^content\/math-pages\/(mock|_tmp_crop)/,
+  /^content\/_((mock|zy|ll|yl|cy|lyf|ocr)[^/]*|vocab_[^/]*)$/,
+  /^pdf\/(vocab-|aliyun-)/,
+];
+const contestFilter = (src) => {
+  const rel = src.replace(/\\/g, "/");
+  return !CONTEST_EXCLUDE.some((re) => re.test(rel));
+};
+for (const dir of DIRS) cpSync(dir, `${OUT}/${dir}`, { recursive: true, filter: CONTEST && !BETA ? contestFilter : undefined });
 
-if (CONTEST) {
+if (CONTEST || BETA) {
   const { readFileSync: rf, writeFileSync: wf } = await import("node:fs");
   for (const file of FILES) {
     if (!file.endsWith(".html")) continue;
     let html = rf(`${OUT}/${file}`, "utf-8");
-    html = html.replace(/<head[^>]*>/, "$&\n<script>window.ATLAS_CONTEST=true;try{localStorage.setItem('atlas_tour_done','1');}catch(e){}</script>"); // 参赛版跳过新手引导：评委打开直达内容
+    html = html.replace(/<head[^>]*>/, "$&\n<script>window.ATLAS_CONTEST=true;" + (BETA ? "window.ATLAS_BETA=true;" : "") + "try{localStorage.setItem('atlas_tour_done','1');}catch(e){}</script>"); // 参赛/内测版跳过新手引导：打开直达内容
     html = html.replace("</body>", '<script src="assets/contest-sample.js"></script><script src="assets/contest.js"></script></body>');
     wf(`${OUT}/${file}`, html);
   }
-  console.log("contest build: ATLAS_CONTEST injected");
+  console.log((BETA ? "beta" : "contest") + " build: ATLAS_CONTEST injected" + (BETA ? " + ATLAS_BETA" : ""));
 }
 
 console.log(`staged ${FILES.length} pages and ${DIRS.length} asset directories into ${OUT}/`);

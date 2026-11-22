@@ -124,7 +124,7 @@
     var pill = document.createElement("button");
     pill.type = "button";
     pill.className = "cs-pill";
-    pill.textContent = "参赛演示版 · 游客模式 — 看 AI 批改样例";
+    pill.textContent = window.ATLAS_BETA ? "内测版 · 含内部资料 — 看 AI 批改样例" : "参赛演示版 · 游客模式 — 看 AI 批改样例";
     pill.addEventListener("click", openSample);
     document.body.appendChild(pill);
 
