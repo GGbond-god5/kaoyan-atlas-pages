@@ -31,6 +31,16 @@
 .hub-who .hub-motto { color: #7A5C3E; font-size: 12.5px; }
 .hub-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
 .hub-chip { background: rgba(122, 92, 62, .12); color: #5c4a1f; border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+.hub-edition { border-top: 1px solid #EFE8D8; margin-top: 8px; padding-top: 10px; }
+.hub-edition b { font-size: 13.5px; margin-right: 8px; }
+.hub-ed-tag { background: rgba(122, 92, 62, .12); color: #5c4a1f; border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+.hub-ed-tag.beta { background: #1F3A5F; color: #F7F2E8; }
+.hub-ed-note { font-size: 12px; color: rgba(23, 22, 26, .55); margin: 7px 0 0; line-height: 1.55; }
+.hub-edition form { display: flex; gap: 7px; margin-top: 8px; }
+.hub-edition input {
+  font: inherit; font-size: 13.5px; padding: 8px 10px; border-radius: 9px; flex: 1; min-width: 0;
+  border: 1px solid #D8CFBB; background: #fff; color: #17161A; text-transform: uppercase;
+}
 .hub-menu { display: flex; flex-direction: column; margin-top: 8px; }
 .hub-item {
   display: flex; justify-content: space-between; align-items: baseline; gap: 10px;

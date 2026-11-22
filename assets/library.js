@@ -234,9 +234,11 @@ $('#start').addEventListener('click', async () => {
       else { const t = await selectedBlob.text(); for (const chunk of (t.length > 100000 ? t.match(/[\s\S]{1,100000}/g) : [t])) payloads.push({page:n, text:chunk}); }
     }
     let got = 0, skipped = 0, cut = 0;
-    for (let i = 0; i < payloads.length; i += 8) {
-      const chunk = payloads.slice(i, i + 8);
-      $('#progress').textContent = `正在提取第 ${chunk[0].page}–${chunk[chunk.length-1].page} 页（${Math.min(i+8, payloads.length)}/${payloads.length} 页）…`;
+    // 每请求 4 页（2026-11-22 超时修复）：单页图识别约 1 分钟，8 页一请求时服务端要串行跑
+    // 多组 AI 调用，整请求超时报「AI 服务连接失败」；改 4 页后单请求最多 2 组调用。
+    for (let i = 0; i < payloads.length; i += 4) {
+      const chunk = payloads.slice(i, i + 4);
+      $('#progress').textContent = `正在提取第 ${chunk[0].page}–${chunk[chunk.length-1].page} 页（${Math.min(i+4, payloads.length)}/${payloads.length} 页）…`;
       const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract', 'POST', {pages:chunk});
       got += (out.items || []).length; skipped += out.skipped || 0; cut += out.incomplete || 0;
     }

@@ -65,6 +65,23 @@
     </section>
 
     <section class="card">
+      <h2>内测码</h2>
+      <p class="note">内测码用于把普通账号升级为内测版（一码一号，账号在头像菜单的「版本」区兑换）。内测版题库为全量包（真题 + 模拟卷、肖1000 等内部资料），普通版只下发真题。</p>
+      <form id="betaForm" class="row">
+        <input id="betaCount" type="number" min="1" max="50" value="5" style="width:80px">
+        <input id="betaNote" type="text" maxlength="40" placeholder="备注（如：第一批内测）" style="flex:1;min-width:160px">
+        <button class="btn" type="submit">生成内测码</button>
+      </form>
+      <div id="betaNew" class="note"></div>
+      <div class="table-wrap">
+        <table class="tbl" id="betaTbl">
+          <thead><tr><th>内测码</th><th>备注</th><th>状态</th><th>生成时间</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
       <h2>服务器批改</h2>
       <p class="note" id="workerTokenState">令牌状态读取中…</p>
       <form id="workerForm">
@@ -92,8 +109,8 @@
 
 <script src="assets/config.js?v=2027-11-12"></script>
 <script src="assets/auth.js?v=4"></script>
-<script src="assets/admin.js?v=2"></script>
+<script src="assets/admin.js?v=3"></script>
 <script src="assets/ai-config.js?v=1"></script>
-<script src="assets/account-hub.js?v=6"></script>
+<script src="assets/account-hub.js?v=7"></script>
 </body>
 </html>

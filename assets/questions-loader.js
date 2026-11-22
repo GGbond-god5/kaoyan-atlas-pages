@@ -5,8 +5,10 @@
   window.QUESTIONS = window.QUESTIONS || { items: [] };
   var SUBJECTS = ['math', 'math2', 'math3', 'english', 'english2', 'mechanics', 'politics'];
   var loaded = {}, loading = {};
-  /* 分片目录（2026-11-22）：游客只给真题分片（questions-guest），登录用户用全量分片（questions）。
-     内测版（ATLAS_BETA）满血走全量；参赛版（ATLAS_CONTEST）走游客分片；正式站按 /api/auth/me 判定登录态。 */
+  /* 分片目录（2026-11-22 定版）：公开包 questions-guest 只含真题，全量包 questions 含全部资料。
+     版权分级后按账号版本选包：内测版账号（me.edition='beta'，含管理员）走全量，
+     普通版账号与游客只走公开包——与中间件对全量分片的内测门禁同口径，前端选错包也会被服务端挡下。
+     静态内测包（ATLAS_BETA）满血走全量；参赛版（ATLAS_CONTEST）走公开包；正式站按 /api/auth/me 判定。 */
   var dirPromise = null;
   function shardDir() {
     if (dirPromise) return dirPromise;
@@ -14,7 +16,7 @@
     else if (window.ATLAS_CONTEST) dirPromise = Promise.resolve('assets/questions-guest/');
     else dirPromise = fetch('/api/auth/me', { credentials: 'include' })
       .then(function (r) { return r.json().catch(function () { return null; }); })
-      .then(function (d) { return (d && d.user) ? 'assets/questions/' : 'assets/questions-guest/'; }) // me 接口对游客也回 200（user 为 null），必须看 user 字段不能看状态码
+      .then(function (d) { return (d && d.user && d.user.edition === 'beta') ? 'assets/questions/' : 'assets/questions-guest/'; }) // me 接口对游客也回 200（user 为 null），必须看 user.edition 不能看状态码
       .catch(function () { return 'assets/questions-guest/'; });
     return dirPromise;
   }

@@ -52,6 +52,7 @@
         '<span class="hub-motto">' + motto + "</span></div>" +
       "</div>" +
       '<div class="hub-chips">' + (target ? '<span class="hub-chip">' + target + "</span>" : "") + (daysChip() ? '<span class="hub-chip">' + daysChip() + "</span>" : "") + "</div>" +
+      '<div class="hub-edition" id="hubEdition"></div>' +
       '<div class="hub-menu">' +
         '<button type="button" class="hub-item" id="hubEdit">编辑档案<span>头像 · 格言 · 目标院校</span></button>' +
         '<a class="hub-item" href="community.html">我的社区分享<span>广场与我分享的资料</span></a>' +
@@ -80,6 +81,7 @@
       '<p class="hub-msg" id="hubMsg"></p>' +
       '<button type="button" class="hub-logout" id="hubLogout">退出登录</button>';
     document.body.appendChild(panel);
+    renderEdition();
     if (window.AtlasGradeBg) {
       window.AtlasGradeBg.inbox().then(function (list) {
         var unread = (list || []).filter(function (m) { return !m.read; });
@@ -152,6 +154,33 @@
       if (!window.confirm("最后确认一次：真的要注销并删除全部数据吗？")) return;
       api("/api/auth/delete", "POST", { password: pw })
         .then(function () { alert("账号已注销，感谢使用。"); location.href = "register.html"; })
+        .catch(function (err) { say(err.message); });
+    });
+  }
+
+  /* 版本区（版权分级）：内测版显示标识；普通版给内测码兑换入口，兑换走 /api/auth/beta */
+  function renderEdition() {
+    var box = panel && panel.querySelector("#hubEdition");
+    if (!box) return;
+    if (me && me.edition === "beta") {
+      box.innerHTML = '<b>版本</b><span class="hub-ed-tag beta">当前为内测版</span>' +
+        '<p class="hub-ed-note">题库为全量包：真题 + 模拟卷、肖1000、章节同型题等内部资料。</p>';
+      return;
+    }
+    box.innerHTML = '<b>版本</b><span class="hub-ed-tag">普通版</span>' +
+      '<p class="hub-ed-note">普通版题库只含真题。有内测码可在此兑换升级，升级后刷新页面即可加载全量题库。</p>' +
+      '<form id="hubBetaForm"><input type="text" id="hubBetaCode" placeholder="ATLAS-XXXXXX-XXXXXX" autocomplete="off" spellcheck="false">' +
+      '<button type="submit" class="hub-act">兑换内测码</button></form>';
+    box.querySelector("#hubBetaForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var code = box.querySelector("#hubBetaCode").value.trim();
+      if (!code) return say("请输入内测码");
+      api("/api/auth/beta", "POST", { code: code })
+        .then(function (d) {
+          me.edition = d.edition || "beta";
+          renderEdition();
+          say("已升级为内测版，刷新页面后将加载全量题库", true);
+        })
         .catch(function (err) { say(err.message); });
     });
   }
