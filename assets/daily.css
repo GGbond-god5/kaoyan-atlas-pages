@@ -1,28 +1,31 @@
 /* 首页：考试节点轴 + 每日一题卡（与 plan.css/today.css 同族视觉） */
-#examAxis { position: absolute; top: 10px; left: 16px; z-index: 30; width: 500px; max-width: calc(100vw - 32px);
-  padding: 9px 14px 7px;
-  background: rgba(255,255,255,.88); border: 1px solid rgba(31,58,95,.16); border-radius: 12px;
-  box-shadow: 0 10px 28px rgba(31,58,95,.12); }
-#examAxis .ax-title { font-size: 11px; letter-spacing: .12em; color: #7a6a45; margin-bottom: 6px; }
-#examAxis .ax-track { display: flex; align-items: flex-start; gap: 0; }
-#examAxis .ax-node { flex: 1; text-align: center; position: relative; padding-top: 12px; min-width: 0; }
-#examAxis .ax-node::before { content: ""; position: absolute; top: 5px; left: 0; right: 0; height: 2px; background: rgba(31,58,95,.18); }
+/* 考试节点轴：嵌入顶部信息行（.stage-top）中间，不再做悬浮卡压住图谱；
+   单行胶囊：标题 + 节点横排（圆点+名称同行，日期只在当前节点旁显示） */
+#examAxis { position: static; flex: 0 1 auto; display: flex; align-items: center; gap: 14px;
+  max-width: min(560px, 46vw); padding: 5px 14px; pointer-events: none;
+  background: rgba(255,255,255,.72); border: 1px solid rgba(31,58,95,.13); border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(31,58,95,.07); backdrop-filter: blur(3px); }
+#examAxis .ax-title { font-size: 11px; letter-spacing: .12em; color: #7a6a45; white-space: nowrap; }
+#examAxis .ax-track { display: flex; align-items: center; gap: 0; flex: 1; min-width: 0; }
+#examAxis .ax-node { flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; position: relative; min-width: 0; padding: 0 2px; }
+#examAxis .ax-node::before { content: ""; position: absolute; top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%); background: rgba(31,58,95,.15); }
 #examAxis .ax-node:first-child::before { left: 50%; }
 #examAxis .ax-node:last-child::before { right: 50%; }
-#examAxis .ax-dot { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 12px; height: 12px;
+#examAxis .ax-dot { position: relative; z-index: 1; flex: none; width: 10px; height: 10px;
   border-radius: 50%; background: #fff; border: 2px solid rgba(31,58,95,.35); }
 #examAxis .ax-node.done .ax-dot { background: #1F3A5F; border-color: #1F3A5F; }
 #examAxis .ax-node.now .ax-dot { background: #A53B30; border-color: #A53B30; box-shadow: 0 0 0 4px rgba(165,59,48,.18); }
 #examAxis .ax-name { font-size: 12px; font-weight: 600; color: #22314a; white-space: nowrap; }
 #examAxis .ax-node.now .ax-name { color: #A53B30; }
-#examAxis .ax-date { font-size: 10.5px; color: #8a8378; margin-top: 1px; white-space: nowrap; }
+#examAxis .ax-date { display: none; font-size: 10.5px; color: #8a8378; white-space: nowrap; }
+#examAxis .ax-node.now .ax-date { display: inline; }
 
 /* 每日一题住在右侧边栏 #atlasRail 内（静态排布），与学习计划卡上下相邻、互不压盖 */
 #dailyCard { width: auto; padding: 14px 16px;
   background: rgba(255,255,255,.92); border: 1px solid rgba(31,58,95,.16); border-radius: 12px;
   box-shadow: 0 12px 32px rgba(31,58,95,.16); }
 @media (max-width: 900px) {
-  #examAxis { left: 10px; right: 10px; width: auto; top: 8px; }
+  #examAxis { display: none; }
 }
 #dailyCard .d-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
 #dailyCard .d-title { font-size: 15px; font-weight: 700; color: #22314a; }

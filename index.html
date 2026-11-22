@@ -16,10 +16,10 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <meta name="description" content="数学一、英语一、807 材料力学、政治：考点、真题与专题的交互式阅读图谱，支持页内阅读与 PDF 下载。">
 <link rel="stylesheet" href="assets/theme.css?v=1">
 <link rel="stylesheet" href="assets/onboarding.css?v=2">
-<link rel="stylesheet" href="assets/guide.css?v=1">
+<link rel="stylesheet" href="assets/guide.css?v=2">
 <link rel="stylesheet" href="assets/today.css?v=1">
-<link rel="stylesheet" href="assets/plan.css?v=5">
-<link rel="stylesheet" href="assets/daily.css?v=7">
+<link rel="stylesheet" href="assets/plan.css?v=6">
+<link rel="stylesheet" href="assets/daily.css?v=8">
 <link rel="stylesheet" href="assets/atlas.css?v=19">
 <link rel="stylesheet" href="assets/web.css?v=15">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
@@ -66,13 +66,15 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 
   <div class="stage-top">
     <div class="crumb" id="crumb"></div>
+    <div id="examAxis"></div>
     <div class="countdown" id="countdown"></div>
   </div>
-  <div id="examAxis"></div>
   <div id="atlasRail">
+    <div class="rail-head"><span>学习计划 · 每日一题</span><button id="railHide" type="button">收起 »</button></div>
     <div id="planDock"></div>
     <div id="dailyCard" hidden></div>
   </div>
+  <button id="railTab" type="button" hidden>学习计划 · 每日一题</button>
 
   <div class="stage-bottom">
     <div class="legend" id="legend"></div>
@@ -191,7 +193,7 @@ window.__profilePromise = fetch("/api/profile", { credentials: "include" }).then
 <script src="assets/marks.js?v=1"></script>
 <script src="assets/daily.js?v=6"></script>
 <script src="assets/ui-prefs.js?v=3"></script>
-<script src="assets/plan.js?v=9"></script>
+<script src="assets/plan.js?v=10"></script>
 <script>
 /* 站点公告：管理员在后台发布后，首页顶部展示一条 */
 fetch('/api/announcement', { credentials: 'include' })

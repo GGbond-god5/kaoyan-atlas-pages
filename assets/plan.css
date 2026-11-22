@@ -73,6 +73,19 @@
 #atlasRail > * { flex: none; }
 #planDock { width: auto; }
 #planDock #planCard { width: auto; }
+/* 边栏整栏收起：收起后只在右缘留一个竖排小按键（#railTab），不再让两张小卡长条占住右侧空间 */
+.rail-head { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 0;
+  font-size: 12px; letter-spacing: .12em; color: #7a6a45; }
+.rail-head button { border: 1px solid rgba(31,58,95,.22); background: rgba(255,255,255,.85); color: #7a6a45;
+  font-size: 12px; border-radius: 999px; padding: 2px 10px; cursor: pointer; letter-spacing: .04em; }
+.rail-head button:hover { border-color: #1F3A5F; color: #1F3A5F; }
+#railTab { position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 31;
+  writing-mode: vertical-rl; letter-spacing: .22em; font-size: 12.5px; color: #F7F2E8;
+  background: #1F3A5F; border: none; border-radius: 10px 0 0 10px; padding: 14px 8px;
+  cursor: pointer; box-shadow: -2px 4px 14px rgba(31,58,95,.3); }
+#railTab:hover { background: #A53B30; }
+@media (max-width: 900px) { #railTab { display: none; } }
+
 #planCard.mini { cursor: pointer; padding: 10px 14px 8px; }
 #planCard .phead .ptext-btn { font-size: 12px; letter-spacing: .04em; color: #7a5b12; font-weight: 600; }
 #planCard.mini .pprogress { margin-bottom: 0; }
