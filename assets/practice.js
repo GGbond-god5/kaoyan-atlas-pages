@@ -157,6 +157,7 @@
     const bar = $("#blankBar");
     const area = document.querySelector(".workarea");
     if (area) area.classList.toggle("fill-mode", n > 0);
+    if (area) area.classList.toggle("obj-mode", n === 0 && isObjective(q)); // 客观题只给选项：整块作答区（关键步骤/拍照）不渲染
     if (bar) bar.hidden = !(n > 0);
     if (!(n > 0)) return;
     const values = blankValues(session.notes[q.id], n);

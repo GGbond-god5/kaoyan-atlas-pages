@@ -415,3 +415,9 @@ html.atlas-app #gradePill { bottom: 84px; }
 .rgrid button.peeked{background:#EFEDE8;color:#8a8378;border-color:#B9B2A2}
 .mode-group-label { display: inline-flex; align-items: center; padding: 0 8px 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--ink3); }
 .mode-group-label.exam { color: #A53B30; border-left: 1px solid var(--rule); margin-left: 6px; }
+/* 客观题只给选项：作答区整块隐藏（关键步骤、拍照都不出现） */
+.workarea.obj-mode { display: none; }
+/* 选中选项强区分：墨色填充字母徽 + 左侧墨条 + 加粗 */
+.q-opt.picked { background: rgba(31,58,95,.14); box-shadow: inset 3px 0 0 var(--ink); }
+.q-opt.picked .ol { background: var(--ink); border-color: var(--ink); color: #F7F2E8; font-weight: 700; }
+.q-opt.picked .ot { font-weight: 700; color: var(--ink); }
