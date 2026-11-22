@@ -1,7 +1,7 @@
 /* 科目大观 Service Worker：页面与静态资源离线缓存；/api 一律走网络、从不缓存。
  * 导航：network-first，失败回缓存；/assets/：stale-while-revalidate（题库 questions.js 首次加载后可离线刷题）。
  * 只缓存 200 且未被重定向的响应，避免把未登录跳转到登录页的响应存进缓存冒充页面。 */
-const VERSION = 'atlas-sw-v1';
+const VERSION = 'atlas-sw-v2';
 const CORE = ['/login.html', '/assets/auth.css', '/assets/transitions.css', '/assets/config.js'];
 
 self.addEventListener('install', (event) => {
@@ -37,6 +37,17 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => { putIfCacheable(request, response); return response; })
         .catch(() => caches.match(request).then((hit) => hit || caches.match('/index.html')))
+    );
+    return;
+  }
+
+  if (url.pathname === '/assets/papers.js') {
+    // 套卷清单内容随账号版本（普通版/内测版）由服务端过滤，禁止 SWR 旧缓存冒充：
+    // 网络优先，失败才回缓存（缓存里是该用户上次在线时自己版本的那一份）。
+    event.respondWith(
+      fetch(request)
+        .then((response) => { putIfCacheable(request, response); return response; })
+        .catch(() => caches.match(request))
     );
     return;
   }

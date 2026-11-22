@@ -359,7 +359,7 @@ async function clearPaperRecords(qids) {
        * goals 失败不挡主页渲染，单独吞掉回退空目标。 */
       var goalsP = window.AtlasUser.load('goals', { targets: {} }).catch(function () { return null; });
       var data = await window.AtlasUser.json('/api/attempts?summary=1', 'GET');
-      state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'diagnostic' || a.mode === 'mock' || a.mode === 'ability') && Array.isArray(a.questions); });
+      state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'exampaper' || a.mode === 'diagnostic' || a.mode === 'mock' || a.mode === 'ability') && Array.isArray(a.questions); });
       var subjects = Array.from(new Set(state.attempts.map(function (a) { return a.subject; })));
       var g = await goalsP;
       state.targets = (g && g.targets) || {};

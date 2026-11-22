@@ -404,3 +404,10 @@
 - 改动（前端）：`assets/analytics.js` init 改用 `/api/attempts?summary=1`，且 attempts 请求与 goals 加载改为并发（原串行多等一个往返，goals 失败仍回退空目标不挡渲染）；openPaperDetail 仍走 `/api/attempts/:id` 全量。`analytics.html` 中 analytics.js 缓存版本号 v19→v20。
 - 影响面（全仓 grep `/api/attempts` 的 GET 列表调用方）：analytics.js init（本次切换）、app.js（App 首页最近成绩）、plan.js（学习计划弱科权重）、sidebar.js（侧栏学情速览）、today.js（今日任务）——后四者未带 summary 参数，走默认全量，行为不变；其余引用均为 POST/DELETE/`/:id`/`/grade`/`/explain`，不受影响。
 - 验证：本地 `npm run test:backend` 全链通过（scoring / backend-hardening / platform-api / multi-image / user-state / library-upload / beta-edition / 新增 attempts-summary）。新测试 `tests/attempts-summary.mjs` 构造一份「胖」attempt（3 题带长题面/12 步解析/长答案、answers 带 3 张约 300KB 假照片、results 带长总评/得分点/订正/深度解析）断言：默认 GET 全量形状不变；摘要 GET 中 text/steps/options/answer、image/images、comments/breakdown/missing/suggestions/revised/grammar/upgrades/deepExplain 全部缺失，轻字段与顶层 status/score/knownMaxScore 与全量逐一相等；`?summary=0` 与无参数同为全量。字节对比（同一份胖卷的列表响应）：全量 1,314,902 字节 → 摘要 6,205 字节（约 0.5%）。本条为本地实现与测试，未部署；线上实测（真实账号 attempts 量下的学情页首屏耗时）需部署后由主会话确认。
+
+## 2026-11-23 · 线上验收两处修复（学情漏计真题模拟 + 套卷清单旧缓存）
+
+- 背景：内测分级与学情提速上线后的真实验收（演示账号 + 管理员账号逐项点验）发现两处问题。其余验收项通过：演示账号个人中心显示普通版与内测码兑换入口；全量题库清单直连被内测门禁拦截并给出升级提示，公共包清单正常；管理台可生成内测码并入列表（未使用）；管理员学情页各区与逐题复盘详情渲染正常。
+- 修复一（学情分析漏计）：analytics.js 的 init 模式过滤只有 paper/diagnostic/mock/ability，漏了 practice 的真题模拟模式 exampaper（同文件 attemptTitle 本有 exampaper 的「真题模拟」标题分支，属过滤遗漏）——演示账号 11-22 的 4 套真题模拟记录在侧栏学情速览可见、学情页却显示空状态。过滤补入 exampaper，analytics.js 版本 v21。
+- 修复二（套卷清单旧缓存）：服务端对普通版过滤 papers.js 已实测生效（未登录直取即为 mock:[]），但 sw.js 对 /assets/ 用 stale-while-revalidate，已缓存旧清单的浏览器首屏仍显示 12 套模拟卷（次屏才刷新）。sw.js 升 atlas-sw-v2（激活即清 v1 旧缓存），且 /assets/papers.js 改网络优先、失败才回缓存——该文件内容随账号版本由服务端过滤，不允许旧缓存冒充。
+- 验证：本地代码级核对（过滤与标题分支一致；SW 分支顺序为 papers 网络优先在 /assets/ SWR 之前）；线上复验待部署后以演示账号执行（学情页应出现真题模拟记录、套卷清单只剩真题）。
