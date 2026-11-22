@@ -65,3 +65,10 @@
 .pday-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
 .pday-head span { color: #8A8172; font-size: 12.5px; }
 .pday.today .pday-head b { color: #B8860B; }
+
+/* 右侧停靠（桌面）：学习计划小卡片在 stage 右侧、每日一题上方，点击展开 */
+#planDock { position: absolute; right: 16px; top: 76px; width: 352px; max-width: calc(100vw - 32px); z-index: 31; }
+#planDock #planCard { width: auto; max-height: calc(100vh - 190px); overflow: auto; }
+#planCard.mini { cursor: pointer; padding: 10px 14px 8px; }
+#planCard .phead .ptext-btn { font-size: 12px; letter-spacing: .04em; color: #7a5b12; font-weight: 600; }
+#planCard.mini .pprogress { margin-bottom: 0; }

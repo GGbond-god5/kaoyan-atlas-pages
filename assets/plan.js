@@ -24,6 +24,17 @@
   var plan = null;
   var settings = null;
   var profileCache = null;
+  /* 右侧停靠小卡片（桌面端）：planCard 在宽屏时移入 stage 右侧的 planDock，
+     默认收成小卡片（阶段 + 今日进度），点击展开全量计划；窄屏（App）留在左下 homeCards 原位、保持全量。 */
+  var inDock = false;
+  function planCollapsed() {
+    if (!inDock) return false;
+    try { return localStorage.getItem('atlas.plan.collapsed') !== '0'; } catch (e) { return true; }
+  }
+  function setPlanCollapsed(on) {
+    try { localStorage.setItem('atlas.plan.collapsed', on ? '1' : '0'); } catch (e) {}
+    render();
+  }
 
   /* 计划设置：用户可自行调整，存 plan.settings，两端（网页/App）规则一致 */
   function normSettings(raw) {
@@ -223,9 +234,21 @@
       return '<div class="pday' + (k === todayK ? ' today' : '') + '"><div class="pday-head"><b>' + title + '</b><span>' + dDone + ' / ' + d.tasks.length + ' 项</span></div>' + trows + '</div>';
     }).join('');
     var tmr = '<div class="pweek"><div class="pweek-title">本周计划 · 7 天全览</div>' + week + '</div>';
+    if (planCollapsed()) {
+      card.classList.add('mini');
+      card.innerHTML = '<div class="phead"><b>学习计划 · ' + esc(plan.phase) + '</b>' +
+        '<span class="pdays">距初试 ' + plan.daysLeft + ' 天</span>' +
+        '<button type="button" class="ptext-btn" id="planExpand">展开 ›</button></div>' +
+        '<div class="pprogress">今日已完成 ' + doneN + ' / ' + day.tasks.length + ' 项 · 每日 ' + fmtH(plan.dailyMinutes) + ' · 点击展开本周计划</div>';
+      card.hidden = false;
+      card.onclick = function () { setPlanCollapsed(false); };
+      return;
+    }
+    card.classList.remove('mini');
+    card.onclick = null;
     card.innerHTML = '<div class="phead"><b>学习计划 · ' + esc(plan.phase) + '</b>' +
       '<span class="pdays">距初试 ' + plan.daysLeft + ' 天</span>' +
-      '<button type="button" id="planClose" aria-label="关闭">×</button></div>' +
+      '<button type="button" class="ptext-btn" id="planClose" aria-label="收起">收起</button></div>' +
       '<div class="pprogress">今日已完成 ' + doneN + ' / ' + day.tasks.length + ' 项（按每日 ' + fmtH(plan.dailyMinutes) + ' 生成）</div>' +
       tmr +
       '<div class="pfoot"><button type="button" class="pbtn" id="planRegen">重新生成本周计划</button>' +
@@ -251,12 +274,23 @@
       render();
     });
     document.getElementById('planClose').addEventListener('click', function () {
+      if (inDock) { setPlanCollapsed(true); return; }
       card.hidden = true;
       try { localStorage.setItem('atlas.plan.dismissed', todayK); } catch (e) {}
     });
   }
 
   async function init() {
+    var dock = document.getElementById('planDock');
+    var home = document.getElementById('homeCards');
+    var mq = window.matchMedia('(min-width: 761px)');
+    function place() {
+      inDock = !!(mq.matches && dock);
+      var parent = inDock ? dock : home;
+      if (parent && card.parentElement !== parent) parent.insertBefore(card, parent.firstChild);
+    }
+    place();
+    if (mq.addEventListener) mq.addEventListener('change', function () { place(); if (plan) render(); });
     try { if (localStorage.getItem('atlas.plan.dismissed') === dayKey(new Date())) return; } catch (e) {}
     await window.AtlasUser.ready;
     try { plan = await window.AtlasUser.load('plan', null); } catch (e) { plan = null; }
