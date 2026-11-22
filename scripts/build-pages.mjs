@@ -34,18 +34,36 @@ if (unlisted.length) {
 
 const DIRS = ["assets", "web", "content", "pdf"];
 
-rmSync("dist", { recursive: true, force: true });
-mkdirSync("dist", { recursive: true });
+// 参赛版构建：node scripts/build-pages.mjs --contest → dist-contest/
+// 同一套代码产出可纯静态托管的游客版：注入 ATLAS_CONTEST 标记与 contest.js，
+// 前端在该标记下走无后端降级（演示档案、localStorage 状态、批改样例）。正式版构建不受影响。
+const CONTEST = process.argv.includes("--contest") || process.env.ATLAS_CONTEST === "1";
+const OUT = CONTEST ? "dist-contest" : "dist";
 
-for (const file of FILES) cpSync(file, `dist/${file}`);
-for (const dir of DIRS) cpSync(dir, `dist/${dir}`, { recursive: true });
+rmSync(OUT, { recursive: true, force: true });
+mkdirSync(OUT, { recursive: true });
 
-console.log(`staged ${FILES.length} pages and ${DIRS.length} asset directories into dist/`);
+for (const file of FILES) cpSync(file, `${OUT}/${file}`);
+for (const dir of DIRS) cpSync(dir, `${OUT}/${dir}`, { recursive: true });
+
+if (CONTEST) {
+  const { readFileSync: rf, writeFileSync: wf } = await import("node:fs");
+  for (const file of FILES) {
+    if (!file.endsWith(".html")) continue;
+    let html = rf(`${OUT}/${file}`, "utf-8");
+    html = html.replace(/<head[^>]*>/, "$&\n<script>window.ATLAS_CONTEST=true;</script>");
+    html = html.replace("</body>", '<script src="assets/contest-sample.js"></script><script src="assets/contest.js"></script></body>');
+    wf(`${OUT}/${file}`, html);
+  }
+  console.log("contest build: ATLAS_CONTEST injected");
+}
+
+console.log(`staged ${FILES.length} pages and ${DIRS.length} asset directories into ${OUT}/`);
 
 // 题库分片：把整包 questions.js 按科目拆成 dist/assets/questions/<科目>.js + manifest.json，
 // 刷题页按需加载（见 assets/questions-loader.js）；dist 里不再保留整包，仓库里的源文件不动。
 import { readFileSync, writeFileSync } from "node:fs";
-const qSrc = readFileSync("dist/assets/questions.js", "utf-8");
+const qSrc = readFileSync(`${OUT}/assets/questions.js`, "utf-8");
 const qMatch = qSrc.match(/window\.QUESTIONS\s*=\s*(\{[\s\S]*\});?\s*$/);
 if (!qMatch) throw new Error("questions.js 格式无法识别，题库分片失败");
 const qData = JSON.parse(qMatch[1]);
@@ -55,12 +73,12 @@ for (const q of qData.items || []) {
   if (!bySubject.has(s)) bySubject.set(s, []);
   bySubject.get(s).push(q);
 }
-mkdirSync("dist/assets/questions", { recursive: true });
+mkdirSync(`${OUT}/assets/questions`, { recursive: true });
 const manifest = { total: (qData.items || []).length, subjects: {} };
 for (const [subj, list] of bySubject) {
-  writeFileSync(`dist/assets/questions/${subj}.js`, `AtlasQuestions._add(${JSON.stringify(subj)}, ${JSON.stringify(list)});\n`);
+  writeFileSync(`${OUT}/assets/questions/${subj}.js`, `AtlasQuestions._add(${JSON.stringify(subj)}, ${JSON.stringify(list)});\n`);
   manifest.subjects[subj] = list.length;
 }
-writeFileSync("dist/assets/questions/manifest.json", JSON.stringify(manifest));
-rmSync("dist/assets/questions.js");
+writeFileSync(`${OUT}/assets/questions/manifest.json`, JSON.stringify(manifest));
+rmSync(`${OUT}/assets/questions.js`);
 console.log(`questions split into ${bySubject.size} shards, ${manifest.total} items total`);

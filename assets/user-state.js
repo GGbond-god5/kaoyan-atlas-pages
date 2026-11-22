@@ -24,6 +24,29 @@
     return data;
   }
   const api = { user: null, json, key(name) { if (!api.user || api.user.id == null) throw new Error('请先登录'); return `atlas.user.${encodeURIComponent(String(api.user.id))}.${name}`; } };
+  if (window.ATLAS_CONTEST) {
+    // 参赛版（纯静态托管、无后端）：状态只走 localStorage，api.json 直接报错由调用方按离线处理。
+    api.user = { id: 'guest', name: '游客' };
+    api.ready = Promise.resolve(api.user);
+    api.json = async function () { throw new Error('参赛演示版：此功能需在正式版登录使用'); };
+    api.load = async function (namespace, fallback) {
+      try {
+        const raw = localStorage.getItem(api.key(namespace));
+        const data = raw == null ? clone(fallback) : JSON.parse(raw);
+        snapshots[namespace] = { data: clone(data), revision: 0 };
+        localBases[namespace] = clone(data);
+        return clone(data);
+      } catch (_) { return clone(fallback); }
+    };
+    api.save = function (namespace, data) {
+      const v = clone(data);
+      localBases[namespace] = clone(v);
+      try { localStorage.setItem(api.key(namespace), JSON.stringify(v)); } catch (_) {}
+      return Promise.resolve(clone(v));
+    };
+    window.AtlasUser = api;
+    return;
+  }
   api.ready = json('/api/auth/me').then(r => { if (!r.user || r.user.id == null) throw new Error('请先登录'); api.user = r.user; return r.user; });
   api.load = async function (namespace, fallback) {
     await api.ready;

@@ -254,3 +254,9 @@
 - 入口改名：顶栏与 App 底部导航「刷题」→「测试」，App「开始刷题」→「开始测试」，新手引导、档案引导、站内 GUIDE（prompts.js）同步新结构。
 - 节点轴嵌入：daily.js 撤下节点轴的收起按钮/右缘竖条/localStorage 状态，ui-prefs 与头像菜单功能开关去掉「考试节点」项（剩学习计划/每日一题/顶栏搜索三项）；每日一题的收起竖条保留不变。
 - 版本号：practice.js v62/css v31、daily.js v5/css v5、app.js v36、analytics v19、sidebar v5、onboarding v7、profile-boot v17、account-hub.js v5、ui-prefs v2。验证：node --check 全过、组卷 harness 全过、npm run check 通过（见本批执行记录）。待站长抽查：测试页两组页签、数学真题模拟能选到数一历年卷、能力测试卷面梯度、节点轴固定显示。
+
+## 参赛版构建（2026-11-22，待推送）
+- 为 Qoder 高校创造力大赛做的参赛版：`node scripts/build-pages.mjs --contest` 输出 dist-contest（正式版构建与产物逐字节不变），注入 window.ATLAS_CONTEST 与 assets/contest.js、assets/contest-sample.js，可部署到 Qoder Sites 纯静态托管公开访问。
+- 无后端降级（均以 ATLAS_CONTEST 为开关）：profile-boot 档案读演示档案（华南理工 085500 机械、初试 2026-12-19、每日 600 分钟，与正式版默认档案同口径）；user-state 状态改走 localStorage（guest 身份，api.json 离线报错由调用方处理）；contest.js 隐藏社区/资料上传/管理台/学情/登录注册入口与头像菜单里的账号设置，左下角常驻「参赛演示版 · 游客模式」入口。
+- AI 批改样例：测试页与浮标均可打开样例浮层，按正式版批改详情同构渲染（分数、六维雷达式维度条、点评；作文另有语法纠错/句式升级/改写范文）。数据在 assets/contest-sample.js，当前为占位结构（placeholder=true），待站长 11 月 27 日前提供真实批改结果（数学解答题卷 + 英语大作文）后替换。
+- 验证：contest 构建成功（18 页注入、题库 7 分片 6,428 题）；user-state 参赛分支 harness 全过（guest/load/save/json 离线）；静态服务器抽查首页/测试页/题库 manifest 均 200；默认构建与 npm run check 通过（见本批执行记录）。剩余站长动作：在 Qoder 里打开仓库复核本轮改动、把 dist-contest 发布到 Qoder Sites 并设公开、用真实批改结果替换样例数据。

@@ -474,6 +474,10 @@
   }
 
   function loadProfile() {
+    if (window.ATLAS_CONTEST) {
+      // 参赛版演示档案：与正式版默认档案同口径（华南理工 085500 机械、2026-12-19 初试）
+      return Promise.resolve({ school: "华南理工大学", majorCode: "085500", majorName: "机械", examDate: "2026-12-19", subjects: ["math", "english", "mechanics", "politics"], variants: { math: "math1", english: "english1" }, customSubjects: [], dailyMinutes: 600, chronotype: "normal", motto: "上岸不是终点，是新的起点。", avatarAt: 0, avatarType: "", isDefault: false });
+    }
     if (window.__profilePromise) {
       return Promise.resolve(window.__profilePromise).then(data => (data && data.profile) || null).catch(() => null);
     }
