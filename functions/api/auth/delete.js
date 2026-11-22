@@ -22,6 +22,13 @@ const UID_TABLES = [
   "platform_coach",
   "platform_subjects",
   "platform_usage",
+  "platform_shares",
+  "platform_posts",
+  "platform_post_likes",
+  "platform_post_comments",
+  "platform_share_likes",
+  "platform_share_comments",
+  "platform_wrongbook_exports",
   "feedback",
 ];
 
@@ -56,14 +63,17 @@ export async function onRequestPost({ request, env }) {
       for (const f of files.results || []) {
         if (f.object_key) await env.LIBRARY_FILES.delete(f.object_key).catch(() => {});
       }
-      let cursor;
-      do {
-        const listed = await env.LIBRARY_FILES.list({ prefix: `${uid}/`, cursor, limit: 100 });
-        for (const obj of listed.objects || []) {
-          await env.LIBRARY_FILES.delete(obj.key).catch(() => {});
-        }
-        cursor = listed.truncated ? listed.cursor : undefined;
-      } while (cursor);
+      // 两种 key 形态都要清：资料/旧附件是 `${uid}/...`，笔记附件是 `${uid}-${uuid}.ext`（notes/upload.js）
+      for (const prefix of [`${uid}/`, `${uid}-`]) {
+        let cursor;
+        do {
+          const listed = await env.LIBRARY_FILES.list({ prefix, cursor, limit: 100 });
+          for (const obj of listed.objects || []) {
+            await env.LIBRARY_FILES.delete(obj.key).catch(() => {});
+          }
+          cursor = listed.truncated ? listed.cursor : undefined;
+        } while (cursor);
+      }
     } catch (err) {
       console.error("[auth] 注销时清理 R2 失败（继续删库）", err);
     }

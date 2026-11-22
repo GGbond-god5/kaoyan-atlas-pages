@@ -11,7 +11,7 @@ const PUBLIC = [
   /^\/api\/health$/,
   /^\/api\/worker$/,
 
-  /^\/assets\/(auth\.(js|css)|config\.js|transitions\.css)$/,
+  /^\/assets\/(auth\.(js|css)|config\.js|transitions\.css|theme\.css)$/,
   /^\/assets\/remotion\//,
   /^\/assets\/icons\//,
   /^\/sw\.js$/,

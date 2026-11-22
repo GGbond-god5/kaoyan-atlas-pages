@@ -685,12 +685,16 @@ export async function handleWorker(request, env) {
   const db = await database(env);
   const loadRaw = async (uid, aid) => { const r = await row(db, 'SELECT data FROM platform_attempts WHERE uid=? AND id=?', uid, aid); return r ? parse(r.data) : null; };
   const saveRaw = (uid, a) => run(db, 'UPDATE platform_attempts SET data=? WHERE uid=? AND id=?', JSON.stringify(a), uid, a.id);
+  // 自带 Key（aiCfg）只在交卷后 24 小时内有效：超期视为未提供并在下次回写时清除，避免明文 Key 长期滞留在库里
+  const AI_CFG_TTL_MS = 24 * 3600 * 1000;
+  const aiCfgAlive = (a) => !!(a && a.aiCfg && a.createdAt && (Date.now() - Date.parse(a.createdAt) <= AI_CFG_TTL_MS));
   const hasAnswer = (a, qid) => { const an = (a.answers || {})[qid] || {}; return !!(String(an.work || '').trim() || (Array.isArray(an.selected) && an.selected.length) || an.image || (Array.isArray(an.images) && an.images.length)); };
   const pendingOf = (a) => a.questions.map(q => q.id).filter(qid => hasAnswer(a, qid) && !(a.results[qid] && a.results[qid].status === 'graded'));
 
   if (b.action === 'claim') {
     // 先到先批（rowid 升序）：原来只看最新 120 条且新卷优先，早交的卷会一直被插队、超出窗口的永远领不到
-    const rows = await all(db, 'SELECT uid,id,data FROM platform_attempts ORDER BY rowid ASC LIMIT 200');
+    // 止血（2026-11-22）：先在 SQL 层按 serverGrade 缩小集合再取 1000 条，避免全站 attempt 超过窗口后新卷领不到（下方 JS 过滤保留作双保险）
+    const rows = await all(db, "SELECT uid,id,data FROM platform_attempts WHERE json_extract(data,'$.serverGrade')=1 ORDER BY rowid ASC LIMIT 1000");
     for (const r of rows) {
       let raw; try { raw = parse(r.data); } catch { continue; }
       if (!raw || raw.serverGrade !== true || !Array.isArray(raw.questions)) continue;
@@ -713,7 +717,7 @@ export async function handleWorker(request, env) {
     const q = a.questions.find(x => x.id === qid); if (!q) return fail(400, '题目不存在');
     const prior = a.results[qid]; if (prior && prior.status === 'graded') return ok({ result: prior, remaining: pendingOf(a).length });
     const raw0 = await loadRaw(uid, aid);
-    const userCfg = raw0 && raw0.aiCfg ? raw0.aiCfg : null;
+    const userCfg = aiCfgAlive(raw0) ? raw0.aiCfg : null;
     if (!userCfg) { const user = await row(db, 'SELECT * FROM users WHERE id=?', uid); const blocked = await checkQuota(env, user, 'grade'); if (blocked) return ok({ blocked }); }
     const answer = a.answers[qid] || {}; const ansImgs = answerImages(answer); let result;
     try { result = { questionId: qid, ...await grade(env, { question: q.passage ? q.passage + '\n\n' + q.text : q.text, answer: q.answer, steps: q.steps, subject: q.subject, kp: q.kp, kind: q.kind, difficulty: q.difficulty, maxScore: q.maxScore, maxScoreAssumed: q.maxScoreAssumed, reviewStatus: q.reviewStatus, work: answer.work, selected: answer.selected, image: ansImgs[0] || '', images: ansImgs }, userCfg) }; }
@@ -723,7 +727,7 @@ export async function handleWorker(request, env) {
     const latest = await attempt(db, uid, aid);
     const remaining = pendingOf(latest).length;
     const raw = await loadRaw(uid, aid);
-    if (raw) { raw.workerLease = Date.now(); if (!remaining) delete raw.aiCfg; await saveRaw(uid, raw); }
+    if (raw) { raw.workerLease = Date.now(); if (!remaining || (raw.aiCfg && !aiCfgAlive(raw))) delete raw.aiCfg; await saveRaw(uid, raw); }
     return ok({ result: latest.results[qid], remaining });
   }
   if (b.action === 'release') {

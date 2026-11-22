@@ -282,3 +282,10 @@
 - 参赛版适配一：contest.js 接管 AtlasUser.load('onboarding') 返回已完成，参赛版跳过 8 步新手引导（仅靠 localStorage 预置无效，因 onboarding 先读服务端状态）。
 - 参赛版适配二：plan.js 的 fetchProfile 在 ATLAS_CONTEST 时改读 profile-boot 的演示档案，否则游客模式下 /api/profile 404、计划卡不生成。
 - 待站长抽查：正式站首页右侧计划小卡片这次应真实出现；参赛版发布后首访应直达首页且计划卡可见。
+
+## 冻结前止损包：后端五项小修（2026-11-22，已完成待推送）
+- 登录页样式白名单：functions/_middleware.js 的 PUBLIC 正则补 assets/theme.css（login/register 引用它，此前未登录访问被 401、登录页样式缺失）。
+- 批改 claim 止血：workerGrade 的 claim 查询先在 SQL 层按 json_extract(data,'$.serverGrade')=1 缩小集合、窗口 200→1000，避免全站 attempt 超过窗口后新交的卷永远领不到；后续 JS 过滤保留作双保险。node:sqlite harness 实测：250 条旧数据 + 1 条新卷，旧 SQL 取不到、新 SQL 取到。
+- 自带 Key 时效：随卷暂存的 aiCfg 只在交卷后 24 小时内有效（platform.js aiCfgAlive），超期视为未提供、改走站点额度通道，并在下次回写时清除；批完即删的原语义不变。harness 六用例全过（1h/23.9h 可用、24.1h/72h 失效、无 createdAt 失效、无 aiCfg 失效）。
+- 注销补全：auth/delete.js 的 R2 清理补 `${uid}-` 前缀（笔记附件 key 形态，此前永远清不到）；UID_TABLES 补 platform_shares、platform_posts、platform_post_likes、platform_post_comments、platform_share_likes、platform_share_comments、platform_wrongbook_exports（均已按 CREATE TABLE 核实带 uid 列；platform_invites 无 uid 列、platform_meta 为全局表，未加）。
+- build-questions 工作流加顶层 concurrency（同 workflow+ref 串行排队、cancel-in-progress: false），避免两个自动回提交并发 push 冲突。
