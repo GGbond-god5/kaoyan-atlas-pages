@@ -10,7 +10,7 @@
     "build:questions": "py -3 src/build/build_questions.py",
     "check": "node scripts/check.mjs",
     "test": "npm run test:backend",
-    "test:backend": "node tests/scoring.mjs && node tests/backend-hardening.mjs && node tests/platform-api.mjs && node tests/multi-image.mjs && node tests/user-state.mjs",
+    "test:backend": "node tests/scoring.mjs && node tests/backend-hardening.mjs && node tests/platform-api.mjs && node tests/multi-image.mjs && node tests/user-state.mjs && node tests/library-upload.mjs",
     "dev": "npx wrangler pages dev .",
     "release": "node scripts/check.mjs && node scripts/katex-audit.mjs && node scripts/build-pages.mjs",
     "check:katex": "node scripts/katex-audit.mjs"

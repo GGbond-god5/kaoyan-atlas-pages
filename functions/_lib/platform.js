@@ -19,7 +19,9 @@ const schema = [
   `CREATE TABLE IF NOT EXISTS platform_subjects (uid TEXT NOT NULL, id TEXT NOT NULL, name TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(uid,id))`,
  `CREATE TABLE IF NOT EXISTS platform_wrongbook_exports (id TEXT PRIMARY KEY, uid TEXT NOT NULL, name TEXT NOT NULL, html TEXT NOT NULL, created_at TEXT NOT NULL)`,
  `CREATE TABLE IF NOT EXISTS platform_grading_claims (uid TEXT NOT NULL, attempt_id TEXT NOT NULL, question_id TEXT NOT NULL, owner TEXT NOT NULL, expires_at INTEGER NOT NULL, PRIMARY KEY(uid,attempt_id,question_id))`,
- `CREATE INDEX IF NOT EXISTS idx_grading_claims_expiry ON platform_grading_claims(expires_at)`
+ `CREATE INDEX IF NOT EXISTS idx_grading_claims_expiry ON platform_grading_claims(expires_at)`,
+ `CREATE TABLE IF NOT EXISTS platform_uploads (id TEXT PRIMARY KEY, uid TEXT NOT NULL, name TEXT NOT NULL, subject TEXT NOT NULL, category TEXT NOT NULL DEFAULT '', size INTEGER NOT NULL, sha256 TEXT NOT NULL, chunk INTEGER NOT NULL, parts TEXT NOT NULL DEFAULT '[]', created_at TEXT NOT NULL, expires_at INTEGER NOT NULL, force INTEGER NOT NULL DEFAULT 0)`,
+ `CREATE INDEX IF NOT EXISTS idx_uploads_expiry ON platform_uploads(expires_at)`
 ];
 const row = (db, sql, ...args) => db.prepare(sql).bind(...args).first();
 const run = (db, sql, ...args) => db.prepare(sql).bind(...args).run();
@@ -34,6 +36,89 @@ async function subjectAllowed(db, uid, s) { return subjects.has(s) || !!(await r
 async function subjectNameOf(db, uid, s) { if (SUBJECT_NAMES[s]) return SUBJECT_NAMES[s]; const r = await row(db, 'SELECT name FROM platform_subjects WHERE uid=? AND id=?', uid, s); return r ? r.name : s; }
 const fileOut = f => ({id:f.id,name:f.name,subject:f.subject,category:f.category || '',size:f.size,status:f.status,createdAt:f.created_at});
 
+/* 资料上传统一口径：大小/类型/去重只在这一处定义，直传与分片续传共用。 */
+export const LIBRARY_MAX_BYTES = 20 * 1024 * 1024;
+const LIBRARY_CHUNK_BYTES = 4 * 1024 * 1024;
+const LIBRARY_UPLOAD_TTL_MS = 24 * 3600 * 1000;
+const LIBRARY_TYPES = {pdf:'application/pdf',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',txt:'text/plain',md:'text/markdown',markdown:'text/markdown',json:'application/json'};
+const LIBRARY_TEXT_EXTS = ['txt','md','markdown','json'];
+
+function extOf(name) { return str(name).split('.').pop().toLowerCase(); }
+
+/** 只看扩展名会把任意二进制伪装成 .pdf/.png 存进桶里，这里用文件头再判一次。 */
+export function sniffLibraryType(bytes, name) {
+  const ext = extOf(name);
+  if (!LIBRARY_TYPES[ext] || !bytes || bytes.length < 4) return null;
+  const head = bytes.subarray(0, Math.min(16, bytes.length));
+  const ascii = Array.from(head, b => (b >= 32 && b < 127 ? String.fromCharCode(b) : '')).join('');
+  if (ext === 'pdf') return ascii.startsWith('%PDF-') ? ext : null;
+  if (ext === 'png') return head[0] === 0x89 && head[1] === 0x50 && head[2] === 0x4e && head[3] === 0x47 ? ext : null;
+  if (ext === 'jpg' || ext === 'jpeg') return head[0] === 0xff && head[1] === 0xd8 && head[2] === 0xff ? ext : null;
+  if (ext === 'webp') return ascii.startsWith('RIFF') && Array.from(head.subarray(8, 12), b => String.fromCharCode(b)).join('') === 'WEBP' ? ext : null;
+  if (!LIBRARY_TEXT_EXTS.includes(ext)) return null;
+  let control = 0;
+  for (const b of head) { if (b === 0 || (b < 9) || (b > 13 && b < 32)) control++; }
+  if (control > Math.floor(head.length / 4)) return null;
+  if (ext === 'json') { try { JSON.parse(new TextDecoder().decode(bytes)); } catch (_) { return null; } }
+  return ext;
+}
+
+async function sha256Hex(bytes) {
+  const hash = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/** 校验 + 落 R2 + 写 platform_files；返回 {ok:true,file} 或 {ok:false,status,error,duplicates?}。 */
+async function saveLibraryFile(db, env, uid, { name, subject, category, bytes, force }) {
+  if (!env.LIBRARY_FILES) return { ok: false, status: 503, error: '资料存储未配置' };
+  const ext = sniffLibraryType(bytes, name);
+  if (!ext) return { ok: false, status: 400, error: '文件类型无效或与扩展名不符（支持 PDF、PNG、JPEG、WebP、TXT、Markdown、JSON）' };
+  if (!bytes.length || bytes.length > LIBRARY_MAX_BYTES) return { ok: false, status: 400, error: `文件大小须在 ${LIBRARY_MAX_BYTES / 1048576} MiB 以内` };
+  if (!(await subjectAllowed(db, uid, subject))) return { ok: false, status: 400, error: '科目无效' };
+  if (!name || name.length > 255) return { ok: false, status: 400, error: '资料名称无效' };
+  const sha = await sha256Hex(bytes);
+  if (force !== true) {
+    const same = await all(db, "SELECT id,name FROM platform_files WHERE uid=? AND sha256=? LIMIT 3", uid, sha);
+    if (same.length) return { ok: false, status: 409, error: `这份内容已上传过：${same.map(f => f.name).join('、')}（确认要重复上传请选「仍然上传」）`, duplicates: same.map(f => ({ id: f.id, name: f.name })) };
+  }
+  const file = { id: id(), name, subject, size: bytes.length, status: 'uploaded', createdAt: new Date().toISOString() };
+  const key = `library/${uid}/${id()}`;
+  await env.LIBRARY_FILES.put(key, bytes, { httpMetadata: { contentType: LIBRARY_TYPES[ext] } });
+  try {
+    await run(db, 'INSERT INTO platform_files VALUES (?,?,?,?,?,?,?,?,?,?,?)', file.id, uid, name, subject, bytes.length, LIBRARY_TYPES[ext], key, file.status, file.createdAt, category, sha);
+  } catch (e) {
+    await env.LIBRARY_FILES.delete(key);
+    throw e;
+  }
+  return { ok: true, file };
+}
+
+const partKey = (uid, uploadId, n) => `library-tmp/${uid}/${uploadId}/${n}`;
+
+async function dropStagedParts(env, uid, uploadId) {
+  if (!env.LIBRARY_FILES) return;
+  try {
+    let cursor;
+    do {
+      const listed = await env.LIBRARY_FILES.list({ prefix: `library-tmp/${uid}/${uploadId}/`, cursor, limit: 100 });
+      for (const obj of listed.objects || []) await env.LIBRARY_FILES.delete(obj.key).catch(() => {});
+      cursor = listed.truncated ? listed.cursor : undefined;
+    } while (cursor);
+  } catch (_) { /* 桶未绑定或分片已清干净 */ }
+}
+
+async function dropUpload(db, env, uid, uploadId) {
+  if (!uploadId) return;
+  await run(db, 'DELETE FROM platform_uploads WHERE uid=? AND id=?', uid, uploadId).catch(() => {});
+  await dropStagedParts(env, uid, uploadId);
+}
+
+/** 分片会话 24 小时过期；不跑定时任务，靠每次上传请求顺手回收，避免临时对象在桶里越积越多 */
+async function gcUploads(db, env, uid) {
+  const stale = await all(db, 'SELECT id FROM platform_uploads WHERE uid=? AND expires_at < ?', uid, Date.now());
+  for (const s of stale) await dropUpload(db, env, uid, s.id);
+}
+
 export async function auth(request, env) {
   let session; try { session = await currentSession(request, env); } catch { return null; }
   return session && typeof session.uid === 'string' && session.uid ? session.uid : null;
@@ -44,6 +129,7 @@ async function database(env) {
   if (!platformSchemaReady) {
     await env.DB.batch(schema.map(s => env.DB.prepare(s)));
     try { await env.DB.prepare('ALTER TABLE platform_files ADD COLUMN category TEXT').run(); } catch (_) { /* 列已存在 */ }
+    try { await env.DB.prepare('ALTER TABLE platform_files ADD COLUMN sha256 TEXT').run(); } catch (_) { /* 列已存在 */ }
     platformSchemaReady = true;
   }
   return env.DB;
@@ -120,17 +206,17 @@ export function modelChain(env, tier) {
 
 export async function ai(env, messages, jsonMode = false, userCfg = null, tier = 'mid', opts = {}) {
   if (userCfg && !opts.noFallback) {
-    try { return await aiCall(env, messages, jsonMode, userCfg, tier); }
+    try { return await aiCall(env, messages, jsonMode, userCfg, tier, opts); }
     catch (e) {
       // 自选 API 失败时自动回退系统内置通道，保证批改/小观不断线；内置也失败时报自选 API 的原始错误便于定位
-      try { return await aiCall(env, messages, jsonMode, null, tier); }
+      try { return await aiCall(env, messages, jsonMode, null, tier, opts); }
       catch (_) { throw e; }
     }
   }
-  return aiCall(env, messages, jsonMode, userCfg, tier);
+  return aiCall(env, messages, jsonMode, userCfg, tier, opts);
 }
 
-async function aiCall(env, messages, jsonMode = false, userCfg = null, tier = 'mid') {
+async function aiCall(env, messages, jsonMode = false, userCfg = null, tier = 'mid', opts = {}) {
   const key = userCfg ? userCfg.key : (env.AI_API_KEY || env.DASHSCOPE_API_KEY);
   if (!key) throw new Error('AI 服务未配置');
   let base = (userCfg ? userCfg.base : (env.AI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1')).replace(/\/+$/, '');
@@ -139,18 +225,20 @@ async function aiCall(env, messages, jsonMode = false, userCfg = null, tier = 'm
   const models = userCfg ? [userCfg.model] : modelChain(env, tier);
   let lastErr = null;
   for (const model of models) {
-    try { return await aiAttempt(env, base, key, model, messages, jsonMode, userCfg); }
+    try { return await aiAttempt(env, base, key, model, messages, jsonMode, userCfg, opts); }
     catch (e) { lastErr = e; }
   }
   throw lastErr || new Error('AI 服务连接失败');
 }
 
-async function aiAttempt(env, base, key, model, messages, jsonMode, userCfg) {
+async function aiAttempt(env, base, key, model, messages, jsonMode, userCfg, opts = {}) {
+  const budget = Number(env.AI_MAX_TOKENS || 3000);
   const payload = {
     model,
     messages,
     temperature: 0.2,
-    max_tokens: Number(env.AI_MAX_TOKENS || 3000),
+    // 一次要出多页题目时，默认的 3000 token 会把后半截 JSON 截掉，按调用方请求上调上限
+    max_tokens: opts.maxTokens ? Math.max(budget, opts.maxTokens) : budget,
     ...(jsonMode ? {response_format:{type:'json_object'}} : {}),
   };
   // 推理型模型会把 token 花在思考上，额度小的时候 content 会是空的
@@ -197,7 +285,8 @@ function validImage(s) { return !s || (typeof s === 'string' && s.length <= 9800
  * 新数据写 answers[qid].images 数组，并同步 image=第一张，兼容未改到的老读取方；
  * 老数据只有 image 单字符串时，answerImages 按单图读出，双向兼容。 */
 const MAX_ANSWER_IMAGES = 6;
-const MAX_ANSWER_IMAGES_TOTAL = 19600000; /* 每题照片合计字符上限（约 2 张满格单图），防整卷 JSON 失控膨胀；前端压缩后正常照片远低于此 */
+const MAX_INLINE_IMAGE_CHARS = 19600000; /* 单次请求内 base64 图片合计上限（约 2 张满格单图），作答照片与抽题页图共用，防请求体失控膨胀 */
+const MAX_PAGES_PER_EXTRACTION = 4; /* 一次 AI 调用最多合并的连续页数 */
 export function answerImages(a) {
   if (!a || typeof a !== 'object') return [];
   if (Array.isArray(a.images)) { const list = a.images.filter(s => typeof s === 'string' && s); if (list.length) return list.slice(0, MAX_ANSWER_IMAGES); }
@@ -207,7 +296,7 @@ function validImages(a) {
   if (a === undefined || a === null) return true;
   if (!Array.isArray(a) || a.length > MAX_ANSWER_IMAGES) return false;
   let total = 0;
-  for (const s of a) { if (!s || !validImage(s)) return false; total += s.length; if (total > MAX_ANSWER_IMAGES_TOTAL) return false; }
+  for (const s of a) { if (!s || !validImage(s)) return false; total += s.length; if (total > MAX_INLINE_IMAGE_CHARS) return false; }
   return true;
 }
 
@@ -241,9 +330,12 @@ async function retrieveContext(db, uid, query) {
 function validQuestion(q) {
   return q && typeof q === 'object' && str(q.text).trim() && typeof q.answer === 'string' && Array.isArray(q.steps) && q.steps.every(x => typeof x === 'string') && ['chapter','chapterTitle','kp','kpName','kind','difficulty'].every(k => typeof q[k] === 'string') && (q.maxScore == null || (typeof q.maxScore === 'number' && Number.isFinite(q.maxScore) && q.maxScore > 0));
 }
-function normalizeDraft(q, subject, page, draftId) {
+function normalizeDraft(q, subject, pages, draftId) {
   if (!q || typeof q !== 'object' || Array.isArray(q)) return null;
-  const d = {draftId, subject, sourcePage:page, reviewStatus:'pending', text:str(q.text), answer:str(q.answer), steps:Array.isArray(q.steps) ? q.steps.map(x => typeof x === 'string' ? x : String(x ?? '')) : [], chapter:str(q.chapter), chapterTitle:str(q.chapterTitle), kp:str(q.kp), kpName:str(q.kpName), kind:str(q.kind), difficulty:str(q.difficulty), passage:str(q.passage), topicChapter:str(q.topicChapter)};
+  // 跨页题由模型给出实际用到的页码；越界或漏给时退回本次调用的整组页，保证来源页永远可核对
+  const asked = Array.isArray(q.pages) ? q.pages.map(Number).filter(n => Number.isInteger(n) && pages.includes(n)) : [];
+  const sourcePages = asked.length ? [...new Set(asked)].sort((a, b) => a - b) : pages;
+  const d = {draftId, subject, sourcePage:sourcePages[0], sourcePages, reviewStatus:'pending', text:str(q.text), answer:str(q.answer), steps:Array.isArray(q.steps) ? q.steps.map(x => typeof x === 'string' ? x : String(x ?? '')) : [], chapter:str(q.chapter), chapterTitle:str(q.chapterTitle), kp:str(q.kp), kpName:str(q.kpName), kind:str(q.kind), difficulty:str(q.difficulty), passage:str(q.passage), topicChapter:str(q.topicChapter), incomplete:q.incomplete === true, missing:str(q.missing).slice(0, 200)};
   const ms = typeof q.maxScore === 'string' ? Number.parseFloat(q.maxScore) : q.maxScore;
   if (typeof ms === 'number' && Number.isFinite(ms) && ms > 0) d.maxScore = ms;
   return validQuestion(d) ? d : null;
@@ -379,17 +471,84 @@ async function dispatch(request,env,uid,action,params,userCfg) {
   }
   if (action === 'library' && method === 'GET') return ok({files:(await all(db,'SELECT * FROM platform_files WHERE uid=? ORDER BY created_at DESC',uid)).map(fileOut)});
   if (action === 'library' && method === 'POST') {
-    if (!env.LIBRARY_FILES) return fail(503,'资料存储未配置');
     let form; try { form = await request.formData(); } catch { return fail(400,'上传格式无效'); }
-    const f = form.get('file'), subject = form.get('subject'), name = str(form.get('name')).trim() || f?.name; const category = str(form.get('category')).trim().slice(0, 30);
-    const ext = str(f?.name).split('.').pop().toLowerCase();
-    const types = {pdf:'application/pdf',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',txt:'text/plain',md:'text/markdown',markdown:'text/markdown',json:'application/json'};
-    if (!f || typeof f.arrayBuffer !== 'function' || !types[ext] || !(await subjectAllowed(db, uid, subject)) || !name || name.length > 255 || !f.size || f.size > 20*1024*1024) return fail(400,'文件、科目或文件大小无效');
-    const file = {id:id(),name,subject,size:f.size,status:'uploaded',createdAt:new Date().toISOString()}, key = `library/${uid}/${id()}`;
-    await env.LIBRARY_FILES.put(key,await f.arrayBuffer(),{httpMetadata:{contentType:types[ext]}});
-    try { await run(db,'INSERT INTO platform_files VALUES (?,?,?,?,?,?,?,?,?,?)',file.id,uid,name,subject,f.size,types[ext],key,file.status,file.createdAt,category); }
-    catch(e) { await env.LIBRARY_FILES.delete(key); throw e; }
-    return ok({file},201);
+    const f = form.get('file'), subject = str(form.get('subject'));
+    const name = (str(form.get('name')).trim() || str(f?.name)).slice(0, 255);
+    const category = str(form.get('category')).trim().slice(0, 30);
+    if (!f || typeof f.arrayBuffer !== 'function') return fail(400,'缺少文件');
+    const saved = await saveLibraryFile(db, env, uid, { name, subject, category, bytes: new Uint8Array(await f.arrayBuffer()), force: form.get('force') === '1' });
+    if (!saved.ok) return fail(saved.status, saved.error, saved.duplicates ? { duplicates: saved.duplicates } : {});
+    return ok({ file: saved.file }, 201);
+  }
+  /* 大文件分片上传：先建会话 → 逐片 PUT（可断点续传）→ 合并时统一校验类型/大小/哈希后落库。 */
+  if (action === 'uploads') {
+    await gcUploads(db, env, uid);
+    if (method === 'GET') {
+      const rows = await all(db,'SELECT * FROM platform_uploads WHERE uid=? ORDER BY created_at DESC',uid);
+      return ok({uploads: rows.map(u => ({id:u.id,name:u.name,subject:u.subject,category:u.category || '',size:u.size,chunk:u.chunk,sha256:u.sha256,parts:parse(u.parts),total:Math.ceil(u.size/u.chunk),expiresAt:u.expires_at}))});
+    }
+    if (method === 'POST') {
+      if (!env.LIBRARY_FILES) return fail(503,'资料存储未配置');
+      const b = await body();
+      const name = str(b?.name).trim().slice(0, 255), subject = str(b?.subject), category = str(b?.category).trim().slice(0, 30);
+      const sha = str(b?.sha256).toLowerCase(), size = Number(b?.size);
+      if (!name || !/^[0-9a-f]{64}$/.test(sha) || !Number.isInteger(size) || size <= 0 || size > LIBRARY_MAX_BYTES) return fail(400,'上传参数无效（名称、大小与 SHA-256 必填，大小须在 20 MiB 以内）');
+      if (!(await subjectAllowed(db, uid, subject))) return fail(400,'科目无效');
+      if (b?.force !== true) {
+        const same = await all(db,'SELECT id,name FROM platform_files WHERE uid=? AND sha256=? LIMIT 3',uid,sha);
+        if (same.length) return fail(409, `这份内容已上传过：${same.map(x => x.name).join('、')}（确认要重复上传请选「仍然上传」）`, { duplicates: same.map(x => ({ id: x.id, name: x.name })) });
+      }
+      const now = new Date().toISOString();
+      const upId = id();
+      await run(db,'INSERT INTO platform_uploads (id,uid,name,subject,category,size,sha256,chunk,parts,created_at,expires_at,force) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+        upId,uid,name,subject,category,size,sha,LIBRARY_CHUNK_BYTES,'[]',now,Date.now() + LIBRARY_UPLOAD_TTL_MS,b?.force === true ? 1 : 0);
+      return ok({ upload: { id: upId, name, size, chunk: LIBRARY_CHUNK_BYTES, total: Math.ceil(size / LIBRARY_CHUNK_BYTES), parts: [] } }, 201);
+    }
+    if (method === 'DELETE') {
+      const b = await body();
+      await dropUpload(db, env, uid, str(b?.id));
+      return ok({ deleted: true });
+    }
+    return fail(405,'方法不支持');
+  }
+  if (action === 'uploadPart' && method === 'PUT') {
+    if (!env.LIBRARY_FILES) return fail(503,'资料存储未配置');
+    const u = await row(db,'SELECT * FROM platform_uploads WHERE uid=? AND id=?',uid,fid);
+    if (!u) return notFound();
+    const n = Number(params.n);
+    const total = Math.ceil(u.size / u.chunk);
+    if (!Number.isInteger(n) || n < 1 || n > total) return fail(400,`分片序号须在 1–${total}`);
+    const bytes = new Uint8Array(await request.arrayBuffer());
+    if (!bytes.length || bytes.length > u.chunk) return fail(400,'分片为空或超过分片上限');
+    await env.LIBRARY_FILES.put(partKey(uid, u.id, n), bytes);
+    const parts = [...new Set([...parse(u.parts), n])].sort((a, b) => a - b);
+    await run(db,'UPDATE platform_uploads SET parts=? WHERE uid=? AND id=?',JSON.stringify(parts),uid,u.id);
+    return ok({ uploaded: parts, remaining: Array.from({ length: total }, (_, i) => i + 1).filter(i => !parts.includes(i)) });
+  }
+  if (action === 'uploadsComplete' && method === 'POST') {
+    if (!env.LIBRARY_FILES) return fail(503,'资料存储未配置');
+    const u = await row(db,'SELECT * FROM platform_uploads WHERE uid=? AND id=?',uid,fid);
+    if (!u) return notFound();
+    const total = Math.ceil(u.size / u.chunk);
+    const parts = new Set(parse(u.parts));
+    const missing = Array.from({ length: total }, (_, i) => i + 1).filter(n => !parts.has(n));
+    if (missing.length) return fail(400, `还有 ${missing.length} 个分片没传完（例如第 ${missing.slice(0, 5).join('、')} 片）`, { missing });
+    const bytes = new Uint8Array(u.size);
+    let offset = 0;
+    for (const n of [...parts].sort((a, b) => a - b)) {
+      const obj = await env.LIBRARY_FILES.get(partKey(uid, u.id, n));
+      if (!obj) { await dropUpload(db, env, uid, u.id); return fail(410,'分片已过期，请重新上传'); }
+      const buf = new Uint8Array(await obj.arrayBuffer());
+      if (offset + buf.length > u.size) return fail(400,'分片总大小超过声明值，请重新上传');
+      bytes.set(buf, offset);
+      offset += buf.length;
+    }
+    if (offset !== u.size) return fail(400, `分片合计 ${offset} 字节，与声明的 ${u.size} 不一致，请重新上传`);
+    if (await sha256Hex(bytes) !== u.sha256) return fail(400,'内容校验不一致（传输过程有损坏），请重新上传');
+    const saved = await saveLibraryFile(db, env, uid, { name: u.name, subject: u.subject, category: u.category, bytes, force: u.force === 1 });
+    if (!saved.ok) return fail(saved.status, saved.error, saved.duplicates ? { duplicates: saved.duplicates } : {});
+    await dropUpload(db, env, uid, u.id);
+    return ok({ file: saved.file }, 201);
   }
   if (['file','extract','import'].includes(action)) {
     const f = await row(db,'SELECT * FROM platform_files WHERE uid=? AND id=?',uid,fid);
@@ -430,11 +589,20 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     }
     if (action === 'extract' && method === 'POST') {
       const b = await body();
-      if (!Array.isArray(b?.pages) || !b.pages.length || b.pages.length > 5 || b.pages.some(p => !Number.isInteger(p.page) || p.page < 1 || typeof p.text !== 'string' || p.text.length > 100000 || !validImage(p.image) || (!p.text.trim() && !p.image))) return fail(400,'页面数据无效');
+      if (!Array.isArray(b?.pages) || !b.pages.length || b.pages.length > 8 || b.pages.some(p => !Number.isInteger(p.page) || p.page < 1 || typeof p.text !== 'string' || p.text.length > 100000 || !validImage(p.image) || (!p.text.trim() && !p.image))) return fail(400,'页面数据无效');
+      if (b.pages.reduce((n, p) => n + (p.image ? p.image.length : 0), 0) > MAX_INLINE_IMAGE_CHARS) return fail(400,'本次附带的页面图片过大，请减少每次提取的页数');
       const items = [];
-      let skipped = 0;
-      for (const p of b.pages) {
-        const extractionDigest = await digest(JSON.stringify([uid,fid,p.page,p.text,p.image || '']));
+      let skipped = 0, incomplete = 0;
+      // 连续页合成一次调用：逐页调用会把跨页题在页边界切断，只留半截题干或丢选项
+      const runs = [];
+      for (const p of [...b.pages].sort((x, y) => x.page - y.page)) {
+        const last = runs[runs.length - 1];
+        if (last && last.length < MAX_PAGES_PER_EXTRACTION && p.page === last[last.length - 1].page + 1) last.push(p);
+        else runs.push([p]);
+      }
+      for (const run of runs) {
+        const runPages = run.map(p => p.page);
+        const extractionDigest = await digest(JSON.stringify([uid,fid,run.map(p => [p.page,p.text,p.image || ''])]));
         let extraction = await row(db,'SELECT draft_ids FROM platform_extractions WHERE uid=? AND file_id=? AND digest=?',uid,fid,extractionDigest);
         if (extraction) {
           for (const draftId of parse(extraction.draft_ids)) {
@@ -443,15 +611,17 @@ async function dispatch(request,env,uid,action,params,userCfg) {
           }
           continue;
         }
-        const content = [{type:'text',text:JSON.stringify({page:p.page,text:p.text})}]; if (p.image) content.push({type:'image_url',image_url:{url:p.image}});
+        const content = [{type:'text',text:JSON.stringify({pages:run.map(p => ({page:p.page,text:p.text}))})}];
+        for (const p of run) if (p.image) { content.push({type:'text',text:`第 ${p.page} 页（图片）`}); content.push({type:'image_url',image_url:{url:p.image}}); }
         { const blocked = await checkQuota(env, await me(), 'extract'); if (blocked) return fail(429, blocked); }
-        let output; try { output = await ai(env,[{role:'system',content:IMPORT_PROMPT},{role:'user',content}],true,userCfg,'cheap'); } catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
+        let output; try { output = await ai(env,[{role:'system',content:IMPORT_PROMPT},{role:'user',content}],true,userCfg,'cheap',{maxTokens: Math.min(8000, 3000 * run.length)}); } catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
         await noteUsage(env, uid, 'extract');
         if (!Array.isArray(output?.items) || output.items.length > 100) return fail(502,'AI 抽题格式无效');
-        const rawDrafts = await Promise.all(output.items.map(async (q,index) => normalizeDraft(q,f.subject,p.page,await digest(`${extractionDigest}:${index}`))));
+        const rawDrafts = await Promise.all(output.items.map(async (q,index) => normalizeDraft(q,f.subject,runPages,await digest(`${extractionDigest}:${index}`))));
         const drafts = rawDrafts.filter(Boolean);
         skipped += rawDrafts.length - drafts.length;
         if (!drafts.length) continue;
+        incomplete += drafts.filter(draft => draft.incomplete).length;
         const statements = [db.prepare('INSERT OR IGNORE INTO platform_extractions VALUES (?,?,?,?)').bind(uid,fid,extractionDigest,JSON.stringify(drafts.map(draft=>draft.draftId)))];
         statements.push(...drafts.map(draft => db.prepare('INSERT OR IGNORE INTO platform_drafts VALUES (?,?,?,?)').bind(draft.draftId,uid,fid,JSON.stringify(draft))));
         await db.batch(statements);
@@ -462,7 +632,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
         }
       }
       await run(db,"UPDATE platform_files SET status='draft' WHERE uid=? AND id=?",uid,fid);
-      return ok({items, skipped});
+      return ok({items, skipped, incomplete});
     }
     if (action === 'extract' && method === 'PUT') {
       const b = await body(); const draftId = typeof b?.draftId === 'string' ? b.draftId : '';
@@ -474,12 +644,15 @@ async function dispatch(request,env,uid,action,params,userCfg) {
       const next = { ...cur };
       for (const k of EDITABLE) if (typeof b[k] === 'string') next[k] = b[k];
       if (Array.isArray(b.steps) && b.steps.every(x => typeof x === 'string')) next.steps = b.steps;
+      // 用户手工补全后可以撤下「疑似截断」标记，否则徽标会一直挂在已修好的题上
+      if (typeof b.incomplete === 'boolean') next.incomplete = b.incomplete;
+      if (b.missing === '') next.missing = '';
       if (b.maxScore === null) delete next.maxScore;
       else if (typeof b.maxScore === 'number' && Number.isFinite(b.maxScore) && b.maxScore > 0) next.maxScore = b.maxScore;
       if (!validQuestion(next)) return fail(400, '题目结构无效（题干不能为空，答案/步骤/题型等字段需完整）');
       await run(db, 'UPDATE platform_drafts SET data=? WHERE uid=? AND file_id=? AND id=?', JSON.stringify(next), uid, fid, draftId);
       const qRow = await row(db, 'SELECT data FROM platform_questions WHERE uid=? AND draft_id=?', uid, draftId);
-      if (qRow) { const q = parse(qRow.data); for (const k of EDITABLE) q[k] = next[k]; if (next.maxScore == null) delete q.maxScore; else if (next.maxScore != null) q.maxScore = next.maxScore; await run(db, 'UPDATE platform_questions SET data=? WHERE uid=? AND draft_id=?', JSON.stringify(q), uid, draftId); }
+      if (qRow) { const q = parse(qRow.data); for (const k of EDITABLE) q[k] = next[k]; if (next.maxScore == null) delete q.maxScore; else if (next.maxScore != null) q.maxScore = next.maxScore; q.incomplete = next.incomplete === true; q.missing = next.missing || ''; await run(db, 'UPDATE platform_questions SET data=? WHERE uid=? AND draft_id=?', JSON.stringify(q), uid, draftId); }
       return ok({ draft: next });
     }
     if (action === 'extract' && method === 'DELETE') {

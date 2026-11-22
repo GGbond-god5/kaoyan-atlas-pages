@@ -3,6 +3,7 @@ export function ownsUserObjectKey(uid, key) {
   if (typeof uid !== 'string' || !uid || typeof key !== 'string' || !key) return false;
   return key === `avatars/${uid}` ||
     key.startsWith(`library/${uid}/`) ||
+    key.startsWith(`library-tmp/${uid}/`) ||
     key.startsWith(`${uid}/`) ||
     key.startsWith(`${uid}-`);
 }

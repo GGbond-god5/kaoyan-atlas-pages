@@ -15,6 +15,7 @@ const UID_TABLES = [
   "user_profiles",
   "user_notes",
   "platform_files",
+  "platform_uploads",
   "platform_drafts",
   "platform_extractions",
   "platform_questions",
@@ -104,7 +105,7 @@ export async function onRequestPost({ request, env }) {
       const avatarKey = `avatars/${uid}`;
       await env.LIBRARY_FILES.delete(avatarKey).catch(() => {});
 
-      const prefixes = [`library/${uid}/`, `${uid}/`, `${uid}-`];
+      const prefixes = [`library/${uid}/`, `library-tmp/${uid}/`, `${uid}/`, `${uid}-`];
       const deleted = new Set();
       for (const prefix of prefixes) {
         let cursor;

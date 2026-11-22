@@ -400,7 +400,7 @@ export async function seedDemoAccount(env) {
   await tryRun(db, 'DELETE FROM login_fail WHERE phone = ?', DEMO_PHONE);
 
   const clear = [
-    'platform_files', 'platform_drafts', 'platform_extractions', 'platform_questions',
+    'platform_files', 'platform_uploads', 'platform_drafts', 'platform_extractions', 'platform_questions',
     'platform_state', 'platform_attempts', 'platform_results', 'platform_coach',
     'platform_subjects', 'platform_wrongbook_exports', 'platform_shares',
   ];
