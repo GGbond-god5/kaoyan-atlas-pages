@@ -1,4 +1,6 @@
 /* 学情分析：数据全部来自 /api/attempts（套卷/模考的作答与批改结果），在本页内聚合，不新增后端接口。
+ * 主页列表走 ?summary=1 摘要模式（只要归组/标题/得分等轻字段，不拉题面、作答照片与逐题长评语）；
+ * 逐题详情 openPaperDetail 仍走 /api/attempts/:id 全量。
  * 口径：得分率 = score/maxScore；满分=1，未满分<1，低分<0.5。只统计 status 为 graded 的题。 */
 (function () {
   'use strict';
@@ -353,10 +355,14 @@ async function clearPaperRecords(qids) {
   async function init() {
     try {
       await window.AtlasUser.ready;
-      var data = await window.AtlasUser.json('/api/attempts', 'GET');
+      /* attempts 列表与 goals 目标互不依赖，并发发出（原先串行多等一个往返）；
+       * goals 失败不挡主页渲染，单独吞掉回退空目标。 */
+      var goalsP = window.AtlasUser.load('goals', { targets: {} }).catch(function () { return null; });
+      var data = await window.AtlasUser.json('/api/attempts?summary=1', 'GET');
       state.attempts = (data.attempts || []).filter(function (a) { return a && (a.mode === 'paper' || a.mode === 'diagnostic' || a.mode === 'mock' || a.mode === 'ability') && Array.isArray(a.questions); });
       var subjects = Array.from(new Set(state.attempts.map(function (a) { return a.subject; })));
-      try { var g = await window.AtlasUser.load('goals', { targets: {} }); state.targets = (g && g.targets) || {}; } catch (e) {}
+      var g = await goalsP;
+      state.targets = (g && g.targets) || {};
       renderTabs(subjects);
       render();
       var want = new URLSearchParams(location.search).get('attempt');

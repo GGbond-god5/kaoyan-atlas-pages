@@ -440,6 +440,25 @@ async function attempt(db, uid, aid, { scrub = true } = {}) {
   obj.knownMaxScore = results.reduce((sum,r) => sum + (r.status === 'graded' ? r.maxScore : 0),0);
   return obj;
 }
+/* 列表摘要模式（GET /api/attempts?summary=1，学情分析主页用）：全量返回里每题的题面/解析、
+ * 作答照片 base64 与逐题长评语会把响应撑到数 MB，主页聚合只需要轻字段。摘要只变换输出对象、
+ * 不写回存储；status/score/knownMaxScore 仍按全量结果计算，口径与默认模式完全一致。
+ * 字段取舍来自对 assets/analytics.js + subject-analytics.js + assessment.js 的字段审计（2026-11-23）：
+ * 题目只留归组（kp/kind/chapter/topic*）、标题与满分；作答剥离 image/images（照片），保留 work/selected；
+ * 批改结果只留 status/score/maxScore/level/dimensions 聚合字段，长文本（comments/breakdown/revised 等）走详情接口。 */
+const SUMMARY_QUESTION_KEYS = ['id', 'subject', 'subjectName', 'kind', 'kp', 'kpName', 'chapter', 'chapterTitle', 'topicChapter', 'topicTitle', 'maxScore'];
+const SUMMARY_RESULT_KEYS = ['status', 'score', 'maxScore', 'level', 'dimensions'];
+function pickKeys(obj, keys) { const out = {}; if (!obj || typeof obj !== 'object') return out; for (const k of keys) if (obj[k] !== undefined) out[k] = obj[k]; return out; }
+function summarizeAttempt(obj) {
+  obj.questions = (Array.isArray(obj.questions) ? obj.questions : []).map(q => pickKeys(q, SUMMARY_QUESTION_KEYS));
+  const answers = {};
+  for (const [qid, a] of Object.entries(obj.answers || {})) { if (a && typeof a === 'object' && !Array.isArray(a)) { const slim = { ...a }; delete slim.image; delete slim.images; answers[qid] = slim; } else answers[qid] = a; }
+  obj.answers = answers;
+  const results = {};
+  for (const [qid, r] of Object.entries(obj.results || {})) results[qid] = (r && typeof r === 'object' && !Array.isArray(r)) ? pickKeys(r, SUMMARY_RESULT_KEYS) : r;
+  obj.results = results;
+  return obj;
+}
 export async function handle(request, env, action, params = {}) {
   const uid = await auth(request,env);
   if (!uid) return fail(401,'请先登录');
@@ -760,7 +779,8 @@ async function dispatch(request,env,uid,action,params,userCfg) {
     if (method === 'DELETE') { const b = await body(); const ids = Array.isArray(b?.ids) ? [...new Set(b.ids.map(str).filter(Boolean))].slice(0, 100) : []; let n = 0;
       for (const aid of ids) { const r = await run(db,'DELETE FROM platform_attempts WHERE uid=? AND id=?',uid,aid); if (changes(r)) { n++; await run(db,'DELETE FROM platform_results WHERE uid=? AND attempt_id=?',uid,aid); await run(db,'DELETE FROM platform_grading_claims WHERE uid=? AND attempt_id=?',uid,aid); } }
       return ok({deleted:n}); }
-    if (method === 'GET') { const arows = await all(db, 'SELECT id, data FROM platform_attempts WHERE uid=?', uid);
+    if (method === 'GET') { const summary = new URL(request.url).searchParams.get('summary') === '1';
+      const arows = await all(db, 'SELECT id, data FROM platform_attempts WHERE uid=?', uid);
       const byAttempt = new Map();
       for (let i = 0; i < arows.length; i += 50) { const chunk = arows.slice(i, i + 50).map(r => r.id);
         const rrows = await all(db, `SELECT attempt_id, question_id, data FROM platform_results WHERE uid=? AND attempt_id IN (${chunk.map(() => '?').join(',')})`, uid, ...chunk);
@@ -772,7 +792,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
         obj.status = results.length === obj.questions.length && results.every(x => x.status === 'graded') ? 'graded' : 'pending';
         obj.score = results.reduce((sum, x) => sum + (x.status === 'graded' ? x.score : 0), 0);
         obj.knownMaxScore = results.reduce((sum, x) => sum + (x.status === 'graded' ? x.maxScore : 0), 0);
-        attempts.push(obj); }
+        attempts.push(summary ? summarizeAttempt(obj) : obj); }
       return ok({ attempts }); }
     if (method === 'POST') {const b=await body(); if (!b || !(await subjectAllowed(db, uid, b.subject)) || !str(b.mode) || !Array.isArray(b.questions) || !b.questions.length || b.questions.length > 500 || !b.answers || typeof b.answers !== 'object' || Array.isArray(b.answers) || b.questions.some(q=>!q || typeof q.id !== 'string' || !q.id || q.subject !== b.subject) || new Set(b.questions.map(q=>q.id)).size !== b.questions.length) return fail(400,'试卷必须包含同一科目且题号唯一的题目');
       if (Object.values(b.answers).some(a=>!a || typeof a !== 'object' || !validImage(a.image) || !validImages(a.images))) return fail(400,'作答格式无效');
