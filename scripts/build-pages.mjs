@@ -69,8 +69,9 @@ if (CONTEST || BETA) {
   for (const file of FILES) {
     if (!file.endsWith(".html")) continue;
     let html = rf(`${OUT}/${file}`, "utf-8");
-    html = html.replace(/<head[^>]*>/, "$&\n<script>window.ATLAS_CONTEST=true;" + (BETA ? "window.ATLAS_BETA=true;" : "") + "try{localStorage.setItem('atlas_tour_done','1');}catch(e){}</script>"); // 参赛/内测版跳过新手引导：打开直达内容
-    html = html.replace("</body>", '<script src="assets/contest-sample.js"></script><script src="assets/contest.js"></script></body>');
+    html = html.replace(/<head[^>]*>/, "$&\n<script>window.ATLAS_CONTEST=true;" + (BETA ? "window.ATLAS_BETA=true;document.documentElement.classList.add('beta-locked');" : "") + "try{localStorage.setItem('atlas_tour_done','1');}catch(e){}</script>"); // 参赛/内测版跳过新手引导：打开直达内容
+    html = html.replace("</body>", '<script src="assets/contest-sample.js"></script><script src="assets/contest.js"></script>' + (BETA ? '<script src="assets/beta-gate.js"></script>' : '') + '</body>');
+    if (BETA) html = html.replace(/<head[^>]*>/, "$&\n<style>html.beta-locked body{visibility:hidden!important}</style>"); // 内测码通过前不露内容
     wf(`${OUT}/${file}`, html);
   }
   console.log((BETA ? "beta" : "contest") + " build: ATLAS_CONTEST injected" + (BETA ? " + ATLAS_BETA" : ""));
