@@ -44,24 +44,118 @@ async function ensureSubject(selEl, newNameEl) {
   mySubjects[out.subject.id] = out.subject.name; addSubjectOption(out.subject);
   return out.subject.id;
 }
-async function uploadBlob(blob, name, subject, category) {
+const LIBRARY_MAX_BYTES = 20 * 1024 * 1024; /* 与服务端 LIBRARY_MAX_BYTES 对齐，全站只此一处口径 */
+const CHUNK_BYTES = 4 * 1024 * 1024; /* 与服务端 LIBRARY_CHUNK_BYTES 对齐 */
+const UPLOAD_STORE_KEY = 'atlas-upload-resume';
+const sleepMs = ms => new Promise(r => setTimeout(r, ms));
+
+async function sha256Of(blob) {
+  const hash = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
+  return Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* XHR 版 JSON 请求：fetch 拿不到上传进度，直传与分片都走它。
+ * 失败时抛出的 Error 带 status 与 data（409 的 duplicates 等），供上层决定重试或强传。 */
+function xhrJson(url, { method = 'GET', body = null, contentType = null, onProgress = null } = {}) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.withCredentials = true;
+    if (contentType) xhr.setRequestHeader('Content-Type', contentType);
+    if (onProgress && xhr.upload) xhr.upload.onprogress = e => { if (e.lengthComputable) onProgress(e.loaded, e.total); };
+    xhr.onload = () => {
+      let j = null; try { j = JSON.parse(xhr.responseText); } catch (_) {}
+      if (xhr.status >= 200 && xhr.status < 300 && j && j.ok !== false) return resolve(j);
+      const err = Error((j && j.error) || ('请求失败（' + xhr.status + '）'));
+      err.status = xhr.status; err.data = j;
+      reject(err);
+    };
+    xhr.onerror = () => { const err = Error('网络中断，没有连上服务器'); err.status = 0; reject(err); };
+    xhr.send(body);
+  });
+}
+
+/* 只对网络错误与 5xx 自动重试（指数退避）；4xx 是业务结论，重试没用。 */
+async function withRetry(fn) {
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try { return await fn(); }
+    catch (err) {
+      lastErr = err;
+      if (err.status && err.status < 500) throw err;
+      if (attempt < 2) await sleepMs(800 * 2 ** attempt);
+    }
+  }
+  throw lastErr;
+}
+
+/* 断点续传记录：浏览器拿不到上次的 File 句柄，只能按内容哈希认领——
+ * 刷新后重新选择同一文件，哈希对上就接着没传完的分片继续。 */
+function getResume(sha) { try { return JSON.parse(localStorage.getItem(UPLOAD_STORE_KEY) || '{}')[sha] || null; } catch (_) { return null; } }
+function putResume(rec) { try { const s = JSON.parse(localStorage.getItem(UPLOAD_STORE_KEY) || '{}'); s[rec.sha256] = rec; localStorage.setItem(UPLOAD_STORE_KEY, JSON.stringify(s)); } catch (_) {} }
+function dropResume(sha) { try { const s = JSON.parse(localStorage.getItem(UPLOAD_STORE_KEY) || '{}'); delete s[sha]; localStorage.setItem(UPLOAD_STORE_KEY, JSON.stringify(s)); } catch (_) {} }
+
+async function uploadBlob(blob, name, subject, category, opts = {}) {
+  const onProgress = opts.onProgress || null;
+  if (blob.size > CHUNK_BYTES) return uploadChunked(blob, name, subject, category, opts);
   const data = new FormData();
   data.set('file', blob, name); data.set('name', name); data.set('subject', subject); if (category) data.set('category', category);
-  const r = await fetch('/api/library', {method:'POST', credentials:'include', body:data});
-  const j = await r.json().catch(() => null);
-  if (!r.ok || !j || j.ok === false) throw Error((j && j.error) || ('上传失败（' + r.status + '）'));
+  if (opts.force) data.set('force', '1');
+  const j = await withRetry(() => xhrJson('/api/library', { method: 'POST', body: data, onProgress: onProgress ? (l, t) => onProgress(l / t) : null }));
   return j.file;
+}
+
+async function uploadChunked(blob, name, subject, category, opts = {}) {
+  const onProgress = opts.onProgress || null;
+  const sha = await sha256Of(blob);
+  let rec = getResume(sha);
+  if (rec && (rec.size !== blob.size || rec.name !== name)) rec = null;
+  let session = null;
+  if (rec) {
+    try { const out = await xhrJson('/api/uploads'); session = (out.uploads || []).find(u => u.id === rec.uploadId) || null; } catch (_) {}
+    if (!session) { dropResume(sha); rec = null; }
+  }
+  if (!session) {
+    const out = await withRetry(() => xhrJson('/api/uploads', { method: 'POST', contentType: 'application/json', body: JSON.stringify({ name, subject, category, size: blob.size, sha256: sha, force: !!opts.force }) }));
+    session = { id: out.upload.id, chunk: out.upload.chunk, total: out.upload.total, parts: [] };
+    putResume({ sha256: sha, uploadId: session.id, name, size: blob.size });
+  }
+  const chunk = session.chunk || CHUNK_BYTES, total = session.total || Math.ceil(blob.size / chunk);
+  const done = new Set(session.parts || []);
+  for (let n = 1; n <= total; n++) {
+    if (done.has(n)) continue;
+    const part = blob.slice((n - 1) * chunk, Math.min(n * chunk, blob.size));
+    await withRetry(() => xhrJson(`/api/uploads/${encodeURIComponent(session.id)}/parts/${n}`, {
+      method: 'PUT', body: part, contentType: 'application/octet-stream',
+      onProgress: onProgress ? (l, t) => onProgress(((n - 1) + (t ? l / t : 0)) / total) : null,
+    }));
+    done.add(n);
+  }
+  const out = await withRetry(() => xhrJson(`/api/uploads/${encodeURIComponent(session.id)}/complete`, { method: 'POST', contentType: 'application/json', body: '{}' }));
+  dropResume(sha);
+  return out.file;
+}
+
+/* 内容重复（409）时先让用户确认，再带 force 强传一次。 */
+async function uploadWithConfirm(blob, name, subject, category, onProgress) {
+  try { return await uploadBlob(blob, name, subject, category, { onProgress }); }
+  catch (err) {
+    if (err.status === 409 && confirm((err.message || '这份内容已上传过。') + '\n\n仍然重复上传吗？')) {
+      return uploadBlob(blob, name, subject, category, { onProgress, force: true });
+    }
+    throw err;
+  }
 }
 $('#upload').addEventListener('submit', async e => {
   e.preventDefault(); const form = e.currentTarget, file = form.elements.file.files[0];
   if (!file) { message('先选择一个文件。'); return; }
-  if (file.size > 20 * 1024 * 1024) { message('这个文件有 ' + (file.size / 1048576).toFixed(1) + ' MiB，超过 20 MiB 上限。扫描版 PDF 可以先压缩，或按科目拆成几份再传。'); return; }
+  if (file.size > LIBRARY_MAX_BYTES) { message('这个文件有 ' + (file.size / 1048576).toFixed(1) + ' MiB，超过 20 MiB 上限。扫描版 PDF 可以先压缩，或按科目拆成几份再传。'); return; }
   if (!/\.(pdf|png|jpe?g|webp|txt|md|markdown|json)$/i.test(file.name)) { message('不支持该文件类型。'); return; }
   const button = form.querySelector('button'); button.disabled = true; message('正在上传…');
   try {
     const subject = await ensureSubject(form.elements.subject, form.elements.newSubject);
     const name = form.elements.name.value.trim() || file.name;
-    const created = await uploadBlob(file, name, subject, form.elements.category.value.trim());
+    const created = await uploadWithConfirm(file, name, subject, form.elements.category.value.trim(), frac => message('正在上传… ' + Math.round(frac * 100) + '%（大文件自动分片，断网后重新选择同一文件可续传）'));
     form.reset(); $('#newSubjectRow').hidden = true;
     await refresh();
     const f = allFiles.find(x => String(x.id) === String(created.id)); if (f) selectFile(f);
@@ -77,7 +171,7 @@ $('#pasteForm').addEventListener('submit', async e => {
     const subject = await ensureSubject($('#pasteSubject'), $('#pasteNewSubject'));
     const name = $('#pasteName').value.trim() || ('粘贴文本 ' + new Date().toLocaleDateString('zh-CN'));
     const blob = new Blob([text], {type:'text/plain'});
-    const created = await uploadBlob(blob, name.endsWith('.txt') ? name : name + '.txt', subject, '');
+    const created = await uploadWithConfirm(blob, name.endsWith('.txt') ? name : name + '.txt', subject, '', null);
     $('#pasteText').value = ''; $('#pasteName').value = '';
     await refresh();
     const f = allFiles.find(x => String(x.id) === String(created.id)); if (f) selectFile(f);
@@ -139,14 +233,14 @@ $('#start').addEventListener('click', async () => {
       else if (selectedBlob.type.startsWith('image/') || /\.(png|jpe?g|webp)$/i.test(name)) { const bitmap = await createImageBitmap(selectedBlob); const scale = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height)); const canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(bitmap.width * scale)); canvas.height = Math.max(1, Math.round(bitmap.height * scale)); canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height); bitmap.close(); payloads.push({page:n, text:'', image:canvas.toDataURL('image/jpeg', .8)}); }
       else { const t = await selectedBlob.text(); for (const chunk of (t.length > 100000 ? t.match(/[\s\S]{1,100000}/g) : [t])) payloads.push({page:n, text:chunk}); }
     }
-    let got = 0, skipped = 0;
-    for (let i = 0; i < payloads.length; i += 3) {
-      const chunk = payloads.slice(i, i + 3);
-      $('#progress').textContent = `正在提取第 ${chunk[0].page}–${chunk[chunk.length-1].page} 页（${Math.min(i+3, payloads.length)}/${payloads.length} 页）…`;
+    let got = 0, skipped = 0, cut = 0;
+    for (let i = 0; i < payloads.length; i += 8) {
+      const chunk = payloads.slice(i, i + 8);
+      $('#progress').textContent = `正在提取第 ${chunk[0].page}–${chunk[chunk.length-1].page} 页（${Math.min(i+8, payloads.length)}/${payloads.length} 页）…`;
       const out = await AtlasUser.json('/api/library/' + encodeURIComponent(selected.id) + '/extract', 'POST', {pages:chunk});
-      got += (out.items || []).length; skipped += out.skipped || 0;
+      got += (out.items || []).length; skipped += out.skipped || 0; cut += out.incomplete || 0;
     }
-    $('#progress').textContent = `提取完成，本次得到 ${got} 道草稿（已在下方草稿池）。` + (skipped ? `另有 ${skipped} 条因结构不完整被跳过。` : '');
+    $('#progress').textContent = `提取完成，本次得到 ${got} 道草稿（已在下方草稿池）。` + (skipped ? `另有 ${skipped} 条因结构不完整被跳过。` : '') + (cut ? `其中 ${cut} 道疑似被页边界截断，已在草稿池标为「疑似截断」，补全后可撤下标记。` : '');
     await loadPool();
     document.getElementById('poolSec').scrollIntoView({behavior:'smooth'});
   } catch (err) { $('#progress').textContent = '处理中断：' + err.message + '。已取得的草稿仍在草稿池里。'; await loadPool(); }
@@ -178,19 +272,32 @@ async function loadPool() {
     renderPool();
   } catch (err) { $('#pool').innerHTML = '<p>草稿池加载失败：' + esc(err.message) + '</p>'; }
 }
+const pagesOf = d => (Array.isArray(d.sourcePages) && d.sourcePages.length) ? d.sourcePages : (d.sourcePage ? [d.sourcePage] : []);
+const pagesText = d => { const ps = pagesOf(d); return ps.length > 1 ? `第 ${ps[0]}–${ps[ps.length - 1]} 页` : `第 ${ps[0] || '?'} 页`; };
 function poolVisible() {
   const dup = dupMap();
   return pool.filter(d => {
     if (poolFilter === 'fresh' && d.imported) return false;
     if (poolFilter === 'review' && !(d.imported ? d.qReviewStatus !== 'user_verified' : true)) return false;
     if (poolFilter === 'noanswer' && String(d.answer || '').trim()) return false;
+    if (poolFilter === 'cut' && !d.incomplete) return false;
     if (poolFilter === 'imported' && !d.imported) return false;
     if (poolQuery) { const hay = (d.text || '') + ' ' + (d.kpName || '') + ' ' + (d.fileName || ''); if (!hay.includes(poolQuery)) return false; }
     return true;
   }).map(d => ({ d, dup: dup.has(d.draftId) }));
 }
+/* 审阅预览：题干/答案/解析里的公式走站内 KaTeX 通道渲染，不再只给纯文本原文。 */
+function fillPreviews() {
+  document.querySelectorAll('#pool [data-prev]').forEach(el => {
+    if (el.closest('.deditor') && el.closest('.deditor').hidden) return; /* 只渲染展开的卡片，池子大时不浪费 */
+    const card = el.closest('.dcard'); const d = pool.find(x => x.draftId === card.dataset.card); if (!d) return;
+    const steps = (d.steps || []).filter(s => String(s).trim()).map(s => `<li>${esc(s)}</li>`).join('');
+    el.innerHTML = `<div class="dpv-t">${esc(d.text || '')}</div>` + (d.answer ? `<div class="dpv-a">答案：${esc(d.answer)}</div>` : '') + (steps ? `<ol class="dpv-s">${steps}</ol>` : '');
+    if (window.AtlasKatex) AtlasKatex.render(el);
+  });
+}
 function renderPool() {
-  const chips = [['all','全部'],['fresh','未导入'],['review','待核'],['noanswer','缺答案'],['imported','已导入']];
+  const chips = [['all','全部'],['fresh','未导入'],['review','待核'],['noanswer','缺答案'],['cut','疑似截断'],['imported','已导入']];
   $('#poolChips').innerHTML = chips.map(([k, label]) => `<button type="button" class="chip${poolFilter === k ? ' on' : ''}" data-chip="${k}">${label}</button>`).join('');
   $('#poolChips').querySelectorAll('[data-chip]').forEach(b => b.addEventListener('click', () => { poolFilter = b.dataset.chip; renderPool(); }));
   const bk = $('#batchKind'); if (bk && bk.options.length <= 1) bk.innerHTML = '<option value="">不改</option>' + KINDS.map(k => `<option value="${k}">${k}</option>`).join('');
@@ -203,13 +310,17 @@ function renderPool() {
     const badges = [d.imported ? '<span class="bdg ok">已导入</span>' : '<span class="bdg">未导入</span>',
       dup ? '<span class="bdg warn">疑似重复</span>' : '',
       !String(d.answer || '').trim() ? '<span class="bdg warn">缺答案</span>' : '',
+      pagesOf(d).length > 1 ? `<span class="bdg">跨 ${pagesOf(d).length} 页</span>` : '',
+      d.incomplete ? '<span class="bdg warn">疑似截断</span>' : '',
       (d.imported ? d.qReviewStatus !== 'user_verified' : true) ? '<span class="bdg">待核</span>' : '<span class="bdg ok">已核对</span>'].join('');
     return `<div class="dcard" data-card="${esc(d.draftId)}">
       <div class="dhead"><input type="checkbox" data-pick-d="${esc(d.draftId)}" ${checkedSet.has(d.draftId) && !d.imported ? 'checked' : ''} ${d.imported ? 'disabled' : ''}>
-      <span class="dmeta-line"><b>${esc(d.kind || '题型待补')}</b> · ${esc(d.difficulty || '未标')}${d.kpName ? ' · ' + esc(d.kpName) : ''} · ${esc(d.fileName || '')} 第 ${esc(d.sourcePage || '?')} 页</span>${badges}
+      <span class="dmeta-line"><b>${esc(d.kind || '题型待补')}</b> · ${esc(d.difficulty || '未标')}${d.kpName ? ' · ' + esc(d.kpName) : ''} · ${esc(d.fileName || '')} ${esc(pagesText(d))}</span>${badges}
       <button type="button" class="ghosty" data-expand="${esc(d.draftId)}">${open ? '收起' : '展开编辑'}</button></div>
       <p class="dsum">${esc((d.text || '').slice(0, 150))}</p>
       <div class="deditor" ${open ? '' : 'hidden'}>
+        <div class="dprev" data-prev></div>
+        ${d.incomplete ? `<p class="dmiss">疑似截断：${esc(d.missing || '这道题在原页被切断，内容不完整。')}<label><input type="checkbox" data-f="fixIncomplete"> 我已补全，撤下截断标记</label></p>` : ''}
         <label>题目<textarea data-f="text">${esc(d.text || '')}</textarea></label>
         <label>答案<textarea data-f="answer">${esc(d.answer || '')}</textarea></label>
         <label>解析步骤（每行一步）<textarea data-f="steps">${esc((d.steps || []).join('\n'))}</textarea></label>
@@ -225,12 +336,16 @@ function renderPool() {
     card.querySelectorAll('[data-f]').forEach(el => el.addEventListener('input', () => scheduleSave(card)));
     card.querySelectorAll('select[data-f]').forEach(el => el.addEventListener('change', () => scheduleSave(card)));
   });
+  fillPreviews();
 }
 function renderPoolCountOnly() { const n = pool.filter(d => checkedSet.has(d.draftId) && !d.imported).length; const el = $('#poolCount'); if (el) el.textContent = el.textContent.replace(/已勾选待导入 \d+ 条/, `已勾选待导入 ${n} 条`); }
 function cardFields(card) {
   const get = f => card.querySelector(`[data-f="${f}"]`);
   const sc = parseFloat(get('maxScore').value);
-  return { text: get('text').value, answer: get('answer').value, steps: get('steps').value.split(/\r?\n/).filter(Boolean), kind: get('kind').value, difficulty: get('difficulty').value, kpName: get('kpName').value.trim(), maxScore: Number.isFinite(sc) && sc > 0 ? sc : null };
+  const fields = { text: get('text').value, answer: get('answer').value, steps: get('steps').value.split(/\r?\n/).filter(Boolean), kind: get('kind').value, difficulty: get('difficulty').value, kpName: get('kpName').value.trim(), maxScore: Number.isFinite(sc) && sc > 0 ? sc : null };
+  const fix = get('fixIncomplete');
+  if (fix && fix.checked) { fields.incomplete = false; fields.missing = ''; }
+  return fields;
 }
 function scheduleSave(card) {
   const draftId = card.dataset.card; const d = pool.find(x => x.draftId === draftId); if (!d) return;
@@ -241,6 +356,7 @@ function scheduleSave(card) {
     try {
       const out = await AtlasUser.json('/api/library/' + encodeURIComponent(d.fileId) + '/extract', 'PUT', { draftId, ...cardFields(card) });
       Object.assign(d, out.draft || {});
+      fillPreviews();
       const st2 = card.querySelector('[data-save-state]'); if (st2) st2.textContent = '已自动保存 ' + new Date().toLocaleTimeString('zh-CN', {hour12:false});
     } catch (err) { const st2 = card.querySelector('[data-save-state]'); if (st2) st2.textContent = '保存失败：' + err.message; }
   }, 900);
@@ -299,6 +415,7 @@ function renderQuestions() {
     try { await AtlasUser.json('/api/personal/questions', 'PUT', payload); st.textContent = '已保存'; await refresh(); message('题目已更新。'); }
     catch (err) { st.textContent = '保存失败：' + err.message; b.disabled = false; }
   }));
+  if (window.AtlasKatex) AtlasKatex.render($('#questions'));
 }
 
 /* ---------------- 初始化 ---------------- */

@@ -11,3 +11,6 @@
 #importNote{color:#91683f;white-space:pre-wrap;margin-top:8px}
 .qeditor{margin-top:8px}.qeditor label{display:block}.qeditor textarea{display:block;width:100%;min-height:64px;font-size:13px;line-height:1.5}
 #pasteForm{margin-top:20px;border-top:1px dashed #d5d8cb;padding-top:6px}#pasteForm textarea{display:block;width:100%;font-size:13.5px;line-height:1.5}
+.dprev{background:#fff;border:1px dashed #bdc8be;border-radius:3px;padding:10px 12px;margin:6px 0 10px;font-size:13.5px;line-height:1.65;color:#2e423b}.dprev:empty{display:none}
+.dpv-t{white-space:pre-wrap}.dpv-a{margin-top:6px;white-space:pre-wrap}.dpv-s{margin:6px 0 0;padding-left:20px}.dpv-s li{margin:2px 0}
+.dmiss{background:#f7e8d8;border:1px solid #dfc298;border-radius:3px;padding:8px 10px;font-size:13px;color:#8a5a1d}.dmiss label{display:inline-block;margin:4px 0 0 10px}
