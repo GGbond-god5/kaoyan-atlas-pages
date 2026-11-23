@@ -411,3 +411,7 @@
 - 修复一（学情分析漏计）：analytics.js 的 init 模式过滤只有 paper/diagnostic/mock/ability，漏了 practice 的真题模拟模式 exampaper（同文件 attemptTitle 本有 exampaper 的「真题模拟」标题分支，属过滤遗漏）——演示账号 11-22 的 4 套真题模拟记录在侧栏学情速览可见、学情页却显示空状态。过滤补入 exampaper，analytics.js 版本 v21。
 - 修复二（套卷清单旧缓存）：服务端对普通版过滤 papers.js 已实测生效（未登录直取即为 mock:[]），但 sw.js 对 /assets/ 用 stale-while-revalidate，已缓存旧清单的浏览器首屏仍显示 12 套模拟卷（次屏才刷新）。sw.js 升 atlas-sw-v2（激活即清 v1 旧缓存），且 /assets/papers.js 改网络优先、失败才回缓存——该文件内容随账号版本由服务端过滤，不允许旧缓存冒充。
 - 验证：本地代码级核对（过滤与标题分支一致；SW 分支顺序为 papers 网络优先在 /assets/ SWR 之前）；线上复验待部署后以演示账号执行（学情页应出现真题模拟记录、套卷清单只剩真题）。
+
+## 2026-11-23 参赛版 AI 批改样例接入真实数据
+- `assets/contest-sample.js`：占位样例替换为正式版真实批改结果（主站演示账号导出）——数学取 2021 数学一真题卷第 17 题解答题（9.5/12，整卷 125/152），英语取 2020 英语一真题大作文（12.5/20，含语法纠错/句式升级/改写范文）；维度取批改 breakdown 逐步给分点，作答为手写拍照的 AI 转写（已剔除试卷页眉页脚噪声），`placeholder` 改为 false。
+- 参赛包已用 `node scripts/build-pages.mjs --contest` 重新构建验证（dist-contest 内样例文件含真实数据）；Qoder Sites 需在桌面版重新发布后生效。
