@@ -32,6 +32,7 @@ export async function ensureLayer1(env) {
     `ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'`,
     `ALTER TABLE users ADD COLUMN session_version INTEGER NOT NULL DEFAULT 0`,
     `ALTER TABLE users ADD COLUMN edition TEXT NOT NULL DEFAULT 'normal'`,
+    `ALTER TABLE users ADD COLUMN last_active_at TEXT`,
   ];
   for (const sql of stmts) {
     try {
@@ -49,6 +50,31 @@ export function dayCN(now = Date.now()) {
   const m = String(t.getUTCMonth() + 1).padStart(2, "0");
   const d = String(t.getUTCDate()).padStart(2, "0");
   return `${t.getUTCFullYear()}-${m}-${d}`;
+}
+
+/* ---------------- 活跃打点（管理台在线状态） ---------------- */
+
+/**
+ * 记录用户最后活跃时间（users.last_active_at），供管理台判断在线/活跃状态。
+ * 节流：5 分钟内只写一次（条件 UPDATE，未过期直接跳过）；任何失败都静默，
+ * 绝不影响主流程。会话是无状态令牌（7 天有效），没有服务端会话表，
+ * 因此「在线」只能按最后活跃时间推算，这一点在管理台界面上有注明。
+ */
+export async function touchActivity(env, uid) {
+  if (!uid) return;
+  try {
+    await ensureLayer1(env);
+    const db = await getDb(env);
+    if (!db) return;
+    const nowIso = new Date().toISOString();
+    const staleIso = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    await db
+      .prepare("UPDATE users SET last_active_at = ? WHERE id = ? AND (last_active_at IS NULL OR last_active_at < ?)")
+      .bind(nowIso, uid, staleIso)
+      .run();
+  } catch {
+    /* 打点失败不影响业务 */
+  }
 }
 
 /* ---------------- 管理员判定 ---------------- */

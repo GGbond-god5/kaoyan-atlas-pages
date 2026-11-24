@@ -63,29 +63,167 @@ async function stats(env) {
 async function users(env) {
   const db = env.DB;
   const day = dayCN();
-  const rows = await db
+  const day7 = dayCN(Date.now() - 6 * 86400000);
+  try {
+    const rows = await db
+      .prepare(
+        `SELECT u.phone, u.nickname, u.created_at, u.last_login_at, u.last_active_at, u.banned, u.role, u.edition,
+                COALESCE(SUM(p.calls),0) AS ai_calls_today,
+                (SELECT COALESCE(SUM(calls),0) FROM platform_usage WHERE uid = u.id AND day >= ?) AS ai_calls_7d,
+                (SELECT COUNT(*) FROM platform_attempts WHERE uid = u.id) AS attempts_total,
+                (SELECT MAX(json_extract(data, '$.createdAt')) FROM platform_attempts WHERE uid = u.id) AS last_attempt_at
+         FROM users u
+         LEFT JOIN platform_usage p ON p.uid = u.id AND p.day = ?
+         GROUP BY u.phone
+         ORDER BY u.created_at DESC
+         LIMIT 200`
+      )
+      .bind(day7, day)
+      .all();
+    return (rows.results || []).map((r) => ({
+      phone: maskPhone(r.phone),
+      phoneFull: r.phone,
+      nickname: r.nickname,
+      createdAt: r.created_at,
+      lastLoginAt: r.last_login_at,
+      lastActiveAt: r.last_active_at || null,
+      banned: Boolean(r.banned),
+      role: r.role || "user",
+      edition: r.edition || "normal",
+      aiCallsToday: r.ai_calls_today || 0,
+      aiCalls7d: r.ai_calls_7d || 0,
+      attemptsTotal: r.attempts_total || 0,
+      lastAttemptAt: r.last_attempt_at || null,
+    }));
+  } catch {
+    // platform_attempts 等表尚未创建（全新部署）时退回基础字段，保证用户列表可用
+    const rows = await db
+      .prepare(
+        `SELECT u.phone, u.nickname, u.created_at, u.last_login_at, u.last_active_at, u.banned, u.role, u.edition,
+                COALESCE(SUM(p.calls),0) AS ai_calls_today
+         FROM users u
+         LEFT JOIN platform_usage p ON p.uid = u.id AND p.day = ?
+         GROUP BY u.phone
+         ORDER BY u.created_at DESC
+         LIMIT 200`
+      )
+      .bind(day)
+      .all();
+    return (rows.results || []).map((r) => ({
+      phone: maskPhone(r.phone),
+      phoneFull: r.phone,
+      nickname: r.nickname,
+      createdAt: r.created_at,
+      lastLoginAt: r.last_login_at,
+      lastActiveAt: r.last_active_at || null,
+      banned: Boolean(r.banned),
+      role: r.role || "user",
+      edition: r.edition || "normal",
+      aiCallsToday: r.ai_calls_today || 0,
+      aiCalls7d: 0,
+      attemptsTotal: 0,
+      lastAttemptAt: null,
+    }));
+  }
+}
+
+/** 单个用户的使用记录：账号状态 + 最近套卷 + 近 14 天 AI 用量 + 资料/教练计数 */
+async function userDetail(env, phone) {
+  const db = env.DB;
+  if (!phone) return null;
+  const u = await db
     .prepare(
-      `SELECT u.phone, u.nickname, u.created_at, u.last_login_at, u.banned, u.role, u.edition,
-              COALESCE(SUM(p.calls),0) AS ai_calls_today
-       FROM users u
-       LEFT JOIN platform_usage p ON p.uid = u.id AND p.day = ?
-       GROUP BY u.phone
-       ORDER BY u.created_at DESC
-       LIMIT 200`
+      "SELECT id, phone, nickname, created_at, last_login_at, last_active_at, banned, role, edition FROM users WHERE phone = ?"
     )
-    .bind(day)
-    .all();
-  return (rows.results || []).map((r) => ({
-    phone: maskPhone(r.phone),
-    phoneFull: r.phone,
-    nickname: r.nickname,
-    createdAt: r.created_at,
-    lastLoginAt: r.last_login_at,
-    banned: Boolean(r.banned),
-    role: r.role || "user",
-    edition: r.edition || "normal",
-    aiCallsToday: r.ai_calls_today || 0,
-  }));
+    .bind(phone)
+    .first()
+    .catch(() => null);
+  if (!u) return null;
+  const uid = u.id;
+  const attAgg = await db
+    .prepare(
+      `SELECT COUNT(*) AS total,
+              COALESCE(SUM(CASE WHEN json_extract(data, '$.status') = 'graded' THEN 1 ELSE 0 END), 0) AS graded
+       FROM platform_attempts WHERE uid = ?`
+    )
+    .bind(uid)
+    .first()
+    .catch(() => ({ total: 0, graded: 0 }));
+  const recent = await db
+    .prepare(
+      `SELECT id,
+              json_extract(data, '$.createdAt') AS created_at,
+              json_extract(data, '$.subject') AS subject,
+              json_extract(data, '$.mode') AS mode,
+              json_extract(data, '$.status') AS status,
+              json_extract(data, '$.score') AS score,
+              json_extract(data, '$.knownMaxScore') AS max_score,
+              json_extract(data, '$.questions[0].chapterTitle') AS title
+       FROM platform_attempts WHERE uid = ?
+       ORDER BY created_at DESC LIMIT 12`
+    )
+    .bind(uid)
+    .all()
+    .catch(() => ({ results: [] }));
+  const usage = await db
+    .prepare("SELECT day, kind, calls, tokens FROM platform_usage WHERE uid = ? AND day >= ? ORDER BY day DESC, kind")
+    .bind(uid, dayCN(Date.now() - 13 * 86400000))
+    .all()
+    .catch(() => ({ results: [] }));
+  const filesTotal = await db
+    .prepare("SELECT COUNT(*) AS n FROM platform_files WHERE uid = ?")
+    .bind(uid)
+    .first()
+    .catch(() => ({ n: 0 }));
+  const filesRecent = await db
+    .prepare("SELECT name, subject, size, status, created_at FROM platform_files WHERE uid = ? ORDER BY created_at DESC LIMIT 5")
+    .bind(uid)
+    .all()
+    .catch(() => ({ results: [] }));
+  const coach = await db
+    .prepare("SELECT COUNT(*) AS n FROM platform_coach WHERE uid = ?")
+    .bind(uid)
+    .first()
+    .catch(() => ({ n: 0 }));
+  return {
+    account: {
+      phone: maskPhone(u.phone),
+      phoneFull: u.phone,
+      nickname: u.nickname,
+      createdAt: u.created_at,
+      lastLoginAt: u.last_login_at,
+      lastActiveAt: u.last_active_at || null,
+      banned: Boolean(u.banned),
+      role: u.role || "user",
+      edition: u.edition || "normal",
+    },
+    attempts: {
+      total: attAgg?.total || 0,
+      graded: attAgg?.graded || 0,
+      recent: (recent.results || []).map((r) => ({
+        id: r.id,
+        createdAt: r.created_at,
+        subject: r.subject || "",
+        mode: r.mode || "",
+        status: r.status || "",
+        score: r.score,
+        maxScore: r.max_score,
+        title: r.title || "",
+      })),
+    },
+    aiUsage: (usage.results || []).map((r) => ({ day: r.day, kind: r.kind, calls: r.calls || 0, tokens: r.tokens || 0 })),
+    files: {
+      total: filesTotal?.n || 0,
+      recent: (filesRecent.results || []).map((r) => ({
+        name: r.name,
+        subject: r.subject || "",
+        size: r.size || 0,
+        status: r.status || "",
+        createdAt: r.created_at,
+      })),
+    },
+    coachCount: coach?.n || 0,
+  };
 }
 
 async function betaCodesList(env) {
@@ -121,6 +259,11 @@ export async function onRequestGet({ request, env }) {
   try {
     if (action === "stats") return ok({ stats: await stats(env) });
     if (action === "users") return ok({ users: await users(env) });
+    if (action === "userDetail") {
+      const detail = await userDetail(env, new URL(request.url).searchParams.get("phone") || "");
+      if (!detail) return fail(404, "用户不存在");
+      return ok({ detail });
+    }
     if (action === "invites") return ok({ invites: await invitesList(env) });
     if (action === "betaCodes") return ok({ betaCodes: await betaCodesList(env) });
     if (action === "announcement") return ok({ announcement: await getMeta(env, "announcement") });

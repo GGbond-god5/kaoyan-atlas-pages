@@ -41,10 +41,17 @@
       <h2>用户（最近 200 个）</h2>
       <div class="table-wrap">
         <table class="tbl" id="usersTbl">
-          <thead><tr><th>用户</th><th>注册</th><th>最近登录</th><th>今日 AI</th><th>状态</th><th>操作</th></tr></thead>
+          <thead><tr><th>用户</th><th>注册</th><th>最近登录</th><th>活跃状态</th><th>做题</th><th>AI 用量</th><th>状态</th><th>操作</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
+      <p class="note">活跃状态按用户最后一次调用接口的时间推算：10 分钟内为「在线」，24 小时内为「今日活跃」。会话是 7 天有效的无状态令牌、服务端没有逐个会话记录，用户登录后不退出不会单独显示，只能以最后活跃时间判断。</p>
+    </section>
+
+    <section class="card" id="userDetailCard" hidden>
+      <h2>使用记录 · <span id="udTitle"></span></h2>
+      <div id="udBody"><p class="note">加载中…</p></div>
+      <p><button class="btn ghost" id="udClose" type="button">关闭</button></p>
     </section>
 
     <section class="card">
@@ -109,7 +116,7 @@
 
 <script src="assets/config.js?v=2027-11-12"></script>
 <script src="assets/auth.js?v=4"></script>
-<script src="assets/admin.js?v=3"></script>
+<script src="assets/admin.js?v=4"></script>
 <script src="assets/ai-config.js?v=1"></script>
 <script src="assets/account-hub.js?v=7"></script>
 </body>

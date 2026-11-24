@@ -3,7 +3,7 @@ import { ok, fail, readJson } from './http.js';
 import { IMPORT_PROMPT } from './import-prompt.js';
 import { allocatePaperDetailed, questionScore } from './scoring.js';
 import { gradeSystemFor, TRANSCRIBE_SYSTEM, GUIDE_SYSTEM, ANALYSIS_SYSTEM, ANALYSIS_SUBJECT_GUIDE, PLAIN_STYLE } from './prompts.js';
-import { checkQuota, noteUsage, getMeta } from './layer1.js';
+import { checkQuota, noteUsage, getMeta, touchActivity } from './layer1.js';
 import { ownsUserObjectKey } from './object-keys.js';
 
 const subjects = new Set(['math','math2','math3','english','english2','mechanics','politics']);
@@ -463,6 +463,7 @@ export async function handle(request, env, action, params = {}) {
   const uid = await auth(request,env);
   if (!uid) return fail(401,'请先登录');
   if (!env.DB) return fail(503,'数据库未配置');
+  await touchActivity(env, uid);
   let userCfg = null;
   try { userCfg = userAiConfig(request, env); }
   catch (e) { return fail(400, e.message); }
