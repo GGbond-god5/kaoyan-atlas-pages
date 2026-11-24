@@ -117,8 +117,9 @@
       document.getElementById('udTitle').textContent = (a.nickname || '') + '（' + a.phone + '）';
       var attRows = v.attempts.recent.map(function (r) {
         var name = r.title || (SUBJECT_LABEL[r.subject] || r.subject || '套卷');
-        var score = r.status === 'graded' && r.score != null ? r.score + (r.maxScore ? ' / ' + r.maxScore : '') : '—';
-        var st = r.status === 'graded' ? '已批改' : (r.status === 'submitted' ? '批改中' : '作答中');
+        var score = r.gradedQuestions > 0 && r.score != null ? r.score + (r.maxScore ? ' / ' + r.maxScore : '') : '—';
+        var st = r.gradedQuestions === 0 ? '未批改' :
+          (r.totalQuestions && r.gradedQuestions >= r.totalQuestions ? '已批改' : '部分批改 ' + r.gradedQuestions + '/' + r.totalQuestions + ' 题');
         return '<tr><td>' + esc(r.createdAt ? A.fmtTime(r.createdAt) : '—') + '</td><td>' + esc(name) + '</td><td>' + st + '</td><td>' + score + '</td></tr>';
       }).join('');
       var aiRows = v.aiUsage.map(function (r) {

@@ -140,31 +140,35 @@ async function userDetail(env, phone) {
     .catch(() => null);
   if (!u) return null;
   const uid = u.id;
-  const attAgg = await db
-    .prepare(
-      `SELECT COUNT(*) AS total,
-              COALESCE(SUM(CASE WHEN json_extract(data, '$.status') = 'graded' THEN 1 ELSE 0 END), 0) AS graded
-       FROM platform_attempts WHERE uid = ?`
-    )
-    .bind(uid)
-    .first()
-    .catch(() => ({ total: 0, graded: 0 }));
-  const recent = await db
-    .prepare(
-      `SELECT id,
-              json_extract(data, '$.createdAt') AS created_at,
-              json_extract(data, '$.subject') AS subject,
-              json_extract(data, '$.mode') AS mode,
-              json_extract(data, '$.status') AS status,
-              json_extract(data, '$.score') AS score,
-              json_extract(data, '$.knownMaxScore') AS max_score,
-              json_extract(data, '$.questions[0].chapterTitle') AS title
-       FROM platform_attempts WHERE uid = ?
-       ORDER BY created_at DESC LIMIT 12`
-    )
+  // 套卷的批改状态与得分以 results 逐题结果为准（与学情分析同一口径）：
+  // 存储 blob 里的 status/score 字段可能滞后，读时按 results 重算。
+  const attRows = await db
+    .prepare("SELECT id, data FROM platform_attempts WHERE uid = ?")
     .bind(uid)
     .all()
     .catch(() => ({ results: [] }));
+  const parsed = [];
+  let gradedPapers = 0;
+  for (const r of attRows.results || []) {
+    let obj = null;
+    try { obj = JSON.parse(r.data); } catch { obj = null; }
+    if (!obj) continue;
+    const results = Object.values(obj.results || {}).filter((x) => x && typeof x === "object");
+    const gradedQs = results.filter((x) => x.status === "graded");
+    if (gradedQs.length) gradedPapers++;
+    parsed.push({
+      id: obj.id || r.id,
+      createdAt: obj.createdAt || null,
+      subject: obj.subject || "",
+      mode: obj.mode || "",
+      title: obj.questions?.[0]?.chapterTitle || "",
+      totalQuestions: Array.isArray(obj.questions) ? obj.questions.length : 0,
+      gradedQuestions: gradedQs.length,
+      score: gradedQs.length ? gradedQs.reduce((s, x) => s + (Number(x.score) || 0), 0) : null,
+      maxScore: gradedQs.length ? gradedQs.reduce((s, x) => s + (Number(x.maxScore) || 0), 0) : null,
+    });
+  }
+  parsed.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
   const usage = await db
     .prepare("SELECT day, kind, calls, tokens FROM platform_usage WHERE uid = ? AND day >= ? ORDER BY day DESC, kind")
     .bind(uid, dayCN(Date.now() - 13 * 86400000))
@@ -198,18 +202,9 @@ async function userDetail(env, phone) {
       edition: u.edition || "normal",
     },
     attempts: {
-      total: attAgg?.total || 0,
-      graded: attAgg?.graded || 0,
-      recent: (recent.results || []).map((r) => ({
-        id: r.id,
-        createdAt: r.created_at,
-        subject: r.subject || "",
-        mode: r.mode || "",
-        status: r.status || "",
-        score: r.score,
-        maxScore: r.max_score,
-        title: r.title || "",
-      })),
+      total: parsed.length,
+      graded: gradedPapers,
+      recent: parsed.slice(0, 12),
     },
     aiUsage: (usage.results || []).map((r) => ({ day: r.day, kind: r.kind, calls: r.calls || 0, tokens: r.tokens || 0 })),
     files: {

@@ -24,8 +24,9 @@ sql.prepare('INSERT INTO users (phone,id,nickname,salt,hash,iterations,created_a
 sql.prepare('INSERT INTO users (phone,id,nickname,salt,hash,iterations,created_at) VALUES (?,?,?,?,?,?,?)')
   .run('13800000001', 'u1', '普通同学', 's', 'h', 1000, now);
 
-const att1 = { id: 'a1', createdAt: '2026-11-20T08:00:00.000Z', subject: 'math', mode: 'paper', status: 'graded', score: 82, knownMaxScore: 100, questions: [{ chapterTitle: '数学一 2021' }] };
-const att2 = { id: 'a2', createdAt: '2026-11-22T09:30:00.000Z', subject: 'english', mode: 'paper', status: 'draft', questions: [{ chapterTitle: '英语一 2020' }] };
+// blob 顶层故意放滞后的 status/score：详情必须按 results 逐题重算（与学情分析同口径）
+const att1 = { id: 'a1', createdAt: '2026-11-20T08:00:00.000Z', subject: 'math', mode: 'paper', status: 'pending', score: 82, knownMaxScore: 100, questions: [{ id: 'q1', chapterTitle: '数学一 2021' }, { id: 'q2', chapterTitle: '数学一 2021' }], results: { q1: { status: 'graded', score: 10, maxScore: 12 }, q2: { status: 'graded', score: 20, maxScore: 28 } } };
+const att2 = { id: 'a2', createdAt: '2026-11-22T09:30:00.000Z', subject: 'english', mode: 'paper', status: 'pending', questions: [{ id: 'q1', chapterTitle: '英语一 2020' }, { id: 'q2', chapterTitle: '英语一 2020' }], results: { q1: { status: 'graded', score: 5, maxScore: 10 } } };
 sql.prepare('INSERT INTO platform_attempts VALUES (?,?,?)').run('u1', 'a1', JSON.stringify(att1));
 sql.prepare('INSERT INTO platform_attempts VALUES (?,?,?)').run('u1', 'a2', JSON.stringify(att2));
 sql.prepare('INSERT INTO platform_files VALUES (?,?,?,?,?,?,?,?,?)').run('f1', 'u1', '讲义.pdf', 'math', 1234, 'application/pdf', 'u1/f1', 'ready', '2026-11-21T10:00:00.000Z');
@@ -91,10 +92,12 @@ assert.ok(u1.lastActiveAt, '列表应带最后活跃时间');
 const detail = await call('https://example.test/api/admin?action=userDetail&phone=13800000001', adminToken);
 assert.equal(detail.status, 200);
 assert.equal(detail.detail.attempts.total, 2);
-assert.equal(detail.detail.attempts.graded, 1, '已批改套数按 status=graded 统计');
+assert.equal(detail.detail.attempts.graded, 2, '已批改套数按「至少 1 题已批改」统计（与学情分析同口径）');
 assert.equal(detail.detail.attempts.recent[0].id, 'a2', '最近套卷按 createdAt 倒序');
+assert.equal(detail.detail.attempts.recent[0].gradedQuestions, 1, '部分批改按 results 逐题计数');
 assert.equal(detail.detail.attempts.recent[1].title, '数学一 2021', '标题取首题 chapterTitle');
-assert.equal(detail.detail.attempts.recent[1].score, 82);
+assert.equal(detail.detail.attempts.recent[1].score, 30, '得分按 results 求和（10+20），不取 blob 顶层滞后值 82');
+assert.equal(detail.detail.attempts.recent[1].maxScore, 40);
 assert.equal(detail.detail.aiUsage.length, 2, '近 14 天 AI 用量两行');
 assert.equal(detail.detail.files.total, 1);
 assert.equal(detail.detail.files.recent[0].name, '讲义.pdf');
