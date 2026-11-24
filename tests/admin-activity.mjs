@@ -15,6 +15,7 @@ sql.exec(`CREATE TABLE users (
   session_version INTEGER NOT NULL DEFAULT 0
 )`);
 sql.exec(`CREATE TABLE platform_attempts (uid TEXT NOT NULL, id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,id))`);
+sql.exec(`CREATE TABLE platform_results (uid TEXT NOT NULL, attempt_id TEXT NOT NULL, question_id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,attempt_id,question_id))`);
 sql.exec(`CREATE TABLE platform_files (id TEXT PRIMARY KEY, uid TEXT NOT NULL, name TEXT NOT NULL, subject TEXT NOT NULL, size INTEGER NOT NULL, mime TEXT NOT NULL, object_key TEXT NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL)`);
 sql.exec(`CREATE TABLE platform_coach (uid TEXT NOT NULL, id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(uid,id))`);
 
@@ -24,11 +25,16 @@ sql.prepare('INSERT INTO users (phone,id,nickname,salt,hash,iterations,created_a
 sql.prepare('INSERT INTO users (phone,id,nickname,salt,hash,iterations,created_at) VALUES (?,?,?,?,?,?,?)')
   .run('13800000001', 'u1', '普通同学', 's', 'h', 1000, now);
 
-// blob 顶层故意放滞后的 status/score：详情必须按 results 逐题重算（与学情分析同口径）
-const att1 = { id: 'a1', createdAt: '2026-11-20T08:00:00.000Z', subject: 'math', mode: 'paper', status: 'pending', score: 82, knownMaxScore: 100, questions: [{ id: 'q1', chapterTitle: '数学一 2021' }, { id: 'q2', chapterTitle: '数学一 2021' }], results: { q1: { status: 'graded', score: 10, maxScore: 12 }, q2: { status: 'graded', score: 20, maxScore: 28 } } };
-const att2 = { id: 'a2', createdAt: '2026-11-22T09:30:00.000Z', subject: 'english', mode: 'paper', status: 'pending', questions: [{ id: 'q1', chapterTitle: '英语一 2020' }, { id: 'q2', chapterTitle: '英语一 2020' }], results: { q1: { status: 'graded', score: 5, maxScore: 10 } } };
+// blob 顶层与 blob 内 results 故意放误导值：真实批改结果只在 platform_results 表，
+// attempt() 读取时整表覆盖 blob 的 results——详情必须同样处理。
+const att1 = { id: 'a1', createdAt: '2026-11-20T08:00:00.000Z', subject: 'math', mode: 'paper', status: 'pending', score: 82, knownMaxScore: 100, questions: [{ id: 'q1', chapterTitle: '数学一 2021' }, { id: 'q2', chapterTitle: '数学一 2021' }], results: { q1: { status: 'graded', score: 999, maxScore: 999 } } };
+const att2 = { id: 'a2', createdAt: '2026-11-22T09:30:00.000Z', subject: 'english', mode: 'paper', status: 'pending', questions: [{ id: 'q1', chapterTitle: '英语一 2020' }, { id: 'q2', chapterTitle: '英语一 2020' }], results: {} };
 sql.prepare('INSERT INTO platform_attempts VALUES (?,?,?)').run('u1', 'a1', JSON.stringify(att1));
 sql.prepare('INSERT INTO platform_attempts VALUES (?,?,?)').run('u1', 'a2', JSON.stringify(att2));
+sql.prepare('INSERT INTO platform_results VALUES (?,?,?,?)').run('u1', 'a1', 'q1', JSON.stringify({ status: 'graded', score: 10, maxScore: 12 }));
+sql.prepare('INSERT INTO platform_results VALUES (?,?,?,?)').run('u1', 'a1', 'q2', JSON.stringify({ status: 'graded', score: 20, maxScore: 28 }));
+sql.prepare('INSERT INTO platform_results VALUES (?,?,?,?)').run('u1', 'a2', 'q1', JSON.stringify({ status: 'graded', score: 5, maxScore: 10 }));
+sql.prepare('INSERT INTO platform_results VALUES (?,?,?,?)').run('u1', 'a2', 'q2', JSON.stringify({ status: 'pending', score: null, maxScore: 10 }));
 sql.prepare('INSERT INTO platform_files VALUES (?,?,?,?,?,?,?,?,?)').run('f1', 'u1', '讲义.pdf', 'math', 1234, 'application/pdf', 'u1/f1', 'ready', '2026-11-21T10:00:00.000Z');
 sql.prepare('INSERT INTO platform_coach VALUES (?,?,?)').run('u1', 'c1', '{}');
 
@@ -94,9 +100,9 @@ assert.equal(detail.status, 200);
 assert.equal(detail.detail.attempts.total, 2);
 assert.equal(detail.detail.attempts.graded, 2, '已批改套数按「至少 1 题已批改」统计（与学情分析同口径）');
 assert.equal(detail.detail.attempts.recent[0].id, 'a2', '最近套卷按 createdAt 倒序');
-assert.equal(detail.detail.attempts.recent[0].gradedQuestions, 1, '部分批改按 results 逐题计数');
+assert.equal(detail.detail.attempts.recent[0].gradedQuestions, 1, '部分批改按 platform_results 逐题计数');
 assert.equal(detail.detail.attempts.recent[1].title, '数学一 2021', '标题取首题 chapterTitle');
-assert.equal(detail.detail.attempts.recent[1].score, 30, '得分按 results 求和（10+20），不取 blob 顶层滞后值 82');
+assert.equal(detail.detail.attempts.recent[1].score, 30, '得分按 platform_results 求和（10+20），不取 blob 内的误导值');
 assert.equal(detail.detail.attempts.recent[1].maxScore, 40);
 assert.equal(detail.detail.aiUsage.length, 2, '近 14 天 AI 用量两行');
 assert.equal(detail.detail.files.total, 1);

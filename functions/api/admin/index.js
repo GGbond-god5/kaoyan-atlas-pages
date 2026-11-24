@@ -140,20 +140,37 @@ async function userDetail(env, phone) {
     .catch(() => null);
   if (!u) return null;
   const uid = u.id;
-  // 套卷的批改状态与得分以 results 逐题结果为准（与学情分析同一口径）：
-  // 存储 blob 里的 status/score 字段可能滞后，读时按 results 重算。
+  // 套卷的批改状态与得分以 platform_results 逐题结果为准（与学情分析同一口径）：
+  // attempt blob 里的 results 字段在读取时会被整表覆盖（见 platform.js 的 attempt())，
+  // 不能直接信 blob 顶层字段。
   const attRows = await db
     .prepare("SELECT id, data FROM platform_attempts WHERE uid = ?")
     .bind(uid)
     .all()
     .catch(() => ({ results: [] }));
+  const resRows = await db
+    .prepare(
+      `SELECT attempt_id,
+              json_extract(data, '$.status') AS status,
+              json_extract(data, '$.score') AS score,
+              json_extract(data, '$.maxScore') AS max_score
+       FROM platform_results WHERE uid = ?`
+    )
+    .bind(uid)
+    .all()
+    .catch(() => ({ results: [] }));
+  const byAttempt = new Map();
+  for (const r of resRows.results || []) {
+    if (!byAttempt.has(r.attempt_id)) byAttempt.set(r.attempt_id, []);
+    byAttempt.get(r.attempt_id).push(r);
+  }
   const parsed = [];
   let gradedPapers = 0;
   for (const r of attRows.results || []) {
     let obj = null;
     try { obj = JSON.parse(r.data); } catch { obj = null; }
     if (!obj) continue;
-    const results = Object.values(obj.results || {}).filter((x) => x && typeof x === "object");
+    const results = byAttempt.get(obj.id || r.id) || [];
     const gradedQs = results.filter((x) => x.status === "graded");
     if (gradedQs.length) gradedPapers++;
     parsed.push({
@@ -165,7 +182,7 @@ async function userDetail(env, phone) {
       totalQuestions: Array.isArray(obj.questions) ? obj.questions.length : 0,
       gradedQuestions: gradedQs.length,
       score: gradedQs.length ? gradedQs.reduce((s, x) => s + (Number(x.score) || 0), 0) : null,
-      maxScore: gradedQs.length ? gradedQs.reduce((s, x) => s + (Number(x.maxScore) || 0), 0) : null,
+      maxScore: gradedQs.length ? gradedQs.reduce((s, x) => s + (Number(x.max_score) || 0), 0) : null,
     });
   }
   parsed.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));

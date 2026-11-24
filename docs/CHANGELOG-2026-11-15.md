@@ -424,3 +424,4 @@
 - 管理台前端：用户表新增「活跃状态」（圆点+相对时间）、「做题」、「AI 用量（今日/7 日）」列与「使用记录」按钮，详情卡片展示上述记录；admin.js 版本升 v=4。
 - 验证：新增 `tests/admin-activity.mjs`（补列与节流打点、列表聚合、详情字段、403/404 边界），已接入 `test:backend`，全套通过；`npm run check` 通过。
 - 上线验收修正（同日）：userDetail 的已批改口径改为按 attempt 的 results 逐题重算（存储 blob 顶层 status/score 会滞后，线上 GGBOND 4 套曾误报「已批改 0 套」）；已批改套数 = 至少 1 题已批改的套数，明细区分 已批改/部分批改 x/y 题/未批改，得分取 results 求和——与学情分析 paperStats 同一口径。admin.js 升 v=5。
+- 二次修正（同日）：逐题批改结果实际存放在 platform_results 表，attempt() 读取时以整表覆盖 blob 的 results 字段；userDetail 改为按 platform_results 聚合（json_extract 取 status/score/maxScore），与 attempt() 完全同口径。测试夹具同步改为 platform_results 驱动并放误导性 blob 值防回归。
