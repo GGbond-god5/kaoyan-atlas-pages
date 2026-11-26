@@ -39,6 +39,7 @@ margin-bottom:1.4mm;font-weight:600}
 .disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
 .kfig{margin:3mm 0;break-inside:avoid}
 .kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig img{display:block;max-width:100%;height:auto;border:.4pt solid var(--rule2);background:#fff}
 .kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
 
 /* section kicker */
@@ -324,7 +325,24 @@ border:.6pt solid var(--ink3);border-radius:.4mm}
   <text class="sub" x="565" y="160">P(μ−2σ&lt;X≤μ+2σ)=0.9545</text>
   <text class="sub" x="565" y="184">P(μ−3σ&lt;X≤μ+3σ)=0.9973</text>
   <text class="sub" x="565" y="214">对称性：Φ(−z)=1−Φ(z)</text>
-</svg><figcaption>正态分布与三σ原则</figcaption></figure>
+</svg><figcaption>正态分布与三σ原则</figcaption></figure><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 230" width="560" height="230">
+  <rect width="560" height="230" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="20" y="26" font-size="13" font-weight="700" fill="#0f172a">正态分布 N(μ, σ²) 的 3σ 原则与双侧分位数 u_(α/2)</text>
+  <path d="M 50 185 C 120 185, 160 175, 200 120 C 230 78, 255 55, 280 55 C 305 55, 330 78, 360 120 C 400 175, 440 185, 510 185" fill="#dbeafe" fill-opacity="0.55" stroke="#2563eb" stroke-width="2.5"/>
+  <line x1="40" y1="185" x2="520" y2="185" stroke="#475569" stroke-width="1.5"/>
+  <line x1="280" y1="50" x2="280" y2="195" stroke="#1e293b" stroke-dasharray="4,3"/>
+  <line x1="215" y1="100" x2="215" y2="192" stroke="#059669" stroke-dasharray="3,3"/>
+  <line x1="345" y1="100" x2="345" y2="192" stroke="#059669" stroke-dasharray="3,3"/>
+  <line x1="150" y1="168" x2="150" y2="192" stroke="#d97706" stroke-dasharray="3,3"/>
+  <line x1="410" y1="168" x2="410" y2="192" stroke="#d97706" stroke-dasharray="3,3"/>
+  <text x="275" y="210" font-size="12" font-weight="700" fill="#0f172a">μ</text>
+  <text x="202" y="210" font-size="11" fill="#059669">μ-σ</text>
+  <text x="332" y="210" font-size="11" fill="#059669">μ+σ</text>
+  <text x="135" y="210" font-size="11" fill="#d97706">μ-2σ</text>
+  <text x="395" y="210" font-size="11" fill="#d97706">μ+2σ</text>
+  <text x="255" y="135" font-size="12" font-weight="700" fill="#1d4ed8">68.27%</text>
+  <text x="255" y="160" font-size="11" fill="#b45309">2σ: 95.45% | 3σ: 99.73%</text>
+</svg><figcaption>正态分布对称性、3σ 概率分布与标准化 Z=(X-μ)/σ</figcaption></figure>
   <div class="formulas"><div class="f-row"><span class="f-tex">\(Z=\dfrac{X-\mu}{\sigma}\sim N(0,1)\)</span><span class="f-note">标准化</span></div><div class="f-row"><span class="f-tex">\(P(X\le x)=\Phi\!\left(\dfrac{x-\mu}{\sigma}\right)\)</span><span class="f-note">查表</span></div><div class="f-row"><span class="f-tex">\(\Phi(-z)=1-\Phi(z)\)</span><span class="f-note">对称性，负值转正</span></div></div>
   <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="正态分布">
   <style>

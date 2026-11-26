@@ -39,6 +39,7 @@ margin-bottom:1.4mm;font-weight:600}
 .disclaimer{margin:3mm 0 0;font-size:7.2pt;color:var(--ink3);letter-spacing:.02em}
 .kfig{margin:3mm 0;break-inside:avoid}
 .kfig svg{display:block;width:100%;height:auto;border:.4pt solid var(--rule2);background:var(--paper2)}
+.kfig img{display:block;max-width:100%;height:auto;border:.4pt solid var(--rule2);background:#fff}
 .kfig figcaption{font-size:6.7pt;color:var(--ink3);margin-top:1.2mm;letter-spacing:.04em}
 
 /* section kicker */
@@ -155,8 +156,31 @@ border:.6pt solid var(--ink3);border-radius:.4mm}
     <span class="kp-tags"><span class="tag tag-plain ">基础</span><span class="tag tag-hot ">高频</span></span>
   </div>
   <p class="kp-core">级数收敛的必要条件是通项趋于零，但<strong>通项趋于零不能推出收敛</strong>（调和级数）。判断发散最快的一招：通项不趋于零直接发散；其次看是否为几何级数或 p 级数。</p>
-  
-  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sum u_n\) 收敛 \(\Rightarrow\lim u_n=0\)</span><span class="f-note">逆命题不成立</span></div><div class="f-row"><span class="f-tex">\(\sum_{n=1}^\infty\dfrac1{n^p}\)：\(p&gt;1\) 收敛</span><span class="f-note">p 级数</span></div><div class="f-row"><span class="f-tex">\(\sum q^n\)：\(|q|&lt;1\) 收敛</span><span class="f-note">几何级数</span></div></div>
+  <figure class="kfig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" width="560" height="200">
+  <rect width="560" height="200" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="20" y="26" font-size="13" font-weight="700" fill="#0f172a">正项级数判别与幂级数收敛域结构图</text>
+  <rect x="24" y="46" width="150" height="54" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="36" y="68" font-size="12" font-weight="700" fill="#1d4ed8">1. 先判必要条件</text>
+  <text x="36" y="86" font-size="11" fill="#334155">lim u_n ≠ 0 ⇒ 必发散</text>
+  <line x1="174" y1="73" x2="202" y2="73" stroke="#64748b" stroke-width="1.5"/>
+  <rect x="202" y="46" width="160" height="54" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+  <text x="214" y="68" font-size="12" font-weight="700" fill="#047857">2. 正项判别法选择</text>
+  <text x="214" y="86" font-size="11" fill="#334155">比值(n!)/根值(n次幂)/积分</text>
+  <line x1="362" y1="73" x2="390" y2="73" stroke="#64748b" stroke-width="1.5"/>
+  <rect x="390" y="46" width="146" height="54" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="402" y="68" font-size="12" font-weight="700" fill="#b45309">3. 交错/一般级数</text>
+  <text x="402" y="86" font-size="11" fill="#334155">莱布尼茨 | 绝对/条件收敛</text>
+  <line x1="60" y1="155" x2="500" y2="155" stroke="#475569" stroke-width="1.8"/>
+  <line x1="150" y1="145" x2="150" y2="165" stroke="#ef4444" stroke-width="2"/>
+  <line x1="280" y1="145" x2="280" y2="165" stroke="#1e293b" stroke-width="2"/>
+  <line x1="410" y1="145" x2="410" y2="165" stroke="#ef4444" stroke-width="2"/>
+  <rect x="150" y="149" width="260" height="12" fill="#bbf7d0" fill-opacity="0.7"/>
+  <text x="135" y="182" font-size="11" fill="#dc2626">x₀ - R (单判)</text>
+  <text x="273" y="182" font-size="11" font-weight="700" fill="#0f172a">x₀</text>
+  <text x="395" y="182" font-size="11" fill="#dc2626">x₀ + R (单判)</text>
+  <text x="235" y="136" font-size="11" font-weight="700" fill="#047857">绝对收敛区间 (2R)</text>
+</svg><figcaption>常数项级数判别流程与幂级数收敛域端点单判示意图</figcaption></figure>
+  <div class="formulas"><div class="f-row"><span class="f-tex">\(\sum u_n\) 收敛 \(\Rightarrow\lim u_n=0\)</span><span class="f-note">逆命题不成立</span></div><div class="f-row"><span class="f-tex">\(\sum_{n=1}^\infty\dfrac1{n^p}\)：\(p&gt;1\) 收敛</span><span class="f-note">p 级数</span></div><div class="f-row"><span class="f-tex">\(\sum q^n\)：\(|q|&lt;1\) 收敛</span><span class="f-note">几何级数</span></div><div class="f-row"><span class="f-tex">\sum_{n=1}^{\infty} \frac{1}{n^p}\ (p&gt;1\text{ 收敛},\ p\le 1\text{ 发散})</span><span class="f-note">p-级数基准判别尺</span></div></div>
   <div class="exam"><div class="exam-label"><span class="exam-mark alt">同型</span> 数一</div><p class="exam-q">判断 \(\sum_{n=1}^\infty\dfrac{n}{n+1}\) 的敛散性。</p><div class="exam-ans"><b>要点</b> 通项趋于 1 而非 0，故发散。这是“必要条件”最直接的用法。</div><div class="exam-sol"><div class="sol-label">完整解答</div><ol class="exam-steps"><li>记通项 \(u_n=\frac{n}{n+1}\)，先看必要条件 \(\lim_{n\to\infty}u_n=0\)。</li><li>计算极限：\(\lim_{n\to\infty}\frac{n}{n+1}=1\ne0\)。</li><li>级数收敛的必要条件是通项趋于 0；必要条件不满足，级数必发散。</li><li>结论：\(\sum\frac{n}{n+1}\) 发散；不要因为通项看起来“像 1/n”就误判。</li></ol></div></div>
   <div class="pitfall"><span class="side-label">易错</span><ul><li>由 \(u_n\to0\) 直接断言收敛。</li><li>把 \(p=1\) 的调和级数误判为收敛。</li></ul></div>
   <div class="teacher"><span class="side-label">讲法</span><div class="t-list"><span class="t-item"><b>武忠祥</b>判敛第一步永远是“通项是否趋于零”，一秒排除大量发散项。</span></div></div>
