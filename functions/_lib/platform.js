@@ -5,6 +5,9 @@ import { allocatePaperDetailed, questionScore } from './scoring.js';
 import { gradeSystemFor, TRANSCRIBE_SYSTEM, GUIDE_SYSTEM, ANALYSIS_SYSTEM, ANALYSIS_SUBJECT_GUIDE, PLAIN_STYLE } from './prompts.js';
 import { checkQuota, noteUsage, getMeta, touchActivity } from './layer1.js';
 import { ownsUserObjectKey } from './object-keys.js';
+import { safeLog } from './errors.js';
+import { isObjectiveKind, selectGradeTier } from './subjects.js';
+import { offloadAttemptImages, hydrateAttemptImages, purgeAttemptImages } from './r2-attempts.js';
 
 const subjects = new Set(['math','math2','math3','english','english2','mechanics','politics']);
 const schema = [
@@ -357,8 +360,8 @@ if (!str(p.work).trim() &&!selected.trim() &&!images.length) throw new Error('�
 if (!str(p.question).trim()) throw new Error('缺少题目');
 const unverified = ['pending', 'needs_review'].includes(p.reviewStatus);
 const canScore = max!== null &&!unverified && (essay ||!!str(p.answer).trim());
-const objective = ['选择题','单选题','多选题','阅读','完形','新题型'].includes(p.kind);
-const gradeTier = ['解答题','证明题','综合题','计算题','论述题','材料分析题','大作文'].includes(p.kind) || (max != null && max >= 15) ? 'strong' : objective ? 'cheap' : 'mid';
+const objective = isObjectiveKind(p.subject, p.kind);
+const gradeTier = selectGradeTier(p.subject, p.kind, max);
 const letters = value => /^[A-H](?:[A-H,，、\s]*[A-H])?$/i.test(value.trim())? [...new Set(value.toUpperCase().replace(/[^A-H]/g, '').split(''))].sort().join(''): null;
 const expected = letters(str(p.answer)), chosen = letters(selected);
 
@@ -424,10 +427,13 @@ original: str(x && x.original), corrected: str(x && x.corrected), reason: str(x 
 upgrades: Array.isArray(out.upgrades)? out.upgrades.slice(0, 6).map(x => ({
 original: str(x && x.original), upgraded: str(x && x.upgraded), note: str(x && x.note),
 })).filter(x => x.original): [],
+promptVersion: '2026-11-26',
+gradingVersion: '2.1',
+gradedAt: new Date().toISOString(),
 status: score === null? 'pending': 'graded',
 };
 }
-async function attempt(db, uid, aid, { scrub = true } = {}) {
+async function attempt(db, uid, aid, { scrub = true, env = null } = {}) {
   const a = await row(db,'SELECT data FROM platform_attempts WHERE uid=? AND id=?',uid,aid);
   if (!a) return null;
   const obj = parse(a.data);
@@ -438,6 +444,7 @@ async function attempt(db, uid, aid, { scrub = true } = {}) {
   obj.status = results.length === obj.questions.length && results.every(r => r.status === 'graded') ? 'graded' : 'pending';
   obj.score = results.reduce((sum,r) => sum + (r.status === 'graded' ? r.score : 0),0);
   obj.knownMaxScore = results.reduce((sum,r) => sum + (r.status === 'graded' ? r.maxScore : 0),0);
+  if (env && obj.answers) await hydrateAttemptImages(env, obj.answers);
   return obj;
 }
 /* 列表摘要模式（GET /api/attempts?summary=1，学情分析主页用）：全量返回里每题的题面/解析、
@@ -636,7 +643,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
         const content = [{type:'text',text:JSON.stringify({pages:run.map(p => ({page:p.page,text:p.text}))})}];
         for (const p of run) if (p.image) { content.push({type:'text',text:`第 ${p.page} 页（图片）`}); content.push({type:'image_url',image_url:{url:p.image}}); }
         { const blocked = await checkQuota(env, await me(), 'extract'); if (blocked) return fail(429, blocked); }
-        let output; try { output = await ai(env,[{role:'system',content:IMPORT_PROMPT},{role:'user',content}],true,userCfg,'cheap',{maxTokens: Math.min(8000, 3000 * run.length)}); } catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
+        let output; try { output = await ai(env,[{role:'system',content:IMPORT_PROMPT},{role:'user',content}],true,userCfg,'cheap',{maxTokens: Math.min(8000, 3000 * run.length)}); } catch(e) { safeLog('attemptGrade_error', { uid, attemptId: fid, questionId: latestQ.id, error: e.message }); return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
         await noteUsage(env, uid, 'extract');
         if (!Array.isArray(output?.items) || output.items.length > 100) return fail(502,'AI 抽题格式无效');
         const rawDrafts = await Promise.all(output.items.map(async (q,index) => normalizeDraft(q,f.subject,runPages,await digest(`${extractionDigest}:${index}`))));
@@ -778,7 +785,7 @@ async function dispatch(request,env,uid,action,params,userCfg) {
   }
   if (action === 'attempts') {
     if (method === 'DELETE') { const b = await body(); const ids = Array.isArray(b?.ids) ? [...new Set(b.ids.map(str).filter(Boolean))].slice(0, 100) : []; let n = 0;
-      for (const aid of ids) { const r = await run(db,'DELETE FROM platform_attempts WHERE uid=? AND id=?',uid,aid); if (changes(r)) { n++; await run(db,'DELETE FROM platform_results WHERE uid=? AND attempt_id=?',uid,aid); await run(db,'DELETE FROM platform_grading_claims WHERE uid=? AND attempt_id=?',uid,aid); } }
+      for (const aid of ids) { const prev = await row(db,'SELECT data FROM platform_attempts WHERE uid=? AND id=?',uid,aid); const r = await run(db,'DELETE FROM platform_attempts WHERE uid=? AND id=?',uid,aid); if (changes(r)) { n++; await purgeAttemptImages(env, parse(prev?.data)?.answers); await run(db,'DELETE FROM platform_results WHERE uid=? AND attempt_id=?',uid,aid); await run(db,'DELETE FROM platform_grading_claims WHERE uid=? AND attempt_id=?',uid,aid); } }
       return ok({deleted:n}); }
     if (method === 'GET') { const summary = new URL(request.url).searchParams.get('summary') === '1';
       const arows = await all(db, 'SELECT id, data FROM platform_attempts WHERE uid=?', uid);
@@ -803,18 +810,20 @@ async function dispatch(request,env,uid,action,params,userCfg) {
       const scores = allocation.scores;
       const questions = b.questions.map((q, i) => ({...q, maxScore: scores[i], ...(q.maxScore == null ? {maxScoreAssumed:true} : {})}));
       const aiCfg = validAiCfg(b.aiCfg), createdAt = new Date().toISOString();
-      const a={id:typeof b.id==='string' && b.id ? b.id : id(),subject:b.subject,mode:b.mode,questions,answers:b.answers,results:{},status:'pending',serverGrade:b.serverGrade===true,...(aiCfg?{aiCfg,aiCfgAt:Date.now()}:{}),createdAt};
+      const attemptId = typeof b.id==='string' && b.id ? b.id : id();
+      const storedAnswers = await offloadAttemptImages(env, uid, attemptId, b.answers);
+      const a={id:attemptId,subject:b.subject,mode:b.mode,questions,answers:storedAnswers,results:{},status:'pending',serverGrade:b.serverGrade===true,...(aiCfg?{aiCfg,aiCfgAt:Date.now()}:{}),createdAt};
       const result=await run(db,'INSERT OR IGNORE INTO platform_attempts VALUES (?,?,?)',uid,a.id,JSON.stringify(a)); if (!changes(result)) return fail(409,'测评 ID 已存在');
       const pub={...a}; delete pub.aiCfg; delete pub.aiCfgAt; return ok({attempt:pub},201); }
   }
-  if (action === 'attempt' && method === 'GET') {const a=await attempt(db,uid,fid); return a ? ok({attempt:a}) : notFound();}
+  if (action === 'attempt' && method === 'GET') {const a=await attempt(db,uid,fid,{env}); return a ? ok({attempt:a}) : notFound();}
   if (action === 'attemptGrade' && method === 'POST') {
     const b=await body(); const questionId=str(b?.questionId); if (!questionId) return fail(400,'缺少题目 ID');
     let owner=null;
     const deadline=Date.now()+30000;
     try {
       for (;;) {
-        const current=await attempt(db,uid,fid); if (!current) return notFound();
+        const current=await attempt(db,uid,fid,{env}); if (!current) return notFound();
         const q=current.questions.find(item=>item.id===questionId); if (!q) return fail(400,'题目不存在');
         const prior=current.results[q.id]; if (prior?.status==='graded') return ok({result:prior,attempt:current});
 
@@ -826,17 +835,17 @@ async function dispatch(request,env,uid,action,params,userCfg) {
         }
 
         // 拿到租约后重新读取：另一个批改者可能刚写完结果并释放租约。
-        const latest=await attempt(db,uid,fid); if (!latest) return notFound();
+        const latest=await attempt(db,uid,fid,{env}); if (!latest) return notFound();
         const latestQ=latest.questions.find(item=>item.id===questionId); if (!latestQ) return fail(400,'题目不存在');
         const done=latest.results[latestQ.id]; if (done?.status==='graded') return ok({result:done,attempt:latest});
 
         if (!userCfg) { const blocked = await checkQuota(env, await me(), 'grade'); if (blocked) return fail(429, blocked); }
         const answer=latest.answers[latestQ.id] || {}; const ansImgs=answerImages(answer); let result;
         try { result={questionId:latestQ.id,...await grade(env,{question:latestQ.passage ? latestQ.passage + '\n\n' + latestQ.text : latestQ.text,answer:latestQ.answer,steps:latestQ.steps,subject:latestQ.subject,kp:latestQ.kp,kind:latestQ.kind,difficulty:latestQ.difficulty,maxScore:latestQ.maxScore,maxScoreAssumed:latestQ.maxScoreAssumed,reviewStatus:latestQ.reviewStatus,work:answer.work,selected:answer.selected,image:ansImgs[0] || '',images:ansImgs}, userCfg)}; }
-        catch(e) { return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
+        catch(e) { safeLog('attemptGrade_error', { uid, attemptId: fid, questionId: latestQ.id, error: e.message }); return fail(e.message === 'AI 服务未配置' ? 503 : 502,e.message); }
         if (!userCfg) await noteUsage(env, uid, 'grade');
         await run(db,"INSERT INTO platform_results VALUES (?,?,?,?) ON CONFLICT(uid,attempt_id,question_id) DO UPDATE SET data=excluded.data WHERE json_extract(platform_results.data, '$.status') != 'graded'",uid,fid,latestQ.id,JSON.stringify(result));
-        const finished=await attempt(db,uid,fid);
+        const finished=await attempt(db,uid,fid,{env});
         const raw=await (async()=>{ const r=await row(db,'SELECT data FROM platform_attempts WHERE uid=? AND id=?',uid,fid); return r?parse(r.data):null; })();
         if (raw && raw.serverGrade===true && finished.status==='graded') {
           raw.workerNotified=true; delete raw.workerLease; delete raw.aiCfg; delete raw.aiCfgAt;
@@ -1008,7 +1017,7 @@ export async function handleWorker(request, env) {
   const db = await database(env);
   const loadRaw = async (uid, aid) => { const r = await row(db, 'SELECT data FROM platform_attempts WHERE uid=? AND id=?', uid, aid); return r ? parse(r.data) : null; };
   const saveRaw = (uid, a) => run(db, 'UPDATE platform_attempts SET data=? WHERE uid=? AND id=?', JSON.stringify(a), uid, a.id);
-  const hasAnswer = (a, qid) => { const an = (a.answers || {})[qid] || {}; return !!(String(an.work || '').trim() || (Array.isArray(an.selected) && an.selected.length) || an.image || (Array.isArray(an.images) && an.images.length)); };
+  const hasAnswer = (a, qid) => { const an = (a.answers || {})[qid] || {}; return !!(String(an.work || '').trim() || (Array.isArray(an.selected) && an.selected.length) || an.image || (Array.isArray(an.images) && an.images.length) || (Array.isArray(an.imageRefs) && an.imageRefs.length)); };
   const pendingOf = (a) => a.questions.map(q => q.id).filter(qid => hasAnswer(a, qid) && !(a.results[qid] && a.results[qid].status === 'graded'));
 
   if (b.action === 'claim') {
@@ -1057,7 +1066,7 @@ export async function handleWorker(request, env) {
     const owner = await acquireGradeClaim(db, uid, aid, qid);
     if (!owner) return ok({ blocked: '该题正在由其他通道批改，稍后重试' });
     try {
-      const a = await attempt(db, uid, aid); if (!a) return notFound();
+      const a = await attempt(db, uid, aid, { env }); if (!a) return notFound();
       const q = a.questions.find(x => x.id === qid); if (!q) return fail(400, '题目不存在');
       const prior = a.results[qid]; if (prior && prior.status === 'graded') return ok({ result: prior, remaining: pendingOf(a).length });
       const raw0 = await loadRaw(uid, aid);
