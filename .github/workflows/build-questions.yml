@@ -1,5 +1,6 @@
 name: build-questions
 
+
 # 题库源（src/bank、src/chapters）变更后，自动重建生成物 assets/questions.js 并回提交，
 # 免去人工跑 Python 再单独提交大文件的步骤。只监听源文件路径，回提交只动 questions.js，不会循环触发。
 on:
@@ -9,17 +10,15 @@ on:
       - "src/bank/**"
       - "src/chapters/**"
 
+
 concurrency:
   group: build-questions-${{ github.ref }}
   cancel-in-progress: false
 
+
 permissions:
   contents: write
 
-# 同一分支同时只跑一个重建任务，其余排队，避免两个回提交并发 push 冲突
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
 
 jobs:
   rebuild:
