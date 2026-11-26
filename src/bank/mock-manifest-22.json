@@ -1,0 +1,61 @@
+{
+ "set": "2027 李林四套卷（数一）",
+ "index": 22,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 3,
+   "pdfEnd": 6,
+   "title": "2027 李林四套卷（数一）（第1套）",
+   "chapter": "math-mock-22-1",
+   "sourcePdf": "27李林四套卷数一.pdf",
+   "images": [
+    "content/math-pages/mock22/p-03.png",
+    "content/math-pages/mock22/p-04.png",
+    "content/math-pages/mock22/p-05.png",
+    "content/math-pages/mock22/p-06.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 7,
+   "pdfEnd": 9,
+   "title": "2027 李林四套卷（数一）（第2套）",
+   "chapter": "math-mock-22-2",
+   "sourcePdf": "27李林四套卷数一.pdf",
+   "images": [
+    "content/math-pages/mock22/p-07.png",
+    "content/math-pages/mock22/p-08.png",
+    "content/math-pages/mock22/p-09.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 10,
+   "pdfEnd": 13,
+   "title": "2027 李林四套卷（数一）（第3套）",
+   "chapter": "math-mock-22-3",
+   "sourcePdf": "27李林四套卷数一.pdf",
+   "images": [
+    "content/math-pages/mock22/p-10.png",
+    "content/math-pages/mock22/p-11.png",
+    "content/math-pages/mock22/p-12.png",
+    "content/math-pages/mock22/p-13.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 14,
+   "pdfEnd": 17,
+   "title": "2027 李林四套卷（数一）（第4套）",
+   "chapter": "math-mock-22-4",
+   "sourcePdf": "27李林四套卷数一.pdf",
+   "images": [
+    "content/math-pages/mock22/p-14.png",
+    "content/math-pages/mock22/p-15.png",
+    "content/math-pages/mock22/p-16.png",
+    "content/math-pages/mock22/p-17.png"
+   ]
+  }
+ ]
+}

@@ -313,6 +313,10 @@
         {
           "src": "fig-normal",
           "caption": "正态分布与三σ原则"
+        },
+        {
+          "src": "fig-math-normal-dist",
+          "caption": "正态分布对称性、3σ 概率分布与标准化 Z=(X-μ)/σ"
         }
       ]
     },

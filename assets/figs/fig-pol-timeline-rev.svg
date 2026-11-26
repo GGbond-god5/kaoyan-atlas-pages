@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 190" width="560" height="190">
+  <rect width="560" height="190" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="20" y="26" font-size="13" font-weight="700" fill="#0f172a">史纲核心时间轴：旧民主主义 → 新民主主义 → 社会主义建设与新时代</text>
+  <line x1="35" y1="95" x2="525" y2="95" stroke="#dc2626" stroke-width="2.5"/>
+  <circle cx="65" cy="95" r="5" fill="#dc2626"/><text x="45" y="78" font-size="11" font-weight="700" fill="#1e293b">1840</text><text x="32" y="118" font-size="10" fill="#475569">鸦片战争</text><text x="32" y="132" font-size="10" fill="#64748b">半殖半封开端</text>
+  <circle cx="150" cy="95" r="5" fill="#dc2626"/><text x="132" y="78" font-size="11" font-weight="700" fill="#1e293b">1919</text><text x="122" y="118" font-size="10" fill="#475569">五四运动</text><text x="115" y="132" font-size="10" fill="#64748b">新民主主义开端</text>
+  <circle cx="235" cy="95" r="5" fill="#dc2626"/><text x="217" y="78" font-size="11" font-weight="700" fill="#1e293b">1921</text><text x="207" y="118" font-size="10" fill="#475569">中共一大</text><text x="203" y="132" font-size="10" fill="#64748b">开天辟地大事变</text>
+  <circle cx="320" cy="95" r="5" fill="#dc2626"/><text x="302" y="78" font-size="11" font-weight="700" fill="#1e293b">1949</text><text x="292" y="118" font-size="10" fill="#475569">新中国成立</text><text x="285" y="132" font-size="10" fill="#64748b">社会主义过渡开始</text>
+  <circle cx="405" cy="95" r="5" fill="#dc2626"/><text x="387" y="78" font-size="11" font-weight="700" fill="#1e293b">1978</text><text x="372" y="118" font-size="10" fill="#475569">十一届三中全会</text><text x="377" y="132" font-size="10" fill="#64748b">改革开放新时期</text>
+  <circle cx="490" cy="95" r="5" fill="#dc2626"/><text x="472" y="78" font-size="11" font-weight="700" fill="#1e293b">2012+</text><text x="467" y="118" font-size="10" fill="#475569">党的十八大以来</text><text x="462" y="132" font-size="10" fill="#64748b">中国特色社会主义新时代</text>
+  <text x="35" y="168" font-size="11" fill="#b91c1c">重要里程碑：1935遵义会议(生死攸关) · 1945七大(毛泽东思想写入党章) · 1956三大改造(进入社会主义初级阶段)</text>
+</svg>

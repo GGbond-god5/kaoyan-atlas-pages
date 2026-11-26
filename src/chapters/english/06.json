@@ -1,461 +1,482 @@
 {
- "id": "english-06",
- "subject": "english",
- "code": "EN · 06",
- "title": "小作文",
- "subtitle": "10 分，100 词，15 分钟。它是全卷最该拿满的题型：格式固定、功能句有限、可提前成稿。你的模板还没定稿，这一章直接给到可背可写的版本。",
- "priority": "S",
- "meta": [
-  "10 分 / 100 词",
-  "建议 15–18 分钟",
-  "模板未定稿"
- ],
- "syllabus": [
-  "书写私人与公务信函、通知、告示、备忘录",
-  "根据对象与目的选择恰当语气",
-  "使用规范格式与礼貌表达",
-  "做到内容完整、语言准确、篇章连贯"
- ],
- "kps": [
-  {
-   "id": "kp-01",
-   "name": "评分标准与格式",
-   "level": "核心",
-   "freq": "必考",
-   "core": "小作文按**内容完整、格式正确、语言准确、语气得体**四项评分。格式错（称呼、落款、日期）会直接拉低档次；内容漏点比语言小错更致命。100 词左右即可，写多错多；把题目要求的每个信息点写到，比堆高级词更重要。",
-   "formulas": [
-    {
-     "tex": "称呼：Dear Professor Smith, / Dear Sir or Madam,",
-     "note": "公务用姓，未知用 Sir or Madam"
-    },
-    {
-     "tex": "落款：Yours sincerely, / Yours faithfully,",
-     "note": "知道姓名用 sincerely"
-    },
-    {
-     "tex": "正文 3 段，约 100 词",
-     "note": "开头—主体—结尾"
-    }
-   ],
-   "exams": [
-    {
-     "year": "",
-     "source": "英语一真题同型",
-     "text": "题目要求给图书馆写一封建议信，包含两条建议并说明理由。评分点：格式、两条建议、理由、礼貌结尾。",
-     "answer": "逐项对照：称呼与落款是否完整；两条建议是否各自成句并给理由；结尾是否有期待回复；语气是否礼貌而不卑微。",
-     "steps": [
-      "先列评分点：格式（称呼/落款）、两条建议、两条理由、礼貌结尾。",
-      "逐项核对：称呼是否得体，落款是否与称呼匹配，建议是否各自成句。",
-      "检查理由：每条建议后是否有 because/so that 等说明，而不是只列建议。",
-      "检查语气：礼貌但不卑微，结尾有期待回复。",
-      "最后查语法：主谓一致、时态、拼写、字数 100–120。"
-     ]
-    }
-   ],
-   "pitfalls": [
-    "漏写称呼或落款，直接降档。",
-    "只写一条建议，内容不完整。",
-    "语气过度道歉或命令式，不得体。"
-   ],
-   "teachers": [
-    {
-     "name": "石雷鹏",
-     "note": "小作文先保格式与信息点，再谈语言；功能句要背到能自动写出。"
-    }
-   ]
-  },
-  {
-   "id": "kp-02",
-   "name": "三段式结构",
-   "level": "核心",
-   "freq": "必考",
-   "core": "小作文最稳的结构是**三段式**：第一段说明写信目的（I am writing to ...），第二段展开具体内容（建议/投诉/申请理由），第三段礼貌收尾（期待回复/感谢/道歉）。每段 2–3 句，不写长难句；段落之间用 First / Besides / Therefore 等衔接。",
-   "formulas": [
-    {
-     "tex": "P1：I am writing to + 目的",
-     "note": "一句话点题"
-    },
-    {
-     "tex": "P2：First ... Besides ... / Specifically ...",
-     "note": "2–3 个信息点"
-    },
-    {
-     "tex": "P3：I would appreciate it if ... / Thank you for ...",
-     "note": "礼貌收尾"
-    }
-   ],
-   "exams": [
-    {
-     "year": "",
-     "source": "英语一真题同型",
-     "text": "给老师写信推荐一本书，要求说明推荐理由并希望对方阅读。",
-     "answer": "P1 点明推荐；P2 给两条理由（内容相关、可读性强）；P3 表达希望对方抽空阅读并期待反馈。",
-     "steps": [
-      "P1 点明写作目的：I am writing to recommend ... to you.",
-      "P2 给两条理由：内容与课程相关、语言可读性强；每条理由后加一句具体说明。",
-      "P3 表达希望对方抽空阅读，并期待反馈；语气礼貌。",
-      "检查书名、作者名是否准确，落款与称呼是否匹配。"
-     ]
-    }
-   ],
-   "pitfalls": [
-    "一段到底，层次不清。",
-    "第一段铺陈过长，目的句迟迟不出现。",
-    "结尾重复主体内容，浪费字数。"
-   ],
-   "teachers": [
-    {
-     "name": "石雷鹏",
-     "note": "三段式不是模板腔，而是信息分层；每段只做一件事。"
-    }
-   ]
-  },
-  {
-   "id": "kp-03",
-   "name": "开头与结尾功能句",
-   "level": "核心",
-   "freq": "必考",
-   "core": "开头句只做一件事：说明目的。结尾句只做一件事：礼貌收束。功能句要背**可替换骨架**，不要背整篇；骨架里的目的、对象、事由按题目替换。常用开头：I am writing to apply for / recommend / complain about / invite you to。常用结尾：I would appreciate it if you could ... / Looking forward to your reply.",
-   "formulas": [
-    {
-     "tex": "I am writing to apply for the position of ...",
-     "note": "申请"
-    },
-    {
-     "tex": "I am writing to express my concern about ...",
-     "note": "投诉"
-    },
-    {
-     "tex": "I would appreciate it if you could take my suggestions into consideration.",
-     "note": "建议结尾"
-    },
-    {
-     "tex": "Looking forward to your early reply.",
-     "note": "通用结尾"
-    }
-   ],
-   "exams": [
-    {
-     "year": "",
-     "source": "英语一真题同型",
-     "text": "投诉信开头与结尾各写一句，要求语气礼貌但立场明确。",
-     "answer": "开头：I am writing to express my dissatisfaction with the service I received last week. 结尾：I would appreciate it if you could look into this matter and give me a reply at your earliest convenience.",
-     "steps": [
-      "开头：I am writing to express my dissatisfaction with ...，点明问题但不攻击个人。",
-      "中间：陈述事实（时间、订单、具体不符之处）与造成的不便，语气克制。",
-      "结尾：明确提出要求（退款/换货/改进），并期待尽快回复。",
-      "检查：立场明确、无辱骂、无过度情绪化表达，格式完整。"
-     ]
-    }
-   ],
-   "pitfalls": [
-    "开头用 How are you 等寒暄占字数。",
-    "结尾过度卑微（I am so sorry to bother you）。",
-    "功能句与目的不匹配。"
-   ],
-   "teachers": [
-    {
-     "name": "石雷鹏",
-     "note": "功能句背骨架，考场只换关键词；开头结尾各准备 2–3 个即可。"
-    }
-   ]
-  },
-  {
-   "id": "kp-04",
-   "name": "建议信与推荐信",
-   "level": "核心",
-   "freq": "必考",
-   "core": "建议信/推荐信的主体是**2–3 条具体建议 + 理由**。建议要可执行（做什么、怎么做），理由要贴对方需求。常用句式：It would be advisable to ... / I would suggest that ... / One reason is that ...。推荐信还要给出被推荐对象的**独特优势**，避免空泛夸奖。",
-   "formulas": [
-    {
-     "tex": "It would be advisable for you to ...",
-     "note": "建议句式"
-    },
-    {
-     "tex": "I would recommend ... for the following reasons.",
-     "note": "推荐开头"
-    },
-    {
-     "tex": "This is particularly helpful because ...",
-     "note": "给理由"
-    }
-   ],
-   "exams": [
-    {
-     "year": "",
-     "source": "英语一真题同型",
-     "text": "给校图书馆写建议信：延长开放时间、增加电子资源，并说明理由。",
-     "answer": "P2：First, extending opening hours would benefit students who study late. Besides, more e-resources would make research more convenient. 每条建议后紧跟 because/which 引导的理由。",
-     "steps": [
-      "P1 说明写信目的：建议延长开放时间、增加电子资源。",
-      "P2 两条建议各成一句，后接理由：延长开放时间方便晚自习；电子资源方便检索与远程使用。",
-      "P3 表示希望采纳，并愿意进一步说明；语气礼貌。",
-      "检查两条建议是否都带理由，字数是否在 100–120。"
-     ]
-    }
-   ],
-   "pitfalls": [
-    "建议空泛（should improve service），不可执行。",
-    "只给建议不给理由，内容不完整。",
-    "推荐信通篇形容词，没有具体事实。"
-   ],
-   "teachers": [
-    {
-     "name": "石雷鹏",
-     "note": "建议信一条建议配一个理由，写两条就够，宁具体不堆砌。"
-    }
-   ]
-  },
-  {
-   "id": "kp-05",
-   "name": "投诉信与道歉信",
-   "level": "核心",
-   "freq": "高频",
-   "core": "投诉信：**陈述事实—说明影响—提出诉求**，语气坚定但不失礼，避免情绪化。道歉信：**承认问题—解释原因（不推卸）—提出补救**，语气诚恳，不找借口。两类信都忌长篇叙述，三段各 2 句即可。",
-   "formulas": [
-    {
-     "tex": "I am writing to complain about ...",
-     "note": "投诉开头"
-    },
-    {
-     "tex": "This has caused me considerable inconvenience.",
-     "note": "说明影响"
-    },
-    {
-     "tex": "I would appreciate it if you could replace it or refund me.",
-     "note": "提出诉求"
-    },
-    {
-     "tex": "Please accept my sincere apology for ...",
-     "note": "道歉开头"
-    }
-   ],
-   "exams": [
-    {
-     "year": "",
-     "source": "英语一真题同型",
-     "text": "网购商品与描述不符，写投诉信要求退换。",
-     "answer": "P1 说明购买与问题；P2 描述不符之处及造成的不便；P3 明确要求退换或退款，并期待尽快回复。",
-     "steps": [
-      "P1 说明购买时间、商品与问题（与描述不符）。",
-      "P2 具体描述不符之处（颜色/尺寸/功能）及造成的不便。",
-      "P3 明确要求退换或退款，给出期限，期待尽快回复。",
-      "检查事实清楚、要求具体、语气坚定但不失礼。"
-     ]
-    }
-   ],
-   "pitfalls": [
-    "投诉信情绪化、人身攻击。",
-    "道歉信找借口，显得不诚恳。",
-    "只抱怨不提出解决方案。"
-   ],
-   "teachers": [
-    {
-     "name": "石雷鹏",
-     "note": "投诉要事实与诉求，道歉要补救；情绪词一律删掉。"
-    }
-   ]
-  },
-  {
-   "id": "kp-06",
-   "name": "申请信、邀请信与感谢信",
-   "level": "核心",
-   "freq": "高频",
-   "core": "申请信：**申请什么—凭什么—希望考虑**，重点写匹配优势。邀请信：**活动信息（时间地点内容）—邀请理由—期待回复**，信息必须完整。感谢信：**具体感谢的事—影响—再次致谢**，避免空泛。三类都可套三段式，但信息点不同。",
-   "formulas": [
-    {
-     "tex": "I am writing to apply for ...",
-     "note": "申请"
-    },
-    {
-     "tex": "I am writing to invite you to ...",
-     "note": "邀请"
-    },
-    {
-     "tex": "I am writing to express my sincere gratitude for ...",
-     "note": "感谢"
-    },
-    {
-     "tex": "I hope you will consider my application favorably.",
-     "note": "申请结尾"
-    }
-   ],
-   "exams": [
-    {
-     "year": "",
-     "source": "英语一真题同型",
-     "text": "邀请外教参加英语角活动，要求写明时间、地点、活动内容。",
-     "answer": "P1 邀请并说明活动；P2 给时间、地点、内容三个信息点；P3 表达期待并请对方回复是否参加。",
-     "steps": [
-      "P1 发出邀请并说明活动名称（English Corner）。",
-      "P2 给三个信息点：时间、地点、活动内容（讨论/游戏/自由交流）。",
-      "P3 表达期待，请对方回复是否参加。",
-      "检查时间地点是否完整、邀请语气是否得体、落款是否完整。"
-     ]
-    }
-   ],
-   "pitfalls": [
-    "邀请信漏时间或地点。",
-    "申请信只表决心，不写匹配能力。",
-    "感谢信泛泛而谈，没有具体事件。"
-   ],
-   "teachers": [
-    {
-     "name": "石雷鹏",
-     "note": "邀请信把 when/where/what 写全；申请信把 why you 写具体。"
-    }
-   ]
-  },
-  {
-   "id": "kp-07",
-   "name": "通知、告示与备忘录",
-   "level": "基础",
-   "freq": "中频",
-   "core": "通知/告示的格式与书信不同：**标题（Notice）+ 正文 + 落款（单位/日期）**，不用 Dear。正文写清事由、时间、地点、对象、要求。备忘录格式：To / From / Date / Subject + 正文。语气正式、信息优先，不写寒暄。",
-   "formulas": [
-    {
-     "tex": "Notice 标题居中，正文无称呼",
-     "note": "格式关键"
-    },
-    {
-     "tex": "All students are requested to ...",
-     "note": "通知常用被动"
-    },
-    {
-     "tex": "To: ... / From: ... / Date: ... / Subject: ...",
-     "note": "备忘录抬头"
-    }
-   ],
-   "exams": [
-    {
-     "year": "",
-     "source": "英语一真题同型",
-     "text": "写一则学术讲座通知，包含主讲人、时间、地点、主题与参加要求。",
-     "answer": "标题 Notice；正文首句说明讲座主题与主讲人，第二句给时间地点，第三句给参加要求；落款写主办单位与日期。",
-     "steps": [
-      "标题写 Notice，居中。",
-      "首句说明讲座主题与主讲人；第二句给时间、地点；第三句给参加要求（对象/报名方式）。",
-      "落款写主办单位与日期。",
-      "检查信息点齐全、时态正确、没有遗漏报名方式。"
-     ]
-    }
-   ],
-   "pitfalls": [
-    "通知加 Dear 称呼，格式错误。",
-    "漏写时间或地点。",
-    "备忘录写成书信，抬头缺失。"
-   ],
-   "teachers": [
-    {
-     "name": "石雷鹏",
-     "note": "通知只考信息完整与格式，不考文采；五项信息逐一打勾。"
-    }
-   ]
-  },
-  {
-   "id": "kp-08",
-   "name": "常见错误与卷面",
-   "level": "进阶",
-   "freq": "中频",
-   "core": "小作文的高频错误很集中：**主谓一致、时态混用、拼写、称呼与落款不配套、字数失控**。考前把常错词与句式固定下来，考场上不临时发挥。卷面要求：段落分明、首行缩进或空行统一、不要涂改大块。",
-   "formulas": [
-    {
-     "tex": "Yours sincerely 对应已知姓名",
-     "note": "不要与 Sir or Madam 搭配"
-    },
-    {
-     "tex": "100 词左右，正文 3 段",
-     "note": "写多错多"
-    },
-    {
-     "tex": "时态：投诉/感谢用过去，建议/邀请用现在与将来",
-     "note": "通篇一致"
-    }
-   ],
-   "exams": [
-    {
-     "year": "",
-     "source": "英语一真题同型",
-     "text": "检查一篇小作文：称呼 Dear Sir or Madam，落款 Yours sincerely，正文 160 词。",
-     "answer": "两处问题：未知姓名应用 Yours faithfully；字数超太多，应压缩到 100–120 词，删掉重复与寒暄。",
-     "steps": [
-      "称呼：未知姓名用 Dear Sir or Madam，落款应用 Yours faithfully；Yours sincerely 用于已知姓名。",
-      "字数：小作文通常 100–120 词，160 词超太多，应删重复与寒暄。",
-      "检查格式：称呼、正文、落款、日期是否完整。",
-      "检查语言：时态、拼写、主谓一致；修改后控制在要求字数内。"
-     ]
-    }
-   ],
-   "pitfalls": [
-    "称呼与落款不匹配。",
-    "时态前后不一致。",
-    "字数超 150，错误率上升。"
-   ],
-   "teachers": [
-    {
-     "name": "石雷鹏",
-     "note": "考前把小作文固定成 3 段 100 词，考场只填空，不重新构思。"
-    }
-   ]
-  }
- ],
- "topics": [
-  {
-   "id": "topic-01",
-   "name": "小作文可背框架：三段式功能句",
-   "why": "小作文不需要临场创作。把开头、主体、结尾的骨架背熟，考场按题型替换关键词，15 分钟可以稳定写完。",
-   "method": [
-    "开头：I am writing to + 目的（apply for / recommend / complain about / invite you to / express my gratitude for）。",
-    "主体：First, ... Besides, ... 每条信息点后接一个理由或细节。",
-    "结尾：I would appreciate it if you could ... / Looking forward to your reply.",
-    "落款：已知姓名 Yours sincerely；未知 Yours faithfully。",
-    "检查：格式、信息点、字数、时态四项逐一过。"
-   ],
-   "example": {
-    "q": "用骨架写一封建议信的开头与结尾。",
-    "a": "开头：I am writing to offer some suggestions on improving the library service. 结尾：I would appreciate it if you could take my suggestions into consideration, and I am looking forward to your reply."
-   },
-   "trap": "不要整篇背模板；考场题目一变，整篇模板会出现信息点不匹配。背骨架，填内容。"
-  },
-  {
-   "id": "topic-02",
-   "name": "最后六周小作文背诵与默写计划",
-   "why": "你的模板还没定稿。最后六周不需要写很多篇，需要的是把 6 类高频信件的骨架练到不假思索。",
-   "method": [
-    "第 1 周：定稿 6 类骨架（建议、推荐、投诉、道歉、申请/邀请、通知），每类 3 段。",
-    "第 2 周：每天默写 1 篇，限时 15 分钟，写完对照骨架查漏点。",
-    "第 3 周：隔天写 1 篇新题，只换信息点，不换骨架；重点练信息完整。",
-    "第 4 周：整理错词与格式错误，形成一页检查表。",
-    "考前 7 天：每天 1 篇默写，保持手感，不再开新题型。"
-   ],
-   "example": {
-    "q": "6 类骨架要背到什么程度？",
-    "a": "给出题目后 1 分钟内能写出开头与三段结构，15 分钟内完成 100 词，格式与信息点无遗漏；不需要一字不差。"
-   },
-   "trap": "不要只背不写；默写才能暴露拼写与时态问题，这两项最容易扣分。"
-  }
- ],
- "summary": {
-  "must": [
-   "称呼与落款配套",
-   "三段式：目的—信息点—收尾",
-   "建议信两条建议各带理由",
-   "投诉信事实—影响—诉求",
-   "邀请信时间地点内容齐全",
-   "通知格式无称呼",
-   "100 词左右，时态统一"
+  "id": "english-06",
+  "subject": "english",
+  "code": "EN · 06",
+  "title": "小作文",
+  "subtitle": "10 分，100 词，15 分钟。它是全卷最该拿满的题型：格式固定、功能句有限、可提前成稿。你的模板还没定稿，这一章直接给到可背可写的版本。",
+  "priority": "S",
+  "meta": [
+    "10 分 / 100 词",
+    "建议 15–18 分钟",
+    "模板未定稿"
   ],
-  "drop": [
-   "高级词堆砌",
-   "长篇寒暄",
-   "临场创作新结构"
+  "syllabus": [
+    "书写私人与公务信函、通知、告示、备忘录",
+    "根据对象与目的选择恰当语气",
+    "使用规范格式与礼貌表达",
+    "做到内容完整、语言准确、篇章连贯"
   ],
-  "checklist": [
-   "能否 15 分钟写完 100 词且格式完整",
-   "6 类信件骨架是否已定稿",
-   "称呼与落款是否匹配",
-   "信息点是否逐条落实",
-   "是否有一页错词检查表"
-  ]
- }
+  "kps": [
+    {
+      "id": "kp-01",
+      "name": "评分标准与格式",
+      "level": "核心",
+      "freq": "必考",
+      "core": "小作文按**内容完整、格式正确、语言准确、语气得体**四项评分。格式错（称呼、落款、日期）会直接拉低档次；内容漏点比语言小错更致命。100 词左右即可，写多错多；把题目要求的每个信息点写到，比堆高级词更重要。",
+      "formulas": [
+        {
+          "tex": "称呼：Dear Professor Smith, / Dear Sir or Madam,",
+          "note": "公务用姓，未知用 Sir or Madam"
+        },
+        {
+          "tex": "落款：Yours sincerely, / Yours faithfully,",
+          "note": "知道姓名用 sincerely"
+        },
+        {
+          "tex": "正文 3 段，约 100 词",
+          "note": "开头—主体—结尾"
+        }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "题目要求给图书馆写一封建议信，包含两条建议并说明理由。评分点：格式、两条建议、理由、礼貌结尾。",
+          "answer": "逐项对照：称呼与落款是否完整；两条建议是否各自成句并给理由；结尾是否有期待回复；语气是否礼貌而不卑微。",
+          "steps": [
+            "先列评分点：格式（称呼/落款）、两条建议、两条理由、礼貌结尾。",
+            "逐项核对：称呼是否得体，落款是否与称呼匹配，建议是否各自成句。",
+            "检查理由：每条建议后是否有 because/so that 等说明，而不是只列建议。",
+            "检查语气：礼貌但不卑微，结尾有期待回复。",
+            "最后查语法：主谓一致、时态、拼写、字数 100–120。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "漏写称呼或落款，直接降档。",
+        "只写一条建议，内容不完整。",
+        "语气过度道歉或命令式，不得体。",
+        "审题漏写任一题干要点会直接掉档，动笔前务必圈出全部 2–3 个要求要点",
+        "通知（Notice）标题居中、落款写机构名称（如 Student Union），不写 Dear ...",
+        "高分句型切忌机械堆砌，每篇保留 2–3 处连接词与从句/倒装即可"
+      ],
+      "teachers": [
+        {
+          "name": "石雷鹏",
+          "note": "小作文先保格式与信息点，再谈语言；功能句要背到能自动写出。"
+        }
+      ],
+      "figures": [
+        {
+          "src": "fig-eng-essay-structure",
+          "caption": "英语一大小作文三段式黄金结构与阅卷四维度"
+        }
+      ]
+    },
+    {
+      "id": "kp-02",
+      "name": "三段式结构",
+      "level": "核心",
+      "freq": "必考",
+      "core": "小作文最稳的结构是**三段式**：第一段说明写信目的（I am writing to ...），第二段展开具体内容（建议/投诉/申请理由），第三段礼貌收尾（期待回复/感谢/道歉）。每段 2–3 句，不写长难句；段落之间用 First / Besides / Therefore 等衔接。",
+      "formulas": [
+        {
+          "tex": "P1：I am writing to + 目的",
+          "note": "一句话点题"
+        },
+        {
+          "tex": "P2：First ... Besides ... / Specifically ...",
+          "note": "2–3 个信息点"
+        },
+        {
+          "tex": "P3：I would appreciate it if ... / Thank you for ...",
+          "note": "礼貌收尾"
+        }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "给老师写信推荐一本书，要求说明推荐理由并希望对方阅读。",
+          "answer": "P1 点明推荐；P2 给两条理由（内容相关、可读性强）；P3 表达希望对方抽空阅读并期待反馈。",
+          "steps": [
+            "P1 点明写作目的：I am writing to recommend ... to you.",
+            "P2 给两条理由：内容与课程相关、语言可读性强；每条理由后加一句具体说明。",
+            "P3 表达希望对方抽空阅读，并期待反馈；语气礼貌。",
+            "检查书名、作者名是否准确，落款与称呼是否匹配。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "一段到底，层次不清。",
+        "第一段铺陈过长，目的句迟迟不出现。",
+        "结尾重复主体内容，浪费字数。"
+      ],
+      "teachers": [
+        {
+          "name": "石雷鹏",
+          "note": "三段式不是模板腔，而是信息分层；每段只做一件事。"
+        }
+      ]
+    },
+    {
+      "id": "kp-03",
+      "name": "开头与结尾功能句",
+      "level": "核心",
+      "freq": "必考",
+      "core": "开头句只做一件事：说明目的。结尾句只做一件事：礼貌收束。功能句要背**可替换骨架**，不要背整篇；骨架里的目的、对象、事由按题目替换。常用开头：I am writing to apply for / recommend / complain about / invite you to。常用结尾：I would appreciate it if you could ... / Looking forward to your reply.",
+      "formulas": [
+        {
+          "tex": "I am writing to apply for the position of ...",
+          "note": "申请"
+        },
+        {
+          "tex": "I am writing to express my concern about ...",
+          "note": "投诉"
+        },
+        {
+          "tex": "I would appreciate it if you could take my suggestions into consideration.",
+          "note": "建议结尾"
+        },
+        {
+          "tex": "Looking forward to your early reply.",
+          "note": "通用结尾"
+        }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "投诉信开头与结尾各写一句，要求语气礼貌但立场明确。",
+          "answer": "开头：I am writing to express my dissatisfaction with the service I received last week. 结尾：I would appreciate it if you could look into this matter and give me a reply at your earliest convenience.",
+          "steps": [
+            "开头：I am writing to express my dissatisfaction with ...，点明问题但不攻击个人。",
+            "中间：陈述事实（时间、订单、具体不符之处）与造成的不便，语气克制。",
+            "结尾：明确提出要求（退款/换货/改进），并期待尽快回复。",
+            "检查：立场明确、无辱骂、无过度情绪化表达，格式完整。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "开头用 How are you 等寒暄占字数。",
+        "结尾过度卑微（I am so sorry to bother you）。",
+        "功能句与目的不匹配。"
+      ],
+      "teachers": [
+        {
+          "name": "石雷鹏",
+          "note": "功能句背骨架，考场只换关键词；开头结尾各准备 2–3 个即可。"
+        }
+      ]
+    },
+    {
+      "id": "kp-04",
+      "name": "建议信与推荐信",
+      "level": "核心",
+      "freq": "必考",
+      "core": "建议信/推荐信的主体是**2–3 条具体建议 + 理由**。建议要可执行（做什么、怎么做），理由要贴对方需求。常用句式：It would be advisable to ... / I would suggest that ... / One reason is that ...。推荐信还要给出被推荐对象的**独特优势**，避免空泛夸奖。",
+      "formulas": [
+        {
+          "tex": "It would be advisable for you to ...",
+          "note": "建议句式"
+        },
+        {
+          "tex": "I would recommend ... for the following reasons.",
+          "note": "推荐开头"
+        },
+        {
+          "tex": "This is particularly helpful because ...",
+          "note": "给理由"
+        }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "给校图书馆写建议信：延长开放时间、增加电子资源，并说明理由。",
+          "answer": "P2：First, extending opening hours would benefit students who study late. Besides, more e-resources would make research more convenient. 每条建议后紧跟 because/which 引导的理由。",
+          "steps": [
+            "P1 说明写信目的：建议延长开放时间、增加电子资源。",
+            "P2 两条建议各成一句，后接理由：延长开放时间方便晚自习；电子资源方便检索与远程使用。",
+            "P3 表示希望采纳，并愿意进一步说明；语气礼貌。",
+            "检查两条建议是否都带理由，字数是否在 100–120。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "建议空泛（should improve service），不可执行。",
+        "只给建议不给理由，内容不完整。",
+        "推荐信通篇形容词，没有具体事实。"
+      ],
+      "teachers": [
+        {
+          "name": "石雷鹏",
+          "note": "建议信一条建议配一个理由，写两条就够，宁具体不堆砌。"
+        }
+      ]
+    },
+    {
+      "id": "kp-05",
+      "name": "投诉信与道歉信",
+      "level": "核心",
+      "freq": "高频",
+      "core": "投诉信：**陈述事实—说明影响—提出诉求**，语气坚定但不失礼，避免情绪化。道歉信：**承认问题—解释原因（不推卸）—提出补救**，语气诚恳，不找借口。两类信都忌长篇叙述，三段各 2 句即可。",
+      "formulas": [
+        {
+          "tex": "I am writing to complain about ...",
+          "note": "投诉开头"
+        },
+        {
+          "tex": "This has caused me considerable inconvenience.",
+          "note": "说明影响"
+        },
+        {
+          "tex": "I would appreciate it if you could replace it or refund me.",
+          "note": "提出诉求"
+        },
+        {
+          "tex": "Please accept my sincere apology for ...",
+          "note": "道歉开头"
+        }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "网购商品与描述不符，写投诉信要求退换。",
+          "answer": "P1 说明购买与问题；P2 描述不符之处及造成的不便；P3 明确要求退换或退款，并期待尽快回复。",
+          "steps": [
+            "P1 说明购买时间、商品与问题（与描述不符）。",
+            "P2 具体描述不符之处（颜色/尺寸/功能）及造成的不便。",
+            "P3 明确要求退换或退款，给出期限，期待尽快回复。",
+            "检查事实清楚、要求具体、语气坚定但不失礼。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "投诉信情绪化、人身攻击。",
+        "道歉信找借口，显得不诚恳。",
+        "只抱怨不提出解决方案。"
+      ],
+      "teachers": [
+        {
+          "name": "石雷鹏",
+          "note": "投诉要事实与诉求，道歉要补救；情绪词一律删掉。"
+        }
+      ]
+    },
+    {
+      "id": "kp-06",
+      "name": "申请信、邀请信与感谢信",
+      "level": "核心",
+      "freq": "高频",
+      "core": "申请信：**申请什么—凭什么—希望考虑**，重点写匹配优势。邀请信：**活动信息（时间地点内容）—邀请理由—期待回复**，信息必须完整。感谢信：**具体感谢的事—影响—再次致谢**，避免空泛。三类都可套三段式，但信息点不同。",
+      "formulas": [
+        {
+          "tex": "I am writing to apply for ...",
+          "note": "申请"
+        },
+        {
+          "tex": "I am writing to invite you to ...",
+          "note": "邀请"
+        },
+        {
+          "tex": "I am writing to express my sincere gratitude for ...",
+          "note": "感谢"
+        },
+        {
+          "tex": "I hope you will consider my application favorably.",
+          "note": "申请结尾"
+        }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "邀请外教参加英语角活动，要求写明时间、地点、活动内容。",
+          "answer": "P1 邀请并说明活动；P2 给时间、地点、内容三个信息点；P3 表达期待并请对方回复是否参加。",
+          "steps": [
+            "P1 发出邀请并说明活动名称（English Corner）。",
+            "P2 给三个信息点：时间、地点、活动内容（讨论/游戏/自由交流）。",
+            "P3 表达期待，请对方回复是否参加。",
+            "检查时间地点是否完整、邀请语气是否得体、落款是否完整。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "邀请信漏时间或地点。",
+        "申请信只表决心，不写匹配能力。",
+        "感谢信泛泛而谈，没有具体事件。"
+      ],
+      "teachers": [
+        {
+          "name": "石雷鹏",
+          "note": "邀请信把 when/where/what 写全；申请信把 why you 写具体。"
+        }
+      ]
+    },
+    {
+      "id": "kp-07",
+      "name": "通知、告示与备忘录",
+      "level": "基础",
+      "freq": "中频",
+      "core": "通知/告示的格式与书信不同：**标题（Notice）+ 正文 + 落款（单位/日期）**，不用 Dear。正文写清事由、时间、地点、对象、要求。备忘录格式：To / From / Date / Subject + 正文。语气正式、信息优先，不写寒暄。",
+      "formulas": [
+        {
+          "tex": "Notice 标题居中，正文无称呼",
+          "note": "格式关键"
+        },
+        {
+          "tex": "All students are requested to ...",
+          "note": "通知常用被动"
+        },
+        {
+          "tex": "To: ... / From: ... / Date: ... / Subject: ...",
+          "note": "备忘录抬头"
+        }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "写一则学术讲座通知，包含主讲人、时间、地点、主题与参加要求。",
+          "answer": "标题 Notice；正文首句说明讲座主题与主讲人，第二句给时间地点，第三句给参加要求；落款写主办单位与日期。",
+          "steps": [
+            "标题写 Notice，居中。",
+            "首句说明讲座主题与主讲人；第二句给时间、地点；第三句给参加要求（对象/报名方式）。",
+            "落款写主办单位与日期。",
+            "检查信息点齐全、时态正确、没有遗漏报名方式。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "通知加 Dear 称呼，格式错误。",
+        "漏写时间或地点。",
+        "备忘录写成书信，抬头缺失。"
+      ],
+      "teachers": [
+        {
+          "name": "石雷鹏",
+          "note": "通知只考信息完整与格式，不考文采；五项信息逐一打勾。"
+        }
+      ]
+    },
+    {
+      "id": "kp-08",
+      "name": "常见错误与卷面",
+      "level": "进阶",
+      "freq": "中频",
+      "core": "小作文的高频错误很集中：**主谓一致、时态混用、拼写、称呼与落款不配套、字数失控**。考前把常错词与句式固定下来，考场上不临时发挥。卷面要求：段落分明、首行缩进或空行统一、不要涂改大块。",
+      "formulas": [
+        {
+          "tex": "Yours sincerely 对应已知姓名",
+          "note": "不要与 Sir or Madam 搭配"
+        },
+        {
+          "tex": "100 词左右，正文 3 段",
+          "note": "写多错多"
+        },
+        {
+          "tex": "时态：投诉/感谢用过去，建议/邀请用现在与将来",
+          "note": "通篇一致"
+        }
+      ],
+      "exams": [
+        {
+          "year": "",
+          "source": "英语一真题同型",
+          "text": "检查一篇小作文：称呼 Dear Sir or Madam，落款 Yours sincerely，正文 160 词。",
+          "answer": "两处问题：未知姓名应用 Yours faithfully；字数超太多，应压缩到 100–120 词，删掉重复与寒暄。",
+          "steps": [
+            "称呼：未知姓名用 Dear Sir or Madam，落款应用 Yours faithfully；Yours sincerely 用于已知姓名。",
+            "字数：小作文通常 100–120 词，160 词超太多，应删重复与寒暄。",
+            "检查格式：称呼、正文、落款、日期是否完整。",
+            "检查语言：时态、拼写、主谓一致；修改后控制在要求字数内。"
+          ]
+        }
+      ],
+      "pitfalls": [
+        "称呼与落款不匹配。",
+        "时态前后不一致。",
+        "字数超 150，错误率上升。"
+      ],
+      "teachers": [
+        {
+          "name": "石雷鹏",
+          "note": "考前把小作文固定成 3 段 100 词，考场只填空，不重新构思。"
+        }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "topic-01",
+      "name": "小作文可背框架：三段式功能句",
+      "why": "小作文不需要临场创作。把开头、主体、结尾的骨架背熟，考场按题型替换关键词，15 分钟可以稳定写完。",
+      "method": [
+        "开头：I am writing to + 目的（apply for / recommend / complain about / invite you to / express my gratitude for）。",
+        "主体：First, ... Besides, ... 每条信息点后接一个理由或细节。",
+        "结尾：I would appreciate it if you could ... / Looking forward to your reply.",
+        "落款：已知姓名 Yours sincerely；未知 Yours faithfully。",
+        "检查：格式、信息点、字数、时态四项逐一过。"
+      ],
+      "example": {
+        "q": "用骨架写一封建议信的开头与结尾。",
+        "a": "开头：I am writing to offer some suggestions on improving the library service. 结尾：I would appreciate it if you could take my suggestions into consideration, and I am looking forward to your reply."
+      },
+      "trap": "不要整篇背模板；考场题目一变，整篇模板会出现信息点不匹配。背骨架，填内容。"
+    },
+    {
+      "id": "topic-02",
+      "name": "最后六周小作文背诵与默写计划",
+      "why": "你的模板还没定稿。最后六周不需要写很多篇，需要的是把 6 类高频信件的骨架练到不假思索。",
+      "method": [
+        "第 1 周：定稿 6 类骨架（建议、推荐、投诉、道歉、申请/邀请、通知），每类 3 段。",
+        "第 2 周：每天默写 1 篇，限时 15 分钟，写完对照骨架查漏点。",
+        "第 3 周：隔天写 1 篇新题，只换信息点，不换骨架；重点练信息完整。",
+        "第 4 周：整理错词与格式错误，形成一页检查表。",
+        "考前 7 天：每天 1 篇默写，保持手感，不再开新题型。"
+      ],
+      "example": {
+        "q": "6 类骨架要背到什么程度？",
+        "a": "给出题目后 1 分钟内能写出开头与三段结构，15 分钟内完成 100 词，格式与信息点无遗漏；不需要一字不差。"
+      },
+      "trap": "不要只背不写；默写才能暴露拼写与时态问题，这两项最容易扣分。"
+    },
+    {
+      "id": "topic-notes-templates",
+      "name": "笔记库融合：六大高频应用文开头/结尾/逻辑连接语料",
+      "why": "结合站内笔记库《2027小作文模板》与《小作文模版》，覆盖建议、推荐、邀请、道歉、投诉与通知六大高频体裁。",
+      "method": [
+        "建议信：I am writing to offer some practical suggestions on ... ｜ 结尾：I would appreciate it if you could take my suggestions into account.",
+        "推荐信：I am writing to recommend ... to you, which I believe will be highly rewarding. ｜ 要点：特征 + 适合对方的理由。",
+        "邀请信：I am writing to invite you to attend [活动], which will be held at [地点] on [时间]. ｜ 结尾：Please let me know at your earliest convenience whether you can make it.",
+        "通知（Notice）：The Student Union is planning to organize [活动名称] for the purpose of ... ｜ 要点：时间、地点、内容、报名方式与截止日期。",
+        "黄金连接词：Moreover / Furthermore（递进）；However / Nevertheless（转折）；Consequently / As a result（因果）；For the purpose of（目的）。"
+      ]
+    }
+  ],
+  "summary": {
+    "must": [
+      "称呼与落款配套",
+      "三段式：目的—信息点—收尾",
+      "建议信两条建议各带理由",
+      "投诉信事实—影响—诉求",
+      "邀请信时间地点内容齐全",
+      "通知格式无称呼",
+      "100 词左右，时态统一"
+    ],
+    "drop": [
+      "高级词堆砌",
+      "长篇寒暄",
+      "临场创作新结构"
+    ],
+    "checklist": [
+      "能否 15 分钟写完 100 词且格式完整",
+      "6 类信件骨架是否已定稿",
+      "称呼与落款是否匹配",
+      "信息点是否逐条落实",
+      "是否有一页错词检查表"
+    ]
+  }
 }

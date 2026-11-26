@@ -1,0 +1,131 @@
+{
+ "set": "2027 合工大模拟卷（数一）",
+ "index": 25,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 78,
+   "pdfEnd": 92,
+   "title": "2027 合工大模拟卷（数一）（第1套）",
+   "chapter": "math-mock-25-1",
+   "sourcePdf": "2027合工大研过5+5套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock25/p-078.png",
+    "content/math-pages/mock25/p-079.png",
+    "content/math-pages/mock25/p-080.png",
+    "content/math-pages/mock25/p-081.png",
+    "content/math-pages/mock25/p-082.png",
+    "content/math-pages/mock25/p-083.png",
+    "content/math-pages/mock25/p-084.png",
+    "content/math-pages/mock25/p-085.png",
+    "content/math-pages/mock25/p-086.png",
+    "content/math-pages/mock25/p-087.png",
+    "content/math-pages/mock25/p-088.png",
+    "content/math-pages/mock25/p-089.png",
+    "content/math-pages/mock25/p-090.png",
+    "content/math-pages/mock25/p-091.png",
+    "content/math-pages/mock25/p-092.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 93,
+   "pdfEnd": 107,
+   "title": "2027 合工大模拟卷（数一）（第2套）",
+   "chapter": "math-mock-25-2",
+   "sourcePdf": "2027合工大研过5+5套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock25/p-093.png",
+    "content/math-pages/mock25/p-094.png",
+    "content/math-pages/mock25/p-095.png",
+    "content/math-pages/mock25/p-096.png",
+    "content/math-pages/mock25/p-097.png",
+    "content/math-pages/mock25/p-098.png",
+    "content/math-pages/mock25/p-099.png",
+    "content/math-pages/mock25/p-100.png",
+    "content/math-pages/mock25/p-101.png",
+    "content/math-pages/mock25/p-102.png",
+    "content/math-pages/mock25/p-103.png",
+    "content/math-pages/mock25/p-104.png",
+    "content/math-pages/mock25/p-105.png",
+    "content/math-pages/mock25/p-106.png",
+    "content/math-pages/mock25/p-107.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 108,
+   "pdfEnd": 122,
+   "title": "2027 合工大模拟卷（数一）（第3套）",
+   "chapter": "math-mock-25-3",
+   "sourcePdf": "2027合工大研过5+5套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock25/p-108.png",
+    "content/math-pages/mock25/p-109.png",
+    "content/math-pages/mock25/p-110.png",
+    "content/math-pages/mock25/p-111.png",
+    "content/math-pages/mock25/p-112.png",
+    "content/math-pages/mock25/p-113.png",
+    "content/math-pages/mock25/p-114.png",
+    "content/math-pages/mock25/p-115.png",
+    "content/math-pages/mock25/p-116.png",
+    "content/math-pages/mock25/p-117.png",
+    "content/math-pages/mock25/p-118.png",
+    "content/math-pages/mock25/p-119.png",
+    "content/math-pages/mock25/p-120.png",
+    "content/math-pages/mock25/p-121.png",
+    "content/math-pages/mock25/p-122.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 123,
+   "pdfEnd": 137,
+   "title": "2027 合工大模拟卷（数一）（第4套）",
+   "chapter": "math-mock-25-4",
+   "sourcePdf": "2027合工大研过5+5套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock25/p-123.png",
+    "content/math-pages/mock25/p-124.png",
+    "content/math-pages/mock25/p-125.png",
+    "content/math-pages/mock25/p-126.png",
+    "content/math-pages/mock25/p-127.png",
+    "content/math-pages/mock25/p-128.png",
+    "content/math-pages/mock25/p-129.png",
+    "content/math-pages/mock25/p-130.png",
+    "content/math-pages/mock25/p-131.png",
+    "content/math-pages/mock25/p-132.png",
+    "content/math-pages/mock25/p-133.png",
+    "content/math-pages/mock25/p-134.png",
+    "content/math-pages/mock25/p-135.png",
+    "content/math-pages/mock25/p-136.png",
+    "content/math-pages/mock25/p-137.png"
+   ]
+  },
+  {
+   "n": 5,
+   "pdfStart": 138,
+   "pdfEnd": 152,
+   "title": "2027 合工大模拟卷（数一）（第5套）",
+   "chapter": "math-mock-25-5",
+   "sourcePdf": "2027合工大研过5+5套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock25/p-138.png",
+    "content/math-pages/mock25/p-139.png",
+    "content/math-pages/mock25/p-140.png",
+    "content/math-pages/mock25/p-141.png",
+    "content/math-pages/mock25/p-142.png",
+    "content/math-pages/mock25/p-143.png",
+    "content/math-pages/mock25/p-144.png",
+    "content/math-pages/mock25/p-145.png",
+    "content/math-pages/mock25/p-146.png",
+    "content/math-pages/mock25/p-147.png",
+    "content/math-pages/mock25/p-148.png",
+    "content/math-pages/mock25/p-149.png",
+    "content/math-pages/mock25/p-150.png",
+    "content/math-pages/mock25/p-151.png",
+    "content/math-pages/mock25/p-152.png"
+   ]
+  }
+ ]
+}

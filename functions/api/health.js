@@ -2,14 +2,23 @@
 import { ok } from "../_lib/http.js";
 import { smsMode, missingConfig } from "../_lib/sms.js";
 import { modelChain } from "../_lib/platform.js";
+import { SUBJECT_PROFILES } from "../_lib/subjects.js";
 
 export async function onRequestGet({ env }) {
   const mode = smsMode(env);
   const aiBase = env.AI_BASE_URL || "https://dashscope.aliyuncs.com/compatible-mode/v1";
+  let d1Ok = false, d1LatencyMs = null;
+  if (env.DB) {
+    const t0 = Date.now();
+    try { await env.DB.prepare("SELECT 1").first(); d1Ok = true; d1LatencyMs = Date.now() - t0; } catch {}
+  }
   let aiHost = "";
   try { aiHost = new URL(aiBase).host; } catch (e) { aiHost = "invalid"; }
   return ok({
     service: "kaoyan-atlas",
+    gradingVersion: "2.1",
+    subjects: Object.keys(SUBJECT_PROFILES),
+    dbHealth: { ok: d1Ok, latencyMs: d1LatencyMs },
     time: new Date().toISOString(),
     smsMode: mode,
     smsMissing: missingConfig(env),

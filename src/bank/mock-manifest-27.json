@@ -1,0 +1,86 @@
+{
+  "set": "2027 李林六套卷（数三）",
+  "index": 27,
+  "papers": [
+    {
+      "n": 1,
+      "pdfStart": 1,
+      "pdfEnd": 3,
+      "title": "2027 李林六套卷（数三）（第1套）",
+      "chapter": "math3-mock-27-1",
+      "sourcePdf": "李林6套卷数三做题本.pdf",
+      "images": [
+        "content/math-pages/mock27/p-01.png",
+        "content/math-pages/mock27/p-02.png",
+        "content/math-pages/mock27/p-03.png"
+      ]
+    },
+    {
+      "n": 2,
+      "pdfStart": 4,
+      "pdfEnd": 6,
+      "title": "2027 李林六套卷（数三）（第2套）",
+      "chapter": "math3-mock-27-2",
+      "sourcePdf": "李林6套卷数三做题本.pdf",
+      "images": [
+        "content/math-pages/mock27/p-04.png",
+        "content/math-pages/mock27/p-05.png",
+        "content/math-pages/mock27/p-06.png"
+      ]
+    },
+    {
+      "n": 3,
+      "pdfStart": 7,
+      "pdfEnd": 10,
+      "title": "2027 李林六套卷（数三）（第3套）",
+      "chapter": "math3-mock-27-3",
+      "sourcePdf": "李林6套卷数三做题本.pdf",
+      "images": [
+        "content/math-pages/mock27/p-07.png",
+        "content/math-pages/mock27/p-08.png",
+        "content/math-pages/mock27/p-09.png",
+        "content/math-pages/mock27/p-10.png"
+      ]
+    },
+    {
+      "n": 4,
+      "pdfStart": 11,
+      "pdfEnd": 13,
+      "title": "2027 李林六套卷（数三）（第4套）",
+      "chapter": "math3-mock-27-4",
+      "sourcePdf": "李林6套卷数三做题本.pdf",
+      "images": [
+        "content/math-pages/mock27/p-11.png",
+        "content/math-pages/mock27/p-12.png",
+        "content/math-pages/mock27/p-13.png"
+      ]
+    },
+    {
+      "n": 5,
+      "pdfStart": 14,
+      "pdfEnd": 16,
+      "title": "2027 李林六套卷（数三）（第5套）",
+      "chapter": "math3-mock-27-5",
+      "sourcePdf": "李林6套卷数三做题本.pdf",
+      "images": [
+        "content/math-pages/mock27/p-14.png",
+        "content/math-pages/mock27/p-15.png",
+        "content/math-pages/mock27/p-16.png"
+      ]
+    },
+    {
+      "n": 6,
+      "pdfStart": 17,
+      "pdfEnd": 20,
+      "title": "2027 李林六套卷（数三）（第6套）",
+      "chapter": "math3-mock-27-6",
+      "sourcePdf": "李林6套卷数三做题本.pdf",
+      "images": [
+        "content/math-pages/mock27/p-17.png",
+        "content/math-pages/mock27/p-18.png",
+        "content/math-pages/mock27/p-19.png",
+        "content/math-pages/mock27/p-20.png"
+      ]
+    }
+  ]
+}

@@ -28,6 +28,7 @@ console.log(`JS 语法检查：${jsFiles.length} 个文件`);
 // 2) 题库 JSON
 let total = 0, noAnswer = 0, noSteps = 0;
 for (const f of walk("src/bank", ".json")) {
+  if (f.endsWith("import-list.json")) continue;
   let d;
   try { d = JSON.parse(readFileSync(f, "utf8")); }
   catch (e) { failed++; console.log(`✗ JSON 无法解析 ${f}: ${e.message}`); continue; }
@@ -35,6 +36,10 @@ for (const f of walk("src/bank", ".json")) {
     total++;
     if (!String(q.answer || "").trim()) noAnswer++;
     if (!(q.steps || []).some((s) => String(s).trim())) noSteps++;
+    if (["选择题", "单选题", "多选题", "完形", "阅读"].includes(q.kind || "")) {
+      const badLine = String(q.text || "").split("\n").find((ln) => /(?:^|[\s\u3000])[A-D][\.．、]\s*\S+.*?(?:[\s\u3000]|[\u4e00-\u9fff\)\]}）\)])[B-D][\.．、]/.test(ln));
+      if (badLine) { failed++; console.log(`✗ 选项未分行 ${f} ${q.id}: ${badLine.slice(0, 60)}`); }
+    }
   }
 }
 console.log(`题库：共 ${total} 题，缺答案 ${noAnswer}，缺解析 ${noSteps}`);
