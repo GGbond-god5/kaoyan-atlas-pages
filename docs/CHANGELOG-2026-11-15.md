@@ -426,11 +426,8 @@
 - 上线验收修正（同日）：userDetail 的已批改口径改为按 attempt 的 results 逐题重算（存储 blob 顶层 status/score 会滞后，线上 GGBOND 4 套曾误报「已批改 0 套」）；已批改套数 = 至少 1 题已批改的套数，明细区分 已批改/部分批改 x/y 题/未批改，得分取 results 求和——与学情分析 paperStats 同一口径。admin.js 升 v=5。
 - 二次修正（同日）：逐题批改结果实际存放在 platform_results 表，attempt() 读取时以整表覆盖 blob 的 results 字段；userDetail 改为按 platform_results 聚合（json_extract 取 status/score/maxScore），与 attempt() 完全同口径。测试夹具同步改为 platform_results 驱动并放误导性 blob 值防回归。
 
-## 2026-11-27 · 性能隔离补丁（Gemini 产出，小严审查合入）
-- 刷题页取消空闲预加载全量题库（原 requestIdleCallback 后台拉取约 16MB），改为切换科目时按需加载分片；`questions-loader` 新增 `loadForIds`，错题本重练只加载相关分片并支持 `?subject=` 按科目隔离；已有题目 id 集合改为常驻 Set，避免每次 add 全量重建。
-- 模拟卷清单按 `subjectId` 隔离过滤，其他科目的模拟卷不再混入当前科目列表；切换科目时同步重置章节/试卷筛选。
-- 作答区新增按科目评分提示（`updateSubjectHint`）：英语作文实时词数与目标词数、政治多选/分析题计分规则、807 与数学主观题按步给分说明。
-- `functions/_lib/subjects.js`：各学科新增 `paperQuota` 与 `rubricHint` 元数据，数二/数三补 `mockPapers` 特征；新增 `normalizeSubject`/`assertSubjectScope` 科目作用域工具。
-- `announcement` 与 `programs` 接口加 Cache-Control（公告 private 60s、院校目录 public 300s + SWR）。
-- `sw.js` 升 v3：`/content/math-pages/` 与 `/assets/figs/` 改为 cache-first，页图二次打开秒开。
-- 验证：`npm run test:backend` 全套通过；practice.js / questions-loader.js 语法检查通过；lazy-index 仅 generated 日期变化，30 个分片分组与顺序不变。
+## 2026-11-27 · 2027 新卷入库：张宇八套卷/四套卷（数一）+ 肖八
+- 新增 29 套（568 题）：张宇八套卷（数一）8 套 176 题（`src/bank/imported-mock-28.json`，manifest 28）、张宇四套卷（数一）4 套 88 题（`imported-mock-29.json`，manifest 29）、肖秀荣八套卷 8 套 304 题（`imported-pol-xiao8.json`）。题库总数 7,066 → 7,634；均为扫描件逐页转录，答案与解析册答案速查逐题核对。
+- 页图渲染上线：试题与解析页图分别存 `content/math-pages/mock28(-sol)`、`mock29(-sol)`、`content/pol-pages/xiao8(-sol)`，题目带 sourcePage/solutionPage 可回看原卷。
+- `assets/papers.js` 补登记张八/张四原卷条目。肖八属内测版内容（版权分级），普通版下发仍只含真题。
+- 验证：`build_questions.py` 重建后总数 7,634（math +264、politics +304）；`scripts/check.mjs` 自检通过，缺答案/缺解析 0。

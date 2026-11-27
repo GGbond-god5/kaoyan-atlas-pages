@@ -1,0 +1,150 @@
+{
+ "set": "2027 张宇八套卷（数一）",
+ "index": 28,
+ "papers": [
+  {
+   "n": 1,
+   "pdfStart": 3,
+   "pdfEnd": 10,
+   "title": "2027 张宇八套卷（数一）（第1套）",
+   "chapter": "math-mock-28-1",
+   "sourcePdf": "27张宇八套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock28/p-03.png",
+    "content/math-pages/mock28/p-04.png",
+    "content/math-pages/mock28/p-05.png",
+    "content/math-pages/mock28/p-06.png",
+    "content/math-pages/mock28/p-07.png",
+    "content/math-pages/mock28/p-08.png",
+    "content/math-pages/mock28/p-09.png",
+    "content/math-pages/mock28/p-10.png"
+   ]
+  },
+  {
+   "n": 2,
+   "pdfStart": 11,
+   "pdfEnd": 18,
+   "title": "2027 张宇八套卷（数一）（第2套）",
+   "chapter": "math-mock-28-2",
+   "sourcePdf": "27张宇八套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock28/p-11.png",
+    "content/math-pages/mock28/p-12.png",
+    "content/math-pages/mock28/p-13.png",
+    "content/math-pages/mock28/p-14.png",
+    "content/math-pages/mock28/p-15.png",
+    "content/math-pages/mock28/p-16.png",
+    "content/math-pages/mock28/p-17.png",
+    "content/math-pages/mock28/p-18.png"
+   ]
+  },
+  {
+   "n": 3,
+   "pdfStart": 19,
+   "pdfEnd": 26,
+   "title": "2027 张宇八套卷（数一）（第3套）",
+   "chapter": "math-mock-28-3",
+   "sourcePdf": "27张宇八套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock28/p-19.png",
+    "content/math-pages/mock28/p-20.png",
+    "content/math-pages/mock28/p-21.png",
+    "content/math-pages/mock28/p-22.png",
+    "content/math-pages/mock28/p-23.png",
+    "content/math-pages/mock28/p-24.png",
+    "content/math-pages/mock28/p-25.png",
+    "content/math-pages/mock28/p-26.png"
+   ]
+  },
+  {
+   "n": 4,
+   "pdfStart": 27,
+   "pdfEnd": 34,
+   "title": "2027 张宇八套卷（数一）（第4套）",
+   "chapter": "math-mock-28-4",
+   "sourcePdf": "27张宇八套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock28/p-27.png",
+    "content/math-pages/mock28/p-28.png",
+    "content/math-pages/mock28/p-29.png",
+    "content/math-pages/mock28/p-30.png",
+    "content/math-pages/mock28/p-31.png",
+    "content/math-pages/mock28/p-32.png",
+    "content/math-pages/mock28/p-33.png",
+    "content/math-pages/mock28/p-34.png"
+   ]
+  },
+  {
+   "n": 5,
+   "pdfStart": 35,
+   "pdfEnd": 42,
+   "title": "2027 张宇八套卷（数一）（第5套）",
+   "chapter": "math-mock-28-5",
+   "sourcePdf": "27张宇八套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock28/p-35.png",
+    "content/math-pages/mock28/p-36.png",
+    "content/math-pages/mock28/p-37.png",
+    "content/math-pages/mock28/p-38.png",
+    "content/math-pages/mock28/p-39.png",
+    "content/math-pages/mock28/p-40.png",
+    "content/math-pages/mock28/p-41.png",
+    "content/math-pages/mock28/p-42.png"
+   ]
+  },
+  {
+   "n": 6,
+   "pdfStart": 43,
+   "pdfEnd": 50,
+   "title": "2027 张宇八套卷（数一）（第6套）",
+   "chapter": "math-mock-28-6",
+   "sourcePdf": "27张宇八套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock28/p-43.png",
+    "content/math-pages/mock28/p-44.png",
+    "content/math-pages/mock28/p-45.png",
+    "content/math-pages/mock28/p-46.png",
+    "content/math-pages/mock28/p-47.png",
+    "content/math-pages/mock28/p-48.png",
+    "content/math-pages/mock28/p-49.png",
+    "content/math-pages/mock28/p-50.png"
+   ]
+  },
+  {
+   "n": 7,
+   "pdfStart": 51,
+   "pdfEnd": 58,
+   "title": "2027 张宇八套卷（数一）（第7套）",
+   "chapter": "math-mock-28-7",
+   "sourcePdf": "27张宇八套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock28/p-51.png",
+    "content/math-pages/mock28/p-52.png",
+    "content/math-pages/mock28/p-53.png",
+    "content/math-pages/mock28/p-54.png",
+    "content/math-pages/mock28/p-55.png",
+    "content/math-pages/mock28/p-56.png",
+    "content/math-pages/mock28/p-57.png",
+    "content/math-pages/mock28/p-58.png"
+   ]
+  },
+  {
+   "n": 8,
+   "pdfStart": 59,
+   "pdfEnd": 66,
+   "title": "2027 张宇八套卷（数一）（第8套）",
+   "chapter": "math-mock-28-8",
+   "sourcePdf": "27张宇八套卷（数一）.pdf",
+   "images": [
+    "content/math-pages/mock28/p-59.png",
+    "content/math-pages/mock28/p-60.png",
+    "content/math-pages/mock28/p-61.png",
+    "content/math-pages/mock28/p-62.png",
+    "content/math-pages/mock28/p-63.png",
+    "content/math-pages/mock28/p-64.png",
+    "content/math-pages/mock28/p-65.png",
+    "content/math-pages/mock28/p-66.png"
+   ]
+  }
+ ]
+}

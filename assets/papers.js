@@ -1,1 +1,504 @@
-window.PAPERS={"real":[{"title":"2009 数学一 真题","year":2009,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2009考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2009考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2010 数学一 真题","year":2010,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2010考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2010考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2011 数学一 真题","year":2011,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2011考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2011考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2012 数学一 真题","year":2012,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2012考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2012考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2013 数学一 真题","year":2013,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2013考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2013考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2014 数学一 真题","year":2014,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2014考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2014考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2015 数学一 真题","year":2015,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2015考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2015考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2016 数学一 真题","year":2016,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2016考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2016考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2017 数学一 真题","year":2017,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2017考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2017考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2018 数学一 真题","year":2018,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2018考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2018考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2019 数学一 真题","year":2019,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2019考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2019考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2020 数学一 真题","year":2020,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2020考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2020考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2021 数学一 真题","year":2021,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2021考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2021考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2022 数学一 真题","year":2022,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2022考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2022考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2023 数学一 真题","year":2023,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2023考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2023考研数学一真题【解析】.pdf","transcribed":"","pages":4,"solutionPages":26},{"title":"2024 数学一 真题","year":2024,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2024考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2024考研数学一真题【解析】.pdf","transcribed":"math-2024","pages":3,"solutionPages":17},{"title":"2025 数学一 真题","year":2025,"subject":"数学一","exam":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2025考研数学一真题.pdf","solution":"bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2025考研数学一真题【解析】.pdf","transcribed":"math-2025","pages":3,"solutionPages":14},{"title":"2009 英语一 真题","year":2009,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/02、1998-2009年考研英语真题+解析/1998-2009年考研英语真题/2009年考研英语真题.pdf","solution":"bank/eng-zhenti/02、1998-2009年考研英语真题+解析/1998-2009年考研英语解析/2009年考研英语真题解析.pdf","transcribed":"","pages":15,"solutionPages":64},{"title":"2010 英语一 真题","year":2010,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2010年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2010年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":64},{"title":"2011 英语一 真题","year":2011,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2011年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2011年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":64},{"title":"2012 英语一 真题","year":2012,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2012年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2012年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":64},{"title":"2013 英语一 真题","year":2013,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2013年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2013年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":64},{"title":"2014 英语一 真题","year":2014,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2014年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2014年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":64},{"title":"2015 英语一 真题","year":2015,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2015年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2015年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":72},{"title":"2016 英语一 真题","year":2016,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2016年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2016年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":72},{"title":"2017 英语一 真题","year":2017,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2017年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2017年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":72},{"title":"2018 英语一 真题","year":2018,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2018年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2018年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":72},{"title":"2019 英语一 真题","year":2019,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2019年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2019年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":72},{"title":"2020 英语一 真题","year":2020,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2020年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2020年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":64},{"title":"2021 英语一 真题","year":2021,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2021年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2021年考研英语一真题解析.pdf","transcribed":"","pages":15,"solutionPages":64},{"title":"2022 英语一 真题","year":2022,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2022年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2022年考研英语一真题解析.pdf","transcribed":"","pages":11,"solutionPages":3},{"title":"2023 英语一 真题","year":2023,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf","transcribed":"","pages":14,"solutionPages":40},{"title":"2024 英语一 真题","year":2024,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2024年考研英语一真题.pdf","solution":"bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2024年考研英语一真题解析.pdf","transcribed":"","pages":14,"solutionPages":15},{"title":"2025 英语一 真题","year":2025,"subject":"英语一","subjectId":"english","exam":"bank/eng-zhenti/2025考研英语真题和答案【完整版】/2025考研英语一真题及答案/版本二/2025年全国硕士研究生招生考试英语（一）试题-完整版.pdf","solution":"bank/eng-zhenti/2025考研英语真题和答案【完整版】/2025考研英语一真题及答案/版本二/参考答案-完整版.pdf","transcribed":"","pages":22,"solutionPages":8}],"mock":[{"title":"2026 李林六套卷（数一）","year":0,"subject":"数学一","exam":"bank/_分类/模拟题/数学一/李林/26李林《六套卷》数一「试题」.pdf","solution":"bank/_分类/模拟题/数学一/李林/26李林《六套卷》数一「解析」.pdf","transcribed":"","pages":30,"solutionPages":80},{"title":"2025 李林六套卷（数一）","year":0,"subject":"数学一","exam":"bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）试题「公众号：考研资料直通车」.pdf","solution":"bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）答案「公众号：考研资料直通车」.pdf","transcribed":"","pages":38,"solutionPages":66},{"title":"2025 李林四套卷（数一）","year":0,"subject":"数学一","exam":"bank/_分类/模拟题/数学一/李林/25李林4套卷（数一）试卷「公众号：考研资料直通车」.pdf","solution":"bank/_分类/模拟题/数学一/李林/25李林4套卷（数一）答案「公众号：考研资料直通车」.pdf","transcribed":"","pages":28,"solutionPages":48},{"title":"2026 张宇八套卷（数一）","year":0,"subject":"数学一","exam":"bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf","solution":"bank/张宇/2026年/张八/数一/26张宇八套卷数一【解析】.pdf","transcribed":"","pages":64,"solutionPages":96},{"title":"2026 张宇四套卷（数一）","year":0,"subject":"数学一","exam":"bank/张宇/2026年/张四/数一/【试卷】26考研张宇四套卷（数一）.pdf","solution":"bank/张宇/2026年/张四/数一/【解析】26考研张宇四套卷（数一）.pdf","transcribed":"","pages":8,"solutionPages":56},{"title":"2025 张宇八套卷（数一）","year":0,"subject":"数学一","exam":"bank/张宇/2025年/25张宇8套卷「公众号：考研资料直通车」/数一/25张宇8套卷数一试题「公众号：考研资料直通车」.pdf","solution":"bank/张宇/2025年/25张宇8套卷「公众号：考研资料直通车」/数一/25张宇8套卷数一解析「公众号：考研资料直通车」.pdf","transcribed":"","pages":56,"solutionPages":92},{"title":"2025 张宇四套卷（数一）","year":0,"subject":"数学一","exam":"bank/张宇/2025年/25张宇4套卷「公众号：考研资料直通车」/数一/25张宇4套卷（数一）试题「公众号：考研资料直通车」.pdf","solution":"bank/张宇/2025年/25张宇4套卷「公众号：考研资料直通车」/数一/25张宇4套卷（数一）解析「公众号：考研资料直通车」.pdf","transcribed":"","pages":16,"solutionPages":51},{"title":"2026 李艳芳三套卷（数一）","year":0,"subject":"数学一","exam":"bank/_分类/模拟题/数学一/李艳芳/【竖版】26李艳芳三套卷数一.pdf","solution":"bank/_分类/模拟题/数学一/李艳芳/【解析】李艳芳三套卷数一答案.pdf","transcribed":"","pages":43,"solutionPages":68},{"title":"2025 合工大超越 5+5（数一）","year":0,"subject":"数学一","exam":"bank/_分类/模拟题/数学一/合工大超越/25合工大超越5+5套卷数一试题册「公众号：考研资料直通车」.pdf","solution":"bank/_分类/模拟题/数学一/合工大超越/25合工大超越5+5套卷数一解析册「公众号：考研资料直通车」.pdf","transcribed":"","pages":31,"solutionPages":103},{"title":"2026 合工大超越（数一）","year":0,"subject":"数学一","exam":"bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf","solution":"","transcribed":"","pages":50,"solutionPages":0},{"title":"欧几里得万人模考·10月（数一）","year":0,"subject":"数学一","exam":"bank/_分类/模拟题/数学一/欧几里得/【试题】欧几里得万人模考10月试卷数一.pdf","solution":"bank/_分类/模拟题/数学一/欧几里得/【解析】欧几里得万人模考10月试卷数一.pdf","transcribed":"","pages":4,"solutionPages":5},{"title":"欧几里得万人模考·11月（数一）","year":0,"subject":"数学一","exam":"bank/_分类/模拟题/数学一/欧几里得/欧几里得万人模考11月试卷数一.pdf","solution":"bank/_分类/模拟题/数学一/欧几里得/欧几里得万人模考11月试卷数一 答案.pdf","transcribed":"","pages":5,"solutionPages":8}]};
+window.PAPERS={
+ "real": [
+  {
+   "title": "2009 数学一 真题",
+   "year": 2009,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2009考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2009考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2010 数学一 真题",
+   "year": 2010,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2010考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2010考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2011 数学一 真题",
+   "year": 2011,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2011考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2011考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2012 数学一 真题",
+   "year": 2012,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2012考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2012考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2013 数学一 真题",
+   "year": 2013,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2013考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2013考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2014 数学一 真题",
+   "year": 2014,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2014考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2014考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2015 数学一 真题",
+   "year": 2015,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2015考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2015考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2016 数学一 真题",
+   "year": 2016,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2016考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2016考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2017 数学一 真题",
+   "year": 2017,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2017考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2017考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2018 数学一 真题",
+   "year": 2018,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2018考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2018考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2019 数学一 真题",
+   "year": 2019,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2019考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2019考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2020 数学一 真题",
+   "year": 2020,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2020考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2020考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2021 数学一 真题",
+   "year": 2021,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2021考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2021考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2022 数学一 真题",
+   "year": 2022,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2022考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2022考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2023 数学一 真题",
+   "year": 2023,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2023考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2023考研数学一真题【解析】.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 26
+  },
+  {
+   "title": "2024 数学一 真题",
+   "year": 2024,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2024考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2024考研数学一真题【解析】.pdf",
+   "transcribed": "math-2024",
+   "pages": 3,
+   "solutionPages": 17
+  },
+  {
+   "title": "2025 数学一 真题",
+   "year": 2025,
+   "subject": "数学一",
+   "exam": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题09-25/2025考研数学一真题.pdf",
+   "solution": "bank/00.考研数学（一二三）09-25真题+解析+做题本/考研数学一历年真题做题本/考研数学一真题【解析】09-25/2025考研数学一真题【解析】.pdf",
+   "transcribed": "math-2025",
+   "pages": 3,
+   "solutionPages": 14
+  },
+  {
+   "title": "2009 英语一 真题",
+   "year": 2009,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/02、1998-2009年考研英语真题+解析/1998-2009年考研英语真题/2009年考研英语真题.pdf",
+   "solution": "bank/eng-zhenti/02、1998-2009年考研英语真题+解析/1998-2009年考研英语解析/2009年考研英语真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 64
+  },
+  {
+   "title": "2010 英语一 真题",
+   "year": 2010,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2010年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2010年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 64
+  },
+  {
+   "title": "2011 英语一 真题",
+   "year": 2011,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2011年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2011年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 64
+  },
+  {
+   "title": "2012 英语一 真题",
+   "year": 2012,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2012年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2012年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 64
+  },
+  {
+   "title": "2013 英语一 真题",
+   "year": 2013,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2013年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2013年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 64
+  },
+  {
+   "title": "2014 英语一 真题",
+   "year": 2014,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2014年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2014年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 64
+  },
+  {
+   "title": "2015 英语一 真题",
+   "year": 2015,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2015年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2015年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 72
+  },
+  {
+   "title": "2016 英语一 真题",
+   "year": 2016,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2016年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2016年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 72
+  },
+  {
+   "title": "2017 英语一 真题",
+   "year": 2017,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2017年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2017年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 72
+  },
+  {
+   "title": "2018 英语一 真题",
+   "year": 2018,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2018年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2018年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 72
+  },
+  {
+   "title": "2019 英语一 真题",
+   "year": 2019,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2019年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2019年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 72
+  },
+  {
+   "title": "2020 英语一 真题",
+   "year": 2020,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2020年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2020年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 64
+  },
+  {
+   "title": "2021 英语一 真题",
+   "year": 2021,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2021年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2021年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 15,
+   "solutionPages": 64
+  },
+  {
+   "title": "2022 英语一 真题",
+   "year": 2022,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2022年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2022年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 11,
+   "solutionPages": 3
+  },
+  {
+   "title": "2023 英语一 真题",
+   "year": 2023,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2023年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2023年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 14,
+   "solutionPages": 40
+  },
+  {
+   "title": "2024 英语一 真题",
+   "year": 2024,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语真题/2024年考研英语一真题.pdf",
+   "solution": "bank/eng-zhenti/03、2010-2024年考研英语真题+解析/2010-2024考研英语解析/2024年考研英语一真题解析.pdf",
+   "transcribed": "",
+   "pages": 14,
+   "solutionPages": 15
+  },
+  {
+   "title": "2025 英语一 真题",
+   "year": 2025,
+   "subject": "英语一",
+   "subjectId": "english",
+   "exam": "bank/eng-zhenti/2025考研英语真题和答案【完整版】/2025考研英语一真题及答案/版本二/2025年全国硕士研究生招生考试英语（一）试题-完整版.pdf",
+   "solution": "bank/eng-zhenti/2025考研英语真题和答案【完整版】/2025考研英语一真题及答案/版本二/参考答案-完整版.pdf",
+   "transcribed": "",
+   "pages": 22,
+   "solutionPages": 8
+  }
+ ],
+ "mock": [
+  {
+   "title": "2027 张宇八套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/2027/27张宇八套卷（数一）试题.pdf",
+   "solution": "bank/2027/27张宇八套卷（数一）解析.pdf",
+   "transcribed": "",
+   "pages": 66,
+   "solutionPages": 110
+  },
+  {
+   "title": "2027 张宇四套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/2027/27张宇四套卷（数一）试题.pdf",
+   "solution": "bank/2027/27张宇四套卷（数一）解析.pdf",
+   "transcribed": "",
+   "pages": 16,
+   "solutionPages": 60
+  },
+  {
+   "title": "2026 李林六套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/_分类/模拟题/数学一/李林/26李林《六套卷》数一「试题」.pdf",
+   "solution": "bank/_分类/模拟题/数学一/李林/26李林《六套卷》数一「解析」.pdf",
+   "transcribed": "",
+   "pages": 30,
+   "solutionPages": 80
+  },
+  {
+   "title": "2025 李林六套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "solution": "bank/_分类/模拟题/数学一/李林/25李林6套卷（数一）答案「公众号：考研资料直通车」.pdf",
+   "transcribed": "",
+   "pages": 38,
+   "solutionPages": 66
+  },
+  {
+   "title": "2025 李林四套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/_分类/模拟题/数学一/李林/25李林4套卷（数一）试卷「公众号：考研资料直通车」.pdf",
+   "solution": "bank/_分类/模拟题/数学一/李林/25李林4套卷（数一）答案「公众号：考研资料直通车」.pdf",
+   "transcribed": "",
+   "pages": 28,
+   "solutionPages": 48
+  },
+  {
+   "title": "2026 张宇八套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【试题】 .pdf",
+   "solution": "bank/张宇/2026年/张八/数一/26张宇八套卷数一【解析】.pdf",
+   "transcribed": "",
+   "pages": 64,
+   "solutionPages": 96
+  },
+  {
+   "title": "2026 张宇四套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/张宇/2026年/张四/数一/【试卷】26考研张宇四套卷（数一）.pdf",
+   "solution": "bank/张宇/2026年/张四/数一/【解析】26考研张宇四套卷（数一）.pdf",
+   "transcribed": "",
+   "pages": 8,
+   "solutionPages": 56
+  },
+  {
+   "title": "2025 张宇八套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/张宇/2025年/25张宇8套卷「公众号：考研资料直通车」/数一/25张宇8套卷数一试题「公众号：考研资料直通车」.pdf",
+   "solution": "bank/张宇/2025年/25张宇8套卷「公众号：考研资料直通车」/数一/25张宇8套卷数一解析「公众号：考研资料直通车」.pdf",
+   "transcribed": "",
+   "pages": 56,
+   "solutionPages": 92
+  },
+  {
+   "title": "2025 张宇四套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/张宇/2025年/25张宇4套卷「公众号：考研资料直通车」/数一/25张宇4套卷（数一）试题「公众号：考研资料直通车」.pdf",
+   "solution": "bank/张宇/2025年/25张宇4套卷「公众号：考研资料直通车」/数一/25张宇4套卷（数一）解析「公众号：考研资料直通车」.pdf",
+   "transcribed": "",
+   "pages": 16,
+   "solutionPages": 51
+  },
+  {
+   "title": "2026 李艳芳三套卷（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/_分类/模拟题/数学一/李艳芳/【竖版】26李艳芳三套卷数一.pdf",
+   "solution": "bank/_分类/模拟题/数学一/李艳芳/【解析】李艳芳三套卷数一答案.pdf",
+   "transcribed": "",
+   "pages": 43,
+   "solutionPages": 68
+  },
+  {
+   "title": "2025 合工大超越 5+5（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/_分类/模拟题/数学一/合工大超越/25合工大超越5+5套卷数一试题册「公众号：考研资料直通车」.pdf",
+   "solution": "bank/_分类/模拟题/数学一/合工大超越/25合工大超越5+5套卷数一解析册「公众号：考研资料直通车」.pdf",
+   "transcribed": "",
+   "pages": 31,
+   "solutionPages": 103
+  },
+  {
+   "title": "2026 合工大超越（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/_分类/模拟题/数学一/合工大超越/26合工大超越（数一）试卷.pdf",
+   "solution": "",
+   "transcribed": "",
+   "pages": 50,
+   "solutionPages": 0
+  },
+  {
+   "title": "欧几里得万人模考·10月（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/_分类/模拟题/数学一/欧几里得/【试题】欧几里得万人模考10月试卷数一.pdf",
+   "solution": "bank/_分类/模拟题/数学一/欧几里得/【解析】欧几里得万人模考10月试卷数一.pdf",
+   "transcribed": "",
+   "pages": 4,
+   "solutionPages": 5
+  },
+  {
+   "title": "欧几里得万人模考·11月（数一）",
+   "year": 0,
+   "subject": "数学一",
+   "exam": "bank/_分类/模拟题/数学一/欧几里得/欧几里得万人模考11月试卷数一.pdf",
+   "solution": "bank/_分类/模拟题/数学一/欧几里得/欧几里得万人模考11月试卷数一 答案.pdf",
+   "transcribed": "",
+   "pages": 5,
+   "solutionPages": 8
+  }
+ ]
+};
+
