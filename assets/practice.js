@@ -319,6 +319,8 @@
     if (!examOnly && !IS_GUEST && (state.subject === "all" || state.subject === "math")) {
       const mockTitles = list.filter(p => p.mock).map(p => p.title);
       PAPERS.mock.forEach((p, i) => {
+        const sid = p.subjectId || "math";
+        if (state.subject !== "all" && state.subject !== sid) return;
         const base = p.title.replace(/（数一）$/, "");
         if (mockTitles.some(t => t.startsWith(base))) return;
         mock.push({ value: `pdf:mock:${i}`, label: `${p.title} · 原卷 ${p.pages} 页` });
@@ -674,6 +676,41 @@
 
   function current() { return session.queue[session.i]; }
 
+  function updateSubjectHint(q) {
+    const workEl = $("#work");
+    if (!workEl || !workEl.parentElement) return;
+    let hint = $("#subjectHint");
+    if (!hint) {
+      hint = document.createElement("div");
+      hint.id = "subjectHint";
+      hint.style.cssText = "font-size:12px;color:var(--ink3);margin-top:6px;line-height:1.5;";
+      workEl.parentElement.insertBefore(hint, workEl.nextSibling);
+      workEl.addEventListener("input", () => { const cur = current(); if (cur) updateSubjectHint(cur); });
+    }
+    if (!q) { hint.textContent = ""; return; }
+    const s = q.subject || "", k = q.kind || "";
+    if ((s === "english" || s === "english2") && /作文/.test(k)) {
+      const words = (workEl.value || "").trim().split(/\s+/).filter(Boolean).length;
+      const target = k === "小作文" ? "建议约 100 词 · 满分 10 分" : (s === "english" ? "建议 160–200 词 · 满分 20 分" : "建议约 150 词 · 满分 15 分");
+      hint.textContent = `当前字数：${words} 词（${target}）`;
+      return;
+    }
+    if (s === "politics") {
+      if (k === "多选题") { hint.textContent = "政治多选题：全对得 2 分，少选、多选或错选均不得分。"; return; }
+      if (k === "分析题") { hint.textContent = "政治分析题：满分 10 分，按要点采分并结合材料作答。"; return; }
+    }
+    if (s === "mechanics" && !OBJ_KINDS.includes(k)) {
+      hint.textContent = "807 材料力学：按平衡方程、变形协调、物理关系与单位量纲分步给分（0.5 分步长）。";
+      return;
+    }
+    if (/^math/.test(s) && !OBJ_KINDS.includes(k)) {
+      const extra = s === "math2" ? "（数二不含级数与概率）" : (s === "math3" ? "（数三含经济应用与差分方程）" : "");
+      hint.textContent = `数学主观题：按步给分（0.5 分步长）${extra}。`;
+      return;
+    }
+    hint.textContent = "";
+  }
+
   function renderQuestion() {
     const q = current();
     if (!q) return;
@@ -730,6 +767,7 @@
     $("#reveal").hidden = !!sealed();
     $("#aiAsk").hidden = !!sealed() || !AI_ENDPOINT;
     $("#work").readOnly = session.ended;
+    updateSubjectHint(q);
     $("#photoTake").hidden = session.ended;
     $("#photoPick").hidden = session.ended;
     if (session.ended && OBJ_KINDS.includes(q.kind)) paintObjective(q);
@@ -1241,7 +1279,7 @@
     const b = e.target.closest("[data-mode]"); if (b) setMode(b.dataset.mode);
   });
   $("#fSubject").addEventListener("change", async e => {
-    state.subject = e.target.value; state.kp = "";
+    state.subject = e.target.value; state.chapter = "all"; state.paper = "all"; state.kp = "";
     if (window.AtlasQuestions && state.subject !== "all" && !window.AtlasQuestions.isLoaded(state.subject)) {
       $("#pcount").textContent = "正在加载该科目题库…";
       try { await window.AtlasQuestions.load(state.subject); populateSubjects(); $("#fSubject").value = state.subject; }
@@ -1465,19 +1503,22 @@
       } catch (err) { console.error("题库分片加载失败", err); }
     }
     init();
-    if (window.AtlasQuestions) {
-      const warm = () => { window.AtlasQuestions.load("all").then(() => populateSubjects()).catch(() => {}); };
-      if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 4000 }); else setTimeout(warm, 2500);
-    }
-    /* 错题本整本重练：?wrongbook=1 组「做错过的题 + 手动加入错题本的题」开练 */
+    /* 按需分片加载：切换科目时再按需拉取对应分片，避免首屏后台拉取 16MB 全量题库 */
+    /* 错题本整本重练：?wrongbook=1 组「做错过的题 + 手动加入错题本的题」开练（支持 ?subject= 隔离） */
     if (new URLSearchParams(location.search).get("wrongbook")) {
       try {
+        const wbSub = new URLSearchParams(location.search).get("subject");
         const store = await AtlasUser.load("practice", { rec: {} });
         const rec = (store && store.rec) || {};
         const marks = window.AtlasMarks ? await window.AtlasMarks.load() : { wb: {} };
         const wbSet = new Set(Object.keys(marks.wb || {}));
-        const pool = ITEMS.filter(q => (rec[q.id] && rec[q.id].wrong > 0) || wbSet.has(q.id));
-        if (pool.length) start(pool, "错题本 · 全部重练");
+        const needIds = [...new Set([...Object.keys(rec).filter(id => rec[id] && rec[id].wrong > 0), ...wbSet])];
+        if (window.AtlasQuestions && needIds.length) {
+          if (wbSub && wbSub !== "all") await window.AtlasQuestions.load(wbSub);
+          else if (window.AtlasQuestions.loadForIds) await window.AtlasQuestions.loadForIds(needIds);
+        }
+        const pool = ITEMS.filter(q => (!wbSub || wbSub === "all" || q.subject === wbSub) && ((rec[q.id] && rec[q.id].wrong > 0) || wbSet.has(q.id)));
+        if (pool.length) start(pool, wbSub && wbSub !== "all" ? `错题本 · ${SUBJECT_NAMES[wbSub] || wbSub}` : "错题本 · 全部重练");
         else $("#pintro").textContent = "错题本还是空的：做错的题会自动进来，也可以在学情分析的做题详情里手动把题目加入错题本。";
       } catch (err) { console.error("错题本加载失败", err); }
     }

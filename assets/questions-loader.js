@@ -5,6 +5,7 @@
   window.QUESTIONS = window.QUESTIONS || { items: [] };
   var SUBJECTS = ['math', 'math2', 'math3', 'english', 'english2', 'mechanics', 'politics'];
   var loaded = {}, loading = {};
+  var haveIds = new Set((window.QUESTIONS.items || []).map(function (q) { return q && q.id; }).filter(Boolean));
   /* 分片目录（2026-11-22 定版）：公开包 questions-guest 只含真题，全量包 questions 含全部资料。
      版权分级后按账号版本选包：内测版账号（me.edition='beta'，含管理员）走全量，
      普通版账号与游客只走公开包——与中间件对全量分片的内测门禁同口径，前端选错包也会被服务端挡下。
@@ -21,11 +22,10 @@
     return dirPromise;
   }
   function add(subject, items) {
-    var have = new Set(window.QUESTIONS.items.map(function (q) { return q.id; }));
     var fresh = [];
     (items || []).forEach(function (q) {
-      if (q && q.id && !have.has(q.id)) {
-        have.add(q.id);
+      if (q && q.id && !haveIds.has(q.id)) {
+        haveIds.add(q.id);
         window.QUESTIONS.items.push(q);
         fresh.push(q);
       }
