@@ -431,3 +431,8 @@
 - 页图渲染上线：试题与解析页图分别存 `content/math-pages/mock28(-sol)`、`mock29(-sol)`、`content/pol-pages/xiao8(-sol)`，题目带 sourcePage/solutionPage 可回看原卷。
 - `assets/papers.js` 补登记张八/张四原卷条目。肖八属内测版内容（版权分级），普通版下发仍只含真题。
 - 验证：`build_questions.py` 重建后总数 7,634（math +264、politics +304）；`scripts/check.mjs` 自检通过，缺答案/缺解析 0。
+
+## 2026-11-27 · 石雷鹏作文冲刺背诵20篇（英一）并入笔记库
+- 新增 5 篇内置笔记（`lazy-src/英一/石雷鹏*.md`，均标 `tier: beta`）：小作文背诵10篇 → english-06；大作文背诵10篇 → english-07；写作必背功能句汇总、写作高频词汇和表达、大纲模拟样题解析 → english-08。内容为《作文冲刺背诵20篇（2027 考研英语一）》扫描件逐页转录（范文/译文/构思/词汇预习/功能句/样题解析全量）。
+- `scripts/build-lazy-notes.mjs` 的 FILE_MAP 新增 5 条映射；重跑转换后笔记总数 977，english-06/07/08 三个分片与 lazy-index.js 已同步更新。
+- 说明：tier 目前为标记机制，笔记分片尚未按 tier 拆分分发（沿用 2026-11-22 约定，待确有需要再做）。
