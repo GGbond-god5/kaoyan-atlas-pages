@@ -22,7 +22,8 @@
    "text": "结构如图所示，ABD 是刚性杆（\\(AB = BC = CD = a\\)），1、2 杆材料为低碳钢，杆长 \\(l_1 = l_2 = 1\\,\\mathrm{m}\\)，弹性模量 \\(E_1 = 200\\,\\mathrm{GPa}\\)；3 杆材料为铸铁，杆长 \\(l_3 = 2\\,\\mathrm{m}\\)，弹性模量 \\(E_2 = 400\\,\\mathrm{GPa}\\)。杆 1、2、3 的横截面积分别为 \\(A_1 = 800\\,\\mathrm{mm}^2\\)，\\(A_2 = 1000\\,\\mathrm{mm}^2\\)，\\(A_3 = 800\\,\\mathrm{mm}^2\\)。塑性材料屈服极限 \\(\\sigma_s = 240\\,\\mathrm{MPa}\\)，安全系数 \\(n_s = 1.5\\)；脆性材料强度极限 \\(\\sigma_b = 400\\,\\mathrm{MPa}\\)，安全系数 \\(n_b = 4\\)。（1）确定结构的许可载荷 \\([F]\\)；（2）若载荷 \\(F = 30\\,\\mathrm{kN}\\)，求 D 点竖直位移。",
    "topicChapter": "",
    "topicTitle": "",
-   "year": "2027"
+   "year": "2027",
+   "pageImage": "content/mech-pages/scut27-mock1/q-1.png"
   },
   {
    "answer": "（1）\\([T] = 51.2\\pi\\,\\mathrm{N \\cdot m} \\approx 160.85\\,\\mathrm{N \\cdot m}\\)；（2）\\([T] = 57.6\\pi\\,\\mathrm{N \\cdot m} \\approx 180.96\\,\\mathrm{N \\cdot m}\\)；（3）\\([T] = 57.6\\pi\\,\\mathrm{N \\cdot m} \\approx 180.96\\,\\mathrm{N \\cdot m}\\)。",
@@ -47,7 +48,8 @@
    "text": "将厚度 \\(\\delta = 0.8\\,\\mathrm{mm}\\)，许用切应力 \\([\\tau] = 90\\,\\mathrm{MPa}\\) 的薄板卷成平均直径 \\(D = 40\\,\\mathrm{mm}\\) 的圆管，开口处用焊接或铆接连接，求三种情况下的许用扭矩 \\([T]\\)：（1）\\([\\tau_{\\text{焊}}] = 80\\,\\mathrm{MPa}\\)；（2）\\([\\tau_{\\text{焊}}] = 100\\,\\mathrm{MPa}\\)；（3）铆钉直径 \\(d = 4\\,\\mathrm{mm}\\)，间距 \\(s = 15\\,\\mathrm{mm}\\)，\\([\\tau_{\\text{铆}}] = 100\\,\\mathrm{MPa}\\)（不考虑挤压强度）。",
    "topicChapter": "",
    "topicTitle": "",
-   "year": "2027"
+   "year": "2027",
+   "pageImage": "content/mech-pages/scut27-mock1/q-2.png"
   },
   {
    "answer": "\\(b = 400\\,\\mathrm{mm}\\)；\\(\\sigma_{t\\max} = 23.67\\,\\mathrm{MPa}\\)，\\(\\sigma_{c\\max} = 71.02\\,\\mathrm{MPa}\\)。",
@@ -71,7 +73,8 @@
    "text": "如图，梁的最大拉应力 \\(\\sigma_{t\\max}\\) 与最大压应力 \\(\\sigma_{c\\max}\\) 之比为 \\(1/3\\)（A 固定端，B 铰链，C 活动铰支座，\\(AB = BC = a\\)，外伸段长 \\(a\\)；AB 受均布载荷 \\(q\\)，外伸段受 0 至 \\(q\\) 的三角形分布载荷；T 形截面上翼缘宽 \\(b\\)、厚 \\(40\\,\\mathrm{mm}\\)，腹板厚 \\(40\\,\\mathrm{mm}\\)、高 \\(200\\,\\mathrm{mm}\\)）。（1）求 \\(b\\) 的合理宽度；（2）若 \\(a = 1\\,\\mathrm{m}\\)，\\(q = 50\\,\\mathrm{kN/m}\\)，求最大拉、压应力。",
    "topicChapter": "",
    "topicTitle": "",
-   "year": "2027"
+   "year": "2027",
+   "pageImage": "content/mech-pages/scut27-mock1/q-3.png"
   },
   {
    "answer": "\\([h] = \\dfrac{\\pi^4 EI}{P \\cdot l \\cdot n_{st}^2} - \\dfrac{\\pi^2 l}{2n_{st}}\\)。",
@@ -95,7 +98,8 @@
    "text": "重物 \\(P\\) 自高度 \\(h\\) 处自由落下至 C 点，CD 杆为细长杆，\\(EA = \\dfrac{6EI}{l^2}\\)，各杆抗弯刚度均为 \\(EI\\)，稳定安全系数为 \\(n_{st}\\)，求许可高度 \\([h]\\)。",
    "topicChapter": "",
    "topicTitle": "",
-   "year": "2027"
+   "year": "2027",
+   "pageImage": "content/mech-pages/scut27-mock1/q-5.png"
   },
   {
    "answer": "当 \\(f \\ge \\dfrac{5}{12}\\) 时（D 端不滑动）：\\(N_D = \\dfrac{6P}{11}\\)（竖直向上），\\(H_D = \\dfrac{5P}{22}\\)（水平向左），\\(F_{Ax} = \\dfrac{17P}{22}\\)（水平向左），\\(F_{Ay} = \\dfrac{6P}{11}\\)（竖直向下），\\(M_A = \\dfrac{5Pa}{11}\\)（逆时针）。当 \\(0 \\le f < \\dfrac{5}{12}\\) 时（D 端向右滑动）：\\(N_D = \\dfrac{3P}{8 - 6f}\\)（竖直向上），\\(H_D = \\dfrac{3fP}{8 - 6f}\\)（水平向左），\\(F_{Ax} = \\dfrac{(8 - 9f)P}{8 - 6f}\\)（水平向左），\\(F_{Ay} = \\dfrac{3P}{8 - 6f}\\)（竖直向下），\\(M_A = \\dfrac{(5 - 6f)Pa}{8 - 6f}\\)（逆时针）。",
@@ -119,7 +123,8 @@
    "text": "抗弯刚度为 \\(EI\\) 的钢架 ABCD（\\(AB = BC = CD = a\\)），A 端固定，D 端可沿刚性水平面摩擦滑动，摩擦系数为 \\(f\\)，C 处受水平向右载荷 \\(P\\)，求支座反力。",
    "topicChapter": "",
    "topicTitle": "",
-   "year": "2027"
+   "year": "2027",
+   "pageImage": "content/mech-pages/scut27-mock1/q-6.png"
   },
   {
    "answer": "\\(F_{Ay} = \\dfrac{13ql}{30}\\)（竖直向上）；\\(F_{By} = \\dfrac{13ql}{20}\\)（竖直向上）；\\(F_{Cy} = -\\dfrac{ql}{10}\\)（竖直向下，大小为 \\(\\dfrac{ql}{10}\\)）；\\(F_{Dy} = \\dfrac{ql}{60}\\)（竖直向上）。",
@@ -142,7 +147,8 @@
    "text": "抗弯刚度为 \\(EI\\) 的三跨连续梁 ABCD（每跨长 \\(l\\)），A、D 为端铰支座，B、C 为中间支座，仅 AB 跨受向下均布载荷 \\(q\\)，求梁的支座反力。",
    "topicChapter": "",
    "topicTitle": "",
-   "year": "2027"
+   "year": "2027",
+   "pageImage": "content/mech-pages/scut27-mock1/q-7.png"
   },
   {
    "id": "807-mock27-2-1",
