@@ -116,7 +116,7 @@ a{color:inherit;text-decoration:none}
 
 .paper-passage{border:1px solid var(--rule2);border-radius:6px;padding:8px 12px;margin:6px 0 12px;background:var(--paper2,#faf8f4)}
 .paper-passage summary{cursor:pointer;font-size:11px;letter-spacing:.12em;color:var(--ink3)}
-.paper-passage div{font-family:var(--serif);font-size:14.5px;line-height:1.9;color:var(--ink2);margin-top:8px;white-space:normal}
+.paper-passage div{font-family:var(--serif);font-size:15.5px;line-height:2;color:var(--ink2);margin-top:8px;white-space:normal}
 .workarea{border-top:1px dashed var(--rule);padding-top:10px}
 .workarea label{display:block;font-size:9px;letter-spacing:.18em;color:var(--ink3);margin-bottom:4px}
 .workarea textarea{width:100%;min-height:92px;resize:vertical;border:0;outline:none;background:
@@ -290,7 +290,8 @@ body.paper-run .etitle { text-align: left; }
 #paperCard.has-passage .split-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.92fr);gap:26px;align-items:start}
 #paperCard.has-passage #qpassage{display:block;position:sticky;top:58px;max-height:calc(100vh - 112px);overflow:auto;margin:0;padding:16px 18px;border:1px solid var(--rule2);border-radius:8px;background:#fffdf7;box-shadow:0 1px 0 rgba(0,0,0,.02)}
 #paperCard.has-passage #qpassage summary{display:none}
-#qpassagebody p{margin:0 0 .55em;line-height:1.9;text-indent:2em}
+#qpassagebody p{margin:0 0 1.05em;line-height:2;text-indent:2em}
+#qpassagebody p.passage-title{text-indent:0;font-weight:700;font-size:1.06em;letter-spacing:.05em;margin-bottom:.8em}
 #qfigs img{max-width:100%;height:auto}
 #paperCard.has-passage .q-main{max-height:calc(100vh - 112px);overflow:auto;padding:0 6px 40px 2px;scrollbar-gutter:stable}
 #paperCard.has-passage .paper-head{border-bottom:1px solid var(--rule2);padding-bottom:8px;margin-bottom:14px}

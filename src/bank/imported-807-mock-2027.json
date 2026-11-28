@@ -4,7 +4,9 @@
    "answer": "\\([F] = 20\\sqrt{3}\\,\\mathrm{kN} \\approx 34.64\\,\\mathrm{kN}\\)（由 3 杆强度控制）；D 点竖直向下位移 \\(v_D = 1.40\\,\\mathrm{mm}\\)。",
    "chapter": "mech-807-2027mock1",
    "chapterTitle": "华南理工 807 · 2027 模考卷（一）",
-   "figures": [],
+   "figures": [
+    "q807-mock27-1-1.png"
+   ],
    "id": "807-mock27-1-1",
    "isMock": true,
    "isReal": false,
@@ -29,7 +31,9 @@
    "answer": "（1）\\([T] = 51.2\\pi\\,\\mathrm{N \\cdot m} \\approx 160.85\\,\\mathrm{N \\cdot m}\\)；（2）\\([T] = 57.6\\pi\\,\\mathrm{N \\cdot m} \\approx 180.96\\,\\mathrm{N \\cdot m}\\)；（3）\\([T] = 57.6\\pi\\,\\mathrm{N \\cdot m} \\approx 180.96\\,\\mathrm{N \\cdot m}\\)。",
    "chapter": "mech-807-2027mock1",
    "chapterTitle": "华南理工 807 · 2027 模考卷（一）",
-   "figures": [],
+   "figures": [
+    "q807-mock27-1-2.png"
+   ],
    "id": "807-mock27-1-2",
    "isMock": true,
    "isReal": false,
@@ -55,7 +59,9 @@
    "answer": "\\(b = 400\\,\\mathrm{mm}\\)；\\(\\sigma_{t\\max} = 23.67\\,\\mathrm{MPa}\\)，\\(\\sigma_{c\\max} = 71.02\\,\\mathrm{MPa}\\)。",
    "chapter": "mech-807-2027mock1",
    "chapterTitle": "华南理工 807 · 2027 模考卷（一）",
-   "figures": [],
+   "figures": [
+    "q807-mock27-1-3.png"
+   ],
    "id": "807-mock27-1-3",
    "isMock": true,
    "isReal": false,
@@ -80,7 +86,9 @@
    "answer": "\\([h] = \\dfrac{\\pi^4 EI}{P \\cdot l \\cdot n_{st}^2} - \\dfrac{\\pi^2 l}{2n_{st}}\\)。",
    "chapter": "mech-807-2027mock1",
    "chapterTitle": "华南理工 807 · 2027 模考卷（一）",
-   "figures": [],
+   "figures": [
+    "q807-mock27-1-5.png"
+   ],
    "id": "807-mock27-1-5",
    "isMock": true,
    "isReal": false,
@@ -105,7 +113,9 @@
    "answer": "当 \\(f \\ge \\dfrac{5}{12}\\) 时（D 端不滑动）：\\(N_D = \\dfrac{6P}{11}\\)（竖直向上），\\(H_D = \\dfrac{5P}{22}\\)（水平向左），\\(F_{Ax} = \\dfrac{17P}{22}\\)（水平向左），\\(F_{Ay} = \\dfrac{6P}{11}\\)（竖直向下），\\(M_A = \\dfrac{5Pa}{11}\\)（逆时针）。当 \\(0 \\le f < \\dfrac{5}{12}\\) 时（D 端向右滑动）：\\(N_D = \\dfrac{3P}{8 - 6f}\\)（竖直向上），\\(H_D = \\dfrac{3fP}{8 - 6f}\\)（水平向左），\\(F_{Ax} = \\dfrac{(8 - 9f)P}{8 - 6f}\\)（水平向左），\\(F_{Ay} = \\dfrac{3P}{8 - 6f}\\)（竖直向下），\\(M_A = \\dfrac{(5 - 6f)Pa}{8 - 6f}\\)（逆时针）。",
    "chapter": "mech-807-2027mock1",
    "chapterTitle": "华南理工 807 · 2027 模考卷（一）",
-   "figures": [],
+   "figures": [
+    "q807-mock27-1-6.png"
+   ],
    "id": "807-mock27-1-6",
    "isMock": true,
    "isReal": false,
@@ -130,7 +140,9 @@
    "answer": "\\(F_{Ay} = \\dfrac{13ql}{30}\\)（竖直向上）；\\(F_{By} = \\dfrac{13ql}{20}\\)（竖直向上）；\\(F_{Cy} = -\\dfrac{ql}{10}\\)（竖直向下，大小为 \\(\\dfrac{ql}{10}\\)）；\\(F_{Dy} = \\dfrac{ql}{60}\\)（竖直向上）。",
    "chapter": "mech-807-2027mock1",
    "chapterTitle": "华南理工 807 · 2027 模考卷（一）",
-   "figures": [],
+   "figures": [
+    "q807-mock27-1-7.png"
+   ],
    "id": "807-mock27-1-7",
    "isMock": true,
    "isReal": false,
@@ -180,7 +192,9 @@
     "求解内力：代入平衡方程得 \\((1+\\sqrt{2})F_{N1}=3F\\)，即 \\(F_{N1}=F_{N2}=\\dfrac{3F}{1+\\sqrt{2}}=3(\\sqrt{2}-1)F\\approx 62.13\\,\\mathrm{kN}\\)（拉力）。",
     "所需横截面面积 \\(A\\)：\\(A\\geq\\dfrac{F_{N1}}{[\\sigma]}=1500(\\sqrt{2}-1)\\,\\mathrm{mm}^2\\approx 621.32\\,\\mathrm{mm}^2\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-2-1.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock2/q-1.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -209,7 +223,9 @@
     "联立求解 \\(\\varphi_B\\)：\\(GI_p\\varphi_B=M_e a-\\dfrac{EAD^2 L}{2l}\\varphi_B\\)，即 \\(\\varphi_B\\left(GI_p+\\dfrac{EAD^2 L}{2l}\\right)=M_e a\\)。代入 \\(I_p=\\dfrac{\\pi D^4}{32}\\) 与 \\(A=\\dfrac{\\pi d^2}{4}\\)，化简得 \\(\\varphi_B=\\dfrac{32M_e a l}{\\pi D^2(GD^2 l+4Ed^2 L)}\\)。",
     "杆的纵向线应变 \\(\\varepsilon\\)：\\(\\varepsilon=\\dfrac{\\Delta l}{l}=\\dfrac{D\\varphi_B}{2l}=\\dfrac{16M_e a}{\\pi D(GD^2 l+4Ed^2 L)}\\)（两杆分别为拉应变 \\(+\\varepsilon\\) 与压应变 \\(-\\varepsilon\\)）。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-2-2.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock2/q-2.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -237,7 +253,9 @@
     "梁的弯矩分析：由图可知，\\(B\\) 处绘有中间铰链圆圈，故该梁为由 \\(AB\\) 与 \\(BC\\) 两段组成的静定多跨梁（\\(AB\\) 与 \\(BC\\) 均相当于简支梁，\\(B\\) 处弯矩为 0）：\\(AB\\) 段受均布载荷 \\(q\\) 作用，跨中最大弯矩 \\(M_{\\max,AB}=\\dfrac{1}{8}ql^2\\)；\\(BC\\) 段受跨中集中力 \\(ql\\) 作用，跨中最大弯矩 \\(M_{\\max,BC}=\\dfrac{1}{4}(ql)l=\\dfrac{1}{4}ql^2\\)。因此全梁最大弯矩位于 \\(BC\\) 段跨中：\\(M_{\\max}=\\dfrac{1}{4}ql^2\\)。",
     "弯曲正应力强度条件求 \\([q]\\)：\\(\\sigma_{\\max}=\\dfrac{M_{\\max}}{W_z}\\leq[\\sigma]\\)，即 \\(\\dfrac{1}{4}ql^2\\leq[\\sigma]W_z\\)。代入 \\(l=2\\,\\mathrm{m}\\)，\\([\\sigma]=120\\times 10^{6}\\,\\mathrm{Pa}\\)，\\(W_z=1.12333\\times 10^{-3}\\,\\mathrm{m}^3\\)：\\([q]=\\dfrac{4[\\sigma]W_z}{l^2}=\\dfrac{4\\times 120\\times 10^{6}\\times 1.12333\\times 10^{-3}}{2^2}=134800\\,\\mathrm{N/m}=134.8\\,\\mathrm{kN/m}\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-2-3.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock2/q-3.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -264,7 +282,9 @@
     "挠度公式：两端固定梁 \\(AB\\) 在跨中承受集中载荷 \\(P_1\\) 时的跨中挠度 \\(w_1=\\dfrac{P_1 l_1^3}{192E_1 I_1}\\)；两端简支（铰链支承）梁 \\(CD\\) 在跨中承受集中载荷 \\(P_2\\) 时的跨中挠度 \\(w_2=\\dfrac{P_2 l_2^3}{48E_2 I_2}\\)。",
     "联立求解：由 \\(w_1=w_2\\) 得 \\(\\dfrac{P_1 l_1^3}{192E_1 I_1}=\\dfrac{P_2 l_2^3}{48E_2 I_2}\\)，化简得 \\(\\dfrac{P_1}{P_2}=\\dfrac{4E_1 I_1 l_2^3}{E_2 I_2 l_1^3}\\)。结合 \\(P_1+P_2=P\\)，解得：\\(P_1=\\dfrac{4E_1 I_1 l_2^3}{4E_1 I_1 l_2^3+E_2 I_2 l_1^3}P\\)，\\(P_2=\\dfrac{E_2 I_2 l_1^3}{4E_1 I_1 l_2^3+E_2 I_2 l_1^3}P\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-2-4.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock2/q-4.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -293,7 +313,9 @@
     "消去 \\(dA\\)，并利用 \\(\\tau_{yx}=\\tau_{xy}\\) 得：\\(\\tau_{\\alpha}=-(\\sigma_x-\\sigma_y)\\sin\\alpha\\cos\\alpha+\\tau_{xy}(\\cos^2\\alpha-\\sin^2\\alpha)\\)。",
     "3. 三角倍角公式化简：利用恒等式 \\(\\cos^2\\alpha=\\dfrac{1+\\cos 2\\alpha}{2}\\)，\\(\\sin^2\\alpha=\\dfrac{1-\\cos 2\\alpha}{2}\\)，\\(\\sin 2\\alpha=2\\sin\\alpha\\cos\\alpha\\)，\\(\\cos 2\\alpha=\\cos^2\\alpha-\\sin^2\\alpha\\)：\\(\\sigma_{\\alpha}=\\dfrac{\\sigma_x+\\sigma_y}{2}+\\dfrac{\\sigma_x-\\sigma_y}{2}\\cos 2\\alpha+\\tau_{xy}\\sin 2\\alpha\\)，\\(\\tau_{\\alpha}=-\\dfrac{\\sigma_x-\\sigma_y}{2}\\sin 2\\alpha+\\tau_{xy}\\cos 2\\alpha\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-2-5.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock2/q-5.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -321,7 +343,9 @@
     "\\(DF\\) 杆轴力更大，随着 \\(P\\) 增大，\\(DF\\) 杆首先达到临界压力 \\(F_{cr}\\)：\\(P_1=\\dfrac{5}{8}F_{cr}=\\dfrac{5\\pi^2 EI}{8H^2}\\)。",
     "第二阶段（\\(DF\\) 杆屈曲后，至 \\(CE\\) 杆失稳导致结构毁坏）：\\(DF\\) 杆发生弹性屈曲后，进入随遇平衡状态（继续缩短而轴力保持 \\(F_{ND}=F_{cr}\\) 不变），结构转化为静定结构，新增载荷由 \\(CE\\) 杆承担，直到 \\(CE\\) 杆也达到临界压力 \\(F_{NC}=F_{cr}\\) 时，整个结构彻底丧失承载能力而毁坏。将 \\(F_{ND}=F_{cr}\\)、\\(F_{NC}=F_{cr}\\) 代入平衡方程：\\(F_{cr}+2F_{cr}=4P_{cr}\\)，即 \\(P_{cr}=\\dfrac{3}{4}F_{cr}=\\dfrac{3\\pi^2 EI}{4H^2}\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-2-6.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock2/q-6.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -348,7 +372,9 @@
     "3. 单位载荷法（莫尔积分）求 \\(BD\\) 方向相对位移 \\(\\Delta_{BD}\\)：在 \\(B\\)、\\(D\\) 两点沿对角线 \\(BD\\) 方向施加一对向内的单位虚拟力（大小均为 1），求两点的相向相对位移 \\(\\Delta_{BD}\\)。由正方形的旋转对称性可知，在 \\(B\\)、\\(D\\) 施加一对向内的单位力时，\\(AB\\) 杆上的虚拟弯矩 \\(\\bar{M}(x)\\) 为：\\(\\bar{M}(x)=\\dfrac{\\sqrt{2}}{4}\\left(\\dfrac{a}{2}-x\\right)\\)。",
     "全框架由 4 段完全相同的边组成，由莫尔积分得：\\(\\Delta_{BD}=4\\int_0^a\\dfrac{M(x)\\bar{M}(x)}{EI}\\,dx=4\\int_0^a\\dfrac{\\dfrac{\\sqrt{2}}{4}P\\left(\\dfrac{a}{2}-x\\right)\\cdot\\dfrac{\\sqrt{2}}{4}\\left(\\dfrac{a}{2}-x\\right)}{EI}\\,dx=\\dfrac{P}{2EI}\\int_0^a\\left(x-\\dfrac{a}{2}\\right)^2 dx=\\dfrac{Pa^3}{24EI}\\)。结果为正，表明 \\(B\\)、\\(D\\) 两点沿对角线 \\(BD\\) 方向相向移动（缩短）。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-2-7.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock2/q-7.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -375,7 +401,9 @@
     "静力平衡方程：水平方向力平衡（\\(\\sum F_x = 0\\)）：\\(F = F_{N1} + F_{N2} = (E_1 + E_2)A\\varepsilon\\)；对两杆交界处取矩平衡（\\(\\sum M_O = 0\\)）：\\(F \\cdot e = F_{N1} \\cdot \\dfrac{b}{2} - F_{N2} \\cdot \\dfrac{b}{2} = (E_1 - E_2)A\\varepsilon \\cdot \\dfrac{b}{2}\\)。",
     "联立求解：将 \\(\\sum F_x = 0\\) 代入 \\(\\sum M_O = 0\\)，消去 \\(A\\varepsilon\\)，得：\\(e = \\dfrac{E_1 - E_2}{2(E_1 + E_2)} \\cdot b\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-3-1.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock3/q-1.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -403,7 +431,9 @@
     "变形协调条件：\\(BC\\) 段内的扭矩为 \\(M_e - M_A = M_C + M_D\\)，故 \\(B\\) 相对于 \\(C\\) 的扭转角为：\\(\\varphi_B - \\varphi_C = \\dfrac{(M_C + M_D) \\cdot b}{GI_p}\\)；代入 \\(\\varphi_B\\)、\\(\\varphi_C\\) 和式②，得：\\(\\dfrac{M_A \\cdot a}{GI_p} - \\dfrac{M_D \\cdot c}{GI_p} = \\left(\\dfrac{k \\cdot c}{GI_p} + 1\\right) \\cdot \\dfrac{M_D \\cdot b}{GI_p}\\)，整理得：\\(M_A \\cdot a = M_D \\cdot \\left(b + c + \\dfrac{k \\cdot b \\cdot c}{GI_p}\\right)\\) ……③",
     "联立求解：将式②代入式①，得：\\(M_A + \\left(1 + \\dfrac{k \\cdot c}{GI_p}\\right) \\cdot M_D = M_e\\) ……④；联立式③、④解得：令分母 \\(D = GI_p \\cdot (a + b + c) + k \\cdot c \\cdot (a + b)\\)，则：\\(M_A = \\dfrac{M_e \\cdot [GI_p \\cdot (b + c) + k \\cdot b \\cdot c]}{GI_p \\cdot (a + b + c) + k \\cdot c \\cdot (a + b)}\\)，\\(M_D = \\dfrac{M_e \\cdot GI_p \\cdot a}{GI_p \\cdot (a + b + c) + k \\cdot c \\cdot (a + b)}\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-3-2.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock3/q-2.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -435,7 +465,9 @@
     "胶合面切应力校核：\\(\\tau'_{\\max} = \\dfrac{|F_S|_{\\max} \\cdot S_z^*}{I_z \\cdot b} = \\dfrac{100 \\times 10^3 \\times 2.5 \\times 10^{-4}}{2.8125 \\times 10^{-5} \\times 0.1} \\approx 8.89\\ \\mathrm{MPa} \\le [\\tau'] = 40\\ \\mathrm{MPa}\\)（满足）。",
     "结论：由于最大弯曲正应力 \\(\\sigma_{\\max} = 560\\ \\mathrm{MPa} > [\\sigma] = 160\\ \\mathrm{MPa}\\)，该胶合木梁不安全（不满足正应力强度条件）。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-3-3.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock3/q-3.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -465,7 +497,9 @@
     "最大拉应力点：任一点 \\((x, y)\\) 的 \\(u\\) 坐标（相对形心 \\(C\\)）为 \\(u = \\dfrac{(x - x_c) + (y - y_c)}{\\sqrt{2}}\\)。缺口处两个角点 \\((a, 0)\\) 和 \\((0, a)\\) 的 \\(u\\) 值最大：\\(u_{\\max} = \\dfrac{\\left(a + \\dfrac{a}{6}\\right) + \\left(0 + \\dfrac{a}{6}\\right)}{\\sqrt{2}} = \\dfrac{4}{3\\sqrt{2}}a\\)。",
     "最大拉应力计算：\\(\\sigma_{\\max} = \\dfrac{F}{A'} + \\dfrac{F \\cdot e_u \\cdot u_{\\max}}{I_v} = \\dfrac{F}{3a^2} + \\dfrac{F \\cdot \\dfrac{\\sqrt{2}a}{6} \\cdot \\dfrac{4a}{3\\sqrt{2}}}{\\dfrac{7}{12}a^4} = \\dfrac{F}{3a^2} + \\dfrac{8}{21} \\cdot \\dfrac{F}{a^2} = \\dfrac{15}{21} \\cdot \\dfrac{F}{a^2} = \\dfrac{5}{7} \\cdot \\dfrac{F}{a^2}\\)。代入 \\(F = 90\\ \\mathrm{kN} = 9 \\times 10^4\\ \\mathrm{N}\\)，\\(a = 0.05\\ \\mathrm{m}\\)（\\(a^2 = 2.5 \\times 10^{-3}\\ \\mathrm{m^2}\\)）：\\(\\sigma_{\\max} = \\dfrac{5}{7} \\times \\dfrac{9 \\times 10^4}{2.5 \\times 10^{-3}} = \\dfrac{180}{7}\\ \\mathrm{MPa} \\approx 25.71\\ \\mathrm{MPa}\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-3-4.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock3/q-4.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -494,7 +528,9 @@
     "BC 杆（正方形截面，\\(a = 0.07\\ \\mathrm{m}\\)，长度 \\(l_{BC} = l = 2\\ \\mathrm{m}\\)）：\\(B\\)、\\(C\\) 两端均可视为铰支，长度因数 \\(\\mu_{BC} = 1.0\\)。惯性半径 \\(i_{BC} = \\dfrac{a}{\\sqrt{12}} = \\dfrac{0.07}{\\sqrt{12}} \\approx 0.02021\\ \\mathrm{m}\\)。柔度 \\(\\lambda_{BC} = \\dfrac{\\mu_{BC} \\cdot l_{BC}}{i_{BC}} = \\dfrac{1.0 \\times 2}{0.07/\\sqrt{12}} \\approx 98.97 > \\lambda_p = 96\\)（属于大柔度杆，适用欧拉公式）。截面惯性矩 \\(I_{BC} = \\dfrac{a^4}{12} = \\dfrac{0.07^4}{12} = 2.00083 \\times 10^{-6}\\ \\mathrm{m^4}\\)。临界压力 \\(F_{cr,BC} = \\dfrac{\\pi^2 E I_{BC}}{(\\mu_{BC} l_{BC})^2} = \\dfrac{3^2 \\times 2 \\times 10^{11} \\times 0.07^4}{12 \\times 2^2} = 900.375\\ \\mathrm{kN}\\)。",
     "求载荷 \\(P\\) 的许用值：由于 \\(F_{cr,AB} \\approx 783.67\\ \\mathrm{kN} < F_{cr,BC} = 900.375\\ \\mathrm{kN}\\)，\\(AB\\) 杆先失稳，故由 \\(AB\\) 杆控制稳定承载力：\\(F_{N,d} = \\dfrac{5}{8}[P] \\le \\dfrac{F_{cr,AB}}{n_{st}}\\)，\\([P] = \\dfrac{8}{5} \\times \\dfrac{783.6735}{2.5} \\approx 501.55\\ \\mathrm{kN}\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-3-5.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock3/q-5.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -528,7 +564,9 @@
     "莫尔积分：整个结构的铅垂位移为两倍半结构的莫尔积分：\\(w_D = 2 \\times \\left[ \\int_0^{l/2} \\dfrac{M_{CD} \\cdot (-u/2)}{EI} \\, du + \\int_0^l \\dfrac{T_{BC} \\cdot (-l/4)}{GI_p} \\, ds + \\int_0^l \\dfrac{M_{BC} \\cdot (s/2)}{EI} \\, ds + \\int_0^l \\dfrac{M_{AB} \\cdot (-l/4 - t/2)}{EI} \\, dt + \\int_0^l \\dfrac{T_{AB} \\cdot (l/2)}{GI_p} \\, dt \\right]\\)。",
     "逐项积分并合成：代入 \\(GI_p = EI\\) 逐项积分：\\(CD\\) 段积分 \\(= -\\dfrac{7 q l^4}{1536 EI}\\)；\\(BC\\) 段扭矩积分 \\(= -\\dfrac{q l^4}{48 EI}\\)；\\(BC\\) 段弯矩积分 \\(= +\\dfrac{q l^4}{12 EI}\\)；\\(AB\\) 段弯矩积分 \\(= +\\dfrac{5 q l^4}{48 EI}\\)；\\(AB\\) 段扭矩积分 \\(= +\\dfrac{q l^4}{4 EI}\\)。括号内总和 \\(= \\left(-\\dfrac{7}{1536} - \\dfrac{1}{48} + \\dfrac{1}{12} + \\dfrac{5}{48} + \\dfrac{1}{4}\\right) \\dfrac{q l^4}{EI} = \\dfrac{313}{768} \\cdot \\dfrac{q l^4}{EI}\\)，乘以 2 得：\\(w_D = \\dfrac{313}{384} \\cdot \\dfrac{q l^4}{EI}\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-3-6.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock3/q-6.png",
    "topicChapter": "",
    "topicTitle": ""
@@ -558,7 +596,9 @@
     "跨内极值检查（\\(AC\\) 段，\\(0 < x < 6\\ \\mathrm{m}\\)）：支座反力 \\(F_{Ay} = \\dfrac{q l}{2} - \\dfrac{F_C}{2} = 27 - 10.875 = 16.125\\ \\mathrm{kN}\\)。剪力为零处 \\(x = \\dfrac{F_{Ay}}{q} = \\dfrac{16.125}{4.5} \\approx 3.583\\ \\mathrm{m}\\)，该处弯矩 \\(M = -21.375 + 16.125 \\times 3.583 - 0.5 \\times 4.5 \\times 3.583^2 \\approx +7.52\\ \\mathrm{kN \\cdot m}\\)。",
     "最大正应力：比较各截面弯矩绝对值，得 \\(|M|_{\\max} = |M_C| = 38.25\\ \\mathrm{kN \\cdot m}\\)（位于跨中 \\(C\\) 截面）。最大正应力为：\\(\\sigma_{\\max} = \\dfrac{|M|_{\\max}}{W} = \\dfrac{38250}{2.25 \\times 10^{-3}} = 1.7 \\times 10^7\\ \\mathrm{Pa} = 17.0\\ \\mathrm{MPa}\\)。"
    ],
-   "figures": [],
+   "figures": [
+    "q807-mock27-3-7.png"
+   ],
    "pageImage": "content/mech-pages/scut27-mock3/q-7.png",
    "topicChapter": "",
    "topicTitle": ""
